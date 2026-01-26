@@ -1,0 +1,12 @@
+{
+	"languageMode": "strict",
+	"lint": {
+		"*": true
+	},
+	"aliases": {
+		"src": "src",
+		"pkgs": "roblox_packages",
+		"monorepo": ".lute/lib/monorepo",
+		"root": "."
+	}
+}
