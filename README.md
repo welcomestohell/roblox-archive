@@ -5,10 +5,10 @@ support moderation and ai age verification
 
 ## Development
 
-Welcome To Hell has a somewhat sophisticated build setup.
+i gave up in making a monorepo first
 
 ```sh
 rokit install
-lute bootstrap
-lute make --serve kit
+rojo plugin install
+lute serve
 ```

@@ -1,12 +1,14 @@
 {
 	"languageMode": "strict",
 	"lint": {
-		"*": true
+		"*": true,
+		"LocalShadow": false
 	},
 	"aliases": {
-		"src": "src",
-		"pkgs": "roblox_packages",
-		"monorepo": ".lute/lib/monorepo",
-		"root": "."
+		"client": "src/client",
+		"server": "src/server",
+		"shared": "src/shared",
+		"ui": "src/ui",
+		"pkgs": "roblox_packages"
 	}
 }

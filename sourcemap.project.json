@@ -1,0 +1,33 @@
+{
+	"name": "Welcome To Hell Kit",
+	"emitLegacyScripts": false,
+	"tree": {
+		"$className": "DataModel",
+		"ReplicatedStorage": {
+			"Internal": {
+				"$className": "Folder",
+				"Client": { "$path": "src/client" },
+				"Shared": { "$path": "src/shared" },
+				"UI": { "$path": "src/ui" }
+			},
+			"TowerLib": {
+				"$path": "src/TowerLib"
+			},
+			"TowerScripts": {
+				"$path": "src/towerscripts"
+			},
+			"Packages": {
+				"$path": { "optional": "roblox_packages" }
+			}
+		},
+		"ServerScriptService": {
+			"Internal": {
+				"$className": "Folder",
+				"Server": { "$path": "src/server" }
+			},
+			"Packages": {
+				"$path": { "optional": "roblox_server_packages" }
+			}
+		}
+	}
+}
