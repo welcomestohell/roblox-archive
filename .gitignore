@@ -5,6 +5,7 @@ out
 out.project.json
 sourcemap.project.json
 sourcemap.json
+.darklua.json
 
 .DS_Store
 Thumbs.db

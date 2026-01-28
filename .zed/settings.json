@@ -68,6 +68,7 @@
 					"enable_new_solver": true,
 					"override": {},
 				},
+				"definitions": ["types/globals.d.luau"],
 			},
 		},
 	},

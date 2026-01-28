@@ -10,6 +10,10 @@ return {
 		outputDir = "out",
 		outputProject = "out.project.json",
 
+		typesDir = "types",
+
+		darkluaFilename = ".darklua.json",
+
 		sourcemapFilename = "sourcemap.json",
 		sourcemapProject = "sourcemap.project.json",
 
