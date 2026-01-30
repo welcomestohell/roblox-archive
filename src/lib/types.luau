@@ -1,6 +1,4 @@
 local Life = require "./memory/Life"
-local Result = require "./core/Result"
-local gt = require "@pkgs/gt"
 
 export type MechanicMetatable = {
 	__index: MechanicMetatable,

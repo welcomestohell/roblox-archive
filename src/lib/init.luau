@@ -1,3 +1,4 @@
+local Level = require "@lib/core/Level"
 local Life = require "@self/memory/Life"
 local Mechanic = require "@self/core/Mechanic"
 local destroy = require "@self/memory/destroy"
@@ -17,6 +18,11 @@ local lib = table.freeze {
 	isMechanic = Mechanic.isMechanic,
 	isMechanicImplementationOf = Mechanic.isMechanicImplementationOf,
 	isMechanicOf = Mechanic.isMechanicOf,
+
+	Level = Level.new,
+	baseMechanicImplementations = Level.baseMechanicImplementations,
+	baseScripts = Level.baseScripts,
+	collectScripts = Level.collectScripts,
 
 	Life = Life.new,
 	destroy = destroy,

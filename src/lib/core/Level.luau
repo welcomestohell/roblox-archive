@@ -6,7 +6,13 @@ local Promise = require "@pkgs/Promise"
 local gt = require "@pkgs/gt"
 local types = require "../types"
 
-local function collectScripts(
+local Level = {} :: types.LevelMetatable
+Level.__index = Level
+
+Level.baseScripts = {}
+Level.baseMechanicImplementations = {}
+
+function Level.collectScripts(
 	parent: Instance,
 	scripts: { [ModuleScript]: any },
 	mechanicImplementations: { [string]: any }
@@ -29,16 +35,10 @@ local function collectScripts(
 		end
 
 		if isMechanicImplementation then
-			mechanicImplementations[required.string] = required
+			mechanicImplementations[required.instanceTag] = required
 		end
 	end
 end
-
-local Level = {} :: types.LevelMetatable
-Level.__index = Level
-
-Level.baseScripts = {}
-Level.baseMechanicImplementations = {}
 
 function Level.new(life: Life.Life, name: string, instance: types.LevelInstance): types.Level
 	return setmetatable({
@@ -87,7 +87,7 @@ function Level.bootstrap(self: types.Level)
 
 	local levelScripts = self.instance:FindFirstChild "Scripts"
 	if levelScripts then
-		collectScripts(levelScripts, self.scripts, self.mechanicImplementations)
+		Level.collectScripts(levelScripts, self.scripts, self.mechanicImplementations)
 	end
 
 	for _, instance in self.instance:WaitForChild("Mechanics"):GetDescendants() do
@@ -108,6 +108,7 @@ function Level.bootstrap(self: types.Level)
 		:await()
 
 	for _, mechanic in self.mechanics do
+		print(mechanic)
 		if mechanic.onStart then
 			self.life:add(task.spawn(mechanic.onStart :: any, mechanic))
 		end
