@@ -10,11 +10,14 @@
 				"Shared": { "$path": "src/shared" },
 				"UI": { "$path": "src/ui" }
 			},
-			"TowerLib": {
-				"$path": "src/TowerLib"
+			"Lib": {
+				"$path": "src/lib"
 			},
-			"TowerScripts": {
-				"$path": "src/towerscripts"
+			"Scripts": {
+				"$className": "Kit",
+				"Core": {
+					"$path": "src/scripts"
+				}
 			},
 			"Packages": {
 				"$path": { "optional": "roblox_packages" }
