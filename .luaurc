@@ -9,7 +9,7 @@
 		"server": "src/server",
 		"shared": "src/shared",
 		"ui": "src/ui",
-		"lib": "src/lib",
+		"libs": "src/libs",
 		"pkgs": "roblox_packages"
 	}
 }

@@ -1,12 +1,17 @@
-local destroy = require "./destroy"
+local destroy = require("./destroy")
 
 local Life = {}
 Life.__index = Life
+Life.type = "Life"
 
 export type Life = setmetatable<{ read destroyables: { destroy.Destroyable } }, typeof(Life)>
 
 function Life.new(): Life
 	return table.freeze(setmetatable({ destroyables = {} }, Life))
+end
+
+function Life.isLife(x: any)
+	return typeof(x) == "table" and getmetatable(x) == Life
 end
 
 function Life.add<T>(self: Life, bound: T): T
@@ -59,17 +64,13 @@ function Life.isEmpty(self: Life)
 	return #self.destroyables == 0
 end
 
-function Life.clean(self: Life)
+-- TODO: implement life pooling so this method isnt useless
+-- TODO: poison class
+function Life.destroy(self: Life)
 	for index = #self.destroyables, 1, -1 do
 		destroy(self.destroyables[index])
 	end
 	table.clear(self.destroyables)
-end
-
--- TODO: implement life pooling so this method isnt useless
--- TODO: poison class
-function Life.destroy(self: Life)
-	Life.clean(self)
 	-- setmetatable(self :: any, {})
 end
 
@@ -81,5 +82,4 @@ function Life.__len(self: Life)
 	return #self.destroyables
 end
 
-table.freeze(Life)
-return Life
+return table.freeze(Life)

@@ -1,4 +1,4 @@
-local Promise = require "@pkgs/Promise"
+local Promise = require("@pkgs/Promise")
 
 local Lazy = {}
 Lazy.__index = Lazy
@@ -8,6 +8,10 @@ export type Lazy<T> = setmetatable<{ loaded: boolean, loadCallback: () -> T, val
 
 function Lazy.new<T>(loadCallback: () -> T): Lazy<T>
 	return setmetatable({ loaded = false, loadCallback = loadCallback, value = nil }, Lazy)
+end
+
+function Lazy.isLazy(x: any)
+	return typeof(x) == "table" and getmetatable(x) == Lazy
 end
 
 function Lazy.get<T>(self: Lazy<T>): T
@@ -24,4 +28,4 @@ end
 
 Lazy.getAsync = Promise.promisify(Lazy.get) :: <T>(self: Lazy<T>) -> Promise.TypedPromise<T>
 
-return Lazy
+return table.freeze(Lazy)

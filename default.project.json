@@ -10,8 +10,8 @@
 				"Shared": { "$path": "out/shared" },
 				"UI": { "$path": "out/ui" }
 			},
-			"Lib": {
-				"$path": "out/lib"
+			"Libs": {
+				"$path": "out/libs"
 			},
 			"Scripts": {
 				"$className": "Folder",

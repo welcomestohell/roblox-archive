@@ -1,4 +1,4 @@
-local dependencies = require "../dependencies"
+local dependencies = require("../dependencies")
 
 export type Provider<Self, Dependencies = nil> = dependencies.Dependency<Self & {
 	__index: Provider<Self, Dependencies>,

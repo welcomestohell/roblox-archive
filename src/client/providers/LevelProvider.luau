@@ -1,26 +1,26 @@
-local ReplicatedStorage = game:GetService "ReplicatedStorage"
-local Workspace = game:GetService "Workspace"
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
 
-local lib = require "@lib"
-local prvd = require "@shared/prvdmwrong/prvdmwrong"
+local Level = require("@libs/Level")
+local Life = require("@libs/Life")
+local prvd = require("@shared/prvdmwrong/prvdmwrong")
 
 local LevelProvider = {}
 export type DebugProvider = typeof(LevelProvider)
 
 function LevelProvider.constructor()
-	lib.collectScripts(
-		ReplicatedStorage:WaitForChild("Scripts"):WaitForChild "Core",
-		lib.baseScripts,
-		lib.baseMechanicImplementations
+	Level.collectScripts(
+		ReplicatedStorage:WaitForChild("Scripts"):WaitForChild("Core"),
+		Level.baseScripts,
+		Level.baseMechanicImplementations
 	)
 end
 
 function LevelProvider.onStart()
 	task.wait(1)
-	local kitLife = lib.Life()
-	local kitLevel = lib.Level(kitLife, "Kit", Workspace:WaitForChild "Kit" :: any)
-	print "STARTING"
-	kitLevel:bootstrap()
+	local kitLife = Life.new()
+	local kitLevel = Level.new(kitLife, "Kit", Workspace:WaitForChild("Kit") :: any)
+	kitLevel:start()
 end
 
 function LevelProvider.onFinish() end

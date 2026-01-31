@@ -11,6 +11,10 @@ function Result.Err<E>(value: E): Result<any, E>
 	return table.freeze(setmetatable({ kind = "Err" :: "Err", value = value }, Result))
 end
 
+function Result.isResult(x: any)
+	return typeof(x) == "table" and getmetatable(x) == Result
+end
+
 function Result.isOk(self: Result<any, any>)
 	return self.kind == "Ok"
 end
@@ -49,5 +53,4 @@ function Result.__tostring(self: Result<any, any>): string
 	return string.format(if Result.isOk(self) then "Result.Ok(%q)" else "Result.Err(%q)" :: any, self.value)
 end
 
-table.freeze(Result)
-return Result
+return table.freeze(Result)

@@ -1,12 +1,13 @@
-local ReplicatedStorage = game:GetService "ReplicatedStorage"
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local lib = require(ReplicatedStorage.Lib)
+local Mechanic = require(ReplicatedStorage.Libs.Mechanic)
+local gt = require(ReplicatedStorage.Packages.gt)
 
-local Damager = lib.Mechanic("Damager", lib.isA.BasePart()) {
+local Damager = Mechanic.new("Damager", gt.isA.BasePart())({
 	onStart = function(self: Self)
 		print("GOT MECHANIC", self.instance, "WITH ID", self.id)
 	end,
-}
+})
 
-export type Self = lib.Mechanic<typeof(Damager)>
+export type Self = Mechanic.Mechanic<typeof(Damager)>
 return Damager

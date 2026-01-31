@@ -6,7 +6,8 @@ export type DestroyableClass = {
 	read disconnect: (self: any) -> ()?,
 }
 
-export type Destroyable = | Instance | RBXScriptConnection | thread | DestroyableClass | { any } | () -> ...any
+-- TODO: unioning to any because Luau sucks
+export type Destroyable = any | Instance | RBXScriptConnection | thread | DestroyableClass | { any } | () -> ...any
 
 local DESTRUCTORS = {
 	"Destroy",
