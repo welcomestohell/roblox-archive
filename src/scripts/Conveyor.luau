@@ -15,11 +15,13 @@ local Conveyor = Mechanic.new("Conveyor", gt.isA.BasePart())({
 				local speed: number = conveyor:Enabled() and conveyor:Speed() or 0
 				conveyor.instance.AssemblyLinearVelocity = conveyor.instance.CFrame.LookVector * speed
 
-				-- for _, descendant in conveyor.instance:GetDescendants() do
-				-- 	if descendant.Name == "ConveyorBeam" and descendant.ClassName == "Beam" then
-
-				-- 	end
-				-- end
+				if conveyor:SynchronizeBeams() then
+					for _, beam in conveyor.instance:GetDescendants() :: { Beam } do
+						if beam.Name == "ConveyorBeam" and beam.ClassName == "Beam" then
+							beam.TextureSpeed = speed / beam.TextureLength
+						end
+					end
+				end
 			end
 		end))
 	end,
