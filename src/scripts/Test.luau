@@ -3,7 +3,7 @@ local gt = require("@libs/gt")
 
 local Test = Mechanic.new("Test", gt.Instance())({
 	onActivated = function(self: Self)
-		print("WOW", self.id)
+		-- print("WOW", self.id)
 	end,
 })
 
