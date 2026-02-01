@@ -4,13 +4,20 @@ local task = require "@lute/task"
 
 fs.removedirectory("out", { recursive = true })
 process.run { "cp", "-r", "src", "out" }
-process.run { "rojo", "sourcemap", "-o", "sourcemap.json", "sourcemap.project.json" }
-task.spawn(process.run, { "rojo", "sourcemap", "-o", "sourcemap.json", "sourcemap.project.json", "--watch" }, nil)
+process.run(
+	{ "rojo", "sourcemap", "-o", "sourcemap.json", "sourcemap.project.json" },
+	{ stdio = "inherit" } :: process.ProcessRunOptions
+)
+task.spawn(
+	process.run,
+	{ "rojo", "sourcemap", "-o", "sourcemap.json", "sourcemap.project.json", "--watch" },
+	{ stdio = "inherit" } :: process.ProcessRunOptions
+)
 task.spawn(
 	process.run,
 	{ "darklua", "process", "--watch", "src", "out" },
 	{ stdio = "inherit" } :: process.ProcessRunOptions
 )
-task.spawn(process.run, { "rojo", "serve" }, nil)
+task.spawn(process.run, { "rojo", "serve" }, { stdio = "inherit" } :: process.ProcessRunOptions)
 
 print "Now serving Welcome To Hell"

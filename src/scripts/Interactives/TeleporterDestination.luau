@@ -1,19 +1,17 @@
-local Attribute = require("@libs/Attribute")
-local LevelState = require("@libs/LevelState")
-local Mechanic = require("@libs/Mechanic")
 local gt = require("@pkgs/gt")
+local std = require("@libs/std")
 
-local TeleporterDestination = Mechanic.new("TeleporterDestination", gt.isA.BasePart())({
-	destinationsById = LevelState.new({}) :: LevelState.LevelState<{ [string]: { Self } }>,
+local TeleporterDestination = std.Mechanic("TeleporterDestination", gt.isA.BasePart())({
+	destinationsById = std.LevelState({} :: { [string]: { Self } }),
 
-	TeleporterId = Attribute.new("TeleporterId", gt.string()),
-	TeleporterOffset = Attribute.new("TeleporterOffset", gt.CFrame()),
+	TeleporterId = std.Attribute("TeleporterId", gt.string()),
+	TeleporterOffset = std.Attribute("TeleporterOffset", gt.CFrame()),
 
-	onInit = function(self: Implementation, level: Mechanic.Level)
+	onInit = function(self: Implementation, level: std.Level)
 		self.destinationsById:getOrSet(level, {})
 	end,
 
-	onStart = function(self: Self, level: Mechanic.Level)
+	onStart = function(self: Self, level: std.Level)
 		local oldId: string? = nil
 		local destinationsById = self.destinationsById:getOrDefault(level)
 		self.TeleporterId.onBind(self, function(newId: string?)
@@ -37,5 +35,5 @@ local TeleporterDestination = Mechanic.new("TeleporterDestination", gt.isA.BaseP
 })
 
 export type Implementation = typeof(TeleporterDestination)
-export type Self = Mechanic.Mechanic<typeof(TeleporterDestination)>
+export type Self = std.Mechanic<typeof(TeleporterDestination)>
 return TeleporterDestination

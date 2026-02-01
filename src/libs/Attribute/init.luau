@@ -127,12 +127,19 @@ function Attribute.peek<T>(self: Attribute<T>, instance: ResolvableInstance): T
 end
 
 function Attribute.fetch<T>(self: Attribute<T>, instance: ResolvableInstance)
-	return fetchAttribute(self, resolveInstance(instance))
+	local fetched = fetchAttribute(self, resolveInstance(instance))
+	return if fetched == nil then self.defaultValue else fetched
 end
 
 function Attribute.get<T>(self: Attribute<T>, instance: ResolvableInstance)
 	local resolved = resolveInstance(instance)
-	return if self._updated[resolved] then self._cache[resolved] else fetchAttribute(self :: any, resolved)
+	if self._updated[resolved] then
+		local cached = self._cache[resolved]
+		if cached == nil then
+			return self.defaultValue
+		end
+	end
+	return fetchAttribute(self :: any, resolved)
 end
 
 function Attribute.assert<T>(self: Attribute<T>, instance: ResolvableInstance, message: string?)

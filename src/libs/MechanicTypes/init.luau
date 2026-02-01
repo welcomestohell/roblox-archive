@@ -70,9 +70,12 @@ export type MechanicSelf<Implementation> = {
 	level: Level,
 }
 
--- FIXME: luau is shit
--- export type Mechanic<Implementation> = MechanicSelf<Implementation> & Implementation
-export type Mechanic<Implementation> = any
+-- todo luau is explosive as fuck
+-- FIXME: shit doesnt infer implementation type??
+export type Mechanic<Implementation = BaseMechanicImplementation> = setmetatable<
+	MechanicSelf<Implementation>,
+	{ __index: Implementation }
+>
 
 export type LevelInstance = Instance & {
 	Mechanics: Instance,

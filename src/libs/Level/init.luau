@@ -4,6 +4,7 @@ local Life = require("./Life")
 local Mechanic = require("./Mechanic")
 local MechanicTypes = require("./MechanicTypes")
 local Promise = require("@pkgs/Promise")
+local activation = require("@libs/activation")
 local gt = require("@pkgs/gt")
 
 local Level = {} :: MechanicTypes.LevelMetatable
@@ -110,6 +111,12 @@ function Level.loadMechanicsFromInstance(self: MechanicTypes.Level, instance: In
 		table.insert(self.mechanics :: any, mechanic)
 		self.mechanicsByImplementations[implementation] = self.mechanicsByImplementations[implementation] or {}
 		table.insert(self.mechanicsByImplementations[implementation] :: any, mechanic)
+
+		if implementation.onActivated then
+			activation.onActivated(mechanicLife, mechanic.parent, mechanic.instance, function()
+				implementation.onActivated(mechanic, self)
+			end)
+		end
 	end
 end
 

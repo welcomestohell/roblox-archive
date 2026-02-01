@@ -14,9 +14,12 @@ export type Level = MechanicTypes.Level
 -- TODO: extend, override, xOf functions
 local Mechanic = {} :: MechanicTypes.MechanicMetatable
 Mechanic.__index = Mechanic
-Mechanic.type = "Mechanic"
-
+Mechanic.type = "Mechanic" :: "Mechanic"
 Mechanic.Enabled = Attribute.new("Enabled", gt.boolean(), false)
+
+function Mechanic.__tostring(self: MechanicImplementation)
+	return `Mechanic({self.instanceTag})`
+end
 
 function Mechanic.isMechanicImplementation(x: any): boolean
 	return typeof(x) == "table" and x.type == "Mechanic"
@@ -43,6 +46,11 @@ function Mechanic.new<InstanceType>(instanceTag: string, parentCheck: InstanceTy
 		self.type = "Mechanic"
 		self.instanceTag = instanceTag
 		self.parentCheck = parentCheck or gt.Instance()
+
+		function self.__tostring(mechanic: MechanicTypes.Mechanic)
+			return `Mechanic({mechanic.implementation.instanceTag}({mechanic.id}))`
+		end
+
 		setmetatable(self, Mechanic)
 		return self :: any
 	end

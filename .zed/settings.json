@@ -13,7 +13,7 @@
 	},
 	"file_types": {
 		"Luau": ["lua"],
-		"JSON": [".luaurc"],
+		"JSONC": [".luaurc"],
 	},
 	"file_scan_exclusions": [
 		// Zed
