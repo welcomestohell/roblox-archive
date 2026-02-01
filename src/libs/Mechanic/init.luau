@@ -2,12 +2,14 @@ local Attribute = require("@libs/Attribute")
 local MechanicTypes = require("./MechanicTypes")
 local gt = require("@pkgs/gt")
 
-export type Level = MechanicTypes.Level
 export type Mechanic<Implementation> = MechanicTypes.Mechanic<Implementation>
 export type MechanicImplementation<Self = {}, InstanceType = Instance> = MechanicTypes.MechanicImplementation<
 	Self,
 	InstanceType
 >
+
+-- Reexporting for consumers
+export type Level = MechanicTypes.Level
 
 -- TODO: extend, override, xOf functions
 local Mechanic = {} :: MechanicTypes.MechanicMetatable
@@ -32,7 +34,7 @@ function Mechanic.isMechanicImplementationOf() end
 
 function Mechanic.isMechanicOf() end
 
-function Mechanic.new<InstanceType>(instanceTag: string, instanceCheck: InstanceType)
+function Mechanic.new<InstanceType>(instanceTag: string, parentCheck: InstanceType)
 	return function<T>(
 		implementation: MechanicTypes.BaseMechanicImplementation<T>
 	): MechanicTypes.MechanicImplementation<T, InstanceType>
@@ -40,7 +42,7 @@ function Mechanic.new<InstanceType>(instanceTag: string, instanceCheck: Instance
 		self.__index = self
 		self.type = "Mechanic"
 		self.instanceTag = instanceTag
-		self.instanceCheck = instanceCheck or gt.Instance()
+		self.parentCheck = parentCheck or gt.Instance()
 		setmetatable(self, Mechanic)
 		return self :: any
 	end

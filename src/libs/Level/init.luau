@@ -85,11 +85,11 @@ function Level.loadMechanicsFromInstance(self: MechanicTypes.Level, instance: In
 			continue
 		end
 
-		if implementation.instanceCheck then
-			local checkInstance = gt.typecast(implementation.instanceCheck)
-			local isValid, reason = checkInstance:matches(instance)
+		if implementation.parentCheck then
+			local parentCheck = gt.typecast(implementation.parentCheck)
+			local isValid, reason = parentCheck:matches(instance.Parent)
 			if not isValid then
-				warn(reason:formatErr())
+				warn("Failed to validate Mechanic parent", reason:formatErr())
 				continue
 			end
 		end
@@ -99,7 +99,9 @@ function Level.loadMechanicsFromInstance(self: MechanicTypes.Level, instance: In
 
 		local mechanic: MechanicTypes.MechanicSelf<any> = {
 			id = HttpService:GenerateGUID(false),
+			implementation = implementation,
 			instance = instance,
+			parent = instance.Parent,
 			life = mechanicLife,
 			level = self,
 		}
@@ -141,7 +143,6 @@ function Level.start(self: MechanicTypes.Level)
 		:await()
 
 	for _, mechanic in self.mechanics do
-		print(mechanic)
 		if mechanic.onStart then
 			self.life:add(task.spawn(mechanic.onStart :: any, mechanic))
 		end

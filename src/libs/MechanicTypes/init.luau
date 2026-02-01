@@ -11,7 +11,7 @@ export type MechanicMetatable = {
 
 	new: <I>(
 		instanceTag: string,
-		instanceCheck: I
+		parentCheck: I
 	) -> <T>(implementation: BaseMechanicImplementation<T>) -> MechanicImplementation<T, I>,
 
 	isMechanicImplementation: (any) -> boolean,
@@ -48,7 +48,7 @@ export type MechanicImplementation<Self = {}, InstanceType = Instance> = setmeta
 		overriden: any?,
 
 		instanceTag: string,
-		instanceCheck: InstanceType,
+		parentCheck: InstanceType,
 	},
 	MechanicMetatable
 >
@@ -56,22 +56,23 @@ export type MechanicImplementation<Self = {}, InstanceType = Instance> = setmeta
 export type BaseMechanicImplementation<Self = {}> = Self & {
 	[any]: any,
 	__index: Self,
-	onInit: (self: never, level: never) -> ()?,
-	onStart: (self: never) -> ()?,
-	onActivated: (self: never) -> ()?,
+	onInit: any?,
+	onStart: any?,
+	onActivated: any?,
 }
 
 export type MechanicSelf<Implementation> = {
 	id: string,
-	instance: index<Implementation, "instanceCheck">,
+	implementation: Implementation,
+	instance: Instance,
+	parent: index<Implementation, "parentCheck">,
 	life: Life.Life,
 	level: Level,
 }
 
--- See note on `MechanicImplementation.__index`, therefore we have to mock the
--- `__index` property. Ideally you would be able to set `Implementation` as the
--- metatable.
-export type Mechanic<Implementation> = setmetatable<MechanicSelf<Implementation>, { __index: Implementation }>
+-- FIXME: luau is shit
+-- export type Mechanic<Implementation> = MechanicSelf<Implementation> & Implementation
+export type Mechanic<Implementation> = any
 
 export type LevelInstance = Instance & {
 	Mechanics: Instance,

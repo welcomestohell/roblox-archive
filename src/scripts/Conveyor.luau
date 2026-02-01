@@ -11,12 +11,16 @@ local Conveyor = Mechanic.new("Conveyor", gt.isA.BasePart())({
 
 	onInit = function(self: any, level: Mechanic.Level)
 		level.life:add(RunService.PreSimulation:Connect(function()
-			for _, conveyor: Self in level.mechanicsByImplementations[self] do
+			local conveyors = level.mechanicsByImplementations[self]
+			if conveyors == nil then
+				return
+			end
+			for _, conveyor: Self in conveyors do
 				local speed: number = conveyor:Enabled() and conveyor:Speed() or 0
-				conveyor.instance.AssemblyLinearVelocity = conveyor.instance.CFrame.LookVector * speed
+				conveyor.parent.AssemblyLinearVelocity = conveyor.parent.CFrame.LookVector * speed
 
 				if conveyor:SynchronizeBeams() then
-					for _, beam in conveyor.instance:GetDescendants() :: { Beam } do
+					for _, beam in conveyor.parent:GetDescendants() :: { Beam } do
 						if beam.Name == "ConveyorBeam" and beam.ClassName == "Beam" then
 							beam.TextureSpeed = speed / beam.TextureLength
 						end
