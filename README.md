@@ -5,6 +5,8 @@
 we (yes YOU) love palantir and israel and the roblox world government and 
 support moderation and ai age verification
 
+![weep](https://pbs.twimg.com/media/G_89GxrWAAAiwXY?format=jpg&name=900x900)
+
 i gave up in making a monorepo first
 
 ```sh
@@ -142,3 +144,11 @@ wait shoud i have credited u
 ii needed liek another photo
 
 n the photogrpaher kinda sucks
+
+feb 1 blood sacrifice
+
+she like won honorable mention at wamun so gg
+
+![molly](https://cdn.discordapp.com/attachments/1016876180210724895/1467540555734188083/Screenshot_2026-02-01_at_22.22.04.png?ex=6980c126&is=697f6fa6&hm=f09714a433e8a58b599e3fdfae339d89d1af7ee28f4fd2f238a7adf0b337907e)
+
+i should prob stop
