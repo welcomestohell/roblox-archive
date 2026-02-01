@@ -19,6 +19,11 @@ function Life.add<T>(self: Life, bound: T): T
 	return bound
 end
 
+function Life.spawn(self: Life, bound: thread): thread
+	table.insert(self.destroyables, task.spawn(bound))
+	return bound
+end
+
 function Life.addMany<T...>(self: Life, ...: T...)
 	for index = 1, select("#", ...) do
 		table.insert(self.destroyables, select(index, ...) :: destroy.Destroyable)
