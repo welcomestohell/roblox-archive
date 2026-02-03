@@ -127,12 +127,12 @@ function Attribute.peek<T>(self: Attribute<T>, instance: ResolvableInstance): T
 	return if value == nil then self.defaultValue else value
 end
 
-function Attribute.fetch<T>(self: Attribute<T>, instance: ResolvableInstance)
+function Attribute.fetch<T>(self: Attribute<T>, instance: ResolvableInstance): T
 	local fetched = fetchAttribute(self, resolveInstance(instance))
 	return if fetched == nil then self.defaultValue else fetched
 end
 
-function Attribute.get<T>(self: Attribute<T>, instance: ResolvableInstance)
+function Attribute.get<T>(self: Attribute<T>, instance: ResolvableInstance): T
 	local resolved = resolveInstance(instance)
 	if self._updated[resolved] then
 		local cached = self._cache[resolved]
@@ -143,14 +143,14 @@ function Attribute.get<T>(self: Attribute<T>, instance: ResolvableInstance)
 	return fetchAttribute(self :: any, resolved)
 end
 
-function Attribute.set<T>(self: Attribute<T>, instance: ResolvableInstance, value: T)
+function Attribute.set<T>(self: Attribute<T>, instance: ResolvableInstance, value: T): T
 	-- TODO: run updates
 	local resolved = resolveInstance(instance)
 	resolved:SetAttribute(self.attribute, value)
 	return value
 end
 
-function Attribute.assert<T>(self: Attribute<T>, instance: ResolvableInstance, message: string?)
+function Attribute.assert<T>(self: Attribute<T?>, instance: ResolvableInstance, message: string?): T
 	local value = Attribute.get(self :: any, instance)
 	assert(value ~= nil, message or `Instance {instance:GetFullName()} is missing attribute {self.attribute}!`)
 	return value
@@ -163,7 +163,7 @@ function Attribute.onFetch<T>(
 	self: Attribute<T>,
 	instance: ResolvableInstance,
 	listener: (value: T, attribute: Attribute<T>) -> ()
-)
+): () -> ()
 	local resolved = resolveInstance(instance)
 	local listeners = self._fetchListeners[resolved] :: {}
 	if not listeners then
@@ -188,7 +188,7 @@ function Attribute.onChange<T>(
 	self: Attribute<T>,
 	instance: ResolvableInstance,
 	listener: (value: T, attribute: Attribute<T>) -> ()
-)
+): () -> ()
 	local resolved = resolveInstance(instance)
 	local listeners = self._changeListeners[resolved] :: {}
 	if not listeners then
@@ -214,11 +214,13 @@ function Attribute.onBind<T>(
 	self: Attribute<T>,
 	instance: ResolvableInstance,
 	listener: (value: T, attribute: Attribute<T>) -> ()
-)
+): () -> ()
 	task.spawn(listener, Attribute.get(self :: any, instance), self)
 	return Attribute.onChange(self :: any, instance, listener)
 end
 
-Attribute.__call = Attribute.get
+function Attribute.__call<T>(self: Attribute<T>, instance: ResolvableInstance, ...: T): T
+	return if select("#", ...) == 0 then self:get(instance) else self:set(instance, ...)
+end
 
 return Attribute

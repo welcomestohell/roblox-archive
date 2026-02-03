@@ -17,17 +17,51 @@ return table.freeze {
 	TestService = "☑️",
 
 	Terrain = "🏔️",
+	Camera = "📷",
 
 	Folder = "📁",
 	Model = "📦",
+	Configuration = "⚙️",
+
 	Part = "🧱",
 	WedgePart = "🧱",
 	CornerWedgePart = "🧱",
 	TrussPart = "🧱",
 	MeshPart = "🧱",
+	UnionOperation = "🧱",
+
 	ModuleScript = "📜",
 	Script = "📜",
 	LocalScript = "📜",
-	Configuration = "⚙️",
+
+	ScreenGui = "🖥️",
+	BillboardGui = "🪧",
+	SurfaceGui = "🪟",
+	TextLabel = "🔤",
+	TextButton = "🔘",
+	ImageLabel = "🖼️",
+	ImageButton = "🖼️",
+	Frame = "🪟",
+	ScrollingFrame = "🪟",
+
+	BoolValue = "🔘",
+	IntValue = "🔢",
+	NumberValue = "🔢",
+	StringValue = "🔤",
+	ObjectValue = "🔗",
+	Vector3Value = "📐",
+	Color3Value = "🎨",
+
 	SpawnLocation = "🌀",
+
+	Attachment = "🔌",
+	Weld = "🔗",
+	WeldConstraint = "🔩",
+	Motor6D = "🦴",
+	AlignPosition = "📐",
+	AlignOrientation = "🧭",
+
+	Beam = "☄️",
+	ParticleEmitter = "✨",
+	PointLight = "💡",
 }

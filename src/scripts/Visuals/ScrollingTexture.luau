@@ -26,7 +26,7 @@ local ScrollingTexture = std.Mechanic("ScrollingTexture", std.gt.isA.Texture())(
 				local verticalSpeed = texture:VerticalSpeed()
 
 				if horizontalSpeed ~= 0 then
-					local offset = self.HorizontalOffset:get(texture) or texture.instance.OffsetStudsU :: number
+					local offset = texture:HorizontalOffset() or texture.instance.OffsetStudsU :: number
 					local newOffset = if texture:Synchronized()
 						then offset + horizontalSpeed / texture.instance.StudsPerTileU * lifetime
 						else texture.instance.OffsetStudsU + horizontalSpeed * dt
@@ -36,11 +36,11 @@ local ScrollingTexture = std.Mechanic("ScrollingTexture", std.gt.isA.Texture())(
 				end
 
 				if verticalSpeed ~= 0 then
-					local offset = self.VerticalOffset:get(texture) or texture.instance.OffsetStudsV :: number
-					local newOffset = if texture:Synchronized(texture)
+					local offset = texture:VerticalOffset() or texture.instance.OffsetStudsV :: number
+					local newOffset = if texture:Synchronized()
 						then offset + verticalSpeed / texture.instance.StudsPerTileV * lifetime
 						else texture.instance.OffsetStudsV + verticalSpeed * dt
-					texture.instance.OffsetStudsV = if texture:VerticalLoop(texture)
+					texture.instance.OffsetStudsV = if texture:VerticalLoop()
 						then newOffset % texture.instance.StudsPerTileV
 						else newOffset
 				end
