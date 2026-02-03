@@ -55,7 +55,7 @@
 					"completion": {
 						"imports": {
 							"enabled": true,
-							"ignoreGlobs": ["**/submodules/**"],
+							"ignoreGlobs": ["**/.pesde/**"],
 						},
 					},
 				},

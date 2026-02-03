@@ -82,7 +82,6 @@ end
 
 function Level.loadMechanicsFromInstance(self: MechanicTypes.Level, instance: Instance)
 	for _, tag: string in instance:GetTags() do
-		print("???")
 		local implementation = self.mechanicImplementations[tag]
 		if not implementation then
 			continue
@@ -93,13 +92,11 @@ function Level.loadMechanicsFromInstance(self: MechanicTypes.Level, instance: In
 			instanceConfiguration, instance = instance, instance.Parent :: Instance
 		end
 
-		warn("instance:", instance:GetFullName())
-
 		if implementation.instanceCheck then
 			local instanceCheck = gt.build(implementation.instanceCheck)
 			local isValid, reason = instanceCheck:matches(instance)
 			if not isValid then
-				warn("Failed to validate Mechanic parent", reason:formatErr())
+				warn("Failed to validate Mechanic instance because:", reason:formatErr())
 				continue
 			end
 		end
