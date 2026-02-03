@@ -47,6 +47,13 @@ function Life.removeAll(self: Life)
 	table.clear(self.destroyables)
 end
 
+function Life.connect(self: Life, signal: RBXScriptSignal, fn: () -> ()): RBXScriptConnection
+	return Life.add(
+		self,
+		signal:Connect(fn)
+	)
+end
+
 function Life.tie(self: Life, signal: RBXScriptSignal): RBXScriptConnection
 	return Life.add(
 		self,
