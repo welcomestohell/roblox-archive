@@ -1,0 +1,70 @@
+local RunService = game:GetService("RunService")
+
+local std = require("@libs/std")
+
+local ScrollingTexture = std.Mechanic("ScrollingTexture", std.gt.isA.Texture())({
+	HorizontalSpeed = std.Attribute("HorizontalSpeed", std.gt.number()),
+	VerticalSpeed = std.Attribute("HorizontalSpeed", std.gt.number()),
+
+	HorizontalOffset = std.Attribute("HorizontalOffset", std.gt.number(), 0),
+	VerticalOffset = std.Attribute("VerticalOffset", std.gt.number(), 0),
+
+	HorizontalLoop = std.Attribute("HorizontalLoop", std.gt.boolean(), true),
+	VerticalLoop = std.Attribute("VerticalLoop", std.gt.boolean(), true),
+
+	Synchronized = std.Attribute("Synchronized", std.gt.boolean(), true),
+
+	onInit = function(self: Self, level: std.Level)
+		level.life:add(RunService.PreRender:Connect(function(dt: number)
+			local lifetime = level:getLifetime()
+			for _, texture: Self in level.mechanicsByImplementations[self] do
+				if not texture:Enabled() then
+					continue
+				end
+
+				local horizontalSpeed = texture:HorizontalSpeed()
+				local verticalSpeed = texture:VerticalSpeed()
+
+				if horizontalSpeed ~= 0 then
+					local offset = self.HorizontalOffset:assert(texture) :: number
+					local newOffset = if texture:Synchronized()
+						then offset + horizontalSpeed / texture.StudsPerTileU * lifetime
+						else texture.OffsetStudsU + horizontalSpeed * dt
+					texture.OffsetStudsU = if texture:HorizontalLoop()
+						then newOffset % texture.StudsPerTileU
+						else newOffset
+				end
+
+				if verticalSpeed ~= 0 then
+					local offset = self.VerticalOffset:assert(texture) :: number
+					local newOffset = if texture:Synchronized(texture)
+						then offset + verticalSpeed / texture.StudsPerTileV * lifetime
+						else texture.OffsetStudsV + verticalSpeed * dt
+					texture.OffsetStudsV = if texture:VerticalLoop(texture)
+						then newOffset % texture.StudsPerTileV
+						else newOffset
+				end
+			end
+		end))
+	end,
+
+	onStart = function(mechanic: Mechanic)
+		local offset = mechanic:HorizontalOffset()
+		if not offset then
+			mechanic.HorizontalOffset:set(mechanic, mechanic.instance.OffsetStudsU)
+		else
+			mechanic.instance.OffsetStudsU = offset
+		end
+
+		offset = mechanic:VerticalOffset()
+		if not offset then
+			mechanic.VerticalOffset:set(mechanic, mechanic.instance.OffsetStudsV)
+		else
+			mechanic.instance.OffsetStudsV = offset
+		end
+	end,
+})
+
+export type Self = typeof(ScrollingTexture)
+export type Mechanic = std.Mechanic<typeof(ScrollingTexture)>
+return ScrollingTexture

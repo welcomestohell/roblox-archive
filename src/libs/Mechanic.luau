@@ -8,9 +8,6 @@ export type MechanicImplementation<Self = {}, InstanceType = Instance> = Mechani
 	InstanceType
 >
 
--- Reexporting for consumers
-export type Level = MechanicTypes.Level
-
 -- TODO: extend, override, xOf functions
 local Mechanic = {} :: MechanicTypes.MechanicMetatable
 Mechanic.__index = Mechanic

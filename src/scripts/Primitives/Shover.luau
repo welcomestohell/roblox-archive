@@ -24,10 +24,10 @@ local SHOVER_DIRECTION_ATTRIBUTES = {
 local function shove(direction: "In" | "Out", shover: Self)
 	local attributes: ShoverDirectionAttributes = SHOVER_DIRECTION_ATTRIBUTES[direction]
 
-	task.wait(attributes.Delay(shover))
+	task.wait(attributes:Delay(shover))
 
 	if shover:Enabled() then
-		local power = attributes.Power(shover)
+		local power = attributes:Power(shover)
 		for _, descendant in pairs(shover.instance:GetDescendants()) do
 			if descendant.Name == "ShoverConstraint" and descendant:IsA("PrismaticConstraint") then
 				descendant.LinearResponsiveness = power
@@ -43,17 +43,17 @@ local Shover = std.Mechanic("Shover", std.gt.isA.BasePart())({
 		local cache = {} :: { Self }
 
 		level.life:add(RunService.PreSimulation:Connect(function()
-			local shovers = level.mechanicsByImplementations[self]
+			local shovers = level.mechanicsByImplementations[self.implementation]
 
 			if shovers then
 				for _, shover: Self in shovers do
 					if not table.find(cache, shover) then
-						level.life:spawn(function()
+						level.life:add(task.spawn(function()
 							while self:Enabled() do
 								shove("In", shover)
 								shove("Out", shover)
 							end
-						end)
+						end))
 
 						table.insert(cache, shover)
 					end

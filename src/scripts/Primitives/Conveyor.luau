@@ -8,7 +8,7 @@ local Conveyor = std.Mechanic("Conveyor", std.gt.isA.BasePart())({
 
 	onInit = function(self: Self, level: std.Level)
 		level.life:add(RunService.PreSimulation:Connect(function()
-			local conveyors = level.mechanicsByImplementations[self]
+			local conveyors = level.mechanicsByImplementations[self.implementation]
 			if conveyors then
 				for _, conveyor: Self in conveyors do
 					local speed: number = conveyor:Enabled() and conveyor:Speed() or 0

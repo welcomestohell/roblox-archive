@@ -34,6 +34,7 @@ Option = { name = "lukadev_0/option", version = "^1.2.0" }
 Promise = { wally = "lukadev-0/typed-promise", version = "^4.0.2" }
 Result = { name = "lukadev_0/result", version = "^1.2.0" }
 Signal = { wally = "data-oriented-house/lemonsignal", version = "^1.10.0" }
+Charm = { wally = "littensy/charm", version = "^0.11.0-rc.3" }
 
 [patches]
 "corecii/greentea" = { "0.4.11 roblox" = "patches/corecii+greentea-0.4.11+roblox.patch" }

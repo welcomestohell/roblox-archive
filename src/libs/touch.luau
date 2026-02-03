@@ -10,7 +10,7 @@ local BoxesRequiresMatchingId = Attribute.new("BoxesRequiresMatchingId", std.gt.
 local RequiredBoxId = Attribute.new("RequiredBoxId", std.gt.string)
 
 local function isToucherValid(target: Instance, toucher: BasePart)
-	if SupportsCharacter:get(target) and isFromMaybeCharacter(toucher) then
+	if SupportsCharacter(target) and isFromMaybeCharacter(toucher) then
 		return true
 	end
 
@@ -18,7 +18,7 @@ local function isToucherValid(target: Instance, toucher: BasePart)
 end
 
 local function isToucherCharacter(target: Instance, toucher: BasePart)
-	return SupportsCharacter:get(target) and isFromMaybeCharacter(toucher)
+	return SupportsCharacter(target) and isFromMaybeCharacter(toucher)
 end
 
 return {

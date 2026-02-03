@@ -49,6 +49,21 @@ export type MechanicImplementation<Self = {}, InstanceType = Instance> = setmeta
 
 		instanceTag: string,
 		instanceCheck: InstanceType,
+
+		_T: BaseMechanicImplementation<Self> & {
+			super: any?,
+			overriden: any?,
+
+			instanceTag: string,
+			instanceCheck: InstanceType,
+
+			id: string,
+			implementation: any,
+			instance: InstanceType,
+			instanceConfiguration: Instance,
+			life: Life.Life,
+			level: any,
+		},
 	},
 	MechanicMetatable
 >
@@ -61,21 +76,18 @@ export type BaseMechanicImplementation<Self = {}> = Self & {
 	onActivated: any?,
 }
 
-export type MechanicSelf<Implementation> = {
-	id: string,
-	implementation: Implementation,
-	instance: index<Implementation, "parentCheck">,
-	instanceConfiguration: Configuration?,
-	life: Life.Life,
-	level: Level,
-}
+-- export type MechanicSelf<Implementation> = {
+-- 	id: string,
+-- 	implementation: Implementation,
+-- 	instance: index<Implementation, "parentCheck">,
+-- 	instanceConfiguration: Instance,
+-- 	life: Life.Life,
+-- 	level: Level,
+-- }
 
 -- todo luau is explosive as fuck
 -- FIXME: shit doesnt infer implementation type??
-export type Mechanic<Implementation = BaseMechanicImplementation> = setmetatable<
-	MechanicSelf<Implementation>,
-	{ __index: Implementation }
->
+export type Mechanic<Implementation = BaseMechanicImplementation> = index<Implementation, "_T">
 
 export type LevelInstance = Instance & {
 	Mechanics: Instance,
@@ -93,6 +105,7 @@ export type LevelSelf = {
 	mechanics: { Mechanic<any> },
 	mechanicsByImplementations: { [MechanicImplementation]: { Mechanic<any> } },
 	inheritedLevels: { Level },
+	loadedTimestamp: number,
 }
 
 export type LevelMetatable = {
@@ -114,6 +127,9 @@ export type LevelMetatable = {
 		scripts: { [ModuleScript]: any },
 		mechanicImplementations: { [string]: MechanicImplementation }
 	) -> (),
+
+	getLifetime: (self: Level) -> number,
+	getMechanics: <T>(self: Level, implementation: T) -> Mechanic<T>,
 }
 
 export type Level = setmetatable<LevelSelf, LevelMetatable>

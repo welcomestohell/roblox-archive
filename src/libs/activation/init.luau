@@ -10,6 +10,7 @@ type ActivationBehaviorImpl = {
 		life: life.Life,
 		instanceLife: life.Life,
 		instance: Instance,
+		configurationInstance: Instance,
 		onActivated: (life: life.Life, instance: Instance) -> ()
 	) -> (),
 }

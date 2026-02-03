@@ -1,20 +1,18 @@
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 
+local character = require("@libs/character")
 local std = require("@libs/std")
 
 local OneWay = std.Mechanic("OneWay", std.gt.isA.BasePart())({
 	Offset = std.Attribute("Offset", std.gt.CFrame(), CFrame.identity),
 
 	onInit = function(self: Self, level: std.Level)
-		local player = Players.LocalPlayer or Players.PlayerAdded:Wait()
-		local character = player.Character or player.CharacterAdded:Wait()
-		local root: Part = character:WaitForChild("HumanoidRootPart")
-
 		level.life:add(RunService.PreSimulation:Connect(function()
+			local root = character.getMaybeHumanoidRootPart()
 			if root then
 				local rootPivot = root:GetPivot()
-				local platforms = level.mechanicsByImplementations[self]
+				local platforms = level.mechanicsByImplementations[self.implementation]
 
 				if platforms == nil then
 					return

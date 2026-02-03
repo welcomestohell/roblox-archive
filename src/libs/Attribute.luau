@@ -143,6 +143,13 @@ function Attribute.get<T>(self: Attribute<T>, instance: ResolvableInstance)
 	return fetchAttribute(self :: any, resolved)
 end
 
+function Attribute.set<T>(self: Attribute<T>, instance: ResolvableInstance, value: T)
+	-- TODO: run updates
+	local resolved = resolveInstance(instance)
+	resolved:SetAttribute(self.attribute, value)
+	return value
+end
+
 function Attribute.assert<T>(self: Attribute<T>, instance: ResolvableInstance, message: string?)
 	local value = Attribute.get(self :: any, instance)
 	assert(value ~= nil, message or `Instance {instance:GetFullName()} is missing attribute {self.attribute}!`)

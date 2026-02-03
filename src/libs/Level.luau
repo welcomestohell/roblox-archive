@@ -23,6 +23,7 @@ function Level.new(life: Life.Life, name: string, instance: MechanicTypes.LevelI
 		mechanics = {},
 		mechanicsByImplementations = {},
 		inheritedLevels = {},
+		loadedTimestamp = os.clock(),
 	}, Level)
 end
 
@@ -87,9 +88,9 @@ function Level.loadMechanicsFromInstance(self: MechanicTypes.Level, instance: In
 			continue
 		end
 
-		local instanceConfiguration = nil
+		local instanceConfiguration = instance
 		if instance.ClassName == "Configuration" then
-			instanceConfiguration, instance = instance, instance.Parent
+			instanceConfiguration, instance = instance, instance.Parent :: Instance
 		end
 
 		warn("instance:", instance:GetFullName())
@@ -106,7 +107,7 @@ function Level.loadMechanicsFromInstance(self: MechanicTypes.Level, instance: In
 		local mechanicLife = self.life:inner()
 		mechanicLife:add(instance)
 
-		local mechanic: MechanicTypes.MechanicSelf<any> = {
+		local mechanic = {
 			id = HttpService:GenerateGUID(false),
 			implementation = implementation,
 			instance = instance,
@@ -133,7 +134,17 @@ function Level.loadMechanicsFromInstance(self: MechanicTypes.Level, instance: In
 	end
 end
 
+function Level.getLifetime(self: MechanicTypes.Level)
+	return os.clock() - self.loadedTimestamp
+end
+
+function Level.getMechanics<T>(self: MechanicTypes.Level, implementation: T): MechanicTypes.Mechanic<T>
+	return self.mechanicsByImplementations[implementation] or {}
+end
+
 function Level.start(self: MechanicTypes.Level)
+	self.loadedTimestamp = os.clock()
+
 	self.life:add(self.instance)
 	self.life:tie(self.instance.Destroying)
 
@@ -156,13 +167,11 @@ function Level.start(self: MechanicTypes.Level)
 		end
 	end
 
-	print("init start ???")
 	Promise.all(initThreads)
 		:catch(function(e)
 			warn("Mechanic failed to initialize:", e)
 		end)
 		:await()
-	print("init done ???")
 
 	for _, mechanic in self.mechanics do
 		if mechanic.onStart then

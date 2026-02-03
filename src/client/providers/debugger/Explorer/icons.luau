@@ -1,0 +1,33 @@
+return table.freeze {
+	DEFAULT = "◆",
+
+	Workspace = "🌏",
+	Players = "👥",
+	Lighting = "☀️",
+	MaterialService = "⚛️",
+	ReplicatedFirst = "🚚",
+	ReplicatedStorage = "🗂️",
+	ServerScriptService = "🖥️",
+	ServerStorage = "🗃️",
+	StarterGui = "🖼️",
+	StarterPack = "🎒",
+	Teams = "🎏",
+	SoundService = "🔊",
+	TextChatService = "💬",
+	TestService = "☑️",
+
+	Terrain = "🏔️",
+
+	Folder = "📁",
+	Model = "📦",
+	Part = "🧱",
+	WedgePart = "🧱",
+	CornerWedgePart = "🧱",
+	TrussPart = "🧱",
+	MeshPart = "🧱",
+	ModuleScript = "📜",
+	Script = "📜",
+	LocalScript = "📜",
+	Configuration = "⚙️",
+	SpawnLocation = "🌀",
+}
