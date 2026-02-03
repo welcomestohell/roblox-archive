@@ -12,10 +12,10 @@ local Conveyor = std.Mechanic("Conveyor", std.gt.isA.BasePart())({
 			if conveyors then
 				for _, conveyor: Self in conveyors do
 					local speed: number = conveyor:Enabled() and conveyor:Speed() or 0
-					conveyor.parent.AssemblyLinearVelocity = conveyor.parent.CFrame.LookVector * speed
+					conveyor.instance.AssemblyLinearVelocity = conveyor.instance.CFrame.LookVector * speed
 
 					if conveyor:SynchronizeBeams() then
-						for _, beam in conveyor.parent:GetDescendants() :: { Beam } do
+						for _, beam in conveyor.instance:GetDescendants() :: { Beam } do
 							if beam.Name == "ConveyorBeam" and beam.ClassName == "Beam" then
 								beam.TextureSpeed = speed / beam.TextureLength
 							end

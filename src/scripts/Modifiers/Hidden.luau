@@ -50,16 +50,16 @@ local Hidden = std.Mechanic("Hidden", std.gt.Instance())({
 	HideDescendants = std.Attribute("HideDescendants", std.gt.boolean(), false),
 
 	onStart = function(self: Self)
-		task.spawn(hide, self.parent)
+		task.spawn(hide, self.instance)
 		local descendantLife = self.life:inner()
 		self.HideDescendants:onBind(self, function(isHidden)
 			descendantLife:destroy()
 			descendantLife = self.life:inner()
 			if isHidden then
-				for _, descendant in self.parent:GetDescendants() do
+				for _, descendant in self.instance:GetDescendants() do
 					task.spawn(hide, descendant)
 				end
-				descendantLife:Add(self.parent.DescendantAdded:Connect(hide))
+				descendantLife:Add(self.instance.DescendantAdded:Connect(hide))
 			end
 		end)
 	end,

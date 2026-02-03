@@ -21,8 +21,8 @@ local OneWay = std.Mechanic("OneWay", std.gt.isA.BasePart())({
 				end
 
 				for _, platform: Self in platforms do
-					local config: Configuration = platform.instance
-					local instance: BasePart = config.Parent
+					-- local config: Configuration = platform.instanceConfiguration
+					local instance: BasePart = platform.instance
 
 					-- this is nil for some reason???
 					local enabled: boolean = platform:Enabled()

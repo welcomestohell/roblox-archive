@@ -18,9 +18,11 @@ end
 
 function LevelProvider.onStart()
 	task.wait(1)
+	print("starting")
 	local kitLife = Life.new()
 	local kitLevel = Level.new(kitLife, "Kit", Workspace:WaitForChild("Kit") :: any)
 	kitLevel:start()
+	print("started")
 end
 
 function LevelProvider.onFinish() end

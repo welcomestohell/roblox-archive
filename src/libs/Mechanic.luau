@@ -37,7 +37,7 @@ function Mechanic.isMechanicImplementationOf() end
 
 function Mechanic.isMechanicOf() end
 
-function Mechanic.new<InstanceType>(instanceTag: string, parentCheck: InstanceType)
+function Mechanic.new<InstanceType>(instanceTag: string, instanceCheck: InstanceType)
 	return function<T>(
 		implementation: MechanicTypes.BaseMechanicImplementation<T>
 	): MechanicTypes.MechanicImplementation<T, InstanceType>
@@ -45,7 +45,7 @@ function Mechanic.new<InstanceType>(instanceTag: string, parentCheck: InstanceTy
 		self.__index = self
 		self.type = "Mechanic"
 		self.instanceTag = instanceTag
-		self.parentCheck = parentCheck or gt.Instance()
+		self.instanceCheck = instanceCheck or gt.Instance()
 
 		function self.__tostring(mechanic: MechanicTypes.Mechanic)
 			return `Mechanic({mechanic.implementation.instanceTag}({mechanic.id}))`

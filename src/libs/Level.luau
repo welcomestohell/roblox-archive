@@ -81,14 +81,22 @@ end
 
 function Level.loadMechanicsFromInstance(self: MechanicTypes.Level, instance: Instance)
 	for _, tag: string in instance:GetTags() do
+		print("???")
 		local implementation = self.mechanicImplementations[tag]
 		if not implementation then
 			continue
 		end
 
-		if implementation.parentCheck then
-			local parentCheck = gt.typecast(implementation.parentCheck)
-			local isValid, reason = parentCheck:matches(instance.Parent)
+		local instanceConfiguration = nil
+		if instance.ClassName == "Configuration" then
+			instanceConfiguration, instance = instance, instance.Parent
+		end
+
+		warn("instance:", instance:GetFullName())
+
+		if implementation.instanceCheck then
+			local instanceCheck = gt.build(implementation.instanceCheck)
+			local isValid, reason = instanceCheck:matches(instance)
 			if not isValid then
 				warn("Failed to validate Mechanic parent", reason:formatErr())
 				continue
@@ -102,7 +110,7 @@ function Level.loadMechanicsFromInstance(self: MechanicTypes.Level, instance: In
 			id = HttpService:GenerateGUID(false),
 			implementation = implementation,
 			instance = instance,
-			parent = instance.Parent,
+			instanceConfiguration = instanceConfiguration,
 			life = mechanicLife,
 			level = self,
 		}
@@ -113,9 +121,14 @@ function Level.loadMechanicsFromInstance(self: MechanicTypes.Level, instance: In
 		table.insert(self.mechanicsByImplementations[implementation] :: any, mechanic)
 
 		if implementation.onActivated then
-			activation.onActivated(mechanicLife, mechanic.parent, mechanic.instance, function()
-				implementation.onActivated(mechanic, self)
-			end)
+			activation.onActivated(
+				mechanicLife,
+				mechanic.instance,
+				mechanic.instanceConfiguration or mechanic.instance,
+				function()
+					implementation.onActivated(mechanic, self)
+				end
+			)
 		end
 	end
 end
@@ -143,11 +156,13 @@ function Level.start(self: MechanicTypes.Level)
 		end
 	end
 
+	print("init start ???")
 	Promise.all(initThreads)
 		:catch(function(e)
 			warn("Mechanic failed to initialize:", e)
 		end)
 		:await()
+	print("init done ???")
 
 	for _, mechanic in self.mechanics do
 		if mechanic.onStart then

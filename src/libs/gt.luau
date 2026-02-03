@@ -14,7 +14,6 @@ local gt = {
 	args = GreenTea.args,
 	array = GreenTea.array,
 	asGreenTeaType = GreenTea.asGreenTeaType,
-	asGtType = GreenTea.asGtType,
 	boolean = GreenTea.boolean,
 	BrickColor = GreenTea.BrickColor,
 	buffer = GreenTea.buffer,

@@ -48,7 +48,7 @@ export type MechanicImplementation<Self = {}, InstanceType = Instance> = setmeta
 		overriden: any?,
 
 		instanceTag: string,
-		parentCheck: InstanceType,
+		instanceCheck: InstanceType,
 	},
 	MechanicMetatable
 >
@@ -64,8 +64,8 @@ export type BaseMechanicImplementation<Self = {}> = Self & {
 export type MechanicSelf<Implementation> = {
 	id: string,
 	implementation: Implementation,
-	instance: Instance,
-	parent: index<Implementation, "parentCheck">,
+	instance: index<Implementation, "parentCheck">,
+	instanceConfiguration: Configuration?,
 	life: Life.Life,
 	level: Level,
 }

@@ -1,5 +1,3 @@
-local gt = require("@libs/gt")
-
 export type Identity<T...> = (T...) -> T...
 
 local function identity(...: any): ...any
