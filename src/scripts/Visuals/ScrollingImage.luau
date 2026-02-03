@@ -1,53 +1,64 @@
--- local RunService = game:GetService("RunService")
+local RunService = game:GetService("RunService")
 
--- local std = require("@libs/std")
+local std = require("@libs/std")
 
--- local ScrollingImage = std.Mechanic("ScrollingImage", std.gt.isA.ImageLabel())({
--- 	RectOffset = std.Attribute("RectOffset", std.gt.Vector2()),
--- 	RectSize = std.Attribute("RectSize", std.gt.Vector2()),
--- 	Speed = std.Attribute("Speed", std.gt.Vector2(), Vector2.zero),
--- 	Loop = std.Attribute("Loop", std.gt.boolean(), true),
--- 	Synchronized = std.Attribute("Synchronized", std.gt.boolean(), true),
+local ScrollingImage = std.Mechanic("ScrollingImage", std.gt.isA.ImageLabel())({
+	Speed = std.Attribute("Speed", std.gt.UDim2(), UDim2.new()),
+	Synchronized = std.Attribute("Synchronized", std.gt.boolean(), true),
+	DisableDefaults = std.Attribute("DisableDefaults", std.gt.boolean(), false),
 
--- 	onInit = function(self: Self, level: std.Level)
--- 		level.life:add(RunService.PreRender:Connect(function(dt: number)
--- 			local lifetime = level:getLifetime()
--- 			for _, texture in level:getMechanics(self) do
--- 				if not texture:Enabled() then
--- 					continue
--- 				end
+	onInit = function(self: Self, level: std.Level)
+		level.life:add(RunService.PreRender:Connect(function(dt)
+			for _, image: Self in level:getMechanics(self) do
+				if not image:Enabled() then
+					continue
+				end
 
--- 				local speed = texture:Speed()
--- 				local size: Vector2 = texture.instance.ImageRectSize
--- 				local realOffset: Vector2 = texture.instance.ImageRectOffset
--- 				local offset: Vector2 = self.RectOffset:get(texture) or realOffset
--- 				local newOffset = if texture:Synchronized()
--- 					then offset + speed / size * lifetime
--- 					else realOffset + speed * dt
+				local speed = image:Speed()
+				local absoluteSize = image.instance.AbsoluteSize
 
--- 				texture.instance.ImageRectOffset = if texture:Loop() then newOffset % size else newOffset
--- 			end
--- 		end))
--- 	end,
+				local tileSize = image.instance.TileSize
+				local tileSizeScale = Vector2.new(tileSize.X.Scale, tileSize.Y.Scale)
+				local tileSizeOffset = Vector2.new(tileSize.X.Offset, tileSize.Y.Offset)
+				local absoluteTileSize = absoluteSize * tileSizeScale + tileSizeOffset
 
--- 	onStart = function(mechanic: Mechanic)
--- 		local offset = mechanic:RectOffset()
--- 		if not offset then
--- 			mechanic.RectOffset:set(mechanic.instanceConfiguration, mechanic.instance.ImageRectOffset)
--- 		else
--- 			mechanic.instance.ImageRectOffset = offset
--- 		end
+				local position = image.instance.Position
+				local positionScale = Vector2.new(position.X.Scale, position.Y.Scale)
+				local positionOffset = Vector2.new(position.X.Offset, position.Y.Offset)
+				local absolutePosition = absoluteSize * positionScale + positionOffset
 
--- 		local size = mechanic:RectSize()
--- 		if not size then
--- 			mechanic.ImageRectSize:set(mechanic.instanceConfiguration, mechanic.instance.ImageRectSize)
--- 		else
--- 			mechanic.instance.ImageRectSize = size
--- 		end
--- 	end,
--- })
+				local deltaPosition = absoluteSize * Vector2.new(speed.X.Scale, speed.Y.Scale)
+					+ Vector2.new(speed.X.Offset, speed.Y.Offset)
 
--- export type Self = typeof(ScrollingImage)
--- export type Mechanic = std.Mechanic<typeof(ScrollingImage)>
--- return ScrollingImage
-return nil
+				absolutePosition += deltaPosition * dt
+				absolutePosition = Vector2.new(
+					((absolutePosition.X + absoluteTileSize.X) % absoluteTileSize.X) - absoluteTileSize.X,
+					((absolutePosition.Y + absoluteTileSize.Y) % absoluteTileSize.Y) - absoluteTileSize.Y
+				)
+
+				image.instance.Position = UDim2.fromOffset(absolutePosition.X, absolutePosition.Y)
+			end
+		end))
+	end,
+
+	onStart = function(self: Mechanic)
+		if self:DisableDefaults() then
+			return
+		end
+
+		self.instance.AnchorPoint = Vector2.zero
+		self.instance.ScaleType = Enum.ScaleType.Tile
+
+		local tileSize = self.instance.TileSize
+		self.instance.Size = UDim2.new(
+			tileSize.Width.Scale * 2,
+			tileSize.Width.Offset * 2,
+			tileSize.Height.Scale * 2,
+			tileSize.Width.Offset * 2
+		)
+	end,
+})
+
+export type Self = typeof(ScrollingImage)
+export type Mechanic = std.Mechanic<Self>
+return ScrollingImage
