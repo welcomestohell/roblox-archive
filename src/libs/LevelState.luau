@@ -61,8 +61,10 @@ end
 
 function LevelState.take<T>(self: LevelState<T>, level: MechanicTypes.Level): T?
 	local old = self._values[level]
-	level.life:remove(self._cleanup[level])
-	self._cleanup[level] = nil
+	local cleanup = self._cleanup[level]
+	if cleanup then
+		cleanup()
+	end
 	return old
 end
 

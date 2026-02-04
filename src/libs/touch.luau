@@ -1,13 +1,13 @@
 local Attribute = require("@libs/Attribute")
 local character = require("@libs/character")
-local std = require("@libs/std")
+local gt = require("./gt")
 
 local isFromMaybeCharacter = character.isFromMaybeCharacter
 
-local SupportsCharacter = Attribute.new("SupportsCharacter", std.gt.boolean, false)
-local SupportsBoxes = Attribute.new("SupportsBoxes", std.gt.boolean, false)
-local BoxesRequiresMatchingId = Attribute.new("BoxesRequiresMatchingId", std.gt.boolean, false)
-local RequiredBoxId = Attribute.new("RequiredBoxId", std.gt.string)
+local SupportsCharacter = Attribute.new("SupportsCharacter", gt.boolean, false)
+local SupportsBoxes = Attribute.new("SupportsBoxes", gt.boolean, false)
+local BoxesRequiresMatchingId = Attribute.new("BoxesRequiresMatchingId", gt.boolean, false)
+local RequiredBoxId = Attribute.new("RequiredBoxId", gt.string)
 
 local function isToucherValid(target: Instance, toucher: BasePart)
 	if SupportsCharacter(target) and isFromMaybeCharacter(toucher) then

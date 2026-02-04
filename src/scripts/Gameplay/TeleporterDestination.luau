@@ -4,8 +4,8 @@ local std = require("@libs/std")
 local TeleporterDestination = std.Mechanic("TeleporterDestination", gt.isA.BasePart())({
 	destinationsById = std.LevelState({} :: { [string]: { Self } }),
 
-	TeleporterId = std.Attribute("TeleporterId", gt.string()),
-	TeleporterOffset = std.Attribute("TeleporterOffset", gt.CFrame()),
+	Id = std.Attribute("Id", gt.string()),
+	Offset = std.Attribute("Offset", gt.CFrame()),
 
 	onInit = function(self: Implementation, level: std.Level)
 		self.destinationsById:getOrSet(level, {})
@@ -14,7 +14,7 @@ local TeleporterDestination = std.Mechanic("TeleporterDestination", gt.isA.BaseP
 	onStart = function(self: Self, level: std.Level)
 		local oldId: string? = nil
 		local destinationsById = self.destinationsById:getOrDefault(level)
-		self.TeleporterId.onBind(self, function(newId: string?)
+		self.Id.onBind(self, function(newId: string?)
 			if oldId then
 				local oldIdDestinations = destinationsById[oldId]
 				table.remove(oldIdDestinations, table.find(oldIdDestinations, self))

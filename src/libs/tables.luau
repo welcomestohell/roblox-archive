@@ -19,6 +19,8 @@ local function deepCopy<T>(target: T & {})
 end
 
 return table.freeze {
+	create = table.create :: ((count: number) -> { any }) & (<V>(count: number, value: V) -> { V }),
+
 	weak = weak,
 	deepCopy = deepCopy,
 }

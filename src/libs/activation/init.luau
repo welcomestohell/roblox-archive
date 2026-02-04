@@ -16,6 +16,7 @@ type ActivationBehaviorImpl = {
 }
 
 local activation = {}
+activation.attributes = attributes
 
 local function implementActivationBehavior<T>(
 	life: life.Life,
