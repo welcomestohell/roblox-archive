@@ -49,7 +49,7 @@ end
 local Hidden = std.Mechanic("Hidden", std.gt.Instance())({
 	HideDescendants = std.Attribute("HideDescendants", std.gt.boolean(), false),
 
-	onStart = function(self: Self)
+	onStart = function(self: Mechanic)
 		task.spawn(hide, self.instance)
 		local descendantLife = self.life:inner()
 		self.HideDescendants:onBind(self, function(isHidden)
@@ -65,5 +65,6 @@ local Hidden = std.Mechanic("Hidden", std.gt.Instance())({
 	end,
 })
 
-export type Self = std.Mechanic<typeof(Hidden)>
+export type Self = typeof(Hidden)
+export type Mechanic = std.Mechanic<Self>
 return Hidden

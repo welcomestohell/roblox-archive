@@ -1,7 +1,9 @@
-local Mechanic = require("@libs/Mechanic")
 local gt = require("@libs/gt")
+local std = require("@libs/std")
 
-local Template = Mechanic.new("Template", gt.Instance())({})
+local Template = std.Mechanic("Template", gt.Instance()) {}
 
-export type Self = Mechanic.Mechanic<typeof(Template)>
+export type Self = typeof(Template)
+export type Mechanic = std.Mechanic<Self>
+
 return Template

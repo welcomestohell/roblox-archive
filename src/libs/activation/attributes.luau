@@ -3,6 +3,8 @@ local gt = require("@libs/gt")
 
 local attributes = {}
 
+attributes.Enabled = Attribute.new("Enabled", gt.boolean(), false)
+
 attributes.Activatable = Attribute.new("Activatable", gt.boolean(), false)
 attributes.Enabled = Attribute.new("Enabled", gt.boolean(), false)
 attributes.ActivationBehavior = Attribute.new("ActivationBehavior", gt.string())

@@ -1,4 +1,4 @@
-local MechanicTypes = require("./MechanicTypes")
+local Level = require("./Level")
 local tables = require("@libs/tables")
 
 local LevelState = {}
@@ -7,8 +7,8 @@ LevelState.type = "LevelState" :: "LevelState"
 
 export type LevelState<T> = setmetatable<{
 	_default: T?,
-	_values: { [MechanicTypes.Level]: T? },
-	_cleanup: { [MechanicTypes.Level]: () -> () },
+	_values: { [Level.Level]: T? },
+	_cleanup: { [Level.Level]: () -> () },
 }, typeof(LevelState)>
 
 local function new(default: any)
@@ -19,7 +19,7 @@ local function new(default: any)
 	}, LevelState)
 end
 
-local function initializeLevel(state: LevelState<any>, level: MechanicTypes.Level)
+local function initializeLevel(state: LevelState<any>, level: Level.Level)
 	if state._cleanup[level] then
 		return
 	end
@@ -32,11 +32,11 @@ end
 
 LevelState.new = new :: (<T>() -> LevelState<T?>) & (<T>(default: T) -> LevelState<T>)
 
-function LevelState.get<T>(self: LevelState<T>, level: MechanicTypes.Level): T
+function LevelState.get<T>(self: LevelState<T>, level: Level.Level): T
 	return self._values[level]
 end
 
-function LevelState.getOrDefault<T>(self: LevelState<T | nil>, level: MechanicTypes.Level): T
+function LevelState.getOrDefault<T>(self: LevelState<T | nil>, level: Level.Level): T
 	local value = self._values[level]
 	if value == nil then
 		return self._default
@@ -44,7 +44,7 @@ function LevelState.getOrDefault<T>(self: LevelState<T | nil>, level: MechanicTy
 	return value
 end
 
-function LevelState.getOrSet<T>(self: LevelState<T>, level: MechanicTypes.Level, fallback: T): T
+function LevelState.getOrSet<T>(self: LevelState<T>, level: Level.Level, fallback: T): T
 	local value = self._values[level]
 	if value == nil then
 		self._values[level] = fallback
@@ -53,13 +53,13 @@ function LevelState.getOrSet<T>(self: LevelState<T>, level: MechanicTypes.Level,
 	return value
 end
 
-function LevelState.set<T>(self: LevelState<T>, level: MechanicTypes.Level, value: T): T
+function LevelState.set<T>(self: LevelState<T>, level: Level.Level, value: T): T
 	initializeLevel(self, level)
 	self._values[level] = value
 	return value
 end
 
-function LevelState.take<T>(self: LevelState<T>, level: MechanicTypes.Level): T?
+function LevelState.take<T>(self: LevelState<T>, level: Level.Level): T?
 	local old = self._values[level]
 	local cleanup = self._cleanup[level]
 	if cleanup then

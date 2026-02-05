@@ -21,7 +21,7 @@ local SHOVER_DIRECTION_ATTRIBUTES = {
 	},
 }
 
-local function shove(direction: "In" | "Out", shover: Self)
+local function shove(direction: "In" | "Out", shover: Mechanic)
 	local attributes: ShoverDirectionAttributes = SHOVER_DIRECTION_ATTRIBUTES[direction]
 
 	task.wait(attributes:Delay(shover))
@@ -39,14 +39,14 @@ local function shove(direction: "In" | "Out", shover: Self)
 end
 
 local Shover = std.Mechanic("Shover", std.gt.isA.BasePart())({
-	onInit = function(self: Self, level: std.Level)
-		local cache = {} :: { Self }
+	onInit = function(self: Mechanic, level: std.Level)
+		local cache = {} :: { Mechanic }
 
 		level.life:add(RunService.PreSimulation:Connect(function()
 			local shovers = level.mechanicsByImplementations[self.implementation]
 
 			if shovers then
-				for _, shover: Self in shovers do
+				for _, shover: Mechanic in shovers do
 					if not table.find(cache, shover) then
 						level.life:add(task.spawn(function()
 							while self:Enabled() do
@@ -63,5 +63,6 @@ local Shover = std.Mechanic("Shover", std.gt.isA.BasePart())({
 	end,
 })
 
-export type Self = std.Mechanic<typeof(Shover)>
+export type Self = typeof(Shover)
+export type Mechanic = std.Mechanic<Self>
 return Shover

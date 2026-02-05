@@ -6,11 +6,11 @@ local Conveyor = std.Mechanic("Conveyor", std.gt.isA.BasePart())({
 	Speed = std.Attribute("Speed", std.gt.positiveNumber, 0),
 	SynchronizeBeams = std.Attribute("SynchronizeBeams", std.gt.boolean(), false),
 
-	onInit = function(self: Self, level: std.Level)
+	onInit = function(self: Mechanic, level: std.Level)
 		level.life:add(RunService.PreSimulation:Connect(function()
 			local conveyors = level.mechanicsByImplementations[self.implementation]
 			if conveyors then
-				for _, conveyor: Self in conveyors do
+				for _, conveyor: Mechanic in conveyors do
 					local speed: number = conveyor:Enabled() and conveyor:Speed() or 0
 					conveyor.instance.AssemblyLinearVelocity = conveyor.instance.CFrame.LookVector * speed
 
@@ -27,5 +27,6 @@ local Conveyor = std.Mechanic("Conveyor", std.gt.isA.BasePart())({
 	end,
 })
 
-export type Self = std.Mechanic<typeof(Conveyor)>
+export type Self = typeof(Conveyor)
+export type Mechanic = std.Mechanic<Self>
 return Conveyor

@@ -1,14 +1,14 @@
 local Attribute = require("./Attribute")
+local Level = require("./Level")
 local LevelState = require("./LevelState")
-local Mechanic = require("./Mechanic")
-local MechanicTypes = require("./MechanicTypes")
 local gt = require("./gt")
+local mechanics = require("./mechanics")
 
-export type Mechanic<Self = MechanicTypes.BaseMechanicImplementation> = MechanicTypes.Mechanic<Self>
-export type MechanicImplementation<Self = MechanicTypes.BaseMechanicImplementation, Instance = Instance> =
-	MechanicTypes.MechanicImplementation<Self, Instance>
+export type Mechanic<Instance = any> = mechanics.Mechanic<Instance>
+export type MechanicImplementation<Self = any, Instance = any> = mechanics.MechanicImplementation<Self, Instance>
+export type BaseMechanicImplementation<Instance = any> = mechanics.BaseMechanicImplementation<Instance>
 
-export type Level = MechanicTypes.Level
+export type Level = Level.Level
 
 export type LevelState<T> = LevelState.LevelState<T>
 export type Attribute<T> = Attribute.Attribute<T>
@@ -26,7 +26,7 @@ export type Attribute<T> = Attribute.Attribute<T>
 	that are most frequently used for tower scripting.
 ]=]
 return table.freeze {
-	Mechanic = Mechanic.new,
+	Mechanic = mechanics.Mechanic,
 	Attribute = Attribute.new,
 	LevelState = LevelState.new,
 

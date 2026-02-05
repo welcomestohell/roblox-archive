@@ -5,6 +5,7 @@
 local GreenTea = require("@pkgs/gt")
 
 export type Type = GreenTea.Type
+export type Cause = GreenTea.Cause
 
 local gt = {
 	allOf = GreenTea.allOf,

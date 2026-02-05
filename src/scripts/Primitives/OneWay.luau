@@ -7,7 +7,7 @@ local std = require("@libs/std")
 local OneWay = std.Mechanic("OneWay", std.gt.isA.BasePart())({
 	Offset = std.Attribute("Offset", std.gt.CFrame(), CFrame.identity),
 
-	onInit = function(self: Self, level: std.Level)
+	onInit = function(self: Mechanic, level: std.Level)
 		level.life:add(RunService.PreSimulation:Connect(function()
 			local root = character.getMaybeHumanoidRootPart()
 			if root then
@@ -18,7 +18,7 @@ local OneWay = std.Mechanic("OneWay", std.gt.isA.BasePart())({
 					return
 				end
 
-				for _, platform: Self in platforms do
+				for _, platform: Mechanic in platforms do
 					-- local config: Configuration = platform.instanceConfiguration
 					local instance: BasePart = platform.instance
 
@@ -48,5 +48,6 @@ local OneWay = std.Mechanic("OneWay", std.gt.isA.BasePart())({
 	end,
 })
 
-export type Self = std.Mechanic<typeof(OneWay)>
+export type Self = typeof(OneWay)
+export type Mechanic = std.Mechanic<Self>
 return OneWay

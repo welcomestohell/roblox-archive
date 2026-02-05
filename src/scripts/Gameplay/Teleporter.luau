@@ -1,25 +1,22 @@
-local Attribute = require("@libs/Attribute")
-local Mechanic = require("@libs/Mechanic")
 local TeleporterDestination = require("./TeleporterDestination")
 local character = require("@libs/character")
-local gt = require("@libs/gt")
 local std = require("@libs/std")
 
 local debounce = false
 local debouncedTeleporters: { [Self]: true } = {}
 
-local Teleporter = Mechanic.new("Teleporter", gt.isA.BasePart())({
-	Id = Attribute.new("Id", gt.string()),
-	KeepVelocity = Attribute.new("KeepVelocity", gt.boolean(), true),
-	Cooldown = Attribute.new("Cooldown", gt.number(), 0),
-	PlaySound = Attribute.new("PlaySound", gt.boolean(), true),
-	Seamless = Attribute.new("Seamless", gt.boolean(), true),
-	SeamlessMeasurement = Attribute.new(
+local Teleporter = std.Mechanic("Teleporter", std.gt.isA.BasePart())({
+	Id = std.Attribute("Id", std.gt.string()),
+	KeepVelocity = std.Attribute("KeepVelocity", std.gt.boolean(), true),
+	Cooldown = std.Attribute("Cooldown", std.gt.number(), 0),
+	PlaySound = std.Attribute("PlaySound", std.gt.boolean(), true),
+	Seamless = std.Attribute("Seamless", std.gt.boolean(), true),
+	SeamlessMeasurement = std.Attribute(
 		"SeamlessMeasurement",
-		gt.union2(gt.literal("Relative"), gt.literal("World")),
+		std.gt.union2(std.gt.literal("Relative"), std.gt.literal("World")),
 		"Relative"
 	),
-	Offset = Attribute.new("Offset", gt.CFrame()),
+	Offset = std.Attribute("Offset", std.gt.CFrame()),
 
 	calculateTeleportCFrame = function(self: Mechanic, destination: BasePart, root: BasePart)
 		local destinationCFrame = destination.CFrame
@@ -121,5 +118,5 @@ local Teleporter = Mechanic.new("Teleporter", gt.isA.BasePart())({
 })
 
 export type Self = typeof(Teleporter)
-export type Mechanic = Mechanic.Mechanic<Self>
+export type Mechanic = std.Mechanic<Self>
 return Teleporter
