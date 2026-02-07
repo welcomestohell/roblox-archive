@@ -1,12 +1,12 @@
 local Attribute = require("./Attribute")
 local Level = require("./Level")
 local LevelState = require("./LevelState")
+local Mechanic = require("./Mechanic")
 local gt = require("./gt")
-local mechanics = require("./mechanics")
 
-export type Mechanic<Instance = any> = mechanics.Mechanic<Instance>
-export type MechanicImplementation<Self = any, Instance = any> = mechanics.MechanicImplementation<Self, Instance>
-export type BaseMechanicImplementation<Instance = any> = mechanics.BaseMechanicImplementation<Instance>
+export type Mechanic<Self = any> = Mechanic.Mechanic<Self>
+export type MechanicImplementation = Mechanic.MechanicImplementation
+export type MechanicImplementationMetadata = Mechanic.MechanicImplementationMetadata
 
 export type Level = Level.Level
 
@@ -15,7 +15,7 @@ export type Attribute<T> = Attribute.Attribute<T>
 
 --[=[
 	@class std
-	@tag lib
+	@tag Library
 
 	Welcome To Hell comes with a variety of things in it's libraries. However,
 	if you had to manually import every single thing that you used, it would be
@@ -26,9 +26,10 @@ export type Attribute<T> = Attribute.Attribute<T>
 	that are most frequently used for tower scripting.
 ]=]
 return table.freeze {
-	Mechanic = mechanics.Mechanic,
+	Mechanic = Mechanic.new,
 	Attribute = Attribute.new,
 	LevelState = LevelState.new,
 
 	gt = gt,
+	isA = gt.isA,
 }

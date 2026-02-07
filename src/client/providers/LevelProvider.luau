@@ -17,12 +17,23 @@ function LevelProvider.constructor()
 end
 
 function LevelProvider.onStart()
-	task.wait(1)
-	print("starting")
+	if not game:IsLoaded() then
+		game.Loaded:Wait()
+	end
 	local kitLife = Life.new()
-	local kitLevel = Level.new(kitLife, "Kit", Workspace:WaitForChild("Kit") :: any)
-	kitLevel:start()
-	print("started")
+	local levelResult = Level.new(kitLife, "Kit", Workspace:WaitForChild("Kit") :: any)
+	levelResult:match({
+		Err = function(e: Level.NewLevelError)
+			print("Failed to start kit:", e)
+			return nil
+		end,
+		Ok = function(level: Level.Level)
+			print("starting")
+			level:start()
+			print("started")
+			return nil
+		end,
+	} :: any)
 end
 
 function LevelProvider.onFinish() end

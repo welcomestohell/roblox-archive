@@ -6,18 +6,10 @@ LevelState.__index = LevelState
 LevelState.type = "LevelState" :: "LevelState"
 
 export type LevelState<T> = setmetatable<{
-	_default: T?,
-	_values: { [Level.Level]: T? },
+	_default: T,
+	_values: { [Level.Level]: T },
 	_cleanup: { [Level.Level]: () -> () },
 }, typeof(LevelState)>
-
-local function new(default: any)
-	return setmetatable({
-		_default = default,
-		_values = tables.weak("k"),
-		_cleanup = tables.weak("k"),
-	}, LevelState)
-end
 
 local function initializeLevel(state: LevelState<any>, level: Level.Level)
 	if state._cleanup[level] then
@@ -30,13 +22,19 @@ local function initializeLevel(state: LevelState<any>, level: Level.Level)
 	end)
 end
 
-LevelState.new = new :: (<T>() -> LevelState<T?>) & (<T>(default: T) -> LevelState<T>)
+function LevelState.new<T>(default: T?): LevelState<T>
+	return setmetatable({
+		_default = default,
+		_values = tables.weak("k"),
+		_cleanup = tables.weak("k"),
+	}, LevelState)
+end
 
 function LevelState.get<T>(self: LevelState<T>, level: Level.Level): T
 	return self._values[level]
 end
 
-function LevelState.getOrDefault<T>(self: LevelState<T | nil>, level: Level.Level): T
+function LevelState.getOrDefault<T>(self: LevelState<T>, level: Level.Level): T
 	local value = self._values[level]
 	if value == nil then
 		return self._default
@@ -49,6 +47,16 @@ function LevelState.getOrSet<T>(self: LevelState<T>, level: Level.Level, fallbac
 	if value == nil then
 		self._values[level] = fallback
 		return fallback
+	end
+	return value
+end
+
+function LevelState.getOrInitialize<T>(self: LevelState<T>, level: Level.Level, initialize: (level: Level.Level) -> T): T
+	local value = self._values[level]
+	if value == nil then
+		value = initialize(level)
+		self._values[level] = value
+		return value
 	end
 	return value
 end

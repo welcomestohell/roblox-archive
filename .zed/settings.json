@@ -26,6 +26,10 @@
 		"**/Thumbs.db",
 		"**/.classpath",
 		"**/.settings",
+		// Welcome To Hell
+		"luau_packages",
+		"lune_packages",
+		"out",
 	],
 	"lsp": {
 		"discord_presence": {

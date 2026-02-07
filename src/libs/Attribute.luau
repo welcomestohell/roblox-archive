@@ -1,4 +1,5 @@
 local gt = require("@pkgs/gt")
+local tables = require(script.Parent.tables)
 
 export type AttributeValue =
 	| string
@@ -17,20 +18,17 @@ export type AttributeValue =
 	| Rect
 	| Font
 
--- cyclic deps
--- export type ResolvableInstance = MechanicTypes.Mechanic<any> | Instance
+-- LUAU FIXME: Can't require the Mechanic class due to cyclic dependencies, so
+-- we specify a proxy type.
 export type ResolvableInstance = any
-
-local WEAK_KEYS_MT = { __mode = "k" }
 
 local Attribute = {}
 Attribute.__index = Attribute
-Attribute.type = "Attribute"
 
 export type Attribute<T> = setmetatable<{
 	attribute: string,
 	check: gt.Type?,
-	defaultValue: T?,
+	defaultValue: T,
 	_cache: { [Instance]: T },
 	_signals: { [Instance]: RBXScriptSignal },
 	_updated: { [Instance]: true },
@@ -107,14 +105,14 @@ local function new(attribute: any, check: any, defaultValue: any): Attribute<any
 		attribute = attribute,
 		check = check,
 		defaultValue = defaultValue,
-		_cache = setmetatable({}, WEAK_KEYS_MT) :: any,
-		_signals = setmetatable({}, WEAK_KEYS_MT) :: any,
-		_updated = setmetatable({}, WEAK_KEYS_MT) :: any,
-		_observers = setmetatable({}, WEAK_KEYS_MT) :: any,
-		_observerCallbacks = setmetatable({}, WEAK_KEYS_MT) :: any,
-		_changeListeners = setmetatable({}, WEAK_KEYS_MT) :: any,
-		_fetchListeners = setmetatable({}, WEAK_KEYS_MT) :: any,
-	}, Attribute)
+		_cache = tables.weak("k"),
+		_signals = tables.weak("k"),
+		_updated = tables.weak("k"),
+		_observers = tables.weak("k"),
+		_observerCallbacks = tables.weak("k"),
+		_changeListeners = tables.weak("k"),
+		_fetchListeners = tables.weak("k"),
+	}, Attribute) :: any
 end
 
 Attribute.new = new :: (
@@ -144,7 +142,6 @@ function Attribute.get<T>(self: Attribute<T>, instance: ResolvableInstance): T
 end
 
 function Attribute.set<T>(self: Attribute<T>, instance: ResolvableInstance, value: T): T
-	-- TODO: run updates
 	local resolved = resolveInstance(instance)
 	resolved:SetAttribute(self.attribute, value)
 	return value
@@ -154,6 +151,11 @@ function Attribute.assert<T>(self: Attribute<T?>, instance: ResolvableInstance, 
 	local value = Attribute.get(self :: any, instance)
 	assert(value ~= nil, message or `Instance {instance:GetFullName()} is missing attribute {self.attribute}!`)
 	return value
+end
+
+-- TODO: implement this when the debugger is made
+function Attribute.document<T>(self: Attribute<T>, _documentation: string): Attribute<T>
+	return self
 end
 
 -- TODO: don't repeat yourself
@@ -167,7 +169,7 @@ function Attribute.onFetch<T>(
 	local resolved = resolveInstance(instance)
 	local listeners = self._fetchListeners[resolved] :: {}
 	if not listeners then
-		listeners = setmetatable({}, WEAK_KEYS_MT) :: any
+		listeners = tables.weak("k") :: any
 		self._fetchListeners[resolved] = listeners
 	end
 
@@ -192,7 +194,7 @@ function Attribute.onChange<T>(
 	local resolved = resolveInstance(instance)
 	local listeners = self._changeListeners[resolved] :: {}
 	if not listeners then
-		listeners = setmetatable({}, WEAK_KEYS_MT) :: any
+		listeners = tables.weak("k") :: any
 		self._changeListeners[resolved] = listeners
 	end
 

@@ -1,28 +1,32 @@
 local HttpService = game:GetService("HttpService")
 
 local Life = require("@libs/Life")
+local Mechanic = require("./Mechanic")
 local Promise = require("@pkgs/Promise")
 local Result = require("@libs/Result")
 local activation = require("./activation")
 local functions = require("./functions")
 local gt = require("@libs/gt")
-local mechanics = require("./mechanics")
 
-local LevelInstance = gt.build(gt.instanceTree({
+local LevelInstance = gt.build(gt.instanceTree(gt.Instance(), {
 	Mechanics = gt.Instance(),
-	Scripts = gt.Instance(),
+	Scripts = gt.optional(gt.Instance()),
 	SpawnCharacter = gt.isA.BasePart(),
 	SpawnCamera = gt.optional(gt.isA.BasePart()),
 }))
 
 export type LevelInstance = typeof(LevelInstance:type())
-
 export type NewLevelError = { id: "invalidInstance", cause: gt.Cause }
+
+type Mechanic<Self = any> = Mechanic.Mechanic<Self>
+type MechanicMetadata = Mechanic.MechanicImplementationMetadata
+type MechanicImplementationLike = Mechanic.MechanicImplementation
 
 local Level = {}
 Level.__index = Level
-Level.baseScripts = {}
-Level.baseMechanicImplementations = {}
+Level.baseScripts = {} :: { [ModuleScript]: unknown }
+Level.baseMechanicImplementations = {} :: { [string]: { MechanicImplementationLike } }
+Level.LevelInstance = LevelInstance
 
 export type Level = setmetatable<{
 	life: Life.Life,
@@ -33,14 +37,14 @@ export type Level = setmetatable<{
 	scripts: { [ModuleScript]: unknown },
 	startTimestamp: number,
 
-	mechanics: { mechanics.Mechanic },
-	mechanicImplementations: { mechanics.MechanicImplementation },
-	mechanicImplementationsByTags: { [string]: { mechanics.MechanicImplementation } },
-	mechanicsByImplementations: { [mechanics.MechanicImplementation]: { mechanics.Mechanic } },
+	mechanics: { Mechanic },
+	mechanicImplementations: { MechanicImplementationLike },
+	mechanicImplementationsByTag: { [string]: { MechanicImplementationLike } },
+	mechanicsByImplementations: { [MechanicImplementationLike]: { Mechanic } },
 }, typeof(Level)>
 
 function Level.new(outerLife: Life.Life, name: string, instance: Instance): Result.Result<Level, NewLevelError>
-	local instanceCause: gt.Cause = LevelInstance:_matches(instance)
+	local instanceCause: gt.Cause = LevelInstance._matches(instance)
 
 	if instanceCause.ok then
 		local self: Level = setmetatable({
@@ -53,8 +57,8 @@ function Level.new(outerLife: Life.Life, name: string, instance: Instance): Resu
 			startTimestamp = os.clock(),
 
 			mechanics = {},
-			mechanicImplementations = table.clone(Level.baseMechanicImplementations),
-			mechanicImplementationsByTags = {},
+			mechanicImplementations = table.clone(Level.baseMechanicImplementations) :: any,
+			mechanicImplementationsByTag = table.clone(Level.baseMechanicImplementations) :: any,
 			mechanicsByImplementations = {},
 		}, Level)
 
@@ -65,7 +69,8 @@ function Level.new(outerLife: Life.Life, name: string, instance: Instance): Resu
 end
 
 function Level.inherit(outerLevel: Level, name: string, instance: Instance): Result.Result<Level, NewLevelError>
-	local instanceCause: gt.Cause = LevelInstance:_matches(instance)
+	print(instance)
+	local instanceCause: gt.Cause = LevelInstance._matches(instance)
 
 	if instanceCause.ok then
 		local self: Level = setmetatable({
@@ -78,8 +83,8 @@ function Level.inherit(outerLevel: Level, name: string, instance: Instance): Res
 			startTimestamp = os.clock(),
 
 			mechanics = {},
-			mechanicImplementations = table.clone(Level.baseMechanicImplementations),
-			mechanicImplementationsByTags = {},
+			mechanicImplementations = table.clone(Level.baseMechanicImplementations) :: any,
+			mechanicImplementationsByTag = table.clone(Level.baseMechanicImplementations) :: any,
 			mechanicsByImplementations = {},
 		}, Level)
 
@@ -102,7 +107,7 @@ end
 function Level.collectScripts(
 	parent: Instance,
 	scripts: { [ModuleScript]: unknown },
-	mechanicImplementationsByTags: { [string]: { mechanics.MechanicImplementation } }
+	mechanicImplementationsByTag: { [string]: { MechanicImplementationLike } }
 )
 	for _, instance in parent:GetDescendants() do
 		if not instance:IsA("ModuleScript") then
@@ -114,7 +119,7 @@ function Level.collectScripts(
 			continue
 		end
 
-		local isMechanicImplementation = mechanics.isMechanicImplementation(required)
+		local isMechanicImplementation = Mechanic.isMechanicImplementation(required)
 		local isScript = isMechanicImplementation
 
 		if isScript then
@@ -122,27 +127,30 @@ function Level.collectScripts(
 		end
 
 		if isMechanicImplementation then
-			mechanicImplementationsByTags[required.instanceTag] = mechanicImplementationsByTags[required.instanceTag]
+			mechanicImplementationsByTag[required.instanceTag] = mechanicImplementationsByTag[required.instanceTag]
 				or {}
 
-			table.insert(mechanicImplementationsByTags[required.instanceTag], required)
+			table.insert(mechanicImplementationsByTag[required.instanceTag], required)
+			print("got mech impl", required.instanceTag, mechanicImplementationsByTag[required.instanceTag])
 		end
 	end
 end
 
 function Level.loadMechanicsFromInstance(self: Level, instance: Instance)
 	for _, tag: string in instance:GetTags() do
-		local implementations = self.mechanicImplementationsByTags[tag]
+		local implementations = self.mechanicImplementationsByTag[tag]
+		print("??? WHAT", implementations)
 		if implementations then
 			for _, implementation in implementations do
+				print(implementation, "???")
 				local instanceConfiguration = instance
 				if instance.ClassName == "Configuration" then
 					instanceConfiguration, instance = instance, instance.Parent :: Instance
 				end
 
-				if implementation.instanceCheck then
-					local instanceCheck = gt.build(implementation.instanceCheck)
-					local isValid, reason = instanceCheck:matches(instance)
+				if implementation.instanceType then
+					local instanceType = gt.build(implementation.instanceType)
+					local isValid, reason = instanceType:matches(instance)
 					if not isValid then
 						warn("Failed to validate Mechanic instance because:", reason:formatErr())
 						continue
@@ -151,6 +159,8 @@ function Level.loadMechanicsFromInstance(self: Level, instance: Instance)
 
 				local mechanicLife = self.life:inner()
 				mechanicLife:add(instance)
+
+				print("GOT MECHANIC", instance)
 
 				local mechanic = {
 					id = HttpService:GenerateGUID(false),
@@ -185,11 +195,8 @@ function Level.getLifetime(self: Level)
 	return os.clock() - self.startTimestamp
 end
 
-function Level.getMechanics<Instance>(
-	self: Level,
-	implementation: mechanics.MechanicImplementation<any, Instance>
-): { mechanics.Mechanic<Instance> }
-	return self.mechanicsByImplementations[implementation] or {}
+function Level.getMechanics<Self>(self: Level, implementation: Self): { Mechanic.Mechanic<Self> }
+	return self.mechanicsByImplementations[implementation] :: any or {}
 end
 
 function Level.start(self: Level)
@@ -201,7 +208,7 @@ function Level.start(self: Level)
 	local levelInstance = self.instance :: Instance
 	local levelScripts = levelInstance:FindFirstChild("Scripts")
 	if levelScripts then
-		Level.collectScripts(levelScripts, self.scripts, self.mechanicImplementationsByTags)
+		Level.collectScripts(levelScripts, self.scripts, self.mechanicImplementationsByTag)
 	end
 
 	for _, instance in self.instance:WaitForChild("Mechanics"):GetDescendants() do
@@ -225,8 +232,8 @@ function Level.start(self: Level)
 		:await()
 
 	for _, mechanic in self.mechanics do
-		if mechanic.implementation.onMechanize then
-			self.life:add(task.spawn(mechanic.implementation.onMechanize, mechanic.implementation, mechanic, self))
+		if mechanic.implementation.onStart then
+			self.life:add(task.spawn(mechanic.implementation.onStart, mechanic.implementation, mechanic, self))
 		end
 	end
 end

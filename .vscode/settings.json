@@ -1,0 +1,20 @@
+{
+    "chat.disableAIFeatures": true,
+    "editor.formatOnSave": true,
+    "editor.rulers": [
+        80,
+        120
+    ],
+    "files.associations": {
+        ".luaurc": "jsonc"
+    },
+    "luau-lsp.ignoreGlobs": [
+        "**/.pesde/**"
+    ],
+    "luau-lsp.types.robloxSecurityLevel": "None",
+    "luau-lsp.fflags.enableNewSolver": true,
+    "luau-lsp.platform.type": "roblox",
+    "[luau]": {
+        "editor.defaultFormatter": "JohnnyMorganz.stylua",
+    },
+}

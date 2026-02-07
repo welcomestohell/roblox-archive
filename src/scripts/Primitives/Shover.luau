@@ -1,33 +1,38 @@
--- TODO: rescript this because this is ASS
-
-local RunService = game:GetService("RunService")
-
 local std = require("@libs/std")
 
+local Shover = std.Mechanic({})
+export type ShoverMechanic = std.Mechanic<typeof(Shover)>
+Shover.instanceTag = "Shover"
+Shover.instanceType = std.isA.BasePart()
+
+type ShoverDirection = "In" | "Out"
 type ShoverDirectionAttributes = {
-	Delay: std.Attribute<number>,
-	Power: std.Attribute<number>,
+	delay: std.Attribute<number>,
+	power: std.Attribute<number>,
 }
 
-local SHOVER_DIRECTION_ATTRIBUTES = {
-	In = {
-		Delay = std.Attribute("InDelay", std.gt.positiveNumber, 1),
-		Power = std.Attribute("InPower", std.gt.positiveNumber, 0),
-	},
+Shover.threads = std.LevelState({} :: any)
+Shover.directions = {} :: { [ShoverDirection]: ShoverDirectionAttributes }
 
-	Out = {
-		Delay = std.Attribute("OutDelay", std.gt.positiveNumber, 1),
-		Power = std.Attribute("OutPower", std.gt.positiveNumber, 0),
-	},
+Shover:attributeSection("In")
+Shover.directions.In = {
+	delay = Shover:attribute("InDelay", std.gt.positiveNumber, 1),
+	power = Shover:attribute("InPower", std.gt.positiveNumber, 0),
 }
 
-local function shove(direction: "In" | "Out", shover: Mechanic)
-	local attributes: ShoverDirectionAttributes = SHOVER_DIRECTION_ATTRIBUTES[direction]
+Shover:attributeSection("Out")
+Shover.directions.Out = {
+	delay = std.Attribute("OutDelay", std.gt.positiveNumber, 1),
+	power = std.Attribute("OutPower", std.gt.positiveNumber, 0),
+}
 
-	task.wait(attributes:Delay(shover))
+local function shove(direction: ShoverDirection, shover: ShoverMechanic)
+	local attributes: ShoverDirectionAttributes = Shover.directions[direction]
+
+	task.wait(attributes.delay(shover))
 
 	if shover:Enabled() then
-		local power = attributes:Power(shover)
+		local power = attributes.power(shover)
 		for _, descendant in pairs(shover.instance:GetDescendants()) do
 			if descendant.Name == "ShoverConstraint" and descendant:IsA("PrismaticConstraint") then
 				descendant.LinearResponsiveness = power
@@ -38,31 +43,18 @@ local function shove(direction: "In" | "Out", shover: Mechanic)
 	end
 end
 
-local Shover = std.Mechanic("Shover", std.gt.isA.BasePart())({
-	onInit = function(self: Mechanic, level: std.Level)
-		local cache = {} :: { Mechanic }
-
-		level.life:add(RunService.PreSimulation:Connect(function()
-			local shovers = level.mechanicsByImplementations[self.implementation]
-
-			if shovers then
-				for _, shover: Mechanic in shovers do
-					if not table.find(cache, shover) then
-						level.life:add(task.spawn(function()
-							while self:Enabled() do
-								shove("In", shover)
-								shove("Out", shover)
-							end
-						end))
-
-						table.insert(cache, shover)
-					end
+function Shover:onPreSimulation(_, level: std.Level)
+	local threads = Shover.threads:getOrSet(level, {})
+	for _, shover: ShoverMechanic in level:getMechanics(Shover) do
+		if not threads[shover] then
+			threads[shover] = level.life:add(task.spawn(function()
+				while self:Enabled() do
+					shove("In", shover)
+					shove("Out", shover)
 				end
-			end
-		end))
-	end,
-})
+			end))
+		end
+	end
+end
 
-export type Self = typeof(Shover)
-export type Mechanic = std.Mechanic<Self>
 return Shover

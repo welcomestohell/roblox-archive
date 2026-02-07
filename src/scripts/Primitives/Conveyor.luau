@@ -1,32 +1,26 @@
-local RunService = game:GetService("RunService")
-
 local std = require("@libs/std")
 
-local Conveyor = std.Mechanic("Conveyor", std.gt.isA.BasePart())({
-	Speed = std.Attribute("Speed", std.gt.positiveNumber, 0),
-	SynchronizeBeams = std.Attribute("SynchronizeBeams", std.gt.boolean(), false),
+local Conveyor = std.Mechanic({})
+export type ConveyorMechanic = std.Mechanic<typeof(Conveyor)>
+Conveyor.instanceTag = "Conveyor"
+Conveyor.instanceType = std.isA.BasePart()
 
-	onInit = function(self: Mechanic, level: std.Level)
-		level.life:add(RunService.PreSimulation:Connect(function()
-			local conveyors = level.mechanicsByImplementations[self.implementation]
-			if conveyors then
-				for _, conveyor: Mechanic in conveyors do
-					local speed: number = conveyor:Enabled() and conveyor:Speed() or 0
-					conveyor.instance.AssemblyLinearVelocity = conveyor.instance.CFrame.LookVector * speed
+Conveyor.Speed = Conveyor:attribute("Speed", std.gt.positiveNumber, 0)
+Conveyor.SynchronizeBeams = Conveyor:attribute("SynchronizeBeams", std.gt.boolean(), false)
 
-					if conveyor:SynchronizeBeams() then
-						for _, beam in conveyor.instance:GetDescendants() :: { Beam } do
-							if beam.Name == "ConveyorBeam" and beam.ClassName == "Beam" then
-								beam.TextureSpeed = speed / beam.TextureLength
-							end
-						end
-					end
+function Conveyor:onPreSimulation(deltaTime: number, level: std.Level)
+	for _, conveyor in level:getMechanics(Conveyor) do
+		local speed: number = conveyor:Enabled() and conveyor:Speed() or 0
+		conveyor.instance.AssemblyLinearVelocity = conveyor.instance.CFrame.LookVector * speed
+
+		if conveyor:SynchronizeBeams() then
+			for _, beam in conveyor.instance:GetDescendants() :: { Beam } do
+				if beam.Name == "ConveyorBeam" and beam.ClassName == "Beam" then
+					beam.TextureSpeed = speed / beam.TextureLength
 				end
 			end
-		end))
-	end,
-})
+		end
+	end
+end
 
-export type Self = typeof(Conveyor)
-export type Mechanic = std.Mechanic<Self>
 return Conveyor
