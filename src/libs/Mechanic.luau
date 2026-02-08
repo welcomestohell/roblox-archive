@@ -1,6 +1,10 @@
-local Attribute = require("./Attribute")
-local Life = require("./Life")
-local gt = require("./gt")
+local HttpService = game:GetService("HttpService")
+
+local Attribute = require("@libs/Attribute")
+local Life = require("@libs/Life")
+local Result = require("@libs/Result")
+local functions = require("@libs/functions")
+local gt = require("@libs/gt")
 
 --[=[
 	@interface MechanicImplementationMetadata
@@ -59,7 +63,21 @@ export type MechanicImplementation = {
 local Mechanic = {}
 Mechanic.__index = Mechanic
 Mechanic._metadata = {} :: { [{}]: MechanicImplementationMetadata }
+Mechanic._proxies = {} :: { [{}]: {} }
 Mechanic.Enabled = Attribute.new("Enabled", gt.boolean(), false)
+
+local function initializeProxy(implementation: {})
+	local proxy = {}
+	proxy.__index = implementation
+	proxy.__newindex = implementation
+
+	function proxy.__tostring(self: Mechanic<MechanicImplementation>)
+		return `{self.implementation.instanceTag}({self.id})`
+	end
+
+	Mechanic._proxies[implementation] = proxy
+	return proxy
+end
 
 function Mechanic.new<T>(implementation: T): setmetatable<T, typeof(Mechanic)>
 	local metadata: MechanicImplementationMetadata = {
@@ -71,12 +89,24 @@ function Mechanic.new<T>(implementation: T): setmetatable<T, typeof(Mechanic)>
 	local implementation: any = setmetatable(implementation, Mechanic)
 	Mechanic._metadata[implementation] = metadata
 	implementation:attributeSection("Configuration")
-	implementation.__index = (implementation :: any).__index or implementation
+	initializeProxy(implementation)
 	return implementation
 end
 
 function Mechanic.isMechanicImplementation(x: any)
 	return typeof(x) == "table" and getmetatable(x) == Mechanic
+end
+
+function Mechanic.downcast(self: {}): setmetatable<MechanicImplementation, typeof(Mechanic)>
+	return self :: any
+end
+
+function Mechanic.getMetadata(self: {}): MechanicImplementationMetadata
+	return Mechanic._metadata[self]
+end
+
+function Mechanic.document<T>(self: T, _documentation: string)
+	return self
 end
 
 function Mechanic.attributeSection(self: {}, section: string)
@@ -90,16 +120,43 @@ function Mechanic.attribute<T>(self: {}, name: string, type: T, default: T): Att
 	return attribute
 end
 
-function Mechanic.getMetadata(self: {}): MechanicImplementationMetadata
-	return Mechanic._metadata[self]
+function Mechanic.tryMechanize<Self>(
+	implementation: Self,
+	outerLife: Life.Life,
+	instance: Instance
+): Result.Result<Mechanic<Self>, { id: "invalidInstance", cause: gt.Cause }>
+	local implementation = Mechanic.downcast(implementation)
+
+	local instanceConfiguration = instance
+	if instance.ClassName == "Configuration" and instance.Parent then
+		instanceConfiguration, instance = instance, instance.Parent
+	end
+
+	if implementation.instanceType then
+		local instanceType = gt.build(implementation.instanceType)
+		local isValid, reason = instanceType:matches(instance)
+		if not isValid then
+			return Result.Err({ id = functions.literal("invalidInstance"), cause = reason })
+		end
+	end
+
+	local mechanicLife = outerLife:inner()
+	mechanicLife:add(instance)
+	mechanicLife:tie(instance.Destroying)
+
+	local mechanic = setmetatable({
+		life = mechanicLife,
+		id = HttpService:GenerateGUID(false),
+		implementation = implementation,
+		instance = instance,
+		instanceConfiguration = instanceConfiguration,
+	}, Mechanic._proxies[implementation])
+
+	return Result.Ok(mechanic :: any)
 end
 
 function Mechanic.__tostring(self: MechanicImplementation)
 	return self.instanceTag
 end
-
-local a = Mechanic.new({})
-type a = Mechanic<typeof(a)>
-a.instanceType = nil
 
 return table.freeze(Mechanic)

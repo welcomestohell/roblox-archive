@@ -8,12 +8,14 @@
     "files.associations": {
         ".luaurc": "jsonc"
     },
+    "luau-lsp.completion.imports.separateGroupsWithLine": true,
+    "luau-lsp.completion.imports.stringRequires.enabled": true,
+    "luau-lsp.fflags.enableNewSolver": true,
     "luau-lsp.ignoreGlobs": [
         "**/.pesde/**"
     ],
-    "luau-lsp.types.robloxSecurityLevel": "None",
-    "luau-lsp.fflags.enableNewSolver": true,
     "luau-lsp.platform.type": "roblox",
+    "luau-lsp.types.robloxSecurityLevel": "None",
     "[luau]": {
         "editor.defaultFormatter": "JohnnyMorganz.stylua",
     },

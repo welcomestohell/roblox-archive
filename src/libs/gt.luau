@@ -74,16 +74,12 @@ local gt = {
 
 local function instanceTree(treeOrParent: any, tree: any): GreenTea.Type
 	local parent: GreenTea.Type = GreenTea.build(tree and treeOrParent or GreenTea.Instance())
-	print(parent)
 	local tree: { [string]: GreenTea.Type } = tree or treeOrParent
 
-	return GreenTea.custom(function(parentInstance: Instance): (boolean, any?)
-		print(parentInstance)
-		-- todo
+	return GreenTea.withCustom(parent, function(parentInstance: Instance): (boolean, any?)
 		for childName, childType in tree do
 			local realChild = parentInstance:FindFirstChild(childName)
 			local cause = childType._matches(realChild)
-			print(childName, childType, realChild, cause)
 			if not cause.ok then
 				return false,
 					if not realChild

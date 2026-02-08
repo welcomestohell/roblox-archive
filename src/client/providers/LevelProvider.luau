@@ -9,11 +9,7 @@ local LevelProvider = {}
 export type DebugProvider = typeof(LevelProvider)
 
 function LevelProvider.constructor()
-	Level.collectScripts(
-		ReplicatedStorage:WaitForChild("Scripts"):WaitForChild("Core"),
-		Level.baseScripts,
-		Level.baseMechanicImplementations
-	)
+	Level.baseScripts:tryInstances(ReplicatedStorage:WaitForChild("Scripts"):WaitForChild("Core"):GetDescendants())
 end
 
 function LevelProvider.onStart()
@@ -23,7 +19,7 @@ function LevelProvider.onStart()
 	local kitLife = Life.new()
 	local levelResult = Level.new(kitLife, "Kit", Workspace:WaitForChild("Kit") :: any)
 	levelResult:match({
-		Err = function(e: Level.NewLevelError)
+		Err = function(e)
 			print("Failed to start kit:", e)
 			return nil
 		end,

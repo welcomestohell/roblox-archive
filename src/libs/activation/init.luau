@@ -44,8 +44,6 @@ function activation.onActivated<T>(
 	local life = instanceLife:inner()
 	local activationLife = life:inner()
 
-	print("???", instance)
-
 	if attributes.Activatable:get(configurationInstance) then
 		implementActivationBehavior(activationLife, life, instance, configurationInstance, onActivated)
 	end

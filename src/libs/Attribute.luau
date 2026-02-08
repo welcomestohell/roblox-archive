@@ -71,7 +71,6 @@ local function observeChanges(self: Attribute<any>, attribute: string, instance:
 					self._observers[instance] = nil
 				end
 				self._updated[instance] = nil
-				print("UPDATING", attribute)
 			end
 
 			self._observerCallbacks[instance] = observe

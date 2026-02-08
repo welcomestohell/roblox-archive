@@ -10,7 +10,7 @@ ScrollingImage.BasePosition = ScrollingImage:attribute("BasePosition", std.gt.UD
 ScrollingImage.Synchronized = ScrollingImage:attribute("Synchronized", std.gt.boolean(), true)
 ScrollingImage.SetDefaults = ScrollingImage:attribute("SetDefaults", std.gt.boolean(), true)
 
-function ScrollingImage:onInit(image: ScrollingImageMechanic)
+function ScrollingImage:onStart(image: ScrollingImageMechanic)
 	if image:SetDefaults() then
 		image.instance.AnchorPoint = Vector2.zero
 		image.instance.ScaleType = Enum.ScaleType.Tile
