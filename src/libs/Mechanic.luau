@@ -46,6 +46,8 @@ export type MechanicImplementation = {
 	instanceTag: string,
 	instanceType: gt.Type,
 
+	debuggerEmoji: string,
+
 	onPreRender: (self: any, deltaTime: number, level: any) -> ()?,
 	onPreAnimation: (self: any, deltaTime: number, level: any) -> ()?,
 	onPreSimulation: (self: any, deltaTime: number, level: any) -> ()?,

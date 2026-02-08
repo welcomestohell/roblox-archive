@@ -5,6 +5,7 @@ local Mechanic = require("./Mechanic")
 local Promise = require("@pkgs/Promise")
 local Result = require("./Result")
 local ScriptCollector = require("./ScriptCollector")
+local activation = require("./activation")
 local functions = require("./functions")
 local gt = require("./gt")
 
@@ -134,9 +135,20 @@ function Level.start(self: Level)
 		end)
 		:await()
 
-	for _, mechanic in self.mechanics do
+	for _, mechanic: any in self.mechanics do
 		if mechanic.implementation.onStart then
 			self.life:add(task.spawn(mechanic.implementation.onStart, mechanic.implementation, mechanic, self))
+		end
+
+		if mechanic.implementation.onActivate then
+			activation.onActivated(
+				mechanic.life,
+				mechanic.instance,
+				mechanic.instanceConfiguration or mechanic.instance,
+				function()
+					(mechanic.implementation :: any).onActivate(mechanic.implementation, mechanic, self)
+				end
+			)
 		end
 	end
 

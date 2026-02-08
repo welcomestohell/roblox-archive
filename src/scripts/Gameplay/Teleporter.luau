@@ -73,8 +73,10 @@ function Teleporter:onActivate(teleporter: TeleporterMechanic, level: std.Level)
 
 	-- teleporter:Activatable(false)
 
-	local allDestinations = (TeleporterDestination.destinationsById:get(teleporter.Id:assert(teleporter)))
-
+	local allDestinations = TeleporterDestination.destinationsById:get(teleporter.Id:assert(teleporter))
+	if not allDestinations then
+		return
+	end
 	local _, first = next(allDestinations)
 	if not first then
 		return

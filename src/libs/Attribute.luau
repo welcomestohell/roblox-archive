@@ -148,7 +148,10 @@ end
 
 function Attribute.assert<T>(self: Attribute<T?>, instance: ResolvableInstance, message: string?): T
 	local value = Attribute.get(self :: any, instance)
-	assert(value ~= nil, message or `Instance {instance:GetFullName()} is missing attribute {self.attribute}!`)
+	assert(
+		value ~= nil,
+		message or `Instance {resolveInstance(instance):GetFullName()} is missing attribute {self.attribute}!`
+	)
 	return value
 end
 

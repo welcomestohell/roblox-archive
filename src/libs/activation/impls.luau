@@ -92,7 +92,7 @@ return table.freeze {
 	Touch = {
 		predicate = gt.Instance("BasePart"),
 		implement = function(life, instanceLife, instance, configurationInstance, onActivated)
-			life:connect((instance :: BasePart).Touched:Connect(function(toucher: BasePart)
+			life:add((instance :: BasePart).Touched:Connect(function(toucher: BasePart)
 				if touch.isToucherValid(instance, toucher) then
 					onActivated(instanceLife, instance)
 				end
