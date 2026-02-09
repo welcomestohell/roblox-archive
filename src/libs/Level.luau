@@ -15,11 +15,7 @@ Level.baseScripts = ScriptCollector.new()
 
 Level.LevelInstance = gt.build(gt.instanceTree({
 	Mechanics = gt.Instance(),
-	Primitives = gt.Instance(),
-	Decorations = gt.Instance(),
-
 	Scripts = gt.optional(gt.Instance()),
-
 	SpawnCharacter = gt.isA.BasePart(),
 	SpawnCamera = gt.optional(gt.isA.BasePart()),
 }))
@@ -41,7 +37,7 @@ export type Level = setmetatable<{
 function Level.new(
 	outerLife: Life.Life,
 	name: string,
-	instance: LevelInstance
+	instance: Instance
 ): Result.Result<Level, { id: "invalidInstance", cause: gt.Cause }>
 	local isInstanceValid, instanceCause = Level.LevelInstance:matches(instance)
 
@@ -49,7 +45,7 @@ function Level.new(
 		local self: Level = setmetatable({
 			life = outerLife:inner(),
 			name = name,
-			instance = instance,
+			instance = instance :: LevelInstance,
 
 			scripts = Level.baseScripts:clone(),
 			mechanics = {},

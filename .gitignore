@@ -11,3 +11,5 @@ lune_packages
 
 .DS_Store
 Thumbs.db
+
+src/*/generated/**/*.luau

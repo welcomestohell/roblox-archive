@@ -31,7 +31,7 @@
 			"\t",
 			"end",
 			"",
-			"return ${0:$TM_FILENAME_BASE}",
+			"return prvd(${0:$TM_FILENAME_BASE})",
 			""
 		],
 	},

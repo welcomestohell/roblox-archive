@@ -5,5 +5,6 @@ return table.freeze {
 	require("@self/Explorer"),
 	require("@self/Console"),
 	require("@self/Providers"),
+	require("@self/Actions"),
 	require("@self/About"),
 } :: { types.DebuggerTool }
