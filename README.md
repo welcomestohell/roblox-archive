@@ -1,17 +1,20 @@
-# Welcome To Hell
+# Welcome To Hell (𒀭𒈗𒆠𒄿𒅗𒁺𒂊𒀀𒄑𒉌)
 
-𐰾𐰀𐰚𐰼𐰃𐰯𐰃𐰾𐰀 : 𐰘𐰀𐰠𐰠𐰆𐰆𐰾𐱅𐰆𐰤𐰀 𐰾𐰀𐰚𐰼𐰃𐰯𐰃𐰾𐰀 : 𐰘𐰀𐰠𐰠𐰆𐰆𐰾𐱅𐰆𐰤𐰀𐰀 𐰾𐰀𐰚𐰼𐰃𐰯𐰃𐰾𐰀 : 𐰘𐰀𐰠𐰠𐰆𐰆𐰾𐱅𐰆𐰤 WELCOME TO HELL𐰀 𐰾𐰀𐰚𐰼𐰃𐰯𐰃𐰾𐰀 : 𐰾𐰀𐰚𐰼𐰃𐰯𐰃𐰾𐰀 : 𐰘𐰀𐰠𐰠2026𐰆𐰆𐰾𐱅𐰆𐰤𐰀 𐰾𐰀𐰚𐰼𐰃𐰯𐰃𐰾𐰀 : 𐰘𐰀𐰠𐰠𐰆𐰆𐰾𐱅𐰆𐰤𐰀 𐰾𐰀𐰚𐰼𐰃𐰯𐰃𐰾𐰀 : 𐰘𐰀𐰠𐰠𐰆𐰆𐰾𐱅𐰆𐰤𐰀 𐰾𐰀𐰚𐰼𐰃𐰯𐰃𐰾𐰀 : 𐰘𐰀𐰠𐰠𐰆𐰆𐰾𐱅𐰆𐰤𐰀 𐰾𐰀𐰚𐰼𐰃𐰯𐰃𐰾𐰀 : 𐰘A STAR UPON A CHILD𐰀𐰠𐰠𐰆𐰆𐰾𐱅𐰆EPSTEIN FILES𐰤𐰀 𐰾𐰀𐰚𐰼𐰃𐰯𐰃𐰾𐰀 : 𐰘𐰀𐰠𐰠𐰆𐰆𐰾DAVID BAZUCKI𐱅𐰆𐰤𐰀 𐰾𐰀𐰚𐰼𐰃𐰯𐰃𐰾𐰀 : 𐰘𐰀𐰠𐰠𐰆𐰆𐰾𐱅𐰆𐰤𐰀 𐰾BENJAMIN NETANYAHU𐰀𐰚𐰼𐰃𐰯𐰃𐰾𐰀 :
+היום, דרישת בדיקת הגיל שלנו לצ'אט, שהושקה באזורים מסוימים בתחילת דצמבר, מתפרסת ברחבי העולם בכל מקום שבו יש צ'אט זמין. משתמשים בארה"ב ובאזורים מסוימים יראו פקודות בתוך האפליקציה שיבקשו מהם לבצע בדיקת גיל כדי לשוחח עם אחרים. במהלך השבוע הקרוב, ההנחיות הללו יוצאו לכל האזורים שבהם יש צ'אט זמין.
+ነገር ግን ይህ ሁሉ ተድላን "EToH Fangame Expo 2026""የማውገዝ እና ህመምን የሚያወድስ የተሳሳተ
+𐰾𐰀𐰚𐰼𐰃𐰯𐰃𐰾𐰀 : 𐰘𐰀𐰠𐰠𐰆𐰆𐰾𐱅𐰆𐰤𐰀 𐰾𐰀𐰚𐰼𐰃𐰯𐰃𐰾𐰀 : 𐰘𐰀𐰠𐰠𐰆𐰆𐰾𐱅𐰆𐰤𐰀𐰀 𐰾𐰀𐰚𐰼𐰃𐰯𐰃𐰾𐰀 : 
+ሀሳብ እንዴት እንደተወለደ “Welcome To Hell”ላስረዳህ እና የስርአቱን ሙሉ "Announcement trailer"𐰾𐰀𐰚𐰼𐰃𐰯𐰃𐰾𐰀 : 𐰘𐰀𐰠𐰠𐰆𐰆𐰾𐱅𐰆𐰤𐰀 
+𐰾𐰀𐰚𐰼𐰃𐰯𐰃𐰾𐰀 : 𐰘𐰀𐰠𐰘"A STAR UPON A CHILD"𐰀𐰠𐰠𐰆𐰆𐰾𐱅𐰆EPSTEIN FILES𐰤𐰀 𐰾𐰀𐰚𐰼𐰃𐰯𐰃𐰾𐰀 : 
+ዘገባ እሰጥሃለሁ እና የታላቁን የእውነት ተመራማሪ ፣የሰውን ደስታ ዋና ፈጣሪ"Fall 2026" የሆነውን 
+ትክክለኛ አስተምህሮ ላስ
+ረዳህ።𐰘𐰀𐰠𐰠𐰆𐰆𐰾DAVID BAZUCKI𐱅𐰆𐰤𐰀 𐰾𐰀𐰚𐰼𐰃𐰯𐰃𐰾𐰀 : 𐰘𐰀𐰠𐰠𐰆𐰆𐰾𐱅𐰆𐰤𐰀 𐰾BENJAMIN NETANYAHU𐰀𐰚𐰼𐰃𐰯𐰃𐰾𐰀 :
 
-we (yes YOU) love palantir and israel and the roblox world government and 
-support moderation and ai age verification
+![weep](https://pbs.twimg.com/media/G_9BP_1WQAANoOK?format=jpg&name=large)
 
-![weep](https://pbs.twimg.com/media/G_89GxrWAAAiwXY?format=jpg&name=900x900)
-
-i gave up in making a monorepo first
+## Development
 
 ```sh
 rokit install
 rojo plugin install
 lute serve
 ```
-
