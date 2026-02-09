@@ -4,6 +4,7 @@ local Shover = std.Mechanic({})
 export type ShoverMechanic = std.Mechanic<typeof(Shover)>
 Shover.instanceTag = "Shover"
 Shover.instanceType = std.isA.BasePart()
+Shover.debuggerEmoji = "🫸"
 
 type ShoverDirection = "In" | "Out"
 type ShoverDirectionAttributes = {

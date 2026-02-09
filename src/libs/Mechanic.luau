@@ -2,6 +2,7 @@ local HttpService = game:GetService("HttpService")
 
 local Attribute = require("@libs/Attribute")
 local Life = require("@libs/Life")
+local Log = require("./Log")
 local Result = require("@libs/Result")
 local functions = require("@libs/functions")
 local gt = require("@libs/gt")
@@ -29,6 +30,7 @@ export type MechanicImplementationMetadata = {
 ]=]
 export type Mechanic<Self> = Self & {
 	life: Life.Life,
+	log: Log.Log,
 	id: string,
 	implementation: Self,
 	instance: index<Self, "instanceType">,
@@ -153,6 +155,7 @@ function Mechanic.tryMechanize<Self>(
 		instance = instance,
 		instanceConfiguration = instanceConfiguration,
 	}, Mechanic._proxies[implementation])
+	mechanic.log = Log.new(mechanic)
 
 	return Result.Ok(mechanic :: any)
 end

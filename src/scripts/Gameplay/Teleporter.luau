@@ -6,6 +6,7 @@ local Teleporter = std.Mechanic({})
 export type TeleporterMechanic = std.Mechanic<typeof(Teleporter)>
 Teleporter.instanceTag = "Teleporter"
 Teleporter.instanceType = std.isA.BasePart()
+Teleporter.debuggerEmoji = "🌀"
 
 Teleporter.Id = Teleporter:attribute("Id", std.gt.optional(std.gt.string()), nil)
 Teleporter.KeepVelocity = Teleporter:attribute("KeepVelocity", std.gt.boolean(), true)

@@ -7,6 +7,9 @@ DebuggerStore.toolToDisable = Charm.atom(nil :: types.DebuggerTool?)
 DebuggerStore.enabledTools = Charm.atom({} :: { [types.DebuggerTool]: types.DebuggerTool })
 DebuggerStore.isOpen = Charm.atom(false)
 
+DebuggerStore.explorerExpandedInstances = Charm.atom({} :: { [Instance]: true? })
+DebuggerStore.explorerSelectedInstance = Charm.atom(nil :: Instance?)
+
 local defaults = {}
 for key, value in DebuggerStore :: { [string]: any } do
 	defaults[key] = value()

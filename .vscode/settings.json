@@ -6,7 +6,8 @@
         120
     ],
     "files.associations": {
-        ".luaurc": "jsonc"
+        ".luaurc": "jsonc",
+        ".zed/settings.json": "jsonc"
     },
     "luau-lsp.completion.imports.separateGroupsWithLine": true,
     "luau-lsp.completion.imports.stringRequires.enabled": true,

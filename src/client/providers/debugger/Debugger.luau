@@ -1,28 +1,34 @@
 local UserInputService = game:GetService("UserInputService")
 
--- local DebuggerOverlay = require("./DebuggerOverlay")
 local DebuggerStore = require("./DebuggerStore")
 local DebuggerToolbar = require("./DebuggerToolbar")
 local Iris = require("@libs/Iris")
 local Life = require("@libs/Life")
-local prvd = require("@shared/prvdmwrong/prvdmwrong")
 local tools = require("./tools")
 local types = require("./types")
 
-local DebuggerProvider = {}
-export type DebugProvider = typeof(DebuggerProvider)
-DebuggerProvider.renderDebuggerTab = prvd.lifecycle("renderDebuggerTab", prvd.fireSequential)
-DebuggerProvider.priority = math.huge
-
-function DebuggerProvider.constructor(self: DebugProvider)
-	self.life = Life.new()
-end
-
-function DebuggerProvider.onStart(self: DebugProvider)
-	Iris.Init()
-
+local function Debugger(life: Life.Life)
 	local windowEnabled = Iris.State(true)
-	Iris:Connect(function()
+
+	Iris.UpdateGlobalConfig({ WindowPadding = Vector2.new(4, 4), RichText = true })
+
+	life:add(UserInputService.InputBegan:Connect(function(input, isProcessed)
+		if isProcessed or input.KeyCode ~= Enum.KeyCode.F3 then
+			return
+		end
+
+		local isOpen = DebuggerStore.isOpen()
+		if isOpen then
+			for _, tool in DebuggerStore.enabledTools() do
+				tool.life:destroy()
+			end
+			DebuggerStore.reset()
+		else
+			DebuggerStore.isOpen(true)
+		end
+	end))
+
+	return function()
 		if not DebuggerStore.isOpen() then
 			return
 		end
@@ -63,7 +69,7 @@ function DebuggerProvider.onStart(self: DebugProvider)
 			DebuggerStore.toolToEnable(nil)
 			DebuggerStore.enabledTools(function(tools)
 				tools = table.clone(tools)
-				tools[toolToEnable] = toolToEnable.new(self.life:inner())
+				tools[toolToEnable] = toolToEnable.new(life:inner())
 				return tools
 			end)
 		end
@@ -79,28 +85,7 @@ function DebuggerProvider.onStart(self: DebugProvider)
 		end
 
 		windowEnabled:set(true)
-	end)
-
-	self.life:add(UserInputService.InputBegan:Connect(function(input, isProcessed)
-		if isProcessed or input.KeyCode ~= Enum.KeyCode.F3 then
-			return
-		end
-
-		local isOpen = DebuggerStore.isOpen()
-		if isOpen then
-			for _, tool in DebuggerStore.enabledTools() do
-				tool.life:destroy()
-			end
-			DebuggerStore.reset()
-		else
-			DebuggerStore.isOpen(true)
-		end
-	end))
+	end
 end
 
-function DebuggerProvider.onFinish(self: DebugProvider)
-	Iris.Shutdown()
-	self.life:destroy()
-end
-
-return prvd(DebuggerProvider)
+return Debugger

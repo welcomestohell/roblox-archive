@@ -1,30 +1,32 @@
+local Players = game:GetService("Players")
+
+local Log = require("@libs/Log")
 local input = require("@libs/combat/input")
 local prvd = require("@shared/prvdmwrong/prvdmwrong")
 
 local WeaponsProvider = {}
+export type WeaponsProvider = typeof(WeaponsProvider)
+WeaponsProvider.log = Log.new(WeaponsProvider)
 
-function WeaponsProvider.onStart()
-	print("weapons provider starting")
-
+function WeaponsProvider.onStart(self: WeaponsProvider)
 	local context = input.new("test")
 
 	context.Priority = 1000
-	context.Parent = game.Players.LocalPlayer.PlayerGui
+	context.Parent = Players.LocalPlayer.PlayerGui
 
 	local jump = context:CreateAction("Jump"):AddBinding("Keyboard", Enum.KeyCode.Space)
 
 	jump:OnPressed(function(state)
-		print("Jump Pressed! State:", state)
+		self.log:trace("Jump Pressed! State:", state)
 	end)
 		:OnReleased(function(state)
-			print("Jump released! State:", state)
+			self.log:trace("Jump released! State:", state)
 		end)
 		:OnStateChanged(function(state)
-			print("Jump state changed! State:", state)
+			self.log:trace("Jump state changed! State:", state)
 		end)
 end
 
 function WeaponsProvider.onFinish() end
 
-export type WeaponsProvider = typeof(WeaponsProvider)
 return prvd(WeaponsProvider)

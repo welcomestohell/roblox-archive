@@ -4,6 +4,7 @@ local Hidden = std.Mechanic({})
 export type Hidden = std.Mechanic<typeof(Hidden)>
 Hidden.instanceTag = "Hidden"
 Hidden.instanceType = std.isA.Instance()
+Hidden.debuggerEmoji = "👻"
 
 Hidden.HideDescendants = Hidden:attribute("HideDescendants", std.gt.boolean(), false)
 

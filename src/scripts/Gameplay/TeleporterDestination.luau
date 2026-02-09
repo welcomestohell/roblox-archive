@@ -4,6 +4,7 @@ local TeleporterDestination = std.Mechanic({})
 export type TeleporterDestinationMechanic = std.Mechanic<typeof(TeleporterDestination)>
 TeleporterDestination.instanceTag = "TeleporterDestination"
 TeleporterDestination.instanceType = std.isA.BasePart()
+TeleporterDestination.debuggerEmoji = "📍"
 
 TeleporterDestination.Id = std.Attribute("Id", std.gt.string())
 TeleporterDestination.Offset = std.Attribute("Offset", std.gt.CFrame(), CFrame.new(0, 2.5, 0))

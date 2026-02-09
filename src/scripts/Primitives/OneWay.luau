@@ -5,6 +5,7 @@ local OneWay = std.Mechanic({})
 export type OneWayMechanic = std.Mechanic<typeof(OneWay)>
 OneWay.instanceTag = "OneWay"
 OneWay.instanceType = std.isA.BasePart()
+OneWay.debuggerEmoji = "⛔"
 
 OneWay.Offset = OneWay:attribute("Offset", std.gt.CFrame(), CFrame.identity)
 

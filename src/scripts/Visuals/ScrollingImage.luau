@@ -4,6 +4,7 @@ local ScrollingImage = std.Mechanic({})
 export type ScrollingImageMechanic = std.Mechanic<typeof(ScrollingImage)>
 ScrollingImage.instanceTag = "ScrollingImage"
 ScrollingImage.instanceType = std.isA.ImageLabel()
+ScrollingImage.debuggerEmoji = "🖼️"
 
 ScrollingImage.Speed = ScrollingImage:attribute("Speed", std.gt.UDim2(), UDim2.new())
 ScrollingImage.BasePosition = ScrollingImage:attribute("BasePosition", std.gt.UDim2(), UDim2.new())

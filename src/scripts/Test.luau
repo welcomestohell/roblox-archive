@@ -12,6 +12,7 @@ local Test = std.Mechanic({})
 export type TestMechanic = std.Mechanic<typeof(Test)>
 Test.instanceTag = "Test"
 Test.instanceType = std.isA.Instance()
+Test.debuggerEmoji = "🧪"
 
 local DATA_TYPES: { [string]: any } = {
 	string = "Hello World",
@@ -61,5 +62,9 @@ Test:attribute(
 	std.gt.union3(functions.literal("Foo"), functions.literal("Bar"), functions.literal("Qux")),
 	"Foo"
 )
+
+function Test:onActivate(test: TestMechanic)
+	test.log:info("Activated!")
+end
 
 return Test
