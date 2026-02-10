@@ -12,9 +12,7 @@ function Touch.predicate(ctx: types.PredicateContext)
 end
 
 function Touch.implement(ctx: types.ActivationContext)
-	print("??? what")
 	ctx.activationLife:add((ctx.instance :: BasePart).Touched:Connect(function(toucher: BasePart)
-		print("???????what")
 		if touch.isToucherValid(ctx.instance, toucher) then
 			ctx:onActivate()
 		end

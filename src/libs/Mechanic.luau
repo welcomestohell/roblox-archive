@@ -98,54 +98,6 @@ function Mechanic.new<T>(implementation: T): setmetatable<T, typeof(Mechanic)>
 	return implementation
 end
 
-function Mechanic.isMechanicImplementation(x: any)
-	return typeof(x) == "table" and getmetatable(x) == Mechanic
-end
-
-function Mechanic.downcast(self: {}): setmetatable<MechanicImplementation, typeof(Mechanic)>
-	return self :: any
-end
-
-function Mechanic.getMetadata(self: {}): MechanicImplementationMetadata
-	return Mechanic._metadata[self]
-end
-
-function Mechanic.document<T>(self: T, _documentation: string)
-	return self
-end
-
-function Mechanic.attributeSection(self: {}, section: string)
-	Mechanic._metadata[self].currentAttributeSection = section
-end
-
-function Mechanic.attribute<T>(self: {}, name: string, type: T, default: T): Attribute.Attribute<T>
-	local attribute = Attribute.new(name, type, default)
-	table.insert(Mechanic._metadata[self].attributes, attribute)
-	Mechanic._metadata[self].sectionByAttribute[attribute] = Mechanic._metadata[self].currentAttributeSection
-	return attribute
-end
-
-function Mechanic.withAttribute<T>(self: {}, attribute: Attribute.Attribute<T>): Attribute.Attribute<T>
-	table.insert(Mechanic._metadata[self].attributes, attribute)
-	Mechanic._metadata[self].sectionByAttribute[attribute] = Mechanic._metadata[self].currentAttributeSection
-	return attribute
-end
-
--- Have to redeclare attributes like such to maintain the debugger's ordering...
-function Mechanic.withActivation(self: {})
-	Mechanic.attributeSection(self, "Activation")
-
-	return {
-		IsActivatable = Mechanic.withAttribute(self, activation.attributes.IsActivatable),
-		ActivationMode = Mechanic.withAttribute(self, activation.attributes.ActivationMode),
-
-		MaxActivationDistance = Mechanic.withAttribute(self, activation.attributes.MaxActivationDistance),
-		ActivationKeyCode = Mechanic.withAttribute(self, activation.attributes.ActivationKeyCode),
-		ActivationInterval = Mechanic.withAttribute(self, activation.attributes.ActivationInterval),
-		ActivationHumanoidStateType = Mechanic.withAttribute(self, activation.attributes.ActivationHumanoidStateType),
-	}
-end
-
 function Mechanic.tryMechanize<Self>(
 	implementation: Self,
 	outerLife: Life.Life,
@@ -180,6 +132,50 @@ function Mechanic.tryMechanize<Self>(
 	mechanic.log = Log.new(mechanic)
 
 	return Result.Ok(mechanic :: any)
+end
+
+function Mechanic.isMechanicImplementation(x: any)
+	return typeof(x) == "table" and getmetatable(x) == Mechanic
+end
+
+function Mechanic.downcast(self: {}): setmetatable<MechanicImplementation, typeof(Mechanic)>
+	return self :: any
+end
+
+function Mechanic.getMetadata(self: {}): MechanicImplementationMetadata
+	return Mechanic._metadata[self]
+end
+
+function Mechanic.attributeSection(self: {}, section: string)
+	Mechanic._metadata[self].currentAttributeSection = section
+end
+
+function Mechanic.attribute<T>(self: {}, name: string, type: T, default: T): Attribute.Attribute<T>
+	local attribute = Attribute.new(name, type, default)
+	table.insert(Mechanic._metadata[self].attributes, attribute)
+	Mechanic._metadata[self].sectionByAttribute[attribute] = Mechanic._metadata[self].currentAttributeSection
+	return attribute
+end
+
+function Mechanic.withAttribute<T>(self: {}, attribute: Attribute.Attribute<T>): Attribute.Attribute<T>
+	table.insert(Mechanic._metadata[self].attributes, attribute)
+	Mechanic._metadata[self].sectionByAttribute[attribute] = Mechanic._metadata[self].currentAttributeSection
+	return attribute
+end
+
+-- Have to redeclare attributes like such to maintain the debugger's ordering...
+function Mechanic.withActivation(self: {})
+	Mechanic.attributeSection(self, "Activation")
+
+	return {
+		IsActivatable = Mechanic.withAttribute(self, activation.attributes.IsActivatable),
+		ActivationMode = Mechanic.withAttribute(self, activation.attributes.ActivationMode),
+
+		MaxActivationDistance = Mechanic.withAttribute(self, activation.attributes.MaxActivationDistance),
+		ActivationKeyCode = Mechanic.withAttribute(self, activation.attributes.ActivationKeyCode),
+		ActivationInterval = Mechanic.withAttribute(self, activation.attributes.ActivationInterval),
+		ActivationHumanoidStateType = Mechanic.withAttribute(self, activation.attributes.ActivationHumanoidStateType),
+	}
 end
 
 function Mechanic.__tostring(self: MechanicImplementation)

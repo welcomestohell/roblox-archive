@@ -140,6 +140,14 @@ function Attribute.get<T>(self: Attribute<T>, instance: ResolvableInstance): T
 	return fetchAttribute(self :: any, resolved)
 end
 
+function Attribute.getOrSet<T>(self: Attribute<T>, instance: ResolvableInstance, default: T): T
+	local value = self._cache[resolveInstance(instance)]
+	if value == nil then
+		value = self:set(instance, default)
+	end
+	return value
+end
+
 function Attribute.set<T>(self: Attribute<T>, instance: ResolvableInstance, value: T): T
 	local resolved = resolveInstance(instance)
 	resolved:SetAttribute(self.attribute, value)
