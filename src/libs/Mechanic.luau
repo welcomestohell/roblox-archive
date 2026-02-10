@@ -4,6 +4,7 @@ local Attribute = require("@libs/Attribute")
 local Life = require("@libs/Life")
 local Log = require("./Log")
 local Result = require("@libs/Result")
+local activation = require("@libs/activation")
 local functions = require("@libs/functions")
 local gt = require("@libs/gt")
 
@@ -122,6 +123,27 @@ function Mechanic.attribute<T>(self: {}, name: string, type: T, default: T): Att
 	table.insert(Mechanic._metadata[self].attributes, attribute)
 	Mechanic._metadata[self].sectionByAttribute[attribute] = Mechanic._metadata[self].currentAttributeSection
 	return attribute
+end
+
+function Mechanic.withAttribute<T>(self: {}, attribute: Attribute.Attribute<T>): Attribute.Attribute<T>
+	table.insert(Mechanic._metadata[self].attributes, attribute)
+	Mechanic._metadata[self].sectionByAttribute[attribute] = Mechanic._metadata[self].currentAttributeSection
+	return attribute
+end
+
+-- Have to redeclare attributes like such to maintain the debugger's ordering...
+function Mechanic.withActivation(self: {})
+	Mechanic.attributeSection(self, "Activation")
+
+	return {
+		IsActivatable = Mechanic.withAttribute(self, activation.attributes.IsActivatable),
+		ActivationMode = Mechanic.withAttribute(self, activation.attributes.ActivationMode),
+
+		MaxActivationDistance = Mechanic.withAttribute(self, activation.attributes.MaxActivationDistance),
+		ActivationKeyCode = Mechanic.withAttribute(self, activation.attributes.ActivationKeyCode),
+		ActivationInterval = Mechanic.withAttribute(self, activation.attributes.ActivationInterval),
+		ActivationHumanoidStateType = Mechanic.withAttribute(self, activation.attributes.ActivationHumanoidStateType),
+	}
 end
 
 function Mechanic.tryMechanize<Self>(

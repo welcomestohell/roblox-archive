@@ -1,6 +1,7 @@
 local RunService = game:GetService("RunService")
 
 local Life = require("./Life")
+local Log = require("./Log")
 local Mechanic = require("./Mechanic")
 local Promise = require("@pkgs/Promise")
 local Result = require("./Result")
@@ -9,6 +10,21 @@ local activation = require("./activation")
 local functions = require("./functions")
 local gt = require("./gt")
 
+local log = Log.new("Level")
+
+--[=[
+	@class Level
+	@tag Class
+	@tag Library
+	
+	Orchestrator of scripts and mechanics in levels.
+
+	Levels can be traversed by the player with mechanics, level scripts, and
+	some starting positions. Alongside towers, Levels are also used to represent
+	chapter areas.
+
+	@internal This class should not be consumed by tower scripts.
+]=]
 local Level = {}
 Level.__index = Level
 Level.baseScripts = ScriptCollector.new()
@@ -120,31 +136,35 @@ function Level.start(self: Level)
 		if implementation.onInit then
 			table.insert(
 				initThreads,
-				Promise.try(implementation.onInit :: any, implementation, self) :: Promise.Promise
+				Promise.try(implementation.onInit, implementation, self):catch(function(e)
+					log:warn(`Failed to initialize mechanic implementation "{implementation.instanceTag}":`, e)
+				end)
 			)
 		end
 	end
 
-	Promise.all(initThreads)
-		:catch(function(e)
-			warn("Mechanic failed to initialize:", e)
-		end)
-		:await()
+	Promise.all(initThreads):await()
 
-	for _, mechanic: any in self.mechanics do
-		if mechanic.implementation.onStart then
-			self.life:add(task.spawn(mechanic.implementation.onStart, mechanic.implementation, mechanic, self))
+	for _, mechanic in self.mechanics do
+		local implementation: Mechanic.MechanicImplementation = mechanic.implementation
+		if implementation.onStart then
+			self.life:add(task.spawn(implementation.onStart, implementation, mechanic, self))
 		end
 
-		if mechanic.implementation.onActivate then
-			activation.onActivated(
-				mechanic.life,
-				mechanic.instance,
-				mechanic.instanceConfiguration or mechanic.instance,
-				function()
-					(mechanic.implementation :: any).onActivate(mechanic.implementation, mechanic, self)
-				end
-			)
+		if implementation.onActivated then
+			log:warn(`{implementation.instanceTag} implemented \`onActivated\`, did you mean \`onActivate\`?`)
+		end
+
+		if implementation.onActivate then
+			activation.bindActivation({
+				activationLife = mechanic.life,
+				instanceLife = mechanic.life,
+				instance = mechanic.instance,
+				instanceConfiguration = mechanic.instanceConfiguration or mechanic.instance,
+				onActivate = function(ctx: activation.ActivationContext)
+					implementation:onActivate(mechanic, self)
+				end,
+			})
 		end
 	end
 
