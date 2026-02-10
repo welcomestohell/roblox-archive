@@ -32,7 +32,7 @@ local function shove(direction: ShoverDirection, shover: ShoverMechanic)
 
 	task.wait(attributes.delay(shover))
 
-	if shover:Enabled() then
+	if shover:IsEnabled() then
 		local power = attributes.power(shover)
 		for _, descendant in pairs(shover.instance:GetDescendants()) do
 			if descendant.Name == "ShoverConstraint" and descendant:IsA("PrismaticConstraint") then
@@ -49,7 +49,7 @@ function Shover:onPreSimulation(_, level: std.Level)
 	for _, shover: ShoverMechanic in level:getMechanics(Shover) do
 		if not threads[shover] then
 			threads[shover] = level.life:add(task.spawn(function()
-				while self:Enabled() do
+				while self:IsEnabled() do
 					shove("In", shover)
 					shove("Out", shover)
 				end

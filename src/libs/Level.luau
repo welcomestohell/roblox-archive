@@ -147,12 +147,12 @@ function Level.start(self: Level)
 
 	for _, mechanic in self.mechanics do
 		local implementation: Mechanic.MechanicImplementation = mechanic.implementation
-		if implementation.onStart then
-			self.life:add(task.spawn(implementation.onStart, implementation, mechanic, self))
-		end
 
 		if implementation.onActivated then
-			log:warn(`{implementation.instanceTag} implemented \`onActivated\`, did you mean \`onActivate\`?`)
+			log:warn(`\
+				{implementation.instanceTag} implemented \`onActivated\` which has no behavior, \
+				did you mean \`onActivate\`?\
+			`)
 		end
 
 		if implementation.onActivate then
@@ -165,6 +165,10 @@ function Level.start(self: Level)
 					implementation:onActivate(mechanic, self)
 				end,
 			})
+		end
+
+		if implementation.onStart then
+			self.life:add(task.spawn(implementation.onStart, implementation, mechanic, self))
 		end
 	end
 

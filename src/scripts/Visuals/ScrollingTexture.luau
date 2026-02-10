@@ -19,7 +19,7 @@
 -- 		level.life:add(RunService.PreRender:Connect(function(dt: number)
 -- 			local lifetime = level:getLifetime()
 -- 			for _, texture in level:getMechanics(self) do
--- 				if not texture:Enabled() then
+-- 				if not texture:IsEnabled() then
 -- 					continue
 -- 				end
 

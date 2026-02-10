@@ -2,7 +2,7 @@ local Attribute = require("@libs/Attribute")
 local gt = require("@libs/gt")
 
 return table.freeze {
-	IsActivatable = Attribute.new("Activatable", gt.boolean(), false),
+	IsActivatable = Attribute.new("IsActivatable", gt.boolean(), false),
 	ActivationMode = Attribute.new("ActivationMode", gt.string()),
 
 	MaxActivationDistance = Attribute.new("MaxActivationDistance", gt.positiveNumber),

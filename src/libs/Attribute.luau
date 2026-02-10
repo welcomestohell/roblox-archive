@@ -39,7 +39,7 @@ export type Attribute<T> = setmetatable<{
 }, typeof(Attribute)>
 
 local function resolveInstance(resolvable: ResolvableInstance): Instance
-	if type(resolvable) == "userdata" then
+	if typeof(resolvable) == "Instance" then
 		return resolvable
 	else
 		return resolvable.instanceConfiguration or resolvable.instance

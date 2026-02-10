@@ -2,10 +2,12 @@ local Result = require("@libs/Result")
 local attributes = require("@self/attributes")
 local functions = require("@libs/functions")
 local gt = require("@libs/gt")
+local log = require("@self/log")
 local types = require("@self/types")
 local utils = require("@libs/activation/utils")
 
 export type PredicateContext = types.PredicateContext
+export type BindContext = types.BindContext
 export type ActivationContext = types.ActivationContext
 export type ActivationMode = types.ActivationMode
 
@@ -46,6 +48,7 @@ end
 export type ActivationError = { id: "noMode" } | { id: "unknownMode" } | { id: "predicateFailed", error: string }
 
 local function activate(ctx: types.ActivationContext): Result.Result<nil, ActivationError>
+	log:trace("Activate", ctx.instance:GetFullName())
 	local modeKey = attributes.ActivationMode(ctx.instanceConfiguration)
 	if modeKey then
 		local mode: ActivationMode? = modes[modeKey]
@@ -70,18 +73,26 @@ local function activate(ctx: types.ActivationContext): Result.Result<nil, Activa
 	return Result.Err({ id = functions.literal "noMode" })
 end
 
-local function bindActivation(ctx: types.ActivationContext)
+local function bindActivation(bindCtx: BindContext)
+	local ctx = table.clone(bindCtx) :: ActivationContext
 	local life = ctx.instanceLife:inner()
-	local activationLife = life:inner()
+	ctx.activationLife = life:inner()
 
-	life:add(attributes.IsActivatable:onBind(ctx.instanceConfiguration, function(isActivatable)
-		activationLife:destroy()
-		activationLife = life:inner()
+	local function update()
+		ctx.activationLife:destroy()
+		ctx.activationLife = life:inner()
 
-		if isActivatable then
-			activate(ctx)
+		if attributes.IsActivatable(ctx.instanceConfiguration) then
+			local result = activate(ctx)
+			if result:isErr() then
+				log:warn("Failed to bind activation for", ctx.instance:GetFullName(), "because:", result:unwrapErr())
+			end
 		end
-	end))
+	end
+
+	log:trace("Binding activation to", ctx.instance:GetFullName())
+	life:add(attributes.IsActivatable:onBind(ctx.instanceConfiguration, update))
+	life:add(attributes.ActivationMode:onBind(ctx.instanceConfiguration, update))
 end
 
 return table.freeze {

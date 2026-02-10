@@ -11,7 +11,7 @@ Conveyor.SynchronizeBeams = Conveyor:attribute("SynchronizeBeams", std.gt.boolea
 
 function Conveyor:onPreSimulation(deltaTime: number, level: std.Level)
 	for _, conveyor in level:getMechanics(Conveyor) do
-		local speed: number = conveyor:Enabled() and conveyor:Speed() or 0
+		local speed: number = conveyor:IsEnabled() and conveyor:Speed() or 0
 		conveyor.instance.AssemblyLinearVelocity = conveyor.instance.CFrame.LookVector * speed
 
 		if conveyor:SynchronizeBeams() then

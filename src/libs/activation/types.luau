@@ -7,10 +7,13 @@ export type PredicateContext = {
 	instanceConfiguration: Instance,
 }
 
-export type ActivationContext = PredicateContext & {
-	activationLife: Life.Life,
+export type BindContext = PredicateContext & {
 	instanceLife: Life.Life,
 	onActivate: (ctx: ActivationContext) -> (),
+}
+
+export type ActivationContext = BindContext & {
+	activationLife: Life.Life,
 }
 
 local ActivationMode = gt.build(gt.table({

@@ -21,7 +21,7 @@ function OneWay:onPreSimulation(deltaTime: number, level: std.Level)
 		local instance: BasePart = platform.instance
 
 		-- this is nil for some reason???
-		local enabled: boolean = platform:Enabled()
+		local enabled: boolean = platform:IsEnabled()
 
 		if enabled then
 			local _offset: CFrame = platform:Offset()

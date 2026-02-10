@@ -69,7 +69,7 @@ local Mechanic = {}
 Mechanic.__index = Mechanic
 Mechanic._metadata = {} :: { [{}]: MechanicImplementationMetadata }
 Mechanic._proxies = {} :: { [{}]: {} }
-Mechanic.Enabled = Attribute.new("Enabled", gt.boolean(), false)
+Mechanic.IsEnabled = Attribute.new("IsEnabled", gt.boolean(), false)
 
 local function initializeProxy(implementation: {})
 	local proxy = {}

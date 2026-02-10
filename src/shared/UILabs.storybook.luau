@@ -4,6 +4,5 @@ local UILabs = require("@pkgs/UILabs")
 
 return {
 	name = "Welcome To Hell",
-	storyRoots = ReplicatedStorage.Internal:GetChildren(),
-	groupRoots = true,
+	storyRoots = { ReplicatedStorage.Internal },
 } :: UILabs.Storybook
