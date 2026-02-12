@@ -28,6 +28,7 @@ local log = Log.new("Level")
 local Level = {}
 Level.__index = Level
 Level.baseScripts = ScriptCollector.new()
+Level.activeLevels = {} :: { Level }
 
 Level.LevelInstance = gt.build(gt.instanceTree({
 	Mechanics = gt.Instance(),
@@ -82,22 +83,20 @@ end
 
 function Level.loadMechanicsFromInstance(self: Level, instance: Instance)
 	for _, tag in instance:GetTags() do
-		local implementations = self.scripts.mechanicImplementationsByTag[tag]
-		if implementations then
-			for _, implementation in implementations do
-				local mechanicResult = Mechanic.tryMechanize(implementation, self.life, instance)
-				if mechanicResult:isOk() then
-					local mechanic = mechanicResult:unwrap()
+		local implementation = self.scripts.mechanicImplementationByTag[tag]
+		if implementation then
+			local mechanicResult = Mechanic.tryMechanize(implementation, self.life, instance)
+			if mechanicResult:isOk() then
+				local mechanic = mechanicResult:unwrap()
 
-					table.insert(self.mechanics :: any, mechanic)
+				table.insert(self.mechanics :: any, mechanic)
 
-					local mechanicsByImplementations = self.mechanicsByImplementations[implementation]
-					if not mechanicsByImplementations then
-						mechanicsByImplementations = {}
-						self.mechanicsByImplementations[implementation] = mechanicsByImplementations
-					end
-					table.insert(mechanicsByImplementations :: any, mechanic)
+				local mechanicsByImplementations = self.mechanicsByImplementations[implementation]
+				if not mechanicsByImplementations then
+					mechanicsByImplementations = {}
+					self.mechanicsByImplementations[implementation] = mechanicsByImplementations
 				end
+				table.insert(mechanicsByImplementations :: any, mechanic)
 			end
 		end
 	end
@@ -187,6 +186,11 @@ function Level.start(self: Level)
 	self.life:add(RunService.PreAnimation:Connect(function(deltaTime)
 		self:spawnMechanicImplementationMethod("onPreAnimation", deltaTime, self)
 	end))
+
+	table.insert(Level.activeLevels, self)
+	self.life:add(function()
+		table.remove(Level.activeLevels, table.find(Level.activeLevels, self))
+	end)
 end
 
 function Level.__tostring(self: Level)

@@ -1,17 +1,21 @@
 local Mechanic = require("./Mechanic")
+local functions = require("./functions")
+local tables = require("./tables")
 
 local ScriptCollector = {}
 ScriptCollector.__index = ScriptCollector
 
 export type ScriptCollector = setmetatable<{
 	mechanicImplementations: { Mechanic.MechanicImplementation },
-	mechanicImplementationsByTag: { [string]: { Mechanic.MechanicImplementation } },
+	mechanicImplementationByTag: { [string]: Mechanic.MechanicImplementation },
+	mechanicTags: { string },
 }, typeof(ScriptCollector)>
 
 function ScriptCollector.new(): ScriptCollector
 	return setmetatable({
 		mechanicImplementations = {},
-		mechanicImplementationsByTag = {},
+		mechanicImplementationByTag = {},
+		mechanicTags = {},
 	}, ScriptCollector)
 end
 
@@ -20,13 +24,14 @@ function ScriptCollector.tryMechanicImplementation(
 	implementation: Mechanic.MechanicImplementation
 )
 	if Mechanic.isMechanicImplementation(implementation) then
-		local tagged = self.mechanicImplementationsByTag[implementation.instanceTag]
-		if not tagged then
-			tagged = {}
-			self.mechanicImplementationsByTag[implementation.instanceTag] = tagged
+		local tagged = self.mechanicImplementationByTag[implementation.instanceTag]
+		if tagged then
+			error("Duplicate mechanic found")
 		end
-		table.insert(tagged, implementation)
+		self.mechanicImplementationByTag[implementation.instanceTag] = implementation
 		table.insert(self.mechanicImplementations, implementation)
+		table.insert(self.mechanicTags, implementation.instanceTag)
+		table.sort(self.mechanicTags)
 	end
 end
 
@@ -56,7 +61,8 @@ end
 function ScriptCollector.clone(self: ScriptCollector): ScriptCollector
 	return setmetatable({
 		mechanicImplementations = table.clone(self.mechanicImplementations),
-		mechanicImplementationsByTag = table.clone(self.mechanicImplementationsByTag),
+		mechanicImplementationByTag = table.clone(self.mechanicImplementationByTag),
+		mechanicTags = table.clone(self.mechanicTags),
 	}, ScriptCollector)
 end
 

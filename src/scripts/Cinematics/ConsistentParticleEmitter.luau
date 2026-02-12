@@ -1,5 +1,4 @@
 local std = require("@libs/std")
-local tables = require("@libs/tables")
 
 local ConsistentParticleEmitter = std.Mechanic({})
 export type ConsistentParticleEmitterMechanic = std.Mechanic<typeof(ConsistentParticleEmitter)>

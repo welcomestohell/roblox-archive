@@ -34,8 +34,8 @@ export type Attribute<T> = setmetatable<{
 	_updated: { [Instance]: true },
 	_observers: { [Instance]: RBXScriptConnection? },
 	_observerCallbacks: { [Instance]: () -> ()? },
-	_changeListeners: { [Instance]: { [(value: T, attribute: any) -> ()?]: true } },
-	_fetchListeners: { [Instance]: { [(value: T, attribute: any) -> ()?]: true } },
+	_changeListeners: { [Instance]: { [(value: T, attribute: any) -> ()]: true } },
+	_fetchListeners: { [Instance]: { [(value: T, attribute: any) -> ()]: true } },
 }, typeof(Attribute)>
 
 local function resolveInstance(resolvable: ResolvableInstance): Instance
@@ -99,6 +99,31 @@ local function fetchAttribute(self: Attribute<any>, instance: Instance)
 	return value
 end
 
+local function observeListener<T>(
+	attribute: Attribute<T>,
+	instance: ResolvableInstance,
+	listeners: { [Instance]: { [(value: T, attribute: Attribute<T>) -> ()]: true } },
+	listener: (value: T, attribute: Attribute<T>) -> ()
+): () -> ()
+	local resolved = resolveInstance(instance)
+	local listeners = listeners[resolved] :: {}
+	if not listeners then
+		listeners = tables.weak("k") :: any
+		listeners[resolved] = listeners
+	end
+
+	listeners[listener] = true
+
+	local function disconnect()
+		listeners[listener] = nil
+		if next(listeners) == nil then
+			listeners[resolved] = nil
+		end
+	end
+
+	return disconnect
+end
+
 local function new(attribute: any, check: any, defaultValue: any): Attribute<any>
 	return setmetatable({
 		attribute = attribute,
@@ -148,6 +173,14 @@ function Attribute.getOrSet<T>(self: Attribute<T>, instance: ResolvableInstance,
 	return value
 end
 
+function Attribute.getOrSetWith<T>(self: Attribute<T>, instance: ResolvableInstance, derive: () -> T): T
+	local value = self._cache[resolveInstance(instance)]
+	if value == nil then
+		value = self:set(instance, derive())
+	end
+	return value
+end
+
 function Attribute.set<T>(self: Attribute<T>, instance: ResolvableInstance, value: T): T
 	local resolved = resolveInstance(instance)
 	resolved:SetAttribute(self.attribute, value)
@@ -163,36 +196,13 @@ function Attribute.assert<T>(self: Attribute<T?>, instance: ResolvableInstance, 
 	return value
 end
 
--- TODO: implement this when the debugger is made
-function Attribute.document<T>(self: Attribute<T>, _documentation: string): Attribute<T>
-	return self
-end
-
--- TODO: don't repeat yourself
-
 -- (lazily evaluated)
 function Attribute.onFetch<T>(
 	self: Attribute<T>,
 	instance: ResolvableInstance,
 	listener: (value: T, attribute: Attribute<T>) -> ()
 ): () -> ()
-	local resolved = resolveInstance(instance)
-	local listeners = self._fetchListeners[resolved] :: {}
-	if not listeners then
-		listeners = tables.weak("k") :: any
-		self._fetchListeners[resolved] = listeners
-	end
-
-	listeners[listener] = true
-
-	local function disconnect()
-		listeners[listener] = nil
-		if next(listeners) == nil then
-			self._fetchListeners[resolved] = nil
-		end
-	end
-
-	return disconnect
+	return observeListener(self, instance, self._fetchListeners, listener)
 end
 
 -- (eagerly evaluated)
@@ -201,25 +211,7 @@ function Attribute.onChange<T>(
 	instance: ResolvableInstance,
 	listener: (value: T, attribute: Attribute<T>) -> ()
 ): () -> ()
-	local resolved = resolveInstance(instance)
-	local listeners = self._changeListeners[resolved] :: {}
-	if not listeners then
-		listeners = tables.weak("k") :: any
-		self._changeListeners[resolved] = listeners
-	end
-
-	listeners[listener] = true
-
-	local function disconnect()
-		listeners[listener] = nil
-		if next(listeners) == nil then
-			self._changeListeners[resolved] = nil
-		end
-	end
-
-	observeChanges(self, self.attribute, resolved)
-
-	return disconnect
+	return observeListener(self, instance, self._changeListeners, listener)
 end
 
 function Attribute.onBind<T>(
@@ -233,6 +225,12 @@ end
 
 function Attribute.__call<T>(self: Attribute<T>, instance: ResolvableInstance, ...: T): T
 	return if select("#", ...) == 0 then self:get(instance) else self:set(instance, ...)
+end
+
+function Attribute.__tostring<T>(self: Attribute<T>)
+	return if self.check
+		then `Attribute<{self.check:format()}>("{self.attribute}")`
+		else `Attribute("{self.attribute}")`
 end
 
 return Attribute
