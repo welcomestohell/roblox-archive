@@ -34,11 +34,19 @@ local function deepCopy<T>(target: T & {})
 	return clone
 end
 
+local function findAndRemove<T>(haystack: { T }, needle: T)
+	local index = table.find(haystack, needle)
+	if index then
+		table.remove(haystack, index)
+	end
+end
+
 return table.freeze {
 	keys = keys,
 	values = values,
 	weak = weak,
 	deepCopy = deepCopy,
+	findAndRemove = findAndRemove,
 
 	create = table.create :: ((count: number) -> { any }) & (<V>(count: number, value: V) -> { V }),
 }

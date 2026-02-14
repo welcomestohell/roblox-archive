@@ -1,4 +1,5 @@
 local destroy = require("./destroy")
+local tables = require("./tables")
 
 local Life = {}
 Life.__index = Life
@@ -32,13 +33,13 @@ function Life.addMany<T...>(self: Life, ...: T...)
 end
 
 function Life.remove<T>(self: Life, bound: T): T
-	table.remove(self.destroyables, table.find(self.destroyables, bound))
+	tables.findAndRemove(self.destroyables, bound)
 	return bound
 end
 
 function Life.removeMany<T...>(self: Life, ...: T...): T...
 	for index = 1, select("#", ...) do
-		table.remove(self.destroyables, table.find(self.destroyables, select(index, ...) :: destroy.Destroyable))
+		tables.findAndRemove(self.destroyables, select(index, ...))
 	end
 	return ...
 end
@@ -48,10 +49,7 @@ function Life.removeAll(self: Life)
 end
 
 function Life.connect(self: Life, signal: RBXScriptSignal, fn: () -> ()): RBXScriptConnection
-	return Life.add(
-		self,
-		signal:Connect(fn)
-	)
+	return Life.add(self, signal:Connect(fn))
 end
 
 function Life.tie(self: Life, signal: RBXScriptSignal): RBXScriptConnection

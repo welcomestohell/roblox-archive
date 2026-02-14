@@ -1,4 +1,5 @@
 local std = require("@libs/std")
+local tables = require("@libs/tables")
 
 local TeleporterDestination = std.Mechanic({})
 export type TeleporterDestinationMechanic = std.Mechanic<typeof(TeleporterDestination)>
@@ -17,7 +18,7 @@ function TeleporterDestination:onStart(destination: TeleporterDestinationMechani
 	destination.Id:onBind(destination, function(newId: string?)
 		if oldId then
 			local oldIdDestinations = destinationsById[oldId]
-			table.remove(oldIdDestinations, table.find(oldIdDestinations, destination))
+			tables.findAndRemove(oldIdDestinations, destination)
 		end
 
 		if newId then

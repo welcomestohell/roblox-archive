@@ -1,3 +1,4 @@
+local Log = require("./Log")
 local gt = require("@pkgs/gt")
 local tables = require(script.Parent.tables)
 
@@ -21,6 +22,8 @@ export type AttributeValue =
 -- LUAU FIXME: Can't require the Mechanic class due to cyclic dependencies, so
 -- we specify a proxy type.
 export type ResolvableInstance = any
+
+local log = Log.new("Attribute")
 
 local Attribute = {}
 Attribute.__index = Attribute
@@ -83,6 +86,23 @@ end
 local function fetchAttribute(self: Attribute<any>, instance: Instance)
 	local attribute = self.attribute
 	local value: any = instance:GetAttribute(attribute)
+
+	if self.check then
+		local isValid, invalidCause = self.check:matches(value)
+		if not isValid then
+			if value ~= nil then
+				log:warn(
+					"Instance",
+					instance,
+					"has invalid value set for attribute named",
+					string.format("%q", self.attribute) .. ": ",
+					invalidCause
+				)
+			end
+
+			value = self.defaultValue
+		end
+	end
 
 	self._cache[instance] = value
 	self._updated[instance] = true

@@ -7,7 +7,7 @@
 			"local ${0:$TM_FILENAME_BASE} = {}",
 			"${0:$TM_FILENAME_BASE}.__index = ${0:$TM_FILENAME_BASE}",
 			"",
-			"export type ${0:$TM_FILENAME_BASE} = setmetatable<{}, ${0:$TM_FILENAME_BASE}>",
+			"export type ${0:$TM_FILENAME_BASE} = setmetatable<{}, typeof(${0:$TM_FILENAME_BASE})>",
 			"",
 			"function ${0:$TM_FILENAME_BASE}.new()",
 			"\treturn setmetatable({}, ${0:$TM_FILENAME_BASE})",

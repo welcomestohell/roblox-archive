@@ -9,6 +9,7 @@ local ScriptCollector = require("./ScriptCollector")
 local activation = require("./activation")
 local functions = require("./functions")
 local gt = require("./gt")
+local tables = require("./tables")
 
 local log = Log.new("Level")
 
@@ -189,7 +190,7 @@ function Level.start(self: Level)
 
 	table.insert(Level.activeLevels, self)
 	self.life:add(function()
-		table.remove(Level.activeLevels, table.find(Level.activeLevels, self))
+		tables.findAndRemove(Level.activeLevels, self)
 	end)
 end
 
