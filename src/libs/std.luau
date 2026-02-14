@@ -6,6 +6,7 @@ local gt = require("./gt")
 
 export type Mechanic<Self = any> = Mechanic.Mechanic<Self>
 export type MechanicImplementation = Mechanic.MechanicImplementation
+export type MechanicImplementationLike = Mechanic.MechanicImplementationLike
 export type MechanicImplementationMetadata = Mechanic.MechanicImplementationMetadata
 
 export type Level = Level.Level

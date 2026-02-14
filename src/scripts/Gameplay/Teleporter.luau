@@ -1,6 +1,7 @@
 local TeleporterDestination = require("./TeleporterDestination")
 local character = require("@libs/character")
 local std = require("@libs/std")
+local tweens = require("@libs/tweens")
 
 local Teleporter = std.Mechanic({})
 export type TeleporterMechanic = std.Mechanic<typeof(Teleporter)>
@@ -14,14 +15,14 @@ Teleporter.Cooldown = Teleporter:attribute("Cooldown", std.gt.number(), 0)
 Teleporter.PlaySound = Teleporter:attribute("PlaySound", std.gt.boolean(), true)
 Teleporter.Offset = Teleporter:attribute("Offset", std.gt.CFrame(), CFrame.identity)
 
-Teleporter:attributeSection("Seamless Teleportation")
+Teleporter:attributeSection("Seamlessness")
 Teleporter.Seamless = Teleporter:attribute("Seamless", std.gt.boolean(), true)
-Teleporter.SeamlessMeasurement = Teleporter:attribute(
-	"SeamlessMeasurement",
-	std.gt.union2(std.gt.literal("Relative"), std.gt.literal("World")),
-	"Relative"
-)
+Teleporter.SeamlessMeasurement =
+	Teleporter:attribute("SeamlessMeasurement", std.gt.union2(std.gt.literal("Relative"), std.gt.literal("World")), "Relative")
 Teleporter.SeamlessOverflow = Teleporter:attribute("SeamlessOverflow", std.gt.boolean(), false)
+
+Teleporter:attributeSection("Transitions")
+Teleporter.Transition = tweens.useTweenAttributes(Teleporter)
 
 Teleporter.debounce = false
 Teleporter.debouncedTeleporters = {} :: { [TeleporterMechanic]: true }
@@ -94,36 +95,29 @@ function Teleporter:onActivate(teleporter: TeleporterMechanic, level: std.Level)
 	local originalLinearVelocity = root.AssemblyLinearVelocity
 	local originalAngularVelocity = root.AssemblyAngularVelocity
 
-	local targetDestination = if len == 1
-		then first
-		else allDestinations[Random.new(os.clock() ^ 2):NextInteger(1, len)]
+	local targetDestination = if len == 1 then first else allDestinations[Random.new(os.clock() ^ 2):NextInteger(1, len)]
 
 	if teleporter:PlaySound() then
 		-- prelude.inferAndPlaySound(teleporter, prelude.AUDIO_ASSETS["core/towerSfx/teleport"], "TeleportSound")
 	end
 
 	local targetCFrame = teleporter:calculateTeleportCFrame(targetDestination, root)
-	-- local config = prelude.tweenConfigFromAttributes(teleporter, "Transition")
-
-	local wasAnchored = root.Anchored
-	-- if not config.time or config.time == 0 then
-	root:PivotTo(targetCFrame)
-	-- else
-	-- 	root.Anchored = true
-	-- 	prelude.tween(root, { CFrame = targetCFrame }, config).Completed:Wait()
-	-- 	root = prelude.getMaybeHumanoidRootPart()
-	-- end
-
-	if root then
+	local transition = tweens.configurationFromAttributes(teleporter.Transition, teleporter)
+	if transition and transition.duration and transition.duration > 0 then
+		local wasAnchored = root.Anchored
+		root.Anchored = true
+		tweens.play(root, { CFrame = targetCFrame }, transition)
 		root.Anchored = wasAnchored
-		if teleporter:KeepVelocity() then
-			root.AssemblyLinearVelocity = originalLinearVelocity
-			root.AssemblyAngularVelocity = originalAngularVelocity
-		end
+	else
+		root:PivotTo(targetCFrame)
+	end
+
+	if root and teleporter:KeepVelocity() then
+		root.AssemblyLinearVelocity = originalLinearVelocity
+		root.AssemblyAngularVelocity = originalAngularVelocity
 	end
 
 	Teleporter.debounce = false
-	-- teleporter:Activatable(true)
 end
 
 return Teleporter

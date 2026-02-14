@@ -71,6 +71,8 @@ Mechanic._metadata = {} :: { [{}]: MechanicImplementationMetadata }
 Mechanic._proxies = {} :: { [{}]: {} }
 Mechanic.IsEnabled = Attribute.new("IsEnabled", gt.boolean(), false)
 
+export type MechanicImplementationLike<Self = {}> = setmetatable<Self, typeof(Mechanic)>
+
 local function initializeProxy(implementation: {})
 	local proxy = {}
 	proxy.__index = implementation
