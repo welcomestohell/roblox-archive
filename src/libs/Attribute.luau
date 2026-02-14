@@ -140,8 +140,7 @@ local function new(attribute: any, check: any, defaultValue: any): Attribute<any
 end
 
 Attribute.new = new :: (
-	& (<T>(attribute: string, check: T, defaultValue: T) -> Attribute<T>)
-	& (<T>(attribute: string, check: T) -> Attribute<T?>)
+	& (<T>(attribute: string, check: T, defaultValue: T) -> Attribute<T>) & (<T>(attribute: string, check: T) -> Attribute<T?>)
 )
 
 function Attribute.peek<T>(self: Attribute<T>, instance: ResolvableInstance): T
@@ -156,43 +155,51 @@ end
 
 function Attribute.get<T>(self: Attribute<T>, instance: ResolvableInstance): T
 	local resolved = resolveInstance(instance)
+
 	if self._updated[resolved] then
 		local cached = self._cache[resolved]
 		if cached == nil then
 			return self.defaultValue
 		end
 	end
+
 	return fetchAttribute(self :: any, resolved)
 end
 
 function Attribute.getOrSet<T>(self: Attribute<T>, instance: ResolvableInstance, default: T): T
-	local value = self._cache[resolveInstance(instance)]
+	local value = self:get(instance)
+
 	if value == nil then
 		value = self:set(instance, default)
 	end
+
 	return value
 end
 
 function Attribute.getOrSetWith<T>(self: Attribute<T>, instance: ResolvableInstance, derive: () -> T): T
-	local value = self._cache[resolveInstance(instance)]
+	local value = self:get(instance)
+
 	if value == nil then
 		value = self:set(instance, derive())
 	end
+
 	return value
 end
 
 function Attribute.set<T>(self: Attribute<T>, instance: ResolvableInstance, value: T): T
 	local resolved = resolveInstance(instance)
+
 	resolved:SetAttribute(self.attribute, value)
+
+	self._cache[resolved] = value
+	self._updated[resolved] = true
+
 	return value
 end
 
 function Attribute.assert<T>(self: Attribute<T?>, instance: ResolvableInstance, message: string?): T
 	local value = Attribute.get(self :: any, instance)
-	assert(
-		value ~= nil,
-		message or `Instance {resolveInstance(instance):GetFullName()} is missing attribute {self.attribute}!`
-	)
+	assert(value ~= nil, message or `Instance {resolveInstance(instance):GetFullName()} is missing attribute {self.attribute}!`)
 	return value
 end
 
@@ -228,9 +235,7 @@ function Attribute.__call<T>(self: Attribute<T>, instance: ResolvableInstance, .
 end
 
 function Attribute.__tostring<T>(self: Attribute<T>)
-	return if self.check
-		then `Attribute<{self.check:format()}>("{self.attribute}")`
-		else `Attribute("{self.attribute}")`
+	return if self.check then `Attribute<{self.check:format()}>("{self.attribute}")` else `Attribute("{self.attribute}")`
 end
 
 return Attribute
