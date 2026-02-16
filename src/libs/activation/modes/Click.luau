@@ -1,7 +1,7 @@
 local Players = game:GetService("Players")
 
 local types = require("../types")
-local useChildOfClass = require("@libs/activation2/useChildOfClass")
+local useChildOfClass = require("../useChildOfClass")
 
 local Click = {} :: types.ActivationMode
 

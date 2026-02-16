@@ -15,6 +15,7 @@ Follower.instanceType = std.isA.BasePart()
 Follower.debuggerEmoji = "👀"
 
 Follower.Enabled = Follower:withEnabled()
+
 Follower.FollowMode = Follower:attribute(
 	"FollowMode",
 	std.gt.unionLiterals5("LookAt", "RotationOf", "PositionOf", "PivotOf", "None"),
@@ -22,13 +23,14 @@ Follower.FollowMode = Follower:attribute(
 )
 
 Follower.FollowTarget = Follower:attribute(
-	"FollowMode",
+	"FollowTarget",
 	std.gt.unionLiterals5("Character", "Mouse", "Camera", "Pointer", "None"),
 	"None" :: "None"
 )
 
-Follower.UseRelativeTransform = Follower:attribute("UseRelativeTransform", std.gt.boolean(), false)
-Follower.BaseTransform = Follower:attribute("BaseTransform", std.gt.optional(std.gt.CFrame()), nil)
+Follower:attributeSection("Origin")
+Follower.Origin = Follower:attribute("Origin", std.gt.optional(std.gt.CFrame()), nil)
+Follower.UseOriginRotation = Follower:attribute("UseOriginRotation", std.gt.boolean(), false)
 
 Follower:attributeSection("Position Axes")
 Follower.UseXPosition = Follower:attribute("UseXPosition", std.gt.boolean(), true)
@@ -40,8 +42,8 @@ Follower.UseXRotation = Follower:attribute("UseXRotation", std.gt.boolean(), tru
 Follower.UseYRotation = Follower:attribute("UseYRotation", std.gt.boolean(), true)
 Follower.UseZRotation = Follower:attribute("UseZRotation", std.gt.boolean(), true)
 
-Follower:attributeSection("Interpolation")
-Follower.Lerp = Follower:attribute("Lerp", std.gt.boolean(), false)
+Follower:attributeSection("Smoothness")
+Follower.Smooth = Follower:attribute("Smooth", std.gt.boolean(), false)
 Follower.Responsiveness = Follower:attribute("Responsiveness", std.gt.positiveNumber, 1)
 
 export type FollowMode = typeof(Follower.FollowMode:type())
@@ -62,18 +64,22 @@ function Follower.getTargetCFrame(target: FollowTarget): CFrame?
 end
 
 function Follower:onStart(follower: FollowerMechanic)
-	follower.BaseTransform:getOrSet(follower, follower.instance.CFrame :: CFrame?)
+	follower.Origin:getOrSet(follower, follower.instance.CFrame :: CFrame?)
 end
 
 function Follower.onPreSimulation(self: typeof(Follower), deltaTime: number, level: std.Level)
 	local followers = level:getMechanics(self)
 	local countFollowers = #followers
 
+	if countFollowers == 0 then
+		return
+	end
+
 	local shouldBulkMove = false
 	local bulkInstances: { BasePart } = tables.create(countFollowers)
 	local bulkCFrames: { CFrame } = tables.create(countFollowers)
 
-	for _, follower in level:getMechanics(self) do
+	for _, follower in followers do
 		if not follower:Enabled() then
 			continue
 		end
@@ -97,16 +103,19 @@ function Follower.onPreSimulation(self: typeof(Follower), deltaTime: number, lev
 			targetCFrame = CFrame.new(targetCFrame.Position) * instance:GetPivot().Rotation
 		end
 
-		local baseTransform = follower:BaseTransform()
-		local useRelative = follower:UseRelativeTransform()
-		local finalCFrame = if useRelative and baseTransform then targetCFrame * baseTransform else targetCFrame
+		local baseTransform: CFrame = follower:Origin()
+		local useRelative = follower:UseOriginRotation()
+		if useRelative and baseTransform then
+			targetCFrame *= baseTransform.Rotation
+		end
+
 		local current = instance:GetPivot()
 
 		local cx, cy, cz = current.Position.X, current.Position.Y, current.Position.Z
-		local tx, ty, tz = finalCFrame.Position.X, finalCFrame.Position.Y, finalCFrame.Position.Z
+		local tx, ty, tz = targetCFrame.Position.X, targetCFrame.Position.Y, targetCFrame.Position.Z
 
 		local rx, ry, rz = current:ToEulerAnglesXYZ()
-		local trx, try, trz = finalCFrame:ToEulerAnglesXYZ()
+		local trx, try, trz = targetCFrame:ToEulerAnglesXYZ()
 
 		if not follower:UseXPosition() then
 			tx = cx
@@ -132,14 +141,17 @@ function Follower.onPreSimulation(self: typeof(Follower), deltaTime: number, lev
 			trz = rz
 		end
 
-		finalCFrame = CFrame.new(tx, ty, tz) * CFrame.fromEulerAnglesXYZ(trx, try, trz)
+		targetCFrame = CFrame.new(tx, ty, tz) * CFrame.fromEulerAnglesXYZ(trx, try, trz)
 
-		if follower:Lerp() then
-			finalCFrame = instance.CFrame:Lerp(finalCFrame, 1 - math.exp(-deltaTime / follower:Responsiveness()))
+		if follower:Smooth() then
+			local responsiveness = follower:Responsiveness()
+			if responsiveness ~= 0 then
+				targetCFrame = instance.CFrame:Lerp(targetCFrame, 1 - math.exp(-deltaTime / responsiveness))
+			end
 		end
 
 		table.insert(bulkInstances, instance)
-		table.insert(bulkCFrames, finalCFrame)
+		table.insert(bulkCFrames, targetCFrame)
 		shouldBulkMove = true
 	end
 

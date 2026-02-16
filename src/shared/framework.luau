@@ -9,14 +9,6 @@ local function useModulesFromPath(parentRoot: Instance, ...: string)
 	root:useModules(parentRoot:GetDescendants())
 end
 
-local function bindEvent<A..., R...>(
-	method: (self: any, A...) -> R...,
-	event: {
-		on: (listener: (A...) -> R...) -> () -> (),
-	}
-)
-end
-
 return table.freeze {
 	root = root,
 	useModulesFromPath = useModulesFromPath,

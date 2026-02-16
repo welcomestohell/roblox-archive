@@ -116,7 +116,7 @@ function gt.unionLiterals(...: any): any
 	local len = select("#", ...)
 	local components = table.create(len)
 	for index = 1, len do
-		components[len] = gt.literal(select(index, ...))
+		components[index] = gt.literal(select(index, ...))
 	end
 	return gt.union(table.unpack(components, 1, len))
 end

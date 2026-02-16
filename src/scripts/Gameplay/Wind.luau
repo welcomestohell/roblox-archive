@@ -10,7 +10,7 @@ Wind.debuggerEmoji = "💨"
 
 Wind.Speed = Wind:attribute("Speed", std.gt.number(), 40)
 Wind.MaxForce = Wind:attribute("MaxForce", std.gt.number(), math.huge)
-Wind.Direction = Wind:attribute("Direction", std.gt.Vector3(), Vector3.zAxis)
+Wind.Direction = Wind:attribute("Direction", std.gt.Vector3(), Vector3.zero)
 Wind.ContinuousUpdates = Wind:attribute("ContinuousUpdates", std.gt.boolean(), true)
 
 local UPDATE_INTERVAL = 1 / 30
