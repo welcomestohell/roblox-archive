@@ -1,11 +1,13 @@
 local Result = require("@libs/Result")
-local attributes = require("@self/attributes")
+local createChildOfClass = require("@self/createChildOfClass")
 local functions = require("@libs/functions")
 local gt = require("@libs/gt")
 local log = require("@self/log")
 local types = require("@self/types")
-local utils = require("@libs/activation/utils")
+local useActivationAttributes = require("@self/useActivationAttributes")
+local useChildOfClass = require("@self/useChildOfClass")
 
+export type ActivationAttributes = types.ActivationAttributes
 export type PredicateContext = types.PredicateContext
 export type BindContext = types.BindContext
 export type ActivationContext = types.ActivationContext
@@ -49,7 +51,7 @@ export type ActivationError = { id: "noMode" } | { id: "unknownMode" } | { id: "
 
 local function activate(ctx: types.ActivationContext): Result.Result<nil, ActivationError>
 	log:trace("Activate", ctx.instance:GetFullName())
-	local modeKey = attributes.ActivationMode(ctx.instanceConfiguration)
+	local modeKey = ctx.attributes.Mode(ctx.instanceConfiguration)
 	if modeKey then
 		local mode: ActivationMode? = modes[modeKey]
 
@@ -82,7 +84,7 @@ local function bindActivation(bindCtx: BindContext)
 		ctx.activationLife:destroy()
 		ctx.activationLife = life:inner()
 
-		if attributes.IsActivatable(ctx.instanceConfiguration) then
+		if bindCtx.attributes.Enabled(ctx.instanceConfiguration) then
 			local result = activate(ctx)
 			if result:isErr() then
 				log:warn("Failed to bind activation for", ctx.instance:GetFullName(), "because:", result:unwrapErr())
@@ -91,20 +93,19 @@ local function bindActivation(bindCtx: BindContext)
 	end
 
 	log:trace("Binding activation to", ctx.instance:GetFullName())
-	life:add(attributes.IsActivatable:onBind(ctx.instanceConfiguration, update))
-	life:add(attributes.ActivationMode:onBind(ctx.instanceConfiguration, update))
+	life:add(bindCtx.attributes.Enabled:onBind(ctx.instanceConfiguration, update))
+	life:add(bindCtx.attributes.Mode:onBind(ctx.instanceConfiguration, update))
 end
 
 return table.freeze {
 	modes = modes,
-	attributes = attributes,
-
 	registerMode = registerMode,
 	unregisterMode = unregisterMode,
 
 	activate = activate,
 	bindActivation = bindActivation,
 
-	createChildOfClass = utils.createChildOfClass,
-	expectChildOfClass = utils.expectChildOfClass,
+	createChildOfClass = createChildOfClass,
+	useChildOfClass = useChildOfClass,
+	useActivationAttributes = useActivationAttributes,
 }

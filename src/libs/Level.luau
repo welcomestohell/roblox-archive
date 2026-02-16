@@ -10,6 +10,7 @@ local activation = require("./activation")
 local functions = require("./functions")
 local gt = require("./gt")
 local tables = require("./tables")
+local types = require("@libs/activation/types")
 
 local log = Log.new("Level")
 
@@ -22,9 +23,10 @@ local log = Log.new("Level")
 
 	Levels can be traversed by the player with mechanics, level scripts, and
 	some starting positions. Alongside towers, Levels are also used to represent
-	chapter areas.
+	Chapters in Welcome To Hell's Campaign.
 
-	@internal This class should not be consumed by tower scripts.
+	This class should not be constructed by tower scripts. Many `Mechanic`
+	methods provide a handle to a tower's `Level` as the last argument.
 ]=]
 local Level = {}
 Level.__index = Level
@@ -103,6 +105,42 @@ function Level.loadMechanicsFromInstance(self: Level, instance: Instance)
 	end
 end
 
+function Level.startMechanic(self: Level, mechanic: Mechanic.Mechanic<any>)
+	local implementation: Mechanic.MechanicImplementation = mechanic.implementation
+
+	if implementation.onActivated then
+		log:warn(`\
+			{implementation.instanceTag} implemented \`onActivated\` which has no behavior, did you mean \
+			to implement \`onActivate\`?\
+		`)
+	end
+
+	if implementation.onActivate then
+		local activationAttributes = implementation.activation :: types.ActivationAttributes
+
+		if not activationAttributes then
+			Mechanic.attributeSection(implementation :: any, "Activation")
+			activationAttributes = activation.useActivationAttributes(implementation :: any)
+			implementation.activation = activationAttributes
+		end
+
+		activation.bindActivation({
+			attributes = activationAttributes,
+			activationLife = mechanic.life,
+			instanceLife = mechanic.life,
+			instance = mechanic.instance,
+			instanceConfiguration = mechanic.instanceConfiguration or mechanic.instance,
+			onActivate = function(ctx: activation.ActivationContext)
+				implementation:onActivate(mechanic, self)
+			end,
+		})
+	end
+
+	if implementation.onStart then
+		self.life:add(task.spawn(implementation.onStart, implementation, mechanic, self))
+	end
+end
+
 function Level.spawnMechanicImplementationMethod(self: Level, method: keyof<Mechanic.MechanicImplementation>, ...: any)
 	for _, implementation in self.scripts.mechanicImplementations do
 		if implementation[method] then
@@ -146,30 +184,7 @@ function Level.start(self: Level)
 	Promise.all(initThreads):await()
 
 	for _, mechanic in self.mechanics do
-		local implementation: Mechanic.MechanicImplementation = mechanic.implementation
-
-		if implementation.onActivated then
-			log:warn(`\
-				{implementation.instanceTag} implemented \`onActivated\` which has no behavior, \
-				did you mean \`onActivate\`?\
-			`)
-		end
-
-		if implementation.onActivate then
-			activation.bindActivation({
-				activationLife = mechanic.life,
-				instanceLife = mechanic.life,
-				instance = mechanic.instance,
-				instanceConfiguration = mechanic.instanceConfiguration or mechanic.instance,
-				onActivate = function(ctx: activation.ActivationContext)
-					implementation:onActivate(mechanic, self)
-				end,
-			})
-		end
-
-		if implementation.onStart then
-			self.life:add(task.spawn(implementation.onStart, implementation, mechanic, self))
-		end
+		task.spawn(Level.startMechanic, self, mechanic)
 	end
 
 	self.life:add(RunService.PreSimulation:Connect(function(deltaTime)

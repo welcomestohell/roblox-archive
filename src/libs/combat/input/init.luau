@@ -12,8 +12,8 @@
 --]]
 
 --// Imports //--
-local Life = require("@libs/Life")
 local InputActionHandler = require("@self/actionHandler")
+local Life = require("@libs/Life")
 local TypesDefinition = require("@self/types")
 
 --// Types //--

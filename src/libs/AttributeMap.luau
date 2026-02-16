@@ -29,7 +29,9 @@ function AttributeMap.peek<T>(self: AttributeMap<T>, instance: Instance) end
 
 function AttributeMap.fetch<T>(self: AttributeMap<T>, instance: Instance) end
 
-function AttributeMap.get<T>(self: AttributeMap<T>, instance: Instance) end
+function AttributeMap.get<T>(self: AttributeMap<T>, instance: Instance): { [string]: T }
+	return {}
+end
 
 function AttributeMap.index<T>(self: AttributeMap<T>, instance: Instance, key: string) end
 
@@ -44,5 +46,7 @@ function AttributeMap.onFetch<T>(self: AttributeMap<T>, listener: (key: string, 
 function AttributeMap.onChange<T>(self: AttributeMap<T>, listener: (key: string, map: { [string]: T }) -> ()) end
 
 function AttributeMap.onBind<T>(self: AttributeMap<T>, listener: (key: string, map: { [string]: T }) -> ()) end
+
+AttributeMap.__call = AttributeMap.get
 
 return AttributeMap

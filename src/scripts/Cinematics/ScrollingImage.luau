@@ -36,7 +36,7 @@ end
 function ScrollingImage:onPreRender(deltaTime: number, level: std.Level)
 	local lifetime = level:getLifetime()
 	for _, image in level:getMechanics(ScrollingImage) do
-		if not image:IsEnabled() then
+		if not image:Enabled() then
 			continue
 		end
 

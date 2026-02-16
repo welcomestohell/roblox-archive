@@ -1,5 +1,6 @@
 local UserInputService = game:GetService("UserInputService")
 
+local activation = require("@libs/activation")
 local character = require("@libs/character")
 local constraints = require("@libs/constraints")
 local std = require("@libs/std")
@@ -9,8 +10,10 @@ local DEFAULT_OFFSET = CFrame.new(0, DISTANCE_FROM_ROOT_TO_GROUND_STUDS / 2, 0)
 
 local Seat = std.Mechanic({})
 export type SeatMechanic = std.Mechanic<typeof(Seat)>
+
 Seat.instanceTag = "Seat"
 Seat.instanceType = std.isA.BasePart()
+Seat.debuggerEmoji = "🪑"
 
 Seat.Offset = Seat:attribute("Offset", std.gt.CFrame(), DEFAULT_OFFSET)
 Seat.JumpOnDismount = Seat:attribute("JumpOnDismount", std.gt.boolean(), true)
@@ -18,13 +21,10 @@ Seat.Cooldown = Seat:attribute("Cooldown", std.gt.positiveNumber, 0)
 
 Seat.seated = false
 Seat.debounced = {} :: { [SeatMechanic]: true }
-Seat.activation = Seat:withActivation()
+Seat.activation = activation.useActivationAttributes(Seat)
 
 function Seat.onActivate(self: typeof(Seat), seat: SeatMechanic)
-	local isSeatable = seat:IsEnabled()
-		and not self.seated
-		and not self.debounced[seat]
-		and character.isCharacterAlive()
+	local isSeatable = seat:Enabled() and not self.seated and not self.debounced[seat] and character.isCharacterAlive()
 
 	if not isSeatable then
 		return
@@ -37,7 +37,7 @@ function Seat.onActivate(self: typeof(Seat), seat: SeatMechanic)
 	local root = character.getMaybeHumanoidRootPart() :: BasePart
 	local humanoid = character.getMaybeHumanoid() :: Humanoid
 
-	seat.activation.IsActivatable(seat, false)
+	seat.activation.Enabled(seat, false)
 
 	root.CFrame = seat.instance.CFrame * seat:Offset()
 	humanoid.Sit = true
@@ -66,7 +66,7 @@ function Seat.onActivate(self: typeof(Seat), seat: SeatMechanic)
 		if seat:JumpOnDismount() and humanoid then
 			humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
 		end
-		seat.activation.IsActivatable(seat, true)
+		seat.activation.Enabled(seat, true)
 	end
 
 	weldLife:add(dismount)

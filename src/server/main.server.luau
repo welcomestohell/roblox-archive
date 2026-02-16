@@ -1,18 +1,11 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 
-local prvd = require("@shared/prvdmwrong/prvdmwrong")
+local framework = require("@shared/framework")
 
-local root = prvd.root()
-	:useModules(
-		ServerScriptService:WaitForChild("Internal"):WaitForChild("Server"):WaitForChild("providers"):GetDescendants()
-	)
-	:useModules(
-		ReplicatedStorage:WaitForChild("Internal"):WaitForChild("Shared"):WaitForChild("providers"):GetDescendants()
-	)
-	:useProvider(require("@shared/prvdmwrong/rbx-lifecycles") :: any)
-	:start()
-
+framework.useModulesFromPath(ServerScriptService, "Internal", "Server", "providers")
+framework.useModulesFromPath(ReplicatedStorage, "Internal", "Shared", "providers")
+local root = framework.root:start()
 game:BindToClose(function()
 	root:finish()
 end)

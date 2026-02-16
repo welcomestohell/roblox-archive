@@ -3,6 +3,7 @@ local tables = require("@libs/tables")
 
 local TeleporterDestination = std.Mechanic({})
 export type TeleporterDestinationMechanic = std.Mechanic<typeof(TeleporterDestination)>
+
 TeleporterDestination.instanceTag = "TeleporterDestination"
 TeleporterDestination.instanceType = std.isA.BasePart()
 TeleporterDestination.debuggerEmoji = "📍"

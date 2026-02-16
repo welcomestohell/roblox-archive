@@ -46,6 +46,7 @@
 			"export type ${0:$TM_FILENAME_BASE}Mechanic = std.Mechanic<typeof(${0:$TM_FILENAME_BASE})>",
 			"${0:$TM_FILENAME_BASE}.instanceTag = \"${0:$TM_FILENAME_BASE}\"",
 			"${0:$TM_FILENAME_BASE}.instanceType = std.isA.${1:Instance}()",
+			"${0:$TM_FILENAME_BASE}.debuggerEmoji = \"${2:💠}\"",
 			"",
 			"return ${0:$TM_FILENAME_BASE}",
 			""

@@ -5,6 +5,7 @@ local tweens = require("@libs/tweens")
 
 local Teleporter = std.Mechanic({})
 export type TeleporterMechanic = std.Mechanic<typeof(Teleporter)>
+
 Teleporter.instanceTag = "Teleporter"
 Teleporter.instanceType = std.isA.BasePart()
 Teleporter.debuggerEmoji = "🌀"
@@ -18,7 +19,7 @@ Teleporter.Offset = Teleporter:attribute("Offset", std.gt.CFrame(), CFrame.ident
 Teleporter:attributeSection("Seamlessness")
 Teleporter.Seamless = Teleporter:attribute("Seamless", std.gt.boolean(), true)
 Teleporter.SeamlessMeasurement =
-	Teleporter:attribute("SeamlessMeasurement", std.gt.union2(std.gt.literal("Relative"), std.gt.literal("World")), "Relative")
+	Teleporter:attribute("SeamlessMeasurement", std.gt.unionLiterals2("Relative", "World"), "Relative")
 Teleporter.SeamlessOverflow = Teleporter:attribute("SeamlessOverflow", std.gt.boolean(), false)
 
 Teleporter:attributeSection("Transitions")
@@ -64,6 +65,7 @@ function Teleporter.calculateTeleportCFrame(teleporter: TeleporterMechanic, dest
 end
 
 function Teleporter:onActivate(teleporter: TeleporterMechanic, level: std.Level)
+	print("?????????????")
 	local root = character.getMaybeHumanoidRootPart()
 	if not root then
 		return
@@ -84,6 +86,7 @@ function Teleporter:onActivate(teleporter: TeleporterMechanic, level: std.Level)
 		return
 	end
 
+	print("????????????? 2")
 	Teleporter.debounce = true
 	Teleporter.debouncedTeleporters[teleporter] = true
 	task.delay(teleporter:Cooldown(), function(teleporter)
@@ -95,7 +98,9 @@ function Teleporter:onActivate(teleporter: TeleporterMechanic, level: std.Level)
 	local originalLinearVelocity = root.AssemblyLinearVelocity
 	local originalAngularVelocity = root.AssemblyAngularVelocity
 
-	local targetDestination = if len == 1 then first else allDestinations[Random.new(os.clock() ^ 2):NextInteger(1, len)]
+	local targetDestination = if len == 1
+		then first
+		else allDestinations[Random.new(os.clock() ^ 2):NextInteger(1, len)]
 
 	if teleporter:PlaySound() then
 		-- prelude.inferAndPlaySound(teleporter, prelude.AUDIO_ASSETS["core/towerSfx/teleport"], "TeleportSound")

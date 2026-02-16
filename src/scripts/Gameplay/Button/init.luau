@@ -5,9 +5,11 @@ local Button = std.Mechanic({})
 export type ButtonMechanic = std.Mechanic<typeof(Button)>
 Button.instanceTag = "Button"
 Button.instanceType = std.isA.BasePart()
+Button.debuggerEmoji = "🖲️"
 
 Button.useButtonAttributes = useButtonAttributes
 local attributes = useButtonAttributes(Button)
+
 Button.ButtonId = attributes.ButtonId
 Button.ButtonPressed = attributes.ButtonPressed
 Button.ButtonPressedOffset = attributes.ButtonPressedOffset

@@ -1,10 +1,10 @@
 local HttpService = game:GetService("HttpService")
 
 local Attribute = require("@libs/Attribute")
+local AttributeMap = require("@libs/AttributeMap")
 local Life = require("@libs/Life")
 local Log = require("./Log")
 local Result = require("@libs/Result")
-local activation = require("@libs/activation")
 local functions = require("@libs/functions")
 local gt = require("@libs/gt")
 
@@ -69,7 +69,7 @@ local Mechanic = {}
 Mechanic.__index = Mechanic
 Mechanic._metadata = {} :: { [{}]: MechanicImplementationMetadata }
 Mechanic._proxies = {} :: { [{}]: {} }
-Mechanic.IsEnabled = Attribute.new("IsEnabled", gt.boolean(), false)
+Mechanic.Enabled = Attribute.new("Enabled", gt.boolean(), false)
 
 export type MechanicImplementationLike<Self = {}> = setmetatable<Self, typeof(Mechanic)>
 
@@ -165,19 +165,13 @@ function Mechanic.withAttribute<T>(self: {}, attribute: Attribute.Attribute<T>):
 	return attribute
 end
 
--- Have to redeclare attributes like such to maintain the debugger's ordering...
-function Mechanic.withActivation(self: {})
-	Mechanic.attributeSection(self, "Activation")
+function Mechanic.withEnabled(self: {}): Attribute.Attribute<boolean>
+	return Mechanic.withAttribute(self :: any, Mechanic.Enabled)
+end
 
-	return {
-		IsActivatable = Mechanic.withAttribute(self, activation.attributes.IsActivatable),
-		ActivationMode = Mechanic.withAttribute(self, activation.attributes.ActivationMode),
-
-		MaxActivationDistance = Mechanic.withAttribute(self, activation.attributes.MaxActivationDistance),
-		ActivationKeyCode = Mechanic.withAttribute(self, activation.attributes.ActivationKeyCode),
-		ActivationInterval = Mechanic.withAttribute(self, activation.attributes.ActivationInterval),
-		ActivationHumanoidStateType = Mechanic.withAttribute(self, activation.attributes.ActivationHumanoidStateType),
-	}
+function Mechanic.prefixedAttributeMap<T>(self: {}, prefix: string, type: T): AttributeMap.AttributeMap<T>
+	local map = AttributeMap.fromPrefix(prefix, type)
+	return map
 end
 
 function Mechanic.__tostring(self: MechanicImplementation)

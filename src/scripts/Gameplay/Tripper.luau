@@ -3,11 +3,12 @@ local std = require("@libs/std")
 
 local Tripper = std.Mechanic({})
 export type TripperMechanic = std.Mechanic<typeof(Tripper)>
+
 Tripper.instanceTag = "Tripper"
 Tripper.instanceType = std.isA.BasePart()
+Tripper.debuggerEmoji = "🪤"
 
 Tripper.Cooldown = Tripper:attribute("Cooldown", std.gt.positiveNumber, 0)
-Tripper.activation = Tripper:withActivation()
 
 Tripper.debounced = {} :: { [TripperMechanic]: true }
 

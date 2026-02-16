@@ -28,7 +28,8 @@ local function useTweenAttributes(implementation: Mechanic.MechanicImplementatio
 	local attributes = {}
 	attributes.Duration = implementation:attribute(prefix .. "Duration", gt.positiveNumber, 0)
 	attributes.Style = implementation:attribute(prefix .. "Style", isEasingStyle:type(), Enum.EasingStyle.Linear)
-	attributes.Direction = implementation:attribute(prefix .. "Direction", isEasingDirection:type(), Enum.EasingDirection.Out)
+	attributes.Direction =
+		implementation:attribute(prefix .. "Direction", isEasingDirection:type(), Enum.EasingDirection.Out)
 
 	return attributes
 end
@@ -88,7 +89,11 @@ local function playFromAttributes(instance: Instance, propertyTable: { [string]:
 	play(instance, propertyTable, configurationFromAttributes(attributes))
 end
 
-local function playAlwaysFromAttributes(instance: Instance, propertyTable: { [string]: unknown }, attributes: TweenAttributes)
+local function playAlwaysFromAttributes(
+	instance: Instance,
+	propertyTable: { [string]: unknown },
+	attributes: TweenAttributes
+)
 	return playAlways(instance, propertyTable, configurationFromAttributes(attributes))
 end
 

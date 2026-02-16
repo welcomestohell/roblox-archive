@@ -1,6 +1,6 @@
 local Result = require("@libs/Result")
 local touch = require("@libs/touch")
-local types = require("@libs/activation/types")
+local types = require("../types")
 
 local Touch = {} :: types.ActivationMode
 

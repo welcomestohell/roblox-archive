@@ -160,8 +160,17 @@ local function new(attribute: any, check: any, defaultValue: any): Attribute<any
 end
 
 Attribute.new = new :: (
-	& (<T>(attribute: string, check: T, defaultValue: T) -> Attribute<T>) & (<T>(attribute: string, check: T) -> Attribute<T?>)
+	& (<T>(attribute: string, check: T, defaultValue: T) -> Attribute<T>)
+	& (<T>(attribute: string, check: T) -> Attribute<T?>)
 )
+
+function Attribute.type<T>(_: Attribute<T>): T
+	error("This function can only be used for type definitions, ie. `typeof(attribute:type())`")
+end
+
+function Attribute.isAttribute(x: any)
+	return type(x) == "table" and getmetatable(x) == Attribute
+end
 
 function Attribute.peek<T>(self: Attribute<T>, instance: ResolvableInstance): T
 	local value = self._cache[resolveInstance(instance)] :: any
@@ -219,7 +228,10 @@ end
 
 function Attribute.assert<T>(self: Attribute<T?>, instance: ResolvableInstance, message: string?): T
 	local value = Attribute.get(self :: any, instance)
-	assert(value ~= nil, message or `Instance {resolveInstance(instance):GetFullName()} is missing attribute {self.attribute}!`)
+	assert(
+		value ~= nil,
+		message or `Instance {resolveInstance(instance):GetFullName()} is missing attribute {self.attribute}!`
+	)
 	return value
 end
 
@@ -255,7 +267,9 @@ function Attribute.__call<T>(self: Attribute<T>, instance: ResolvableInstance, .
 end
 
 function Attribute.__tostring<T>(self: Attribute<T>)
-	return if self.check then `Attribute<{self.check:format()}>("{self.attribute}")` else `Attribute("{self.attribute}")`
+	return if self.check
+		then `Attribute<{self.check:format()}>("{self.attribute}")`
+		else `Attribute("{self.attribute}")`
 end
 
 return Attribute

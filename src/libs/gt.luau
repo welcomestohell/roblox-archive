@@ -112,11 +112,27 @@ function gt.enumOf<T>(enum: Enum): any
 	end, `{enum}`)
 end
 
+function gt.unionLiterals(...: any): any
+	local len = select("#", ...)
+	local components = table.create(len)
+	for index = 1, len do
+		components[len] = gt.literal(select(index, ...))
+	end
+	return gt.union(table.unpack(components, 1, len))
+end
+
 gt.positiveNumber = gt.constrainNumberExclusive(0)
 gt.negativeNumber = gt.constrainNumberExclusive(nil, 0)
 gt.literal = (GreenTea.literal :: any) :: <T>(x: T | "") -> T
 gt.instanceTree = instanceTree :: (
 	(<T>(tree: T & { [string]: any }) -> Instance & T) & (<P, T>(parent: P, tree: T & { [string]: any }) -> P & T)
 )
+
+gt.unionLiterals1 = gt.unionLiterals :: <T1>(T1 | "") -> T1
+gt.unionLiterals2 = gt.unionLiterals :: <T1, T2>(T1 | "", T2 | "") -> T1 | T2
+gt.unionLiterals3 = gt.unionLiterals :: <T1, T2, T3>(T1 | "", T2 | "", T3 | "") -> T1 | T2 | T3
+gt.unionLiterals4 = gt.unionLiterals :: <T1, T2, T3, T4>(T1 | "", T2 | "", T3 | "", T4 | "") -> T1 | T2 | T3 | T4
+gt.unionLiterals5 =
+	gt.unionLiterals :: <T1, T2, T3, T4, T5>(T1 | "", T2 | "", T3 | "", T4 | "", T5 | "") -> T1 | T2 | T3 | T4 | T5
 
 return table.freeze(gt)

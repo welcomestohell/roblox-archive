@@ -17,7 +17,11 @@ function ConsistentParticleEmitter.onInit(self: typeof(ConsistentParticleEmitter
 	self.fixed = {}
 end
 
-function ConsistentParticleEmitter.onPreRender(self: typeof(ConsistentParticleEmitter), deltaTime: number, level: std.Level)
+function ConsistentParticleEmitter.onPreRender(
+	self: typeof(ConsistentParticleEmitter),
+	deltaTime: number,
+	level: std.Level
+)
 	local graphicsLevel = UserSettings().GameSettings.SavedQualityLevel.Value
 	local isGraphicsLevelChanged = graphicsLevel == self.oldGraphicsLevel
 
