@@ -66,7 +66,7 @@ function Life.removeAll(self: Life)
 	table.clear(self.destroyables)
 end
 
-function Life.connect(self: Life, signal: RBXScriptSignal, fn: () -> ()): RBXScriptConnection?
+function Life.connect(self: Life, signal: RBXScriptSignal, fn: (...any) -> ...any): RBXScriptConnection?
 	if self.destroyed then
 		return nil
 	end
@@ -117,7 +117,6 @@ function Life.destroy(self: Life)
 end
 
 function Life.isAlive(self: Life)
-	print(getmetatable(self))
 	return not (getmetatable(self) :: Life).destroyed
 end
 
