@@ -124,9 +124,7 @@ end
 gt.positiveNumber = gt.constrainNumberExclusive(0)
 gt.negativeNumber = gt.constrainNumberExclusive(nil, 0)
 gt.literal = (GreenTea.literal :: any) :: <T>(x: T | "") -> T
-gt.instanceTree = instanceTree :: (
-	(<T>(tree: T & { [string]: any }) -> Instance & T) & (<P, T>(parent: P, tree: T & { [string]: any }) -> P & T)
-)
+gt.instanceTree = instanceTree :: (<T>(tree: T) -> Instance & T) & (<P, T>(parent: P, tree: T) -> P & T)
 
 gt.unionLiterals1 = gt.unionLiterals :: <T1>(T1 | "") -> T1
 gt.unionLiterals2 = gt.unionLiterals :: <T1, T2>(T1 | "", T2 | "") -> T1 | T2

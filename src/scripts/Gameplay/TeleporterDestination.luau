@@ -13,9 +13,13 @@ TeleporterDestination.Offset = std.Attribute("Offset", std.gt.CFrame(), CFrame.n
 
 TeleporterDestination.destinationsById = std.LevelState({} :: any)
 
-function TeleporterDestination:onStart(destination: TeleporterDestinationMechanic, level: std.Level)
+function TeleporterDestination.onStart(
+	self: typeof(TeleporterDestination),
+	destination: TeleporterDestinationMechanic,
+	level: std.Level
+)
 	local oldId: string? = nil
-	local destinationsById = TeleporterDestination.destinationsById:getOrSet(level, {})
+	local destinationsById = self.destinationsById:getOrSet(level, {})
 	destination.Id:onBind(destination, function(newId: string?)
 		if oldId then
 			local oldIdDestinations = destinationsById[oldId]

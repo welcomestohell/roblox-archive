@@ -5,10 +5,13 @@ local Life = {}
 Life.__index = Life
 Life.type = "Life"
 
-export type Life = setmetatable<{ read destroyables: { destroy.Destroyable } }, typeof(Life)>
+export type Life = setmetatable<{ read destroyed: boolean, read destroyables: { destroy.Destroyable } }, typeof(Life)>
 
 function Life.new(): Life
-	return table.freeze(setmetatable({ destroyables = {} }, Life))
+	return table.freeze(setmetatable({
+		destroyed = false,
+		destroyables = {} :: { destroy.Destroyable },
+	}, Life))
 end
 
 function Life.isLife(x: any)
@@ -16,16 +19,25 @@ function Life.isLife(x: any)
 end
 
 function Life.add<T>(self: Life, bound: T): T
+	if self.destroyed then
+		return bound
+	end
 	table.insert(self.destroyables, bound)
 	return bound
 end
 
 function Life.spawn(self: Life, bound: thread): thread
+	if self.destroyed then
+		return bound
+	end
 	table.insert(self.destroyables, task.spawn(bound))
 	return bound
 end
 
 function Life.addMany<T...>(self: Life, ...: T...)
+	if self.destroyed then
+		return ...
+	end
 	for index = 1, select("#", ...) do
 		table.insert(self.destroyables, select(index, ...) :: destroy.Destroyable)
 	end
@@ -33,11 +45,17 @@ function Life.addMany<T...>(self: Life, ...: T...)
 end
 
 function Life.remove<T>(self: Life, bound: T): T
+	if self.destroyed then
+		return bound
+	end
 	tables.findAndRemove(self.destroyables, bound)
 	return bound
 end
 
 function Life.removeMany<T...>(self: Life, ...: T...): T...
+	if self.destroyed then
+		return ...
+	end
 	for index = 1, select("#", ...) do
 		tables.findAndRemove(self.destroyables, select(index, ...))
 	end
@@ -48,11 +66,17 @@ function Life.removeAll(self: Life)
 	table.clear(self.destroyables)
 end
 
-function Life.connect(self: Life, signal: RBXScriptSignal, fn: () -> ()): RBXScriptConnection
+function Life.connect(self: Life, signal: RBXScriptSignal, fn: () -> ()): RBXScriptConnection?
+	if self.destroyed then
+		return nil
+	end
 	return Life.add(self, signal:Connect(fn))
 end
 
-function Life.tie(self: Life, signal: RBXScriptSignal): RBXScriptConnection
+function Life.tie(self: Life, signal: RBXScriptSignal): RBXScriptConnection?
+	if self.destroyed then
+		return nil
+	end
 	return Life.add(
 		self,
 		signal:Connect(function()
@@ -71,17 +95,30 @@ function Life.inner(self: Life)
 end
 
 function Life.isEmpty(self: Life)
+	if self.destroyed then
+		return true
+	end
 	return #self.destroyables == 0
 end
 
--- TODO: implement life pooling so this method isnt useless
--- TODO: poison class
 function Life.destroy(self: Life)
+	if self.destroyed then
+		return
+	end
 	for index = #self.destroyables, 1, -1 do
 		destroy(self.destroyables[index])
 	end
 	table.clear(self.destroyables)
-	-- setmetatable(self :: any, {})
+
+	setmetatable({
+		destroyed = true,
+		destroyables = {} :: { destroy.Destroyable },
+	}, self)
+end
+
+function Life.isAlive(self: Life)
+	print(getmetatable(self))
+	return not (getmetatable(self) :: Life).destroyed
 end
 
 function Life.__tostring(_: Life)

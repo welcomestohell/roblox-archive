@@ -1,6 +1,8 @@
 local TeleporterDestination = require("./TeleporterDestination")
+local activation = require("@libs/activation")
 local character = require("@libs/character")
 local std = require("@libs/std")
+local teleport = require("@libs/teleport")
 local tweens = require("@libs/tweens")
 
 local Teleporter = std.Mechanic({})
@@ -11,61 +13,20 @@ Teleporter.instanceType = std.isA.BasePart()
 Teleporter.debuggerEmoji = "🌀"
 
 Teleporter.Id = Teleporter:attribute("Id", std.gt.optional(std.gt.string()), nil)
-Teleporter.KeepVelocity = Teleporter:attribute("KeepVelocity", std.gt.boolean(), true)
-Teleporter.Cooldown = Teleporter:attribute("Cooldown", std.gt.number(), 0)
-Teleporter.PlaySound = Teleporter:attribute("PlaySound", std.gt.boolean(), true)
-Teleporter.Offset = Teleporter:attribute("Offset", std.gt.CFrame(), CFrame.identity)
+Teleporter.Cooldown = Teleporter:attribute("Cooldown", std.gt.positiveNumber, 0)
+Teleporter.Teleport = teleport.useTeleportAttributes(Teleporter)
 
-Teleporter:attributeSection("Seamlessness")
-Teleporter.Seamless = Teleporter:attribute("Seamless", std.gt.boolean(), true)
-Teleporter.SeamlessMeasurement =
-	Teleporter:attribute("SeamlessMeasurement", std.gt.unionLiterals2("Relative", "World"), "Relative")
-Teleporter.SeamlessOverflow = Teleporter:attribute("SeamlessOverflow", std.gt.boolean(), false)
+Teleporter:attributeSection("Seamless")
+Teleporter.Seamless = teleport.useSeamlessAttributes(Teleporter)
 
 Teleporter:attributeSection("Transitions")
 Teleporter.Transition = tweens.useTweenAttributes(Teleporter)
 
 Teleporter.debounce = false
 Teleporter.debouncedTeleporters = {} :: { [TeleporterMechanic]: true }
+Teleporter.activation = activation.useActivationAttributes(Teleporter)
 
-function Teleporter.calculateTeleportCFrame(teleporter: TeleporterMechanic, destination: BasePart, root: BasePart)
-	local destinationCFrame = destination.CFrame
-	if teleporter:Seamless() then
-		local rootPosition = root.Position
-		local teleporterPosition = teleporter.instance.Position
-
-		local distance = rootPosition - teleporterPosition
-
-		local measurement = teleporter:SeamlessMeasurement()
-		if measurement == "World" then
-			if not teleporter:SeamlessOverflow() then
-				local destinationSize = destination.Size
-				local sizeX, sizeY, sizeZ = destinationSize.X, destinationSize.Y, destinationSize.Z
-				local halfSizeX, halfSizeY, halfSizeZ = sizeX / 2, sizeY / 2, sizeZ / 2
-				distance = Vector3.new(
-					math.clamp(distance.X, -halfSizeX, halfSizeX),
-					math.clamp(distance.Y, -halfSizeY, halfSizeY),
-					math.clamp(distance.Z, -halfSizeZ, halfSizeZ)
-				)
-			end
-			destinationCFrame = destination.CFrame * CFrame.new(distance)
-		else
-			distance /= teleporter.instance.Size
-			if not teleporter:SeamlessOverflow() then
-				distance = Vector3.new(
-					math.clamp(distance.X, -0.5, 0.5),
-					math.clamp(distance.Y, -0.5, 0.5),
-					math.clamp(distance.Z, -0.5, 0.5)
-				)
-			end
-			destinationCFrame = destination.CFrame * CFrame.new(destination.Size * distance)
-		end
-	end
-	return destinationCFrame * teleporter:Offset()
-end
-
-function Teleporter:onActivate(teleporter: TeleporterMechanic, level: std.Level)
-	print("?????????????")
+function Teleporter.onActivate(self: typeof(Teleporter), teleporter: TeleporterMechanic, level: std.Level)
 	local root = character.getMaybeHumanoidRootPart()
 	if not root then
 		return
@@ -75,54 +36,43 @@ function Teleporter:onActivate(teleporter: TeleporterMechanic, level: std.Level)
 		return
 	end
 
-	-- teleporter:Activatable(false)
+	teleporter.activation.Enabled(teleporter, false)
 
-	local allDestinations = TeleporterDestination.destinationsById:get(teleporter.Id:assert(teleporter))
+	local allDestinations = TeleporterDestination.destinationsById:get(level)[teleporter.Id:assert(teleporter)]
 	if not allDestinations then
 		return
 	end
-	local _, first = next(allDestinations)
-	if not first then
+
+	local len = #allDestinations
+	if len == 0 then
 		return
 	end
 
-	print("????????????? 2")
-	Teleporter.debounce = true
-	Teleporter.debouncedTeleporters[teleporter] = true
+	self.debounce = true
+	self.debouncedTeleporters[teleporter] = true
+	self.activation.Enabled(teleporter, false)
 	task.delay(teleporter:Cooldown(), function(teleporter)
-		Teleporter.debouncedTeleporters[teleporter] = nil
+		self.debouncedTeleporters[teleporter] = nil
+		self.activation.Enabled(teleporter, true)
 	end, teleporter)
 
-	local len = #allDestinations
+	math.randomseed(os.time() ^ 2)
+	local targetDestination = allDestinations[if len == 1 then 1 else math.random(1, len)]
 
-	local originalLinearVelocity = root.AssemblyLinearVelocity
-	local originalAngularVelocity = root.AssemblyAngularVelocity
+	teleport.teleport({
+		teleporter = teleporter.instance,
+		teleporterConfiguration = teleporter.instanceConfiguration or teleporter.instance,
+		teleporterLife = teleporter.life,
 
-	local targetDestination = if len == 1
-		then first
-		else allDestinations[Random.new(os.clock() ^ 2):NextInteger(1, len)]
+		target = root,
+		destination = targetDestination,
 
-	if teleporter:PlaySound() then
-		-- prelude.inferAndPlaySound(teleporter, prelude.AUDIO_ASSETS["core/towerSfx/teleport"], "TeleportSound")
-	end
+		attributes = self.Teleport,
+		seamlessAttributes = self.Seamless,
+		tweenAttributes = self.Transition,
+	})
 
-	local targetCFrame = teleporter:calculateTeleportCFrame(targetDestination, root)
-	local transition = tweens.configurationFromAttributes(teleporter.Transition, teleporter)
-	if transition and transition.duration and transition.duration > 0 then
-		local wasAnchored = root.Anchored
-		root.Anchored = true
-		tweens.play(root, { CFrame = targetCFrame }, transition)
-		root.Anchored = wasAnchored
-	else
-		root:PivotTo(targetCFrame)
-	end
-
-	if root and teleporter:KeepVelocity() then
-		root.AssemblyLinearVelocity = originalLinearVelocity
-		root.AssemblyAngularVelocity = originalAngularVelocity
-	end
-
-	Teleporter.debounce = false
+	self.debounce = false
 end
 
 return Teleporter

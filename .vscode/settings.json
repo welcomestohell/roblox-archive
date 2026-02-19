@@ -13,7 +13,9 @@
     "luau-lsp.completion.imports.stringRequires.enabled": true,
     "luau-lsp.fflags.enableNewSolver": true,
     "luau-lsp.ignoreGlobs": [
-        "**/.pesde/**"
+        "**/.pesde/**",
+        "out/**",
+        "inspiration/**"
     ],
     "luau-lsp.platform.type": "roblox",
     "luau-lsp.types.robloxSecurityLevel": "None",

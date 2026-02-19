@@ -22,7 +22,7 @@ local function initializeLevel(state: LevelState<any>, level: Level.Level)
 	end)
 end
 
-function LevelState.new<T>(default: T?): LevelState<T>
+function LevelState.new<T>(default: T): LevelState<T>
 	return setmetatable({
 		_default = default,
 		_values = tables.weak("k"),
