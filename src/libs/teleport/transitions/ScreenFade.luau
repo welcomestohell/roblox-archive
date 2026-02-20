@@ -29,7 +29,7 @@ return function(context: types.TransitionContext)
 	local screen = life:add(Instance.new("ScreenGui"))
 	screen.Name = "ScreenFadeTeleport"
 	screen.ResetOnSpawn = false
-	screen.IgnoreGuiInset = false
+	screen.IgnoreGuiInset = true
 
 	local frame = life:add(Instance.new("Frame"))
 	frame.Size = UDim2.fromScale(1, 1)
@@ -44,7 +44,7 @@ return function(context: types.TransitionContext)
 	tweenConfiguration.duration = tweenConfiguration.duration and tweenConfiguration.duration / 2 or 0
 	tweenConfiguration.isReversed = true
 
-	life:add(tweens.playAlways(frame, { BackgroundTransparency = 1 }, tweenConfiguration))
+	life:add(tweens.playAlways(frame, { BackgroundTransparency = 0 }, tweenConfiguration))
 
 	task.wait(tweenConfiguration.duration)
 	context.target:PivotTo(context.destinationCFrame)

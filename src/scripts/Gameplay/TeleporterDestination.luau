@@ -11,6 +11,7 @@ TeleporterDestination.debuggerEmoji = "📍"
 TeleporterDestination.Id = std.Attribute("Id", std.gt.string())
 TeleporterDestination.Offset = std.Attribute("Offset", std.gt.CFrame(), CFrame.new(0, 2.5, 0))
 
+-- LUAU: FUCK GENERICS
 TeleporterDestination.destinationsById = std.LevelState({} :: any)
 
 function TeleporterDestination.onStart(

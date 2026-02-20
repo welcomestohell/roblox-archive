@@ -7,11 +7,11 @@ end
 
 local function yielder()
 	while true do
-		run(coroutine.yield())
+		(run :: any)(coroutine.yield())
 	end
 end
 
-local function spawn<T...>(f: (T...) -> (), ...: T...)
+local function spawn<T...>(f: (T...) -> (), ...: T...): any
 	local thread
 	if #freeThreads > 0 then
 		thread = freeThreads[#freeThreads]
@@ -21,7 +21,7 @@ local function spawn<T...>(f: (T...) -> (), ...: T...)
 		coroutine.resume(thread)
 	end
 
-	task.spawn(thread, f, thread, ...)
+	return task.spawn(thread, f, thread, ...)
 end
 
 local function spawnCallbacks<Args...>(callbacks: { (Args...) -> () }, ...: Args...)

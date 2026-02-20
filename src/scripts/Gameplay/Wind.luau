@@ -1,5 +1,6 @@
 local character = require("@libs/character")
 local std = require("@libs/std")
+local threadpool = require("@libs/threadpool")
 
 local Wind = std.Mechanic({})
 export type WindMechanic = std.Mechanic<typeof(Wind)>
@@ -37,7 +38,7 @@ function Wind:onStart(wind: WindMechanic)
 		velocity.VectorVelocity = wind.instance.CFrame:VectorToWorldSpace(wind:Direction()) * wind:Speed()
 		velocity.Parent = root
 
-		wind.life:add(task.spawn(function()
+		wind.life:add(threadpool.spawn(function()
 			while touching[root] and wind.instance:IsDescendantOf(workspace) do
 				if wind:ContinuousUpdates() then
 					velocity.VectorVelocity = wind.instance.CFrame:VectorToWorldSpace(wind:Direction()) * wind:Speed()

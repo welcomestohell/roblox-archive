@@ -7,7 +7,7 @@ LevelState.type = "LevelState" :: "LevelState"
 
 export type LevelState<T> = setmetatable<{
 	_default: T,
-	_values: { [Level.Level]: T },
+	_values: { [Level.Level]: any },
 	_cleanup: { [Level.Level]: () -> () },
 }, typeof(LevelState)>
 
@@ -67,7 +67,7 @@ function LevelState.set<T>(self: LevelState<T>, level: Level.Level, value: T): T
 	return value
 end
 
-function LevelState.take<T>(self: LevelState<T>, level: Level.Level): T?
+function LevelState.take<T>(self: LevelState<T>, level: Level.Level): T
 	local old = self._values[level]
 	local cleanup = self._cleanup[level]
 	if cleanup then

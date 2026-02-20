@@ -29,3 +29,10 @@ function loadDecorations {
     Data: (),
     Return: Instance
 }
+
+event damage {
+    From: Client,
+    Type: Reliable,
+    Call: SingleAsync,
+    Data: u8
+}

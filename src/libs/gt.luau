@@ -21,6 +21,7 @@ local gt = {
 	build = GreenTea.build,
 	CFrame = GreenTea.CFrame,
 	Color3 = GreenTea.Color3,
+	ColorSequence = GreenTea.isTypeof("ColorSequence") :: ColorSequence,
 	coroutine = GreenTea.coroutine,
 	custom = GreenTea.custom,
 	dictionary = GreenTea.dictionary,
@@ -38,6 +39,8 @@ local gt = {
 	never = GreenTea.never,
 	none = GreenTea.none,
 	number = GreenTea.number,
+	NumberRange = GreenTea.isTypeof("NumberRange") :: NumberRange,
+	NumberSequence = GreenTea.isTypeof("NumberSequence") :: NumberSequence,
 	oneOf = GreenTea.oneOf,
 	optional = GreenTea.optional,
 	Ray = GreenTea.Ray,
@@ -124,7 +127,7 @@ end
 gt.positiveNumber = gt.constrainNumberExclusive(0)
 gt.negativeNumber = gt.constrainNumberExclusive(nil, 0)
 gt.literal = (GreenTea.literal :: any) :: <T>(x: T | "") -> T
-gt.instanceTree = instanceTree :: (<T>(tree: T) -> Instance & T) & (<P, T>(parent: P, tree: T) -> P & T)
+gt.instanceTree = instanceTree :: (<T>(tree: T) -> T & Instance) & (<P, T>(parent: P, tree: T) -> T & P)
 
 gt.unionLiterals1 = gt.unionLiterals :: <T1>(T1 | "") -> T1
 gt.unionLiterals2 = gt.unionLiterals :: <T1, T2>(T1 | "", T2 | "") -> T1 | T2

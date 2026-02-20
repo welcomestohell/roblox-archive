@@ -1,4 +1,5 @@
 local std = require("@libs/std")
+local threadpool = require("@libs/threadpool")
 
 local Hidden = std.Mechanic({})
 export type Hidden = std.Mechanic<typeof(Hidden)>
@@ -32,13 +33,13 @@ function Hidden.hide(instance: Instance)
 end
 
 function Hidden:onStart(hidden: Hidden)
-	task.spawn(Hidden.hide, hidden.instance)
+	threadpool.spawn(Hidden.hide, hidden.instance)
 	local descendantLife = hidden.life:inner()
 	Hidden.HideDescendants:onBind(hidden, function(isHidden)
 		descendantLife:destroy()
 		if isHidden then
 			for _, descendant in hidden.instance:GetDescendants() do
-				task.spawn(Hidden.hide, descendant)
+				threadpool.spawn(Hidden.hide, descendant)
 			end
 			hidden.life:add(hidden.instance.DescendantAdded:Connect(Hidden.hide))
 		end

@@ -1,9 +1,9 @@
 local allowWebLinks = require("./allow-web-links")
 local formatLog = require("./format-log")
 local runtime = require("../runtime")
+local threadpool = require("@libs/threadpool")
 local types = require("./types")
 
-local task = runtime.task
 local warn = runtime.warn
 
 local function create<T>(label: string, errorInfoUrl: string?, templates: T): types.Logger<T>
@@ -18,7 +18,7 @@ local function create<T>(label: string, errorInfoUrl: string?, templates: T): ty
 	end
 
 	function self:error(log)
-		task.spawn(error, label .. formatLog(self, log, errorInfoUrl), 0)
+		threadpool.spawn(error, label .. formatLog(self, log, errorInfoUrl), 0)
 	end
 
 	function self:fatalError(log)

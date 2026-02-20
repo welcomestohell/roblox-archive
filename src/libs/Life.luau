@@ -1,21 +1,30 @@
 local destroy = require("./destroy")
 local tables = require("./tables")
+local threadpool = require("@libs/threadpool")
 
 local Life = {}
 Life.__index = Life
 Life.type = "Life"
 
-export type Life = setmetatable<{ read destroyed: boolean, read destroyables: { destroy.Destroyable } }, typeof(Life)>
+export type Life = setmetatable<{ destroyed: boolean, destroyables: { destroy.Destroyable } }, typeof(Life)>
 
 function Life.new(): Life
-	return table.freeze(setmetatable({
+	return setmetatable({
 		destroyed = false,
 		destroyables = {} :: { destroy.Destroyable },
-	}, Life))
+	}, Life)
 end
 
 function Life.isLife(x: any)
 	return typeof(x) == "table" and getmetatable(x) == Life
+end
+
+function Life.isDestroyed(self: Life)
+	return self.destroyed
+end
+
+function Life.isAlive(self: Life)
+	return not self.destroyed
 end
 
 function Life.add<T>(self: Life, bound: T): T
@@ -26,12 +35,15 @@ function Life.add<T>(self: Life, bound: T): T
 	return bound
 end
 
-function Life.spawn(self: Life, bound: thread): thread
+function Life.spawn<T>(self: Life, bound: (...any) -> ...any): thread | (...any) -> ...any
 	if self.destroyed then
 		return bound
 	end
-	table.insert(self.destroyables, task.spawn(bound))
-	return bound
+	local thread = threadpool.spawn(bound)
+	table.insert(self.destroyables, function()
+		task.cancel(thread)
+	end)
+	return thread
 end
 
 function Life.addMany<T...>(self: Life, ...: T...)
@@ -64,6 +76,20 @@ end
 
 function Life.removeAll(self: Life)
 	table.clear(self.destroyables)
+end
+
+function Life.delay(self: Life, fn: () -> (), time: number)
+	if self.destroyed then
+		return
+	end
+	local thread = task.delay(time, function()
+		if self:isAlive() then
+			fn()
+		end
+	end)
+	self:add(function()
+		task.cancel(thread)
+	end)
 end
 
 function Life.connect(self: Life, signal: RBXScriptSignal, fn: (...any) -> ...any): RBXScriptConnection?
@@ -105,19 +131,14 @@ function Life.destroy(self: Life)
 	if self.destroyed then
 		return
 	end
+
+	self.destroyed = true
+
 	for index = #self.destroyables, 1, -1 do
 		destroy(self.destroyables[index])
 	end
+
 	table.clear(self.destroyables)
-
-	setmetatable({
-		destroyed = true,
-		destroyables = {} :: { destroy.Destroyable },
-	}, self)
-end
-
-function Life.isAlive(self: Life)
-	return not (getmetatable(self) :: Life).destroyed
 end
 
 function Life.__tostring(_: Life)

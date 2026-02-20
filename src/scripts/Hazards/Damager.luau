@@ -1,10 +1,66 @@
 local std = require("@libs/std")
 
+local character = require("@libs/character")
+local damage = require("@libs/damage")
+
 local Damager = std.Mechanic({})
 export type DamagerMechanic = std.Mechanic<typeof(Damager)>
 
 Damager.instanceTag = "Damager"
 Damager.instanceType = std.isA.BasePart()
 Damager.debuggerEmoji = "☠️"
+
+Damager.Enabled = Damager:withEnabled()
+
+Damager:attributeSection("Damage")
+Damager.Damage = damage.useDamageAttributes(Damager)
+Damager.Cooldown = Damager:attribute("Cooldown", std.gt.positiveNumber, 0.5)
+
+Damager.cooldowns = {} :: { [Player]: true }
+
+function Damager.onTouch(damager: DamagerMechanic, hit: Part): boolean
+	if not hit or not hit.Parent or not character.isFromMaybeCharacter(hit) then
+		return false
+	end
+
+	local player = character.getPlayerFromHit(hit)
+
+	if not player then
+		return false
+	end
+
+	local damagerDamage, damagerCooldown = damager:Damage(), damager:Cooldown()
+	local cooldowns = damager.cooldowns or {}
+
+	if cooldowns[player] then
+		return false
+	end
+
+	cooldowns[player] = true
+
+	damager.life:delay(function()
+		cooldowns[player] = nil
+	end, damagerCooldown)
+
+	damage.damagePlayer(player, damagerDamage)
+
+	return true
+end
+
+function Damager.onStart(self: typeof(Damager), damager: DamagerMechanic, level: std.Level)
+	damager.cooldowns = {} :: { [Player]: true }
+
+	local instance = damager.instance
+
+	if not instance then
+		damager.log:error("Damager", instance:GetFullName(), "is missing.")
+
+		return
+	end
+
+	damager.life:connect(instance.Touched, function(hit: Part)
+		damager:onTouch(hit)
+	end)
+end
 
 return Damager

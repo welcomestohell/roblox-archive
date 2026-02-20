@@ -2,6 +2,7 @@ local LocalizationService = game:GetService("LocalizationService")
 
 local Charm = require("@pkgs/Charm")
 local repr = require("@libs/repr")
+local threadpool = require("@libs/threadpool")
 
 export type LogMessage = {
 	timestamp: DateTime,
@@ -51,7 +52,7 @@ local function outputMessage(event: LogMessage)
 	formattedString ..= ` - {timestamp}`
 
 	if event.level <= LOG_LEVELS.ERROR then
-		task.spawn(error, formattedString :: any, 0)
+		threadpool.spawn(error :: any, formattedString :: any, 0)
 	elseif event.level <= LOG_LEVELS.WARN then
 		warn(formattedString)
 	else

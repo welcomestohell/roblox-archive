@@ -10,7 +10,8 @@ local activation = require("./activation")
 local functions = require("./functions")
 local gt = require("./gt")
 local tables = require("./tables")
-local types = require("@libs/activation/types")
+local threadpool = require("@libs/threadpool")
+local types = require("@libs/acactivation/types")
 
 local log = Log.new("Level")
 
@@ -137,14 +138,14 @@ function Level.startMechanic(self: Level, mechanic: Mechanic.Mechanic<any>)
 	end
 
 	if implementation.onStart then
-		self.life:add(task.spawn(implementation.onStart, implementation, mechanic, self))
+		self.life:add(threadpool.spawn(implementation.onStart, implementation, mechanic, self))
 	end
 end
 
 function Level.spawnMechanicImplementationMethod(self: Level, method: keyof<Mechanic.MechanicImplementation>, ...: any)
 	for _, implementation in self.scripts.mechanicImplementations do
 		if implementation[method] then
-			self.life:add(task.spawn((implementation :: any)[method], implementation, ...))
+			self.life:add(threadpool.spawn((implementation :: any)[method], implementation, ...))
 		end
 	end
 end
@@ -184,7 +185,7 @@ function Level.start(self: Level)
 	Promise.all(initThreads):await()
 
 	for _, mechanic in self.mechanics do
-		task.spawn(Level.startMechanic, self, mechanic)
+		threadpool.spawn.spawn(Level.startMechanic, self, mechanic)
 	end
 
 	self.life:add(RunService.PreSimulation:Connect(function(deltaTime)
@@ -203,9 +204,9 @@ function Level.start(self: Level)
 		self:spawnMechanicImplementationMethod("onPreAnimation", deltaTime, self)
 	end))
 
-	table.insert(Level.activeLevels, self)
+	table.insert(Level.activeLevels :: any, self)
 	self.life:add(function()
-		tables.findAndRemove(Level.activeLevels, self)
+		tables.findAndRemove(Level.activeLevels :: any, self)
 	end)
 end
 

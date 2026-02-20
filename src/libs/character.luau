@@ -20,16 +20,42 @@ local function isLocalPlayerCharacter(character: Instance): boolean
 	return Players:GetPlayerFromCharacter(character :: Model) == Players.LocalPlayer
 end
 
-local function getMaybeCharacter(): Character?
-	return Players.LocalPlayer.Character
+local function getMaybePlayer(): Player?
+	return Players.LocalPlayer
+end
+
+local function waitForPlayer(): Player
+	return Players.PlayerAdded:Wait()
+end
+
+local function getPlayer(): Player
+	return getMaybePlayer() or waitForPlayer()
+end
+
+local function getMaybeCharacter(player: Player?): Character?
+	local plr = if player ~= nil then player else Players.LocalPlayer
+
+	return plr.Character
 end
 
 local function waitForCharacter(): Character
-	return Players.LocalPlayer.CharacterAdded:Wait() :: any
+	return Players.LocalPlayer.CharacterAdded:Wait() :: Character
 end
 
 local function getCharacter(): Character
 	return getMaybeCharacter() or waitForCharacter()
+end
+
+local function getCharacterFromHit(hit: Instance): Character?
+	local character = getMaybeCharacter()
+	return if character and character:IsAncestorOf(hit) then character else nil
+end
+
+local function getPlayerFromHit(hit: Instance): Player?
+	local player = getPlayer()
+	local character = getMaybeCharacter(player)
+
+	return if character and character:IsAncestorOf(hit) then player else nil
 end
 
 local function isFromMaybeCharacter(instance: Instance): boolean
@@ -76,6 +102,8 @@ return {
 	getMaybeCharacter = getMaybeCharacter,
 	waitForCharacter = waitForCharacter,
 	getCharacter = getCharacter,
+	getCharacterFromHit = getCharacterFromHit,
+	getPlayerFromHit = getPlayerFromHit,
 	isFromMaybeCharacter = isFromMaybeCharacter,
 	isFromCharacter = isFromCharacter,
 	getMaybeHumanoidRootPart = getMaybeHumanoidRootPart,

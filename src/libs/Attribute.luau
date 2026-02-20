@@ -1,6 +1,7 @@
 local Log = require("./Log")
 local gt = require("@pkgs/gt")
 local tables = require(script.Parent.tables)
+local threadpool = require("@libs/threadpool")
 
 export type AttributeValue =
 	| string
@@ -64,7 +65,7 @@ local function observeChanges(self: Attribute<any>, attribute: string, instance:
 				if listeners and next(listeners) ~= nil then
 					local value = instance:GetAttribute(self.attribute)
 					for l in listeners do
-						task.spawn(l, value, self)
+						threadpool.spawn(l, value, self)
 					end
 				else
 					local connection = self._observers[instance]
@@ -112,7 +113,7 @@ local function fetchAttribute(self: Attribute<any>, instance: Instance)
 	local listeners = self._fetchListeners[instance]
 	if listeners and next(listeners) ~= nil then
 		for l in listeners do
-			task.spawn(l, value, self)
+			threadpool.spawn(l, value, self)
 		end
 	end
 
@@ -174,12 +175,22 @@ end
 
 function Attribute.peek<T>(self: Attribute<T>, instance: ResolvableInstance): T
 	local value = self._cache[resolveInstance(instance)] :: any
-	return if value == nil then self.defaultValue else value
+
+	if value == nil then
+		value = self.defaultValue
+	end
+
+	return value
 end
 
 function Attribute.fetch<T>(self: Attribute<T>, instance: ResolvableInstance): T
 	local fetched = fetchAttribute(self, resolveInstance(instance))
-	return if fetched == nil then self.defaultValue else fetched
+
+	if fetched == nil then
+		fetched = self.defaultValue
+	end
+
+	return fetched
 end
 
 function Attribute.get<T>(self: Attribute<T>, instance: ResolvableInstance): T
@@ -187,6 +198,7 @@ function Attribute.get<T>(self: Attribute<T>, instance: ResolvableInstance): T
 
 	if self._updated[resolved] then
 		local cached = self._cache[resolved]
+
 		if cached == nil then
 			return self.defaultValue
 		end
@@ -197,6 +209,10 @@ end
 
 function Attribute.getOrSet<T>(self: Attribute<T>, instance: ResolvableInstance, default: T): T
 	local value = self:get(instance)
+
+	if default == nil then
+		default = self.defaultValue
+	end
 
 	if value == nil then
 		value = self:set(instance, default)
@@ -216,6 +232,10 @@ function Attribute.getOrSetWith<T>(self: Attribute<T>, instance: ResolvableInsta
 end
 
 function Attribute.set<T>(self: Attribute<T>, instance: ResolvableInstance, value: T): T
+	if value == nil then
+		value = self.defaultValue
+	end
+
 	local resolved = resolveInstance(instance)
 
 	resolved:SetAttribute(self.attribute, value)
@@ -258,7 +278,7 @@ function Attribute.onBind<T>(
 	instance: ResolvableInstance,
 	listener: (value: T, attribute: Attribute<T>) -> ()
 ): () -> ()
-	task.spawn(listener, Attribute.get(self :: any, instance), self)
+	threadpool.spawn(listener, Attribute.get(self :: any, instance), self)
 	return Attribute.onChange(self :: any, instance, listener)
 end
 

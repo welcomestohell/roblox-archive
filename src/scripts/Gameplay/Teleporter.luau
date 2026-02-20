@@ -65,7 +65,7 @@ function Teleporter.onActivate(self: typeof(Teleporter), teleporter: TeleporterM
 		teleporterLife = teleporter.life,
 
 		target = root,
-		destination = targetDestination,
+		destination = targetDestination.instance,
 
 		attributes = self.Teleport,
 		seamlessAttributes = self.Seamless,

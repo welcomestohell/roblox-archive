@@ -1,4 +1,5 @@
 local std = require("@libs/std")
+local threadpool = require("@libs/threadpool")
 
 local Shover = std.Mechanic({})
 export type ShoverMechanic = std.Mechanic<typeof(Shover)>
@@ -48,7 +49,7 @@ function Shover:onPreSimulation(_, level: std.Level)
 	local threads = Shover.threads:getOrSet(level, {})
 	for _, shover: ShoverMechanic in level:getMechanics(Shover) do
 		if not threads[shover] then
-			threads[shover] = level.life:add(task.spawn(function()
+			threads[shover] = level.life:add(threadpool.spawn(function()
 				while self:Enabled() do
 					shove("In", shover)
 					shove("Out", shover)
