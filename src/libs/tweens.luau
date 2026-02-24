@@ -22,7 +22,7 @@ export type TweenAttributes = {
 local isEasingStyle = gt.build(gt.enumOf(Enum.EasingStyle) :: Enum.EasingStyle)
 local isEasingDirection = gt.build(gt.enumOf(Enum.EasingDirection) :: Enum.EasingDirection)
 
-local function useTweenAttributes(implementation: Mechanic.MechanicImplementationLike, prefix: string?): TweenAttributes
+local function useAttributes(implementation: Mechanic.MechanicImplementationLike, prefix: string?): TweenAttributes
 	local prefix = prefix or "Transition"
 
 	local attributes = {}
@@ -98,7 +98,7 @@ local function playAlwaysFromAttributes(
 end
 
 return table.freeze {
-	useTweenAttributes = useTweenAttributes,
+	useAttributes = useAttributes,
 	configurationFromAttributes = configurationFromAttributes,
 	tweenInfoFromConfiguration = tweenInfoFromConfiguration,
 

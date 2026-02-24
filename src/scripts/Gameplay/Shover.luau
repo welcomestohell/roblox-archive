@@ -4,8 +4,10 @@ local threadpool = require("@libs/threadpool")
 local Shover = std.Mechanic({})
 export type ShoverMechanic = std.Mechanic<typeof(Shover)>
 Shover.instanceTag = "Shover"
-Shover.instanceType = std.isA.BasePart()
-Shover.debuggerEmoji = "🫸"
+Shover.instanceType = std.gt.instanceTree({
+	ShoverConstraint = std.isA.PrismaticConstraint(),
+})
+Shover.debuggerEmoji = "🤜"
 
 type ShoverDirection = "In" | "Out"
 type ShoverDirectionAttributes = {
@@ -28,20 +30,17 @@ Shover.directions.Out = {
 	power = std.Attribute("OutPower", std.gt.positiveNumber, 0),
 }
 
-local function shove(direction: ShoverDirection, shover: ShoverMechanic)
+function Shover.shove(shover: ShoverMechanic, direction: ShoverDirection)
 	local attributes: ShoverDirectionAttributes = Shover.directions[direction]
 
 	task.wait(attributes.delay(shover))
 
 	if shover:Enabled() then
 		local power = attributes.power(shover)
-		for _, descendant in pairs(shover.instance:GetDescendants()) do
-			if descendant.Name == "ShoverConstraint" and descendant:IsA("PrismaticConstraint") then
-				descendant.LinearResponsiveness = power
-				descendant.Speed = power
-				descendant.TargetPosition = if direction == "Out" then descendant.UpperLimit else 0
-			end
-		end
+		local constraint = shover.instance.ShoverConstraint
+		constraint.LinearResponsiveness = power
+		constraint.Speed = power
+		constraint.TargetPosition = if direction == "Out" then shover.UpperLimit else 0
 	end
 end
 
@@ -49,12 +48,12 @@ function Shover:onPreSimulation(_, level: std.Level)
 	local threads = Shover.threads:getOrSet(level, {})
 	for _, shover: ShoverMechanic in level:getMechanics(Shover) do
 		if not threads[shover] then
-			threads[shover] = level.life:add(threadpool.spawn(function()
-				while self:Enabled() do
-					shove("In", shover)
-					shove("Out", shover)
+			threads[shover] = level.life:add(threadpool.spawn(function(shover: ShoverMechanic)
+				while shover:Enabled() do
+					shover:shove("In")
+					shover:shove("Out")
 				end
-			end))
+			end, shover))
 		end
 	end
 end

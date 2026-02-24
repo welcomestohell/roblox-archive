@@ -6,6 +6,7 @@ id = 12787072
 
 [codegen]
 style = "nested"
+strip_extensions = true
 
 [inputs.assets]
 path = "assets/**/*"

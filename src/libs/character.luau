@@ -1,10 +1,10 @@
 local Players = game:GetService("Players")
 
 export type Character = Model & {
-	Humanoid: Humanoid & {
+	Humanoid: {
 		HumanoidDescription: HumanoidDescription,
 		Animator: Animator,
-	},
+	} & Humanoid,
 	HumanoidRootPart: BasePart,
 	BodyColors: BodyColors,
 	PrimaryPart: BasePart,

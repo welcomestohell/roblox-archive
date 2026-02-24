@@ -1,9 +1,9 @@
 local Life = require("@libs/Life")
 local tweens = require("@libs/tweens")
+local useAttributes = require("./useAttributes")
 local useSeamlessAttributes = require("./useSeamlessAttributes")
-local useTeleportAttributes = require("./useTeleportAttributes")
 
-export type TeleporterAttributes = typeof(useTeleportAttributes(nil :: any))
+export type TeleporterAttributes = typeof(useAttributes(nil :: any))
 export type SeamlessAttributes = typeof(useSeamlessAttributes(nil :: any))
 
 export type TeleportContext = {

@@ -42,7 +42,7 @@ function LevelState.getOrDefault<T>(self: LevelState<T>, level: Level.Level): T
 	return value
 end
 
-function LevelState.getOrSet<T>(self: LevelState<T>, level: Level.Level, fallback: T): T
+function LevelState.getOrSet<T>(self: LevelState<T>, level: Level.Level, fallback: unknown): T
 	local value = self._values[level]
 	if value == nil then
 		self._values[level] = fallback

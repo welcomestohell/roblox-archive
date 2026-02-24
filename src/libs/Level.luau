@@ -11,7 +11,7 @@ local functions = require("./functions")
 local gt = require("./gt")
 local tables = require("./tables")
 local threadpool = require("@libs/threadpool")
-local types = require("@libs/acactivation/types")
+local types = require("@libs/activation/types")
 
 local log = Log.new("Level")
 
@@ -117,11 +117,14 @@ function Level.startMechanic(self: Level, mechanic: Mechanic.Mechanic<any>)
 	end
 
 	if implementation.onActivate then
-		local activationAttributes = implementation.activation :: types.ActivationAttributes
+		-- TODO: deprecate lowercase activation
+		local activationAttributes = (
+			implementation.activation or implementation.Activation
+		) :: types.ActivationAttributes
 
 		if not activationAttributes then
 			Mechanic.attributeSection(implementation :: any, "Activation")
-			activationAttributes = activation.useActivationAttributes(implementation :: any)
+			activationAttributes = activation.useAttributes(implementation :: any)
 			implementation.activation = activationAttributes
 		end
 
@@ -185,7 +188,7 @@ function Level.start(self: Level)
 	Promise.all(initThreads):await()
 
 	for _, mechanic in self.mechanics do
-		threadpool.spawn.spawn(Level.startMechanic, self, mechanic)
+		threadpool.spawn(Level.startMechanic, self, mechanic)
 	end
 
 	self.life:add(RunService.PreSimulation:Connect(function(deltaTime)

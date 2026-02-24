@@ -4,7 +4,7 @@ local Conveyor = std.Mechanic({})
 export type ConveyorMechanic = std.Mechanic<typeof(Conveyor)>
 Conveyor.instanceTag = "Conveyor"
 Conveyor.instanceType = std.isA.BasePart()
-Conveyor.debuggerEmoji = "➡️"
+Conveyor.debuggerEmoji = "🛣️"
 
 Conveyor.Speed = Conveyor:attribute("Speed", std.gt.positiveNumber, 0)
 Conveyor.SynchronizeBeams = Conveyor:attribute("SynchronizeBeams", std.gt.boolean(), false)

@@ -2,7 +2,7 @@ local Mechanic = require("@libs/Mechanic")
 local gt = require("@libs/gt")
 local types = require("./types")
 
-local function useActivationAttributes(
+local function useAttributes(
 	implementation: Mechanic.MechanicImplementationLike,
 	baseName: string?
 ): types.ActivationAttributes
@@ -26,7 +26,9 @@ local function useActivationAttributes(
 
 	attributes.MaxDistance = implementation:attribute(baseName .. "MaxDistance", gt.positiveNumber, math.huge)
 
+	attributes.Id = implementation:attribute(baseName .. "Id", gt.optional(gt.string()), nil)
+
 	return attributes
 end
 
-return useActivationAttributes
+return useAttributes

@@ -1,7 +1,7 @@
 -- Son its just Roblox
 -- local implementations = require("@self/implementations")
 -- local task = require("@self/libs/task")
-local threadpool = require("@libs/threadpool")
+local threadpool = require("@self/threadpool")
 -- local warn = require("@self/libs/warn")
 
 -- export type RuntimeName = implementations.RuntimeName

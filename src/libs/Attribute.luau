@@ -22,7 +22,7 @@ export type AttributeValue =
 
 -- LUAU FIXME: Can't require the Mechanic class due to cyclic dependencies, so
 -- we specify a proxy type.
-export type ResolvableInstance = any
+export type ResolvableInstance = unknown
 
 local log = Log.new("Attribute")
 
@@ -46,11 +46,11 @@ local function resolveInstance(resolvable: ResolvableInstance): Instance
 	if typeof(resolvable) == "Instance" then
 		return resolvable
 	else
-		return resolvable.instanceConfiguration or resolvable.instance
+		return (resolvable :: any).instanceConfiguration or (resolvable :: any).instance
 	end
 end
 
-local function observeChanges(self: Attribute<any>, attribute: string, instance: Instance)
+local function observeChanges(self: Attribute<unknown>, attribute: string, instance: Instance)
 	if not self._observers[instance] then
 		local signal = self._signals[instance]
 		if not signal then
@@ -84,12 +84,15 @@ local function observeChanges(self: Attribute<any>, attribute: string, instance:
 	end
 end
 
-local function fetchAttribute(self: Attribute<any>, instance: Instance)
+local function fetchAttribute(self: Attribute<unknown>, instance: Instance)
 	local attribute = self.attribute
 	local value: any = instance:GetAttribute(attribute)
 
+	local isMissing = value == nil
+
 	if self.check then
 		local isValid, invalidCause = self.check:matches(value)
+
 		if not isValid then
 			if value ~= nil then
 				log:warn(
@@ -102,7 +105,12 @@ local function fetchAttribute(self: Attribute<any>, instance: Instance)
 			end
 
 			value = self.defaultValue
+			isMissing = true
 		end
+	end
+
+	if isMissing and value ~= nil then
+		instance:SetAttribute(attribute, value)
 	end
 
 	self._cache[instance] = value
@@ -123,22 +131,38 @@ end
 local function observeListener<T>(
 	attribute: Attribute<T>,
 	instance: ResolvableInstance,
-	listeners: { [Instance]: { [(value: T, attribute: Attribute<T>) -> ()]: true } },
+	listenerMap: { [Instance]: { [(value: T, attribute: Attribute<T>) -> ()]: true } },
 	listener: (value: T, attribute: Attribute<T>) -> ()
 ): () -> ()
 	local resolved = resolveInstance(instance)
-	local listeners = listeners[resolved] :: {}
-	if not listeners then
-		listeners = tables.weak("k") :: any
-		listeners[resolved] = listeners
+
+	local instanceListeners = listenerMap[resolved]
+	if not instanceListeners then
+		instanceListeners = tables.weak("k") :: any
+		listenerMap[resolved] = instanceListeners
 	end
+	instanceListeners[listener] = true
 
-	listeners[listener] = true
+	observeChanges(attribute, attribute.attribute, resolved)
 
+	local disconnected = false
 	local function disconnect()
+		if disconnected then
+			return
+		end
+
+		disconnected = true
+
+		local listeners = listenerMap[resolved]
+
+		if not listeners then
+			return
+		end
+
 		listeners[listener] = nil
+
 		if next(listeners) == nil then
-			listeners[resolved] = nil
+			listenerMap[resolved] = nil
 		end
 	end
 
@@ -196,15 +220,17 @@ end
 function Attribute.get<T>(self: Attribute<T>, instance: ResolvableInstance): T
 	local resolved = resolveInstance(instance)
 
-	if self._updated[resolved] then
-		local cached = self._cache[resolved]
-
-		if cached == nil then
-			return self.defaultValue
-		end
+	if not self._updated[resolved] then
+		return fetchAttribute(self, resolved)
 	end
 
-	return fetchAttribute(self :: any, resolved)
+	local cached = self._cache[resolved]
+
+	if cached == nil then
+		return self.defaultValue
+	end
+
+	return cached
 end
 
 function Attribute.getOrSet<T>(self: Attribute<T>, instance: ResolvableInstance, default: T): T

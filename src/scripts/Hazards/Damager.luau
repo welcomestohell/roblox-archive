@@ -13,7 +13,7 @@ Damager.debuggerEmoji = "☠️"
 Damager.Enabled = Damager:withEnabled()
 
 Damager:attributeSection("Damage")
-Damager.Damage = damage.useDamageAttributes(Damager)
+Damager.Damage = damage.useAttributes(Damager)
 Damager.Cooldown = Damager:attribute("Cooldown", std.gt.positiveNumber, 0.5)
 
 Damager.cooldowns = {} :: { [Player]: true }

@@ -1,8 +1,8 @@
 local Workspace = game:GetService("Workspace")
 
 local types = require("@self/types")
+local useAttributes = require("@self/useAttributes")
 local useSeamlessAttributes = require("@self/useSeamlessAttributes")
-local useTeleportAttributes = require("@self/useTeleportAttributes")
 
 export type TeleporterAttributes = types.TeleporterAttributes
 export type SeamlessAttributes = types.SeamlessAttributes
@@ -73,6 +73,6 @@ return table.freeze {
 	transitions = transitions,
 	calculateSeamless = calculateSeamless,
 	teleport = teleport,
-	useTeleportAttributes = useTeleportAttributes,
+	useAttributes = useAttributes,
 	useSeamlessAttributes = useSeamlessAttributes,
 }

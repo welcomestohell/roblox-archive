@@ -2,6 +2,7 @@ local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
 
 local character = require("@libs/character")
+local functions = require("@libs/functions")
 local std = require("@libs/std")
 local tables = require("@libs/tables")
 
@@ -19,13 +20,13 @@ Follower.Enabled = Follower:withEnabled()
 Follower.FollowMode = Follower:attribute(
 	"FollowMode",
 	std.gt.unionLiterals5("LookAt", "RotationOf", "PositionOf", "PivotOf", "None"),
-	"None" :: "None"
+	functions.literal "None"
 )
 
 Follower.FollowTarget = Follower:attribute(
 	"FollowTarget",
 	std.gt.unionLiterals5("Character", "Mouse", "Camera", "Pointer", "None"),
-	"None" :: "None"
+	functions.literal "None"
 )
 
 Follower:attributeSection("Origin")
@@ -103,7 +104,7 @@ function Follower.onPreSimulation(self: typeof(Follower), deltaTime: number, lev
 			targetCFrame = CFrame.new(targetCFrame.Position) * instance:GetPivot().Rotation
 		end
 
-		local baseTransform: CFrame = follower:Origin()
+		local baseTransform = follower:Origin()
 		local useRelative = follower:UseOriginRotation()
 		if useRelative and baseTransform then
 			targetCFrame *= baseTransform.Rotation
@@ -116,6 +117,8 @@ function Follower.onPreSimulation(self: typeof(Follower), deltaTime: number, lev
 
 		local rx, ry, rz = current:ToEulerAnglesXYZ()
 		local trx, try, trz = targetCFrame:ToEulerAnglesXYZ()
+
+		-- FIXME: ts is misbehaving ??????????
 
 		if not follower:UseXPosition() then
 			tx = cx

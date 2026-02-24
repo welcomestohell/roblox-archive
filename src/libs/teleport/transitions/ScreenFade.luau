@@ -18,9 +18,6 @@ return function(context: types.TransitionContext)
 	end
 
 	local wasAnchored = context.target.Anchored
-	life:add(function()
-		context.target.Anchored = wasAnchored
-	end)
 
 	context.target.Anchored = true
 	context.target.AssemblyAngularVelocity = Vector3.zero
@@ -52,4 +49,5 @@ return function(context: types.TransitionContext)
 
 	task.wait(tweenConfiguration.duration)
 	life:destroy()
+	context.target.Anchored = wasAnchored
 end

@@ -1,10 +1,10 @@
 local allowWebLinks = require("./allow-web-links")
 local formatLog = require("./format-log")
 local runtime = require("../runtime")
-local threadpool = require("@libs/threadpool")
 local types = require("./types")
 
 local warn = runtime.warn
+local threadpool = runtime.threadpool
 
 local function create<T>(label: string, errorInfoUrl: string?, templates: T): types.Logger<T>
 	local self = {} :: types.Logger<T>

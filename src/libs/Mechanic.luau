@@ -59,6 +59,7 @@ export type MechanicImplementation = {
 	onInit: (self: any, level: any) -> ()?,
 	onStart: (self: any, mechanic: Mechanic<any>, level: any) -> ()?,
 	onActivate: (self: any, mechanic: Mechanic<any>, level: any) -> ()?,
+	onDeactivate: (self: any, mechanic: Mechanic<any>, level: any) -> ()?,
 }
 
 --[=[

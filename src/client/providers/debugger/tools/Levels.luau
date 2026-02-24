@@ -19,9 +19,8 @@ function Levels.renderWindow()
 	for _, level in Level.activeLevels do
 		if Iris.Tab({ level.name }).state.isOpened.value then
 			for _, tag in level.scripts.mechanicTags do
-				for _, implementation in level.scripts.mechanicImplementationByTag[tag] do
-				end
-				Iris.Tree({ tag })
+				local implementation = level.scripts.mechanicImplementationByTag[tag]
+				Iris.Tree({ `{implementation.debuggerEmoji} {tag}` })
 				Iris.End()
 			end
 		end

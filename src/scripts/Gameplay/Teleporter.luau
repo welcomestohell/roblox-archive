@@ -1,6 +1,7 @@
 local TeleporterDestination = require("./TeleporterDestination")
 local activation = require("@libs/activation")
 local character = require("@libs/character")
+local sounds = require("@libs/sounds")
 local std = require("@libs/std")
 local teleport = require("@libs/teleport")
 local tweens = require("@libs/tweens")
@@ -14,17 +15,20 @@ Teleporter.debuggerEmoji = "🌀"
 
 Teleporter.Id = Teleporter:attribute("Id", std.gt.optional(std.gt.string()), nil)
 Teleporter.Cooldown = Teleporter:attribute("Cooldown", std.gt.positiveNumber, 0)
-Teleporter.Teleport = teleport.useTeleportAttributes(Teleporter)
+Teleporter.Teleport = teleport.useAttributes(Teleporter)
 
 Teleporter:attributeSection("Seamless")
 Teleporter.Seamless = teleport.useSeamlessAttributes(Teleporter)
 
 Teleporter:attributeSection("Transitions")
-Teleporter.Transition = tweens.useTweenAttributes(Teleporter)
+Teleporter.Transition = tweens.useAttributes(Teleporter)
+
+Teleporter:attributeSection("Sound")
+Teleporter.Sound = sounds.useAttributes(Teleporter)
 
 Teleporter.debounce = false
 Teleporter.debouncedTeleporters = {} :: { [TeleporterMechanic]: true }
-Teleporter.activation = activation.useActivationAttributes(Teleporter)
+Teleporter.activation = activation.useAttributes(Teleporter)
 
 function Teleporter.onActivate(self: typeof(Teleporter), teleporter: TeleporterMechanic, level: std.Level)
 	local root = character.getMaybeHumanoidRootPart()
@@ -58,6 +62,10 @@ function Teleporter.onActivate(self: typeof(Teleporter), teleporter: TeleporterM
 
 	math.randomseed(os.time() ^ 2)
 	local targetDestination = allDestinations[if len == 1 then 1 else math.random(1, len)]
+
+	if self.Sound.Play(teleporter) then
+		sounds.playInstance(self.Sound, teleporter.instance, teleporter.instanceConfiguration, sounds.sfx.teleport)
+	end
 
 	teleport.teleport({
 		teleporter = teleporter.instance,

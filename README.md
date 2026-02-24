@@ -18,3 +18,11 @@ rokit install
 rojo plugin install
 lute serve
 ```
+
+## Notes
+
+new cos:
+
+-  -> pivot orbs
+- Anchor -> once activated, welds u around like ur orbiting it
+- Star -> celeste feather

@@ -4,7 +4,7 @@ local functions = require("@libs/functions")
 local gt = require("@libs/gt")
 local log = require("@self/log")
 local types = require("@self/types")
-local useActivationAttributes = require("@self/useActivationAttributes")
+local useAttributes = require("@self/useAttributes")
 local useChildOfClass = require("@self/useChildOfClass")
 
 export type ActivationAttributes = types.ActivationAttributes
@@ -15,7 +15,9 @@ export type ActivationMode = types.ActivationMode
 
 local modes: { [string]: ActivationMode } = {
 	Click = require("@self/modes/Click"),
+	Died = require("@self/modes/Died"),
 	HumanoidStateChanged = require("@self/modes/HumanoidStateChanged"),
+	Jumped = require("@self/modes/Jumped"),
 	Prompt = require("@self/modes/Prompt"),
 	Touch = require("@self/modes/Touch"),
 }
@@ -107,5 +109,5 @@ return table.freeze {
 
 	createChildOfClass = createChildOfClass,
 	useChildOfClass = useChildOfClass,
-	useActivationAttributes = useActivationAttributes,
+	useAttributes = useAttributes,
 }

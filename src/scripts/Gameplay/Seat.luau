@@ -21,7 +21,7 @@ Seat.Cooldown = Seat:attribute("Cooldown", std.gt.positiveNumber, 0)
 
 Seat.seated = false
 Seat.debounced = {} :: { [SeatMechanic]: true }
-Seat.activation = activation.useActivationAttributes(Seat)
+Seat.activation = activation.useAttributes(Seat)
 
 function Seat.onActivate(self: typeof(Seat), seat: SeatMechanic)
 	local isSeatable = seat:Enabled() and not self.seated and not self.debounced[seat] and character.isCharacterAlive()

@@ -3,8 +3,10 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Level = require("@libs/Level")
 local Life = require("@libs/Life")
 local Log = require("@libs/Log")
+local audios = require("@shared/generated/audios")
 local net = require("@client/generated/net")
 local prvd = require("@shared/prvdmwrong/prvdmwrong")
+local sounds = require("@libs/sounds")
 
 local KitClientProvider = {}
 export type KitClientProvider = typeof(KitClientProvider)
@@ -20,6 +22,10 @@ function KitClientProvider.onStart(self: KitClientProvider)
 		self.log:trace("Waiting for game to finish loading")
 		game.Loaded:Wait()
 	end
+
+	sounds.useAssets(audios :: any)
+	self.log:trace("Loaded audios from assets:", sounds.assetPaths)
+	task.spawn(sounds.preloadAssets)
 
 	local tower = net.getTower.invoke():expect()
 

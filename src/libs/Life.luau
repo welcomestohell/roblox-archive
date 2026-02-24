@@ -78,15 +78,15 @@ function Life.removeAll(self: Life)
 	table.clear(self.destroyables)
 end
 
-function Life.delay(self: Life, fn: () -> (), time: number)
+function Life.delay<A...>(self: Life, fn: (A...) -> (), time: number, ...: A...)
 	if self.destroyed then
 		return
 	end
-	local thread = task.delay(time, function()
+	local thread = task.delay(time, function(...)
 		if self:isAlive() then
-			fn()
+			fn(...)
 		end
-	end)
+	end, ...)
 	self:add(function()
 		task.cancel(thread)
 	end)

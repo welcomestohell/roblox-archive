@@ -29,7 +29,7 @@ return function(context: types.TransitionContext)
 		tweens.configurationFromAttributes(context.tweenAttributes, context.teleporterConfiguration)
 
 	local tween: Tween = life:addMany(
-		tweens.playAlways(context.teleporterConfiguration, { CFrame = context.destinationCFrame }, tweenConfiguration),
+		tweens.playAlways(context.target, { CFrame = context.destinationCFrame }, tweenConfiguration),
 		tweens.playAlways(Workspace.CurrentCamera, { CFrame = context.destinationCameraCFrame }, tweenConfiguration)
 	)
 

@@ -1,4 +1,5 @@
 local Signal = require("@pkgs/Signal")
+local activation = require("@libs/activation")
 local std = require("@libs/std")
 
 local Dismounter = std.Mechanic({})
@@ -9,6 +10,9 @@ Dismounter.instanceType = std.isA.Instance()
 Dismounter.debuggerEmoji = "⏏️"
 
 Dismounter.Dismounts = Dismounter:prefixedAttributeMap("Dismounts", std.gt.boolean())
+
+Dismounter:attributeSection("Activation")
+Dismounter.Activation = activation.useAttributes(Dismounter)
 
 Dismounter.onDismount = Signal.new() :: Signal.Signal<{ [string]: boolean }>
 

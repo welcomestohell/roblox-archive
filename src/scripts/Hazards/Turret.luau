@@ -1,10 +1,10 @@
 local Players = game:GetService("Players")
-local localPlayer = Players.LocalPlayer or Players.PlayerAdded:Wait()
 
 local std = require("@libs/std")
 
 local character = require("@libs/character")
 local damage = require("@libs/damage")
+local sounds = require("@libs/sounds")
 
 local Turret = std.Mechanic({})
 export type TurretMechanic = std.Mechanic<typeof(Turret)>
@@ -30,11 +30,14 @@ Turret.Lifetime = Turret:attribute("Lifetime", std.gt.positiveNumber, 2)
 Turret.DestroyOnTouch = Turret:attribute("DestroyOnTouch", std.gt.boolean(), true)
 
 Turret:attributeSection("Damage")
-Turret.Damage = damage.useDamageAttributes(Turret)
+Turret.Damage = damage.useAttributes(Turret)
 Turret.Cooldown = Turret:attribute("Cooldown", std.gt.positiveNumber, 0.5)
 
 Turret:attributeSection("Spread Angle")
 Turret.SpreadAngle = Turret:attribute("SpreadAngle", std.gt.NumberRange, NumberRange.new(0, 0))
+
+Turret:attributeSection("Sound")
+Turret.FireSound = sounds.useAttributes(Turret, "FireSound")
 
 Turret:attributeSection("Culling")
 Turret.Range = Turret:attribute("Range", std.gt.positiveNumber, 50)
@@ -85,13 +88,17 @@ function Turret.fireBullet(turret: TurretMechanic, bulletTemplate: Part)
 		return
 	end
 
+	if turret.FireSound.Play(turret) then
+		sounds.playInstance(turret.FireSound, turret.instance, turret.instanceConfiguration, sounds.sfx.tick)
+	end
+
 	-- v ?????? fym scope
-	local bulletScope = turret.life:inner()
-	local bulletInstance = bulletScope:add(bulletTemplate:Clone())
+	local bulletLife = turret.life:inner()
+	local bulletInstance = bulletLife:add(bulletTemplate:Clone())
 
 	local function cleanup()
 		print("test")
-		bulletScope:destroy()
+		bulletLife:destroy()
 	end
 
 	local spawnCFrame: CFrame = primaryPart.CFrame
@@ -127,7 +134,7 @@ function Turret.fireBullet(turret: TurretMechanic, bulletTemplate: Part)
 	bulletInstance.Anchored = false
 	bulletInstance.Parent = instance
 
-	bulletScope:connect(bulletInstance.Touched, function(hit: Part)
+	bulletLife:connect(bulletInstance.Touched, function(hit: Part)
 		local destroyOnTouch = turret:DestroyOnTouch()
 		local validHit = turret:onTouch(hit)
 
@@ -136,7 +143,7 @@ function Turret.fireBullet(turret: TurretMechanic, bulletTemplate: Part)
 		end
 	end)
 
-	bulletScope:add(function()
+	bulletLife:add(function()
 		task.wait(turret:Lifetime())
 		cleanup()
 	end)
@@ -167,7 +174,7 @@ function Turret.onStart(self: typeof(Turret), turret: TurretMechanic, level: std
 				continue
 			end
 
-			local distance = localPlayer:DistanceFromCharacter(primaryPart.Position)
+			local distance = Players.LocalPlayer:DistanceFromCharacter(primaryPart.Position)
 			local range = turret:Range()
 
 			if distance <= range then

@@ -3,12 +3,23 @@ local localPlayer = Players.LocalPlayer or Players.PlayerAdded:Wait()
 
 local std = require("@libs/std")
 
+--[=[
+	@class Culled
+	@tag Mechanic
+
+	Culled disables the instance when it's distant during gameplay.
+
+	Culled is ideal for optimizing physic objects where you'll like it to freeze
+	when far away.
+
+	Culled can be triggered by distance, or by camera culling. 
+]=]
 local Culled = std.Mechanic({})
 export type CulledMechanic = std.Mechanic<typeof(Culled)>
 
 Culled.instanceTag = "Culled"
 Culled.instanceType = std.isA.BasePart()
-Culled.debuggerEmoji = "💠"
+Culled.debuggerEmoji = "😶"
 
 Culled.Enabled = Culled:withEnabled()
 

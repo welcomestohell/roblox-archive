@@ -6,7 +6,7 @@ local gt = require("@libs/gt")
 local attribute = require("@libs/Attribute")
 local character = require("@libs/character")
 
-function useDamageAttributes(mechanic: Mechanic.MechanicImplementationLike): attribute.Attribute<number>
+function useAttributes(mechanic: Mechanic.MechanicImplementationLike): attribute.Attribute<number>
 	return mechanic:attribute("Damage", gt.number(), 20)
 end
 
@@ -39,6 +39,6 @@ function damagePlayer(player: Player, damage: number): boolean
 end
 
 return table.freeze({
-	useDamageAttributes = useDamageAttributes,
+	useAttributes = useAttributes,
 	damagePlayer = damagePlayer,
 })
