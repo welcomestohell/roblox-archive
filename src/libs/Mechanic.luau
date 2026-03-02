@@ -170,6 +170,9 @@ function Mechanic.withEnabled(self: {}): Attribute.Attribute<boolean>
 	return Mechanic.withAttribute(self :: any, Mechanic.Enabled)
 end
 
+function Mechanic.withActive(self: {}): Attribute.Attribute<boolean>
+	return Mechanic.attribute(self :: any, "Active", gt.boolean(), false)
+end
 function Mechanic.prefixedAttributeMap<T>(self: {}, prefix: string, type: T): AttributeMap.AttributeMap<T>
 	local map = AttributeMap.fromPrefix(prefix, type)
 	return map

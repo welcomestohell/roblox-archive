@@ -1,6 +1,6 @@
 local Players = game:GetService("Players")
 
-export type Character = Model & {
+export type Character = {
 	Humanoid: {
 		HumanoidDescription: HumanoidDescription,
 		Animator: Animator,
@@ -10,7 +10,11 @@ export type Character = Model & {
 	PrimaryPart: BasePart,
 	Animate: LocalScript,
 	Head: BasePart,
-}
+	["Left Arm"]: BasePart,
+	["Right Arm"]: BasePart,
+	["Left Leg"]: BasePart,
+	["Right Leg"]: BasePart,
+} & Model
 
 local function isCharacter(character: Instance): boolean
 	return Players:GetPlayerFromCharacter(character :: Model) ~= nil

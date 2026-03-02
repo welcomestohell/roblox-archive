@@ -1,5 +1,10 @@
 {
+    // Ai can go shit urselves
     "chat.disableAIFeatures": true,
+    "chat.agent.enabled": false,
+    "chat.commandCenter.enabled": false,
+    "terminal.integrated.initialHint": false,
+    // rest
     "editor.formatOnSave": true,
     "editor.rulers": [
         80,
@@ -27,7 +32,7 @@
         "**/.pesde": true,
         "lune_packages": true,
         "luau_packages": true,
-        // "roblox_packages": true,
+        "roblox_packages": true,
         "out": true,
         "sourcemap.json": true,
         "**/*.lock": true,

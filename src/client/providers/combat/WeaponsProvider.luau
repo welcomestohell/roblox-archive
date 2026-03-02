@@ -1,32 +1,64 @@
-local Players = game:GetService("Players")
-
 local Log = require("@libs/Log")
-local input = require("@libs/combat/input")
+local input = require("@shared/combat/input")
 local prvd = require("@shared/prvdmwrong/prvdmwrong")
 
 local WeaponsProvider = {}
+
 export type WeaponsProvider = typeof(WeaponsProvider)
+
 WeaponsProvider.log = Log.new(WeaponsProvider)
+WeaponsProvider.inputManager = input.new()
 
-function WeaponsProvider.onStart(self: WeaponsProvider)
-	local context = input.new("test")
-
-	context.Priority = 1000
-	context.Parent = Players.LocalPlayer.PlayerGui
-
-	local jump = context:CreateAction("Jump"):AddBinding("Keyboard", Enum.KeyCode.Space)
-
-	jump:OnPressed(function(state)
-		self.log:trace("Jump Pressed! State:", state)
-	end)
-		:OnReleased(function(state)
-			self.log:trace("Jump released! State:", state)
-		end)
-		:OnStateChanged(function(state)
-			self.log:trace("Jump state changed! State:", state)
-		end)
+-- is it worth using prvd lifecycles here??
+-- are they even a thing with this version of prvd
+function WeaponsProvider.onClick(self: WeaponsProvider)
+	print("evil click of doom and despair")
 end
 
-function WeaponsProvider.onFinish() end
+function WeaponsProvider.onStart(self: WeaponsProvider)
+	print(1)
+
+	local context = self.inputManager:createContext({
+		identifier = "combat",
+	})
+
+	print(2)
+
+	if not context then
+		return
+	end
+
+	print(3)
+
+	local action = self.inputManager:attachAction({
+		identifier = "action",
+		actionType = Enum.InputActionType.Bool,
+
+		pressed = function()
+			self:onClick()
+		end,
+	}, {
+		context = context,
+	})
+
+	print(4)
+
+	if not action then
+		return
+	end
+
+	print(5)
+
+	-- this gives me rust ptsd
+	local _ = self.inputManager:attachBinding({
+		identifier = "binding",
+		keybind = Enum.KeyCode.F,
+	}, {
+		context = context,
+		action = action,
+	})
+
+	print(6)
+end
 
 return prvd(WeaponsProvider)

@@ -19,7 +19,7 @@ function Wind:onStart(wind: WindMechanic)
 	local touching = {}
 
 	wind.instance.Touched:Connect(function(hit)
-		local root = character.getMaybeHumanoidRootPart()
+		local root = character.getMaybeHumanoidRootPart(hit)
 		if not root or touching[root] then
 			return
 		end
@@ -38,10 +38,11 @@ function Wind:onStart(wind: WindMechanic)
 		velocity.Parent = root
 
 		wind.life:add(threadpool.spawn(function()
-			while touching[root] and wind.instance:IsDescendantOf(workspace) do
+			while touching[root] and root.Parent and wind.instance:IsDescendantOf(workspace) do
 				if wind:ContinuousUpdates() then
 					velocity.VectorVelocity = wind.instance.CFrame:VectorToWorldSpace(wind:Direction()) * wind:Speed()
 				end
+
 				task.wait(UPDATE_INTERVAL)
 			end
 
@@ -50,8 +51,8 @@ function Wind:onStart(wind: WindMechanic)
 		end))
 	end)
 
-	wind.instance.TouchEnded:Connect(function()
-		local root = character.getMaybeHumanoidRootPart()
+	wind.instance.TouchEnded:Connect(function(hit)
+		local root = character.getMaybeHumanoidRootPart(hit)
 		if root then
 			touching[root] = nil
 		end

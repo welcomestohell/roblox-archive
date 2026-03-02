@@ -4,6 +4,7 @@ local std = require("@libs/std")
 
 local character = require("@libs/character")
 local damage = require("@libs/damage")
+local gt = require("@pkgs/gt")
 local sounds = require("@libs/sounds")
 
 local Turret = std.Mechanic({})
@@ -41,6 +42,10 @@ Turret.FireSound = sounds.useAttributes(Turret, "FireSound")
 
 Turret:attributeSection("Culling")
 Turret.Range = Turret:attribute("Range", std.gt.positiveNumber, 50)
+
+Turret:attributeSection("Tags")
+Turret.FireBasename = Turret:attribute("FireBasename", gt.string(), "TurretFire")
+Turret.ExpireBasename = Turret:attribute("ExpireBasename", gt.string(), "TurretExpire")
 
 Turret.cooldowns = {} :: { [Player]: number }
 
@@ -90,6 +95,12 @@ function Turret.fireBullet(turret: TurretMechanic, bulletTemplate: Part)
 
 	if turret.FireSound.Play(turret) then
 		sounds.playInstance(turret.FireSound, turret.instance, turret.instanceConfiguration, sounds.sfx.tick)
+	end
+
+	for _, descendant in turret.instance:GetDescendants() do
+		if descendant:HasTag("TurretFireParticle") and descendant:IsA("ParticleEmitter") then
+			descendant:Emit(descendant.Rate)
+		end
 	end
 
 	-- v ?????? fym scope

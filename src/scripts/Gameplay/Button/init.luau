@@ -106,6 +106,7 @@ function Button.onActivate(self: typeof(Button), button: ButtonMechanic, level: 
 end
 
 function Button.onStart(self: typeof(Button), button: ButtonMechanic, level: std.Level)
+	-- self.
 	-- TODO: port when ur home
 	--[[
 		trove:add(ButtonPressed:changed(btn, function(id)

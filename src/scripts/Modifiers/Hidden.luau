@@ -17,9 +17,9 @@ Hidden.properties = {
 	TextButton = { TextTransparency = 1 },
 	TextBox = { TextTransparency = 1 },
 	Frame = { BackgroundTransparency = 1 },
-	ParticleEmitter = { Enabled = false, Transparency = NumberSequence.new(1) },
-	Beam = { Enabled = false, Transparency = NumberSequence.new(1) },
-	Trail = { Enabled = false, Transparency = NumberSequence.new(1) },
+	ParticleEmitter = { Enabled = false },
+	Beam = { Enabled = false },
+	Trail = { Enabled = false },
 } :: { [string]: { [string]: unknown } }
 
 function Hidden.hide(instance: Instance)

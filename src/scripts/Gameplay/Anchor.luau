@@ -5,7 +5,7 @@ local tweens = require("@libs/tweens")
 local Anchor = std.Mechanic({})
 export type AnchorMechanic = std.Mechanic<typeof(Anchor)>
 Anchor.instanceTag = "Anchor"
-Anchor.instanceType = std.isA.Instance()
+Anchor.instanceType = std.isA.BasePart()
 Anchor.debuggerEmoji = "🔱"
 
 Anchor.JumpOnDismount = Anchor:attribute("JumpOnDismount", std.gt.boolean(), true)

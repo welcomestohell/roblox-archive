@@ -11,12 +11,10 @@ Damager.instanceType = std.isA.BasePart()
 Damager.debuggerEmoji = "☠️"
 
 Damager.Enabled = Damager:withEnabled()
-
-Damager:attributeSection("Damage")
 Damager.Damage = damage.useAttributes(Damager)
 Damager.Cooldown = Damager:attribute("Cooldown", std.gt.positiveNumber, 0.5)
 
-Damager.cooldowns = {} :: { [Player]: true }
+Damager.cooldowns = {} :: { [Player]: number }
 
 function Damager.onTouch(damager: DamagerMechanic, hit: Part): boolean
 	if not hit or not hit.Parent or not character.isFromMaybeCharacter(hit) then
@@ -32,16 +30,13 @@ function Damager.onTouch(damager: DamagerMechanic, hit: Part): boolean
 	local damagerDamage, damagerCooldown = damager:Damage(), damager:Cooldown()
 	local cooldowns = damager.cooldowns or {}
 
-	if cooldowns[player] then
+	local now = os.clock()
+
+	if cooldowns[player] and cooldowns[player] > now then
 		return false
 	end
 
-	cooldowns[player] = true
-
-	damager.life:delay(function()
-		cooldowns[player] = nil
-	end, damagerCooldown)
-
+	cooldowns[player] = now + damagerCooldown
 	damage.damagePlayer(player, damagerDamage)
 
 	return true
