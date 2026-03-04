@@ -19,13 +19,13 @@ print(repr(myTable)) --> {hello = "world", isCool = true, score = 5}
 ]]
 
 local defaultSettings = {
-	pretty = false,
-	robloxFullName = false,
+	pretty = true,
+	robloxFullName = true,
 	robloxProperFullName = true,
-	robloxClassName = true,
-	tabs = false,
+	robloxClassName = false,
+	tabs = true,
 	semicolons = false,
-	spaces = 3,
+	spaces = 4,
 	sortKeys = true,
 }
 

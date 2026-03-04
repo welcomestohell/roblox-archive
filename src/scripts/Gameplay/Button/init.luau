@@ -16,6 +16,7 @@ Button.debuggerEmoji = "🖲️"
 
 local attributes = useAttributes(Button)
 Button.Enabled = attributes.Enabled
+Button.Active = attributes.Active
 Button.Id = attributes.Id
 Button.PressedOffset = attributes.PressedOffset
 Button.Cooldown = attributes.Cooldown
@@ -40,12 +41,12 @@ activation
 	:expect("Failed to register ButtonActivated activation mode")
 
 function Button.updateId(self: typeof(Button), level: std.Level, id: string)
-	local bes = ButtonEnabled.besById:get(level, id)
+	local bes = ButtonEnabled.besById:get(level)[id]
 	if not bes then
 		return
 	end
 
-	local enabled = next(self.enabledButtonsById:get(level, id)) ~= nil
+	local enabled = next(self.enabledButtonsById:get(level)[id]) ~= nil
 
 	-- FIXME: why is the cast necessary?????????????????????????????????????????
 	for _, be in bes :: { ButtonEnabled.ButtonEnabledMechanic } do
@@ -54,7 +55,7 @@ function Button.updateId(self: typeof(Button), level: std.Level, id: string)
 end
 
 function Button.onActivate(self: typeof(Button), button: ButtonMechanic, level: std.Level)
-	if button:Enabled() then
+	if not button:Enabled() or button:Active() then
 		return
 	end
 
@@ -71,13 +72,19 @@ function Button.onActivate(self: typeof(Button), button: ButtonMechanic, level: 
 	end
 
 	self.Activation.Enabled(button, false)
-	button:Enabled(true)
+	button:Active(true)
 	enabledButtonsForId[button] = true
 
 	local deactivationLife = button.life:inner()
+	deactivationLife:add(function()
+		task.wait(button:Cooldown())
+		button:Active(false)
+		self.Activation.Enabled(button, true)
+		enabledButtonsForId[button] = nil
+	end)
 
 	if self.Sound.Play(button) then
-		sounds.playInstance(self.Sound, button.instance, button.instanceConfiguration, sounds.sfx.button)
+		sounds.playMechanic(self.Sound, button :: any, sounds.sfx.button)
 	end
 
 	if button.instance.Anchored then
@@ -106,29 +113,29 @@ function Button.onActivate(self: typeof(Button), button: ButtonMechanic, level: 
 end
 
 function Button.onStart(self: typeof(Button), button: ButtonMechanic, level: std.Level)
+	button.life:add(self.Active:onChange(button, function(active)
+		local id = button:Id()
+
+		if id then
+			-- if not active then
+			-- 	local enabledButtons = self.enabledButtonsById:get(level)[id]
+			-- 	if enabledButtons then
+			-- 		enabledButtons[button] = nil
+			-- 	end
+			-- end
+
+			self:updateId(level, id)
+		end
+	end))
+
+	button.life:add(self.Id:onChange(button, function(_id)
+		-- TODO
+	end))
 	-- self.
 	-- TODO: port when ur home
 	--[[
-		trove:add(ButtonPressed:changed(btn, function(id)
-			local id = ButtonId(btn)
-
-			if not ButtonPressed(btn) then
-				if id then
-					idToButtonsPressed:remove(id, btn)
-				end
-			end
-
-			if id then
-				updateId(id)
-			end
-		end))
-
 		-- try update once to set initial properties
 		tryUpdateIdOfButton(btn)
-
-		trove:add(ButtonId:changed(btn, function(id)
-			-- TOOD
-		end))
 	]]
 end
 

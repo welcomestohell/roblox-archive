@@ -54,11 +54,14 @@ ButtonEnabled.Transition = tweens.useAttributes(ButtonEnabled)
 ButtonEnabled.CLASSES_TO_TOGGLE_ENABLED = CLASSES_TO_TOGGLE_ENABLED
 ButtonEnabled.CLASSES_TO_TWEEN = CLASSES_TO_TWEEN
 
-function ButtonEnabled:onStart(be: ButtonEnabledMechanic, level: std.Level)
+function ButtonEnabled.onStart(self: typeof(ButtonEnabled), be: ButtonEnabledMechanic, level: std.Level)
 	ids.trackMechanic(level, be, be.besById)
+	self:updateEnabled(be, be:Enabled())
 end
 
 function ButtonEnabled.updateEnabled(self: typeof(ButtonEnabled), be: ButtonEnabledMechanic, enabled: boolean)
+	warn("BE:", self, be, enabled)
+
 	if be:Invert() then
 		enabled = not enabled
 	end
@@ -66,7 +69,7 @@ function ButtonEnabled.updateEnabled(self: typeof(ButtonEnabled), be: ButtonEnab
 	be:Enabled(enabled)
 
 	if be.instance:IsA("BasePart") and be:AffectsPropertyCollision() then
-		be.instance.CanCollide = true
+		(be.instance :: BasePart).CanCollide = true
 	end
 
 	if be:AffectsPropertyEnabled() then

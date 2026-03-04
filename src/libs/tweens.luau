@@ -86,7 +86,7 @@ local function playAlways(instance: Instance, propertyTable: { [string]: unknown
 end
 
 local function playFromAttributes(instance: Instance, propertyTable: { [string]: unknown }, attributes: TweenAttributes)
-	play(instance, propertyTable, configurationFromAttributes(attributes))
+	play(instance, propertyTable, configurationFromAttributes(attributes, instance))
 end
 
 local function playAlwaysFromAttributes(

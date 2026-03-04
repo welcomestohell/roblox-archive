@@ -16,19 +16,13 @@ function WeaponsProvider.onClick(self: WeaponsProvider)
 end
 
 function WeaponsProvider.onStart(self: WeaponsProvider)
-	print(1)
-
 	local context = self.inputManager:createContext({
 		identifier = "combat",
 	})
 
-	print(2)
-
 	if not context then
 		return
 	end
-
-	print(3)
 
 	local action = self.inputManager:attachAction({
 		identifier = "action",
@@ -41,13 +35,9 @@ function WeaponsProvider.onStart(self: WeaponsProvider)
 		context = context,
 	})
 
-	print(4)
-
 	if not action then
 		return
 	end
-
-	print(5)
 
 	-- this gives me rust ptsd
 	local _ = self.inputManager:attachBinding({
@@ -58,7 +48,7 @@ function WeaponsProvider.onStart(self: WeaponsProvider)
 		action = action,
 	})
 
-	print(6)
+	print(context, action, _)
 end
 
 return prvd(WeaponsProvider)

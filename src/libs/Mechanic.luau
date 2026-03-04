@@ -80,7 +80,7 @@ local function initializeProxy(implementation: {})
 	proxy.__newindex = implementation
 
 	function proxy.__tostring(self: Mechanic<MechanicImplementation>)
-		return `{self.implementation.instanceTag}({self.id})`
+		return `{self.implementation.instanceTag}({(self.instance :: any):GetFullName()})`
 	end
 
 	Mechanic._proxies[implementation] = proxy

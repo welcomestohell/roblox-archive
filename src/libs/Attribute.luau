@@ -43,10 +43,10 @@ export type Attribute<T> = setmetatable<{
 }, typeof(Attribute)>
 
 local function resolveInstance(resolvable: ResolvableInstance): Instance
-	if typeof(resolvable) == "Instance" then
-		return resolvable
-	else
+	if type(resolvable) == "table" then
 		return (resolvable :: any).instanceConfiguration or (resolvable :: any).instance
+	else
+		return resolvable :: Instance
 	end
 end
 

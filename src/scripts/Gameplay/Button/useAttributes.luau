@@ -4,6 +4,7 @@ local function useAttributes(self: std.MechanicImplementationLike)
 	local attributes = {}
 
 	attributes.Enabled = self:withEnabled()
+	attributes.Active = self:withActive()
 	attributes.Id = self:attribute("Id", std.gt.optional(std.gt.string()), nil)
 	attributes.Pressed = self:attribute("Pressed", std.gt.boolean(), false)
 	attributes.PressedOffset = self:attribute("PressedOffset", std.gt.CFrame(), CFrame.new(0, -0.5, 0))

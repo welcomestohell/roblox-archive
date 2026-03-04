@@ -1,10 +1,10 @@
 local Iris = require("@pkgs/Iris")
+local tables = require("./tables")
 
 type Cleanup = () -> ()
 
 export type Config = typeof(Iris._config)
--- TODO: waiting on darklua type function support
-export type PartialConfig = {}
+export type PartialConfig = tables.Partial<Config>
 export type State<T> = typeof(Iris.State(... :: any))
 export type ID = string
 

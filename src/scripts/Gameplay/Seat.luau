@@ -33,7 +33,6 @@ function Seat.onActivate(self: typeof(Seat), seat: SeatMechanic)
 	self.debounced[seat] = true
 	self.seated = true
 
-	seat.log:info("Seating")
 	local root = character.getMaybeHumanoidRootPart() :: BasePart
 	local humanoid = character.getMaybeHumanoid() :: Humanoid
 

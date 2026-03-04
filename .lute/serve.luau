@@ -3,8 +3,6 @@ local process = require "@lute/process"
 local system = require("@lute/system")
 local task = require "@lute/task"
 
-fs.removedirectory("out", { recursive = true })
-
 process.run(if system.os ~= "Darwin" then { "robocopy", "src", "out", "/E" } else { "cp", "-r", "src", "out" })
 
 if not fs.exists("sourcemap.json") then

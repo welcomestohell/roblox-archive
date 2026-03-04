@@ -117,7 +117,7 @@ local function playInstance(
 end
 
 local function playMechanic(attributes: SoundAttributes, mechanic: Mechanic.Mechanic<any>, fallbackId: string?)
-	return playInstance(attributes, mechanic.instance, mechanic.instanceConfiguration, fallbackId)
+	return playInstance(attributes, mechanic.instance, mechanic.instanceConfiguration or mechanic.instance, fallbackId)
 end
 
 local function preloadAssets()

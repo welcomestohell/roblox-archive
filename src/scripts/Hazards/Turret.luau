@@ -108,7 +108,6 @@ function Turret.fireBullet(turret: TurretMechanic, bulletTemplate: Part)
 	local bulletInstance = bulletLife:add(bulletTemplate:Clone())
 
 	local function cleanup()
-		print("test")
 		bulletLife:destroy()
 	end
 

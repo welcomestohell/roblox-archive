@@ -5,10 +5,12 @@ export type function Partial(ty: type)
 
 	for key, values in ty:properties() do
 		if values.read then
-			ty:setreadproperty(key, types.optional(values.read))
-		end
-
-		if values.write then
+			if values.read == values.write then
+				ty:setproperty(key, types.optional(values.read))
+			else
+				ty:setreadproperty(key, types.optional(values.read))
+			end
+		elseif values.write then
 			ty:setwriteproperty(key, types.optional(values.write))
 		end
 	end
