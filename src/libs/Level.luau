@@ -51,6 +51,7 @@ export type Level = setmetatable<{
 	scripts: ScriptCollector.ScriptCollector,
 	mechanics: { Mechanic.Mechanic<any> },
 	mechanicsByImplementations: { [Mechanic.MechanicImplementation]: { Mechanic.Mechanic<any> } },
+	mechanicsByInstance: { [Instance]: { Mechanic.Mechanic<any> } },
 
 	startTimestamp: number,
 }, typeof(Level)>
@@ -71,6 +72,7 @@ function Level.new(
 			scripts = Level.baseScripts:clone(),
 			mechanics = {},
 			mechanicsByImplementations = {},
+			mechanicsByInstance = tables.weak("k"),
 
 			startTimestamp = os.clock(),
 		}, Level)
@@ -101,6 +103,13 @@ function Level.loadMechanicsFromInstance(self: Level, instance: Instance)
 					self.mechanicsByImplementations[implementation] = mechanicsByImplementations
 				end
 				table.insert(mechanicsByImplementations :: any, mechanic)
+
+				local mechanicsByInstance = self.mechanicsByInstance[instance]
+				if not mechanicsByInstance then
+					mechanicsByInstance = {}
+					self.mechanicsByInstance[instance] = mechanicsByInstance
+				end
+				table.insert(mechanicsByInstance :: any, mechanic)
 			end
 		end
 	end
@@ -117,11 +126,7 @@ function Level.startMechanic(self: Level, mechanic: Mechanic.Mechanic<any>)
 	end
 
 	if implementation.onActivate then
-		-- TODO: deprecate lowercase activation
-		local activationAttributes = (
-			implementation.activation or implementation.Activation
-		) :: types.ActivationAttributes
-
+		local activationAttributes = implementation.Activation :: types.ActivationAttributes
 		if not activationAttributes then
 			Mechanic.attributeSection(implementation :: any, "Activation")
 			activationAttributes = activation.useAttributes(implementation :: any)
