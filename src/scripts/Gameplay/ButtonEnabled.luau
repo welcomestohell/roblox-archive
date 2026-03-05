@@ -69,7 +69,7 @@ function ButtonEnabled.updateEnabled(self: typeof(ButtonEnabled), be: ButtonEnab
 	be:Enabled(enabled)
 
 	if be.instance:IsA("BasePart") and be:AffectsPropertyCollision() then
-		(be.instance :: BasePart).CanCollide = true
+		(be.instance :: BasePart).CanCollide = enabled
 	end
 
 	if be:AffectsPropertyEnabled() then

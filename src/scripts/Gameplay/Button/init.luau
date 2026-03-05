@@ -2,6 +2,7 @@ local ButtonEnabled = require("./ButtonEnabled")
 local Life = require("@libs/Life")
 local Signal = require("@pkgs/Signal")
 local activation = require("@libs/activation")
+local glowButton = require("@self/glowButton")
 local sounds = require("@libs/sounds")
 local std = require("@libs/std")
 local threadpool = require("@libs/threadpool")
@@ -33,7 +34,8 @@ Button.Transition = tweens.useAttributes(Button)
 
 Button.useAttributes = useAttributes
 Button.enabledButtonsById = std.LevelState({} :: { [string]: { [ButtonMechanic]: true } })
-Button.onPressed = Signal.new()
+Button.onPressed = Signal.new() :: Signal.Signal<string>
+
 activation
 	.registerMode("ButtonActivated", {
 		implement = function(context: activation.ActivationContext) end,
@@ -82,6 +84,13 @@ function Button.onActivate(self: typeof(Button), button: ButtonMechanic, level: 
 		self.Activation.Enabled(button, true)
 		enabledButtonsForId[button] = nil
 	end)
+
+	glowButton {
+		life = deactivationLife,
+		instance = button.instance,
+		instanceConfiguration = button.instanceConfiguration,
+		tweenAttributes = self.Transition,
+	}
 
 	if self.Sound.Play(button) then
 		sounds.playMechanic(self.Sound, button :: any, sounds.sfx.button)

@@ -35,7 +35,7 @@ export type Mechanic<Self> = Self & {
 	id: string,
 	implementation: Self,
 	instance: index<Self, "instanceType">,
-	instanceConfiguration: Instance?,
+	instanceConfiguration: Instance,
 }
 
 --[=[
