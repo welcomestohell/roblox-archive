@@ -29,6 +29,7 @@ Turret.Speed = Turret:attribute("Speed", std.gt.positiveNumber, 25)
 Turret.Acceleration = Turret:attribute("Acceleration", std.gt.Vector3(), Vector3.zero)
 Turret.Lifetime = Turret:attribute("Lifetime", std.gt.positiveNumber, 2)
 Turret.DestroyOnTouch = Turret:attribute("DestroyOnTouch", std.gt.boolean(), true)
+Turret.IgnoreTag = Turret:attribute("IgnoreTag", std.gt.string(), "Ignore")
 
 Turret:attributeSection("Damage")
 Turret.Damage = damage.useAttributes(Turret)
@@ -49,7 +50,7 @@ Turret.ExpireBasename = Turret:attribute("ExpireBasename", gt.string(), "TurretE
 
 Turret.cooldowns = {} :: { [Player]: number }
 
-function Turret.onTouch(turret: TurretMechanic, hit: Part): boolean
+function Turret.onTouch(turret: TurretMechanic, hit: BasePart): boolean
 	if not hit or not hit.Parent or not character.isFromMaybeCharacter(hit) then
 		return false
 	end
@@ -104,7 +105,7 @@ function Turret.fireBullet(turret: TurretMechanic, bulletTemplate: Part)
 	end
 
 	-- v ?????? fym scope
-	local bulletLife = turret.life:inner()
+	local bulletLife = turret.life:extend()
 	local bulletInstance = bulletLife:add(bulletTemplate:Clone())
 
 	local function cleanup()
@@ -144,14 +145,14 @@ function Turret.fireBullet(turret: TurretMechanic, bulletTemplate: Part)
 	bulletInstance.Anchored = false
 	bulletInstance.Parent = instance
 
-	bulletLife:connect(bulletInstance.Touched, function(hit: Part)
+	bulletLife:add(bulletInstance.Touched:Connect(function(hit)
 		local destroyOnTouch = turret:DestroyOnTouch()
 		local validHit = turret:onTouch(hit)
 
 		if destroyOnTouch or validHit then
 			cleanup()
 		end
-	end)
+	end))
 
 	bulletLife:add(function()
 		task.delay(turret:Lifetime(), cleanup)
@@ -172,7 +173,7 @@ function Turret.onStart(self: typeof(Turret), turret: TurretMechanic, level: std
 	bulletTemplate.Parent = nil
 
 	turret.life:spawn(function()
-		while turret.life:isAlive() do
+		while turret.life.destroyed == false do
 			local firerate = turret:Firerate()
 			-- local enabled = turret:Enabled()
 			local enabled = true

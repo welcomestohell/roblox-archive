@@ -1,7 +1,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Level = require("@libs/Level")
-local Life = require("@libs/Life")
+local Life = require("@libs/memory/Life")
 local Log = require("@libs/Log")
 local audios = require("@shared/generated/audios")
 local character = require("@libs/character")

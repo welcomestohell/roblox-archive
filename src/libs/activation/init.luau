@@ -79,12 +79,12 @@ end
 
 local function bindActivation(bindCtx: BindContext)
 	local ctx = table.clone(bindCtx) :: ActivationContext
-	local life = ctx.instanceLife:inner()
-	ctx.activationLife = life:inner()
+	local life = ctx.instanceLife:extend()
+	ctx.activationLife = life:extend()
 
 	local function update()
 		ctx.activationLife:destroy()
-		ctx.activationLife = life:inner()
+		ctx.activationLife = life:extend()
 
 		if bindCtx.attributes.Enabled(ctx.instanceConfiguration) then
 			local result = activate(ctx)

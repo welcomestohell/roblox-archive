@@ -1,6 +1,6 @@
 local RunService = game:GetService("RunService")
 
-local Life = require("./Life")
+local Life = require("@libs/memory/Life")
 local Log = require("./Log")
 local Mechanic = require("./Mechanic")
 local Promise = require("@pkgs/Promise")
@@ -64,7 +64,7 @@ function Level.new(
 
 	if isInstanceValid then
 		local self: Level = setmetatable({
-			life = outerLife:inner(),
+			life = outerLife:extend(),
 			name = name,
 			instance = instance :: LevelInstance,
 
@@ -161,7 +161,7 @@ function Level.start(self: Level)
 	self.startTimestamp = os.clock()
 
 	self.life:add(self.instance)
-	self.life:tie(self.instance.Destroying)
+	self.life:destroyOn(self.instance.Destroying)
 
 	local levelInstance = self.instance :: Instance
 	local levelScripts = levelInstance:FindFirstChild("Scripts")

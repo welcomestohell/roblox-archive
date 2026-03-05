@@ -56,15 +56,15 @@ function Mounter:onActivate(mounter: MounterMechanic)
 
 	mounter.Activation.Enabled(mounter, false)
 
-	local mountLife = mounter.life:inner()
+	local mountLife = mounter.life:extend()
 
-	local cleanupLife = mountLife:inner()
+	local cleanupLife = mountLife:extend()
 	cleanupLife:add(function()
 		task.delay(mounter:CleanupDelay(), destroy, mountLife)
 	end)
 
 	local model = mountLife:add(mounter.model:Clone())
-	mountLife:tie(model.Destroying)
+	mountlife:destroyOn(model.Destroying)
 	model.Parent = mounter.instance
 
 	local weldTarget = if model:IsA("BasePart") then model else model.PrimaryPart
@@ -77,7 +77,7 @@ function Mounter:onActivate(mounter: MounterMechanic)
 			weldTarget:PivotTo(weldLimb.CFrame * mounter:Offset())
 			constraints.weld(mountLife, weldTarget, weldLimb)
 
-			cleanupLife:tie(weldLimb.Destroying)
+			cleanuplife:destroyOn(weldLimb.Destroying)
 		end
 	else
 		mounter.log:error("MounterModel will not be welded as it's PrimaryPart is unset.")
@@ -108,7 +108,7 @@ function Mounter:onActivate(mounter: MounterMechanic)
 	end))
 
 	local humanoid = character.getHumanoid()
-	cleanupLife:tie(humanoid.Died)
+	cleanuplife:destroyOn(humanoid.Died)
 	cleanupLife:add(humanoid.StateChanged:Connect(function(_, new: Enum.HumanoidStateType)
 		if new == Enum.HumanoidStateType.Dead then
 			cleanupLife:destroy()

@@ -1,8 +1,6 @@
-local Players = game:GetService("Players")
-
 local Attribute = require("@libs/Attribute")
 local ButtonEnabled = require("./ButtonEnabled")
-local Life = require("@libs/Life")
+local Life = require("@libs/memory/Life")
 local Signal = require("@pkgs/Signal")
 local activation = require("@libs/activation")
 local emission = require("@libs/emission")
@@ -11,6 +9,8 @@ local sounds = require("@libs/sounds")
 local std = require("@libs/std")
 local threadpool = require("@libs/threadpool")
 local tweens = require("@libs/tweens")
+
+local GLOW_PADDING = Vector3.new(0.05, 0.05, 0.05)
 
 local Button = std.Mechanic({})
 export type ButtonMechanic = std.Mechanic<typeof(Button)>
@@ -24,7 +24,6 @@ function Button.useAttributes(implementation: std.MechanicImplementationLike)
 	attributes.Enabled = implementation:withEnabled()
 	attributes.Active = implementation:withActive()
 	attributes.Id = implementation:attribute("Id", std.gt.optional(std.gt.string()), nil)
-	attributes.Pressed = implementation:attribute("Pressed", std.gt.boolean(), false)
 	attributes.PressedOffset = implementation:attribute("PressedOffset", std.gt.CFrame(), CFrame.new(0, -0.5, 0))
 	attributes.Cooldown = implementation:attribute("Cooldown", std.gt.positiveNumber, 0)
 	attributes.Duration = implementation:attribute("Duration", std.gt.positiveNumber, 0)
@@ -62,41 +61,38 @@ activation
 	})
 	:expect("Failed to register ButtonActivated activation mode")
 
-function Button.highlightButton(props: {
+function Button.glowButton(props: {
 	life: Life.Life,
 	instance: BasePart,
 	instanceConfiguration: Instance,
 	tweenAttributes: tweens.TweenAttributes,
 	flash: boolean?,
 })
-	local life = props.life:inner()
+	local life = props.life:extend()
 
-	local highlight = Instance.new("Highlight")
-	highlight.Name = props.instance.Name .. "Highlight"
-	highlight.Adornee = props.instance
-	highlight.OutlineTransparency = 1
-	highlight.FillColor = props.instance.Color
-	highlight.FillTransparency = 1
-	highlight.DepthMode = Enum.HighlightDepthMode.Occluded
-
-	highlight.Parent = Players.LocalPlayer.PlayerGui
+	local adornment = Instance.new("BoxHandleAdornment")
+	adornment.Adornee = props.instance
+	adornment.Color3 = props.instance.Color
+	adornment.Name = props.instance.Name .. "Glow"
+	adornment.Size = props.instance.Size + GLOW_PADDING
+	adornment.Transparency = 1
+	adornment.Parent = props.instance
 
 	local tweenConfiguration = tweens.configurationFromAttributes(props.tweenAttributes, props.instanceConfiguration)
-	tweenConfiguration.duration = tweenConfiguration.duration or 0.5
+	tweenConfiguration.duration = tweenConfiguration.duration or 0.25
 	if props.flash then
 		tweenConfiguration.isReversed = true
-		tweens.play(highlight, { FillTransparency = 0 }, tweenConfiguration)
-
-		task.delay(tweenConfiguration.duration, function()
-			highlight:Destroy()
-		end)
+		tweens.play(adornment, { Transparency = 0 }, tweenConfiguration)
+		task.delay(tweenConfiguration.duration * 2 :: any, function(adornment)
+			adornment:Destroy()
+		end, adornment)
 	else
-		tweens.play(highlight, { FillTransparency = 0 }, tweenConfiguration)
+		tweens.play(adornment, { Transparency = 0 }, tweenConfiguration)
 		life:add(function()
-			tweens.play(highlight, { FillTransparency = 1 }, tweenConfiguration)
-			task.delay(tweenConfiguration.duration, function()
-				highlight:Destroy()
-			end)
+			tweens.play(adornment, { Transparency = 1 }, tweenConfiguration)
+			task.delay(tweenConfiguration.duration, function(adornment)
+				adornment:Destroy()
+			end, adornment)
 		end)
 	end
 end
@@ -131,7 +127,7 @@ function Button.onActivate(self: typeof(Button), button: ButtonMechanic, level: 
 	button:Active(true)
 	enabledButtonsForId[button] = true
 
-	local deactivationLife = button.life:inner()
+	local deactivationLife = button.life:extend()
 	deactivationLife:add(function()
 		button:Active(false)
 		enabledButtonsForId[button] = nil
@@ -139,7 +135,7 @@ function Button.onActivate(self: typeof(Button), button: ButtonMechanic, level: 
 		task.delay(button:Cooldown(), Attribute.set :: any, self.Activation.Enabled, button, true)
 	end)
 
-	self.highlightButton {
+	self.glowButton {
 		life = deactivationLife,
 		instance = button.instance,
 		instanceConfiguration = button.instanceConfiguration,
@@ -159,7 +155,7 @@ function Button.onActivate(self: typeof(Button), button: ButtonMechanic, level: 
 		tweens.playFromAttributes(button.instance, { CFrame = originalTransform * pressedOffset }, self.Transition)
 
 		deactivationLife:add(function()
-			if button.life:isAlive() then
+			if button.life.destroyed == false then
 				local configuration = tweens.configurationFromAttributes(self.Transition, button)
 				tweens.play(button.instance, { CFrame = originalTransform }, configuration)
 				task.delay(configuration.duration, properties.setUnsafe, button.instance, "CFrame", originalTransform)
@@ -169,7 +165,7 @@ function Button.onActivate(self: typeof(Button), button: ButtonMechanic, level: 
 
 	local duration = button:Duration()
 	if duration > 0 then
-		deactivationLife:delay(Life.destroy, duration, deactivationLife)
+		deactivationLife:delay(duration, Life.destroy, deactivationLife)
 	end
 
 	local function onDisabled(isEnabled: boolean)

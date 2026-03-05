@@ -34,7 +34,7 @@ end
 
 function Hidden:onStart(hidden: Hidden)
 	threadpool.spawn(Hidden.hide, hidden.instance)
-	local descendantLife = hidden.life:inner()
+	local descendantLife = hidden.life:extend()
 	Hidden.HideDescendants:onBind(hidden, function(isHidden)
 		descendantLife:destroy()
 		if isHidden then

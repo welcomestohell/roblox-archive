@@ -1,7 +1,7 @@
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer or Players.PlayerAdded:Wait()
 
-local Life = require("@libs/Life")
+local Life = require("@libs/memory/Life")
 
 local inputManager = {}
 inputManager.__index = inputManager
@@ -120,7 +120,7 @@ function inputManager.attachAction(self: Manager, data: ActionData, attachments:
 	actionInstance.Name = data.identifier
 	actionInstance.Parent = attachments.context._instance
 
-	local actionLife = attachments.context.life:inner()
+	local actionLife = attachments.context.life:extend()
 	local inputAction: Action = {
 		identifier = data.identifier,
 		actionType = data.actionType,
@@ -185,7 +185,7 @@ function inputManager.attachBinding(self: Manager, data: BindingData, attachment
 		return nil
 	end
 
-	local bindingLife = attachments.action.life:inner()
+	local bindingLife = attachments.action.life:extend()
 
 	local bindingInstance: InputBinding? = nil
 

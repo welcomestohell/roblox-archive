@@ -1,6 +1,6 @@
 local Iris = require("@libs/Iris")
 local Level = require("@libs/Level")
-local Life = require("@libs/Life")
+local Life = require("@libs/memory/Life")
 
 local Levels = {}
 Levels.__index = Levels

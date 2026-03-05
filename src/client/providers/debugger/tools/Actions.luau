@@ -1,7 +1,7 @@
 local Workspace = game:GetService("Workspace")
 
 local Iris = require("@pkgs/Iris")
-local Life = require("@libs/Life")
+local Life = require("@libs/memory/Life")
 local net = require("@client/generated/net")
 
 local Actions = {}

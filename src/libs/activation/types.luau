@@ -1,5 +1,5 @@
 local Attribute = require("@libs/Attribute")
-local Life = require("@libs/Life")
+local Life = require("@libs/memory/Life")
 local Result = require("@libs/Result")
 local gt = require("@libs/gt")
 

@@ -3,7 +3,7 @@ local UserInputService = game:GetService("UserInputService")
 local DebuggerStore = require("./DebuggerStore")
 local DebuggerToolbar = require("./DebuggerToolbar")
 local Iris = require("@libs/Iris")
-local Life = require("@libs/Life")
+local Life = require("@libs/memory/Life")
 local tools = require("./tools")
 local types = require("./types")
 
@@ -69,7 +69,7 @@ local function Debugger(life: Life.Life)
 			DebuggerStore.toolToEnable(nil)
 			DebuggerStore.enabledTools(function(tools)
 				tools = table.clone(tools)
-				tools[toolToEnable] = toolToEnable.new(life:inner())
+				tools[toolToEnable] = toolToEnable.new(life:extend())
 				return tools
 			end)
 		end

@@ -41,17 +41,13 @@ function Seat.onActivate(self: typeof(Seat), seat: SeatMechanic)
 	root.CFrame = seat.instance.CFrame * seat:Offset()
 	humanoid.Sit = true
 
-	local weldLife = seat.life:inner()
-	weldLife:tie(root.Destroying)
+	local weldLife = seat.life:extend()
+	weldLife:destroyOn(root.Destroying)
 	constraints.weld(weldLife, seat.instance, root)
 
-	weldLife:connect(UserInputService.JumpRequest, function()
-		weldLife:destroy()
-	end)
-
-	weldLife:connect(humanoid.Died, function()
-		weldLife:destroy()
-	end)
+	local destroyWeld = weldLife:wrapDestroy()
+	weldLife:add(UserInputService.JumpRequest:Connect(destroyWeld))
+	weldLife:add(humanoid.Died:Connect(destroyWeld))
 
 	-- weldLife:add(Dismounter.onDismount :: any, function(targets)
 	-- 	if targets.Seat then

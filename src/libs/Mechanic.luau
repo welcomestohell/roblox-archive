@@ -2,7 +2,7 @@ local HttpService = game:GetService("HttpService")
 
 local Attribute = require("@libs/Attribute")
 local AttributeMap = require("@libs/AttributeMap")
-local Life = require("@libs/Life")
+local Life = require("@libs/memory/Life")
 local Log = require("./Log")
 local Result = require("@libs/Result")
 local functions = require("@libs/functions")
@@ -121,9 +121,9 @@ function Mechanic.tryMechanize<Self>(
 		end
 	end
 
-	local mechanicLife = outerLife:inner()
+	local mechanicLife = outerLife:extend()
 	mechanicLife:add(instance)
-	mechanicLife:tie(instance.Destroying)
+	mechanicLife:destroyOn(instance.Destroying)
 
 	local mechanic = setmetatable({
 		life = mechanicLife,

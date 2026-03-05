@@ -4,7 +4,7 @@ local tweens = require("@libs/tweens")
 local types = require("@libs/teleport/types")
 
 return function(context: types.TransitionContext)
-	local life = context.teleporterLife:inner()
+	local life = context.teleporterLife:extend()
 
 	if context.attributes.KeepVelocity(context.teleporterConfiguration) then
 		local angularVelocity = context.target.AssemblyAngularVelocity

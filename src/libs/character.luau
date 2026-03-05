@@ -39,7 +39,7 @@ end
 local function getMaybeCharacter(player: Player?): Character?
 	local plr = if player ~= nil then player else Players.LocalPlayer
 
-	return plr.Character
+	return plr.Character :: any
 end
 
 local function waitForCharacter(): Character
@@ -52,19 +52,19 @@ end
 
 local function getCharacterFromHit(hit: Instance): Character?
 	local character = getMaybeCharacter()
-	return if character and character:IsAncestorOf(hit) then character else nil
+	return if character ~= nil and character:IsAncestorOf(hit) then character else nil
 end
 
 local function getPlayerFromHit(hit: Instance): Player?
 	local player = getPlayer()
 	local character = getMaybeCharacter(player)
 
-	return if character and character:IsAncestorOf(hit) then player else nil
+	return if character ~= nil and character:IsAncestorOf(hit) then player else nil
 end
 
 local function isFromMaybeCharacter(instance: Instance): boolean
 	local character = getMaybeCharacter()
-	return if character then character:IsAncestorOf(instance) else false
+	return if character ~= nil then character:IsAncestorOf(instance) else false
 end
 
 local function isFromCharacter(instance: Instance): boolean
@@ -73,7 +73,7 @@ end
 
 local function getMaybeHumanoidRootPart(): BasePart?
 	local character = getMaybeCharacter()
-	if character then
+	if character ~= nil then
 		return character:FindFirstChild("HumanoidRootPart") :: BasePart
 	end
 	return nil
@@ -85,7 +85,7 @@ end
 
 local function getMaybeHumanoid(): Humanoid?
 	local character = getMaybeCharacter()
-	if character then
+	if character ~= nil then
 		return character:FindFirstChild("Humanoid") :: Humanoid
 	end
 	return nil

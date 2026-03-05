@@ -16,6 +16,9 @@ task.spawn(
 	{ "rojo", "sourcemap", "-o", "sourcemap.json", "sourcemap.project.json", "--watch" },
 	{ stdio = "inherit" } :: process.ProcessRunOptions
 )
+
+task.wait(1)
+
 task.spawn(
 	process.run,
 	{ "darklua", "process", "--watch", "src", "out" },

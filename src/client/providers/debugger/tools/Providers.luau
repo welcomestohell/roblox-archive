@@ -1,4 +1,4 @@
-local Life = require("@libs/Life")
+local Life = require("@libs/memory/Life")
 
 local Providers = {}
 Providers.__index = Providers

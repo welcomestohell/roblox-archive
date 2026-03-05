@@ -1,5 +1,5 @@
 local Charm = require("@pkgs/Charm")
-local Life = require("@libs/Life")
+local Life = require("@libs/memory/Life")
 
 export type DebuggerTool = {
 	title: string,

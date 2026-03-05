@@ -50,7 +50,7 @@ type ReflectedProperty = {
 
 local DebuggerStore = require("@client/providers/debugger/DebuggerStore")
 local Iris = require("@libs/Iris")
-local Life = require("@libs/Life")
+local Life = require("@libs/memory/Life")
 local icons = require("@self/icons")
 
 local CARET_COLLAPSED = "▶"

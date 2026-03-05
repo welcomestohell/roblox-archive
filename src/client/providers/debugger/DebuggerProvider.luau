@@ -1,6 +1,6 @@
 local Debugger = require("./Debugger")
 local Iris = require("@libs/Iris")
-local Life = require("@libs/Life")
+local Life = require("@libs/memory/Life")
 local prvd = require("@shared/prvdmwrong/prvdmwrong")
 
 local DebuggerProvider = {}
