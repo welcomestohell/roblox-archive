@@ -34,7 +34,6 @@ ButtonEnabled.instanceType = std.isA.Instance()
 ButtonEnabled.debuggerEmoji = "💡"
 
 ButtonEnabled.Enabled = ButtonEnabled:withEnabled()
-ButtonEnabled.Invert = ButtonEnabled:attribute("Invert", std.gt.boolean(), false)
 
 ButtonEnabled.Id = ids.withAttribute(ButtonEnabled)
 ButtonEnabled.besById = std.LevelState({} :: ids.MechanicsById<ButtonEnabledMechanic>)
@@ -56,16 +55,11 @@ ButtonEnabled.CLASSES_TO_TWEEN = CLASSES_TO_TWEEN
 
 function ButtonEnabled.onStart(self: typeof(ButtonEnabled), be: ButtonEnabledMechanic, level: std.Level)
 	ids.trackMechanic(level, be, be.besById)
-	self:updateEnabled(be, be:Enabled())
+	be:toggle()
 end
 
-function ButtonEnabled.updateEnabled(self: typeof(ButtonEnabled), be: ButtonEnabledMechanic, enabled: boolean)
-	warn("BE:", self, be, enabled)
-
-	if be:Invert() then
-		enabled = not enabled
-	end
-
+function ButtonEnabled.toggle(be: ButtonEnabledMechanic)
+	local enabled = not be:Enabled()
 	be:Enabled(enabled)
 
 	if be.instance:IsA("BasePart") and be:AffectsPropertyCollision() then
@@ -87,16 +81,16 @@ function ButtonEnabled.updateEnabled(self: typeof(ButtonEnabled), be: ButtonEnab
 				local transparency: number
 
 				if enabled then
-					transparency = if self.TransparencyEnabled:peek() == nil
+					transparency = if be.TransparencyEnabled:peek(be) == nil
 						then be:TransparencyEnabled((be.instance :: any)[property] :: number)
 						else be:TransparencyEnabled()
 				else
-					transparency = if self.TransparencyDisabled:peek() == nil
+					transparency = if be.TransparencyDisabled:peek(be) == nil
 						then be:TransparencyDisabled((be.instance :: any)[property] :: number)
 						else be:TransparencyDisabled()
 				end
 
-				tweens.playFromAttributes(be.instance, { [property] = transparency }, self.Transition)
+				tweens.playFromAttributes(be.instance, { [property] = transparency }, be.Transition)
 
 				return
 			end

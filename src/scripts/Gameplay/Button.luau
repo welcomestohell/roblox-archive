@@ -1,0 +1,198 @@
+local Players = game:GetService("Players")
+
+local Attribute = require("@libs/Attribute")
+local ButtonEnabled = require("./ButtonEnabled")
+local Life = require("@libs/Life")
+local Signal = require("@pkgs/Signal")
+local activation = require("@libs/activation")
+local emission = require("@libs/emission")
+local properties = require("@libs/properties")
+local sounds = require("@libs/sounds")
+local std = require("@libs/std")
+local threadpool = require("@libs/threadpool")
+local tweens = require("@libs/tweens")
+
+local Button = std.Mechanic({})
+export type ButtonMechanic = std.Mechanic<typeof(Button)>
+Button.instanceTag = "Button"
+Button.instanceType = std.isA.BasePart()
+Button.debuggerEmoji = "🖲️"
+
+function Button.useAttributes(implementation: std.MechanicImplementationLike)
+	local attributes = {}
+
+	attributes.Enabled = implementation:withEnabled()
+	attributes.Active = implementation:withActive()
+	attributes.Id = implementation:attribute("Id", std.gt.optional(std.gt.string()), nil)
+	attributes.Pressed = implementation:attribute("Pressed", std.gt.boolean(), false)
+	attributes.PressedOffset = implementation:attribute("PressedOffset", std.gt.CFrame(), CFrame.new(0, -0.5, 0))
+	attributes.Cooldown = implementation:attribute("Cooldown", std.gt.positiveNumber, 0)
+	attributes.Duration = implementation:attribute("Duration", std.gt.positiveNumber, 0)
+
+	return attributes
+end
+
+export type ButtonAttributes = typeof(Button:useAttributes())
+
+local attributes = Button:useAttributes()
+Button.Enabled = attributes.Enabled
+Button.Active = attributes.Active
+Button.Id = attributes.Id
+Button.PressedOffset = attributes.PressedOffset
+Button.Cooldown = attributes.Cooldown
+Button.Duration = attributes.Duration
+Button.ActivatedEmissionTag = Button:attribute("ActivatedEmissionTag", std.gt.string(), "EmitOnButtonActivated")
+Button.DeactivatedEmissionTag = Button:attribute("DeactivatedEmissionTag", std.gt.string(), "EmitOnButtonDeactivated")
+
+Button:attributeSection("Activation")
+Button.Activation = activation.useAttributes(Button)
+
+Button:attributeSection("Sound Effects")
+Button.Sound = sounds.useAttributes(Button)
+
+Button:attributeSection("Transition")
+Button.Transition = tweens.useAttributes(Button)
+
+Button.enabledButtonsById = std.LevelState({} :: { [string]: { [ButtonMechanic]: true } })
+Button.onPressed = Signal.new() :: Signal.Signal<string>
+
+activation
+	.registerMode("ButtonActivated", {
+		implement = function(context: activation.ActivationContext) end,
+	})
+	:expect("Failed to register ButtonActivated activation mode")
+
+function Button.highlightButton(props: {
+	life: Life.Life,
+	instance: BasePart,
+	instanceConfiguration: Instance,
+	tweenAttributes: tweens.TweenAttributes,
+	flash: boolean?,
+})
+	local life = props.life:inner()
+
+	local highlight = Instance.new("Highlight")
+	highlight.Name = props.instance.Name .. "Highlight"
+	highlight.Adornee = props.instance
+	highlight.OutlineTransparency = 1
+	highlight.FillColor = props.instance.Color
+	highlight.FillTransparency = 1
+	highlight.DepthMode = Enum.HighlightDepthMode.Occluded
+
+	highlight.Parent = Players.LocalPlayer.PlayerGui
+
+	local tweenConfiguration = tweens.configurationFromAttributes(props.tweenAttributes, props.instanceConfiguration)
+	tweenConfiguration.duration = tweenConfiguration.duration or 0.5
+	if props.flash then
+		tweenConfiguration.isReversed = true
+		tweens.play(highlight, { FillTransparency = 0 }, tweenConfiguration)
+
+		task.delay(tweenConfiguration.duration, function()
+			highlight:Destroy()
+		end)
+	else
+		tweens.play(highlight, { FillTransparency = 0 }, tweenConfiguration)
+		life:add(function()
+			tweens.play(highlight, { FillTransparency = 1 }, tweenConfiguration)
+			task.delay(tweenConfiguration.duration, function()
+				highlight:Destroy()
+			end)
+		end)
+	end
+end
+
+function Button.toggleId(self: typeof(Button), level: std.Level, id: string)
+	local bes = ButtonEnabled.besById:get(level)[id]
+	if bes then
+		for _, be in bes do
+			threadpool.spawn(ButtonEnabled.toggle, be)
+		end
+	end
+end
+
+function Button.onActivate(self: typeof(Button), button: ButtonMechanic, level: std.Level)
+	if not button:Enabled() or button:Active() then
+		return
+	end
+
+	local id = button:Id()
+	if id == nil then
+		return
+	end
+
+	local enabledButtonsById = self.enabledButtonsById:getOrSet(level, {})
+	local enabledButtonsForId = enabledButtonsById[id]
+	if not enabledButtonsForId then
+		enabledButtonsForId = {}
+		enabledButtonsById[id] = enabledButtonsForId
+	end
+
+	self.Activation.Enabled(button, false)
+	button:Active(true)
+	enabledButtonsForId[button] = true
+
+	local deactivationLife = button.life:inner()
+	deactivationLife:add(function()
+		button:Active(false)
+		enabledButtonsForId[button] = nil
+		emission.emitTaggedDescendants(button.instance, button:DeactivatedEmissionTag())
+		task.delay(button:Cooldown(), Attribute.set :: any, self.Activation.Enabled, button, true)
+	end)
+
+	self.highlightButton {
+		life = deactivationLife,
+		instance = button.instance,
+		instanceConfiguration = button.instanceConfiguration,
+		tweenAttributes = self.Transition,
+	}
+
+	emission.emitTaggedDescendants(button.instance, button:ActivatedEmissionTag())
+
+	if self.Sound.Play(button) then
+		sounds.playMechanic(self.Sound, button :: any, sounds.sfx.button)
+	end
+
+	if button.instance.Anchored then
+		local originalTransform = button.instance.CFrame
+		local pressedOffset = button:PressedOffset()
+
+		tweens.playFromAttributes(button.instance, { CFrame = originalTransform * pressedOffset }, self.Transition)
+
+		deactivationLife:add(function()
+			if button.life:isAlive() then
+				local configuration = tweens.configurationFromAttributes(self.Transition, button)
+				tweens.play(button.instance, { CFrame = originalTransform }, configuration)
+				task.delay(configuration.duration, properties.setUnsafe, button.instance, "CFrame", originalTransform)
+			end
+		end)
+	end
+
+	local duration = button:Duration()
+	if duration > 0 then
+		deactivationLife:delay(Life.destroy, duration, deactivationLife)
+	end
+
+	local function onDisabled(isEnabled: boolean)
+		if not isEnabled then
+			deactivationLife:destroy()
+		end
+	end
+
+	deactivationLife:add(self.Enabled:onChange(button, onDisabled))
+	deactivationLife:add(self.Active:onChange(button, onDisabled))
+end
+
+function Button.onStart(self: typeof(Button), button: ButtonMechanic, level: std.Level)
+	button.life:add(self.Active:onChange(button, function(active)
+		local id = button:Id()
+		if id then
+			self:toggleId(level, id)
+		end
+	end))
+
+	button.life:add(self.Id:onChange(button, function(_id)
+		-- TODO
+	end))
+end
+
+return Button

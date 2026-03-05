@@ -17,7 +17,7 @@ function damagePlayer(player: Player, damage: number): boolean
 
 	local char = character.getMaybeCharacter(player)
 
-	if not char then
+	if char == nil then
 		return false
 	end
 

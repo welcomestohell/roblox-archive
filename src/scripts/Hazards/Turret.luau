@@ -154,8 +154,7 @@ function Turret.fireBullet(turret: TurretMechanic, bulletTemplate: Part)
 	end)
 
 	bulletLife:add(function()
-		task.wait(turret:Lifetime())
-		cleanup()
+		task.delay(turret:Lifetime(), cleanup)
 	end)
 end
 
