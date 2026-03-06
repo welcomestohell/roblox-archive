@@ -6,7 +6,7 @@ local Jump = {} :: types.ActivationMode
 
 function Jump.implement(ctx: types.ActivationContext)
 	ctx.activationLife:add(UserInputService.JumpRequest:Connect(function()
-		ctx:onActivate()
+		ctx:onActivate { kind = "Jumped" }
 	end))
 end
 

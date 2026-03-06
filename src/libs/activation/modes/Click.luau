@@ -10,7 +10,7 @@ function Click.implement(ctx: types.ActivationContext)
 	ctx.activationLife:add(detector.MouseClick:Connect(function(player: Player)
 		-- TODO: is this check needed?
 		if player == Players.LocalPlayer then
-			ctx:onActivate()
+			ctx:onActivate { kind = "Click", detector = detector }
 		end
 	end))
 end

@@ -11,6 +11,7 @@ export type ActivationAttributes = types.ActivationAttributes
 export type PredicateContext = types.PredicateContext
 export type BindContext = types.BindContext
 export type ActivationContext = types.ActivationContext
+export type ActivationEvent = types.ActivationEvent
 export type ActivationMode = types.ActivationMode
 
 local modes: { [string]: ActivationMode } = {

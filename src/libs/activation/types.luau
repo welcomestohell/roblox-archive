@@ -14,6 +14,15 @@ export type ActivationAttributes = {
 	MaxDistance: Attribute.Attribute<number>,
 }
 
+export type ActivationEvent =
+	| { kind: "Click", detector: ClickDetector }
+	| { kind: "Died" }
+	| { kind: "Jumped" }
+	| { kind: "HumanoidStateChanged", old: Enum.HumanoidStateType, new: Enum.HumanoidStateType }
+	| { kind: "Prompt", prompt: ProximityPrompt }
+	| { kind: "Touch", toucher: BasePart }
+	| { kind: string, [unknown]: unknown }
+
 export type PredicateContext = {
 	instance: Instance,
 	instanceConfiguration: Instance,
@@ -21,7 +30,7 @@ export type PredicateContext = {
 
 export type BindContext = PredicateContext & {
 	instanceLife: Life.Life,
-	onActivate: (ctx: ActivationContext) -> (),
+	onActivate: (context: ActivationContext, event: ActivationEvent) -> (),
 	attributes: ActivationAttributes,
 }
 

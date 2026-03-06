@@ -10,7 +10,7 @@ function Prompt.implement(ctx: types.ActivationContext)
 	ctx.activationLife:add(prompt.Triggered:Connect(function(player: Player)
 		-- TODO: is this check needed?
 		if player == Players.LocalPlayer then
-			ctx:onActivate()
+			ctx:onActivate { kind = "Prompt", prompt = prompt }
 		end
 	end))
 end

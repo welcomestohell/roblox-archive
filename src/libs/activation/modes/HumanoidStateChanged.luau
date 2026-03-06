@@ -6,9 +6,9 @@ local HumanoidStateChanged = {} :: types.ActivationMode
 function HumanoidStateChanged.implement(ctx: types.ActivationContext)
 	local humanoid = character.getHumanoid()
 	ctx.activationLife:add(
-		humanoid.StateChanged:Connect(function(_: Enum.HumanoidStateType, new: Enum.HumanoidStateType)
+		humanoid.StateChanged:Connect(function(old: Enum.HumanoidStateType, new: Enum.HumanoidStateType)
 			if new == ctx.attributes.HumanoidStateType(ctx.instanceConfiguration) then
-				ctx:onActivate()
+				ctx:onActivate { kind = "HumanoidStateChanged", old = old, new = new }
 			end
 		end)
 	)

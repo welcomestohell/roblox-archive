@@ -16,6 +16,15 @@ export type Character = {
 	["Right Leg"]: BasePart,
 } & Model
 
+local LIMB_MAP: { [Enum.Limb]: string? } = {
+	[Enum.Limb.Torso] = "HumanoidRootPart",
+	[Enum.Limb.LeftArm] = "Left Arm",
+	[Enum.Limb.RightArm] = "Right Arm",
+	[Enum.Limb.LeftLeg] = "Left Leg",
+	[Enum.Limb.RightLeg] = "Right Leg",
+	[Enum.Limb.Head] = "Head",
+}
+
 local function isCharacter(character: Instance): boolean
 	return Players:GetPlayerFromCharacter(character :: Model) ~= nil
 end
@@ -101,6 +110,7 @@ local function isCharacterAlive(): boolean
 end
 
 return {
+	LIMB_MAP = LIMB_MAP,
 	isCharacter = isCharacter,
 	isLocalPlayerCharacter = isLocalPlayerCharacter,
 	getMaybeCharacter = getMaybeCharacter,

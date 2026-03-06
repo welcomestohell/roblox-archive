@@ -9,8 +9,8 @@ export type AttributeMap<T> = setmetatable<{
 	expectedType: T,
 	_instances: { [Instance]: { [string]: T } },
 
-	_fetchListeners: { [(key: string, value: T) -> ()]: true },
-	_changeListeners: { [(key: string, value: T) -> ()]: true },
+	_fetchListeners: { [(key: string, value: T, map: AttributeMap<T>) -> ()]: true },
+	_changeListeners: { [(key: string, value: T, map: AttributeMap<T>) -> ()]: true },
 }, typeof(AttributeMap)>
 
 function AttributeMap.new<T>(pattern: string, expectedType: T): AttributeMap<T>

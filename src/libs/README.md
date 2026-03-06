@@ -1,7 +1,9 @@
-## Design Guidelines
+## 设计指南
 
-Not set in stone yet
+尚未最终确定
 
-- Module names will use `PascalCase` for classes/type exports, `camelCase` for other libraries
-- Libs is intended to be flat, you should only need to require `ReplicatedStorage.Libs.X` and no deeper
-- Nothing should depend on `std`
+- 模块名称将使用 `PascalCase` 表示类/类型导出，`camelCase` 表示其他库
+
+- 库的设计目标是扁平化，您只需引入 `ReplicatedStorage.Libs.X`，无需更深层依赖
+
+- 任何内容都不应依赖于 `std`

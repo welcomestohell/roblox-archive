@@ -14,7 +14,7 @@ end
 function Touch.implement(ctx: types.ActivationContext)
 	ctx.activationLife:add((ctx.instance :: BasePart).Touched:Connect(function(toucher: BasePart)
 		if touch.isToucherValid(ctx.instance, toucher) then
-			ctx:onActivate()
+			ctx:onActivate { kind = "Touch", toucher = toucher }
 		end
 	end))
 end
