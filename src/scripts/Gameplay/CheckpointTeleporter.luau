@@ -56,9 +56,9 @@ function CheckpointTeleporter:onActivate(teleporter: CheckpointTeleporterMechani
 	end
 
 	self.Activation.Enabled(teleporter, false)
-	teleporter.life:delay(function(self: typeof(self), teleporter: typeof(teleporter))
+	teleporter.life:delay(teleporter:Cooldown(), function(self: typeof(self), teleporter: typeof(teleporter))
 		self.Activation.Enabled(teleporter, true)
-	end, teleporter:Cooldown(), self, teleporter)
+	end, self, teleporter)
 
 	if self.Sound.Play(teleporter) then
 		sounds.playInstance(self.Sound, teleporter.instance, teleporter.instanceConfiguration, sounds.sfx.teleport)

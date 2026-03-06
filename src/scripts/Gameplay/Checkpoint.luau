@@ -36,9 +36,9 @@ function Checkpoint.onActivate(self: typeof(Checkpoint), checkpoint: CheckpointM
 	end
 
 	self.Activation.Enabled(checkpoint, false)
-	checkpoint.life:delay(function(self: typeof(self), checkpoint: typeof(checkpoint))
+	checkpoint.life:delay(self:Cooldown(), function(self: typeof(self), checkpoint: typeof(checkpoint))
 		self.Activation.Enabled(checkpoint, true)
-	end, checkpoint:Cooldown(), self, checkpoint)
+	end, self, checkpoint)
 end
 
 return Checkpoint

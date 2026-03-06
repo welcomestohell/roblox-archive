@@ -7,7 +7,7 @@ local Damager = std.Mechanic({})
 export type DamagerMechanic = std.Mechanic<typeof(Damager)>
 
 Damager.instanceTag = "Damager"
-Damager.instanceType = std.isA.BasePart()
+Damager.instanceType = std.isA.Instance()
 Damager.debuggerEmoji = "☠️"
 
 Damager.Enabled = Damager:withEnabled()
@@ -53,9 +53,9 @@ function Damager.onStart(self: typeof(Damager), damager: DamagerMechanic, level:
 		return
 	end
 
-	damager.life:connect(instance.Touched, function(hit: Part)
-		damager:onTouch(hit)
-	end)
+	-- damager.life:add(instance.Touched, function(hit: Part)
+	-- 	damager:onTouch(hit)
+	-- end)
 end
 
 return Damager
