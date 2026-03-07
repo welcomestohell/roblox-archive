@@ -2,6 +2,7 @@ local Attribute = require("@libs/Attribute")
 local Life = require("@libs/memory/Life")
 local Result = require("@libs/Result")
 local gt = require("@libs/gt")
+local touch = require("@libs/touch")
 
 export type ActivationAttributes = {
 	Enabled: Attribute.Attribute<boolean>,
@@ -12,6 +13,8 @@ export type ActivationAttributes = {
 	Interval: Attribute.Attribute<number?>,
 	KeyCode: Attribute.Attribute<Enum.KeyCode?>,
 	MaxDistance: Attribute.Attribute<number>,
+
+	Touch: touch.TouchAttributes,
 }
 
 export type ActivationEvent =

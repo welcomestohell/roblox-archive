@@ -4,17 +4,17 @@ local types = require("../types")
 
 local Touch = {} :: types.ActivationMode
 
-function Touch.predicate(ctx: types.PredicateContext)
-	if ctx.instance:IsA("BasePart") then
+function Touch.predicate(context: types.PredicateContext)
+	if context.instance:IsA("BasePart") then
 		return Result.Ok(nil)
 	end
-	return Result.Err(`Expected a BasePart, got {ctx.instance.ClassName}`)
+	return Result.Err(`Expected a BasePart, got {context.instance.ClassName}`)
 end
 
-function Touch.implement(ctx: types.ActivationContext)
-	ctx.activationLife:add((ctx.instance :: BasePart).Touched:Connect(function(toucher: BasePart)
-		if touch.isToucherValid(ctx.instance, toucher) then
-			ctx:onActivate { kind = "Touch", toucher = toucher }
+function Touch.implement(context: types.ActivationContext)
+	context.activationLife:add((context.instance :: BasePart).Touched:Connect(function(toucher: BasePart)
+		if touch.isToucherValid(context.attributes.Touch, context.instance, context.instanceConfiguration, toucher) then
+			context:onActivate { kind = "Touch", toucher = toucher }
 		end
 	end))
 end

@@ -52,14 +52,14 @@ end
 
 export type ActivationError = { id: "noMode" } | { id: "unknownMode" } | { id: "predicateFailed", error: string }
 
-local function activate(ctx: types.ActivationContext): Result.Result<nil, ActivationError>
-	local modeKey = ctx.attributes.Mode(ctx.instanceConfiguration)
+local function activate(context: types.ActivationContext): Result.Result<nil, ActivationError>
+	local modeKey = context.attributes.Mode(context.instanceConfiguration)
 	if modeKey then
 		local mode: ActivationMode? = modes[modeKey]
 
 		if mode then
 			if mode.predicate then
-				local predicateResult = mode.predicate(ctx)
+				local predicateResult = mode.predicate(context)
 				if predicateResult:isErr() then
 					return Result.Err({
 						id = functions.literal "predicateFailed",
@@ -68,7 +68,7 @@ local function activate(ctx: types.ActivationContext): Result.Result<nil, Activa
 				end
 			end
 
-			mode.implement(ctx)
+			mode.implement(context)
 			return Result.Ok(nil)
 		end
 

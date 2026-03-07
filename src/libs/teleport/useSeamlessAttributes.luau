@@ -4,13 +4,13 @@ local gt = require("@libs/gt")
 local SeamlessMeasurement = gt.build(gt.unionLiterals2("Relative", "World"))
 export type SeamlessMeasurement = typeof(SeamlessMeasurement:type())
 
-local function useSeamlessAttributes(implementation: Mechanic.MechanicImplementationLike, baseName: string?)
-	baseName = baseName or "Seamless"
+local function useSeamlessAttributes(implementation: Mechanic.MechanicImplementationLike, basename: string?)
+	basename = basename or "Seamless"
 
 	local attributes = {}
-	attributes.Enabled = implementation:attribute(baseName .. "Enabled", gt.boolean(), true)
-	attributes.Scaled = implementation:attribute(baseName .. "Scaled", gt.boolean(), true)
-	attributes.Clamped = implementation:attribute(baseName .. "Clamped", gt.boolean(), true)
+	attributes.Enabled = implementation:attribute(basename .. "Enabled", gt.boolean(), true)
+	attributes.Scaled = implementation:attribute(basename .. "Scaled", gt.boolean(), true)
+	attributes.Clamped = implementation:attribute(basename .. "Clamped", gt.boolean(), true)
 
 	return attributes
 end

@@ -9,7 +9,7 @@ export type VineMechanic = std.Mechanic<typeof(Vine)> & { templateHandle: BasePa
 Vine.instanceTag = "Vine"
 Vine.instanceType = std.gt.instanceTree {
 	Top = std.isA.BasePart(),
-	Vine = std.isA.BasePart(),
+	Activator = std.isA.BasePart(),
 	Constraint = std.gt.optional(std.isA.Constraint()),
 	Handle = std.gt.optional(std.isA.BasePart()),
 }

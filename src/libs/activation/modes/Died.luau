@@ -3,10 +3,10 @@ local types = require("../types")
 
 local HumanoidStateChange = {} :: types.ActivationMode
 
-function HumanoidStateChange.implement(ctx: types.ActivationContext)
+function HumanoidStateChange.implement(context: types.ActivationContext)
 	local humanoid = character.getHumanoid()
-	ctx.activationLife:add(humanoid.Died:Connect(function()
-		ctx:onActivate { kind = "Died" }
+	context.activationLife:add(humanoid.Died:Connect(function()
+		context:onActivate { kind = "Died" }
 	end))
 end
 

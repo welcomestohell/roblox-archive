@@ -89,7 +89,7 @@ function Mounter:onActivate(mounter: MounterMechanic)
 		instanceLife = mountLife,
 		attributes = mounter.Dismount,
 
-		onActivate = function(ctx: activation.ActivationContext)
+		onActivate = function(context: activation.ActivationContext)
 			mountLife:destroy()
 			task.delay(mounter:Cooldown(), Attribute.set :: any, mounter.Activation.Enabled, mounter, true)
 		end,

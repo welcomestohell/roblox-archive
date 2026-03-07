@@ -1,31 +1,43 @@
-local Attribute = require("@libs/Attribute")
-local character = require("@libs/character")
+local Mechanic = require("./Mechanic")
+local character = require("./character")
 local gt = require("./gt")
 
-local isFromMaybeCharacter = character.isFromMaybeCharacter
+local function useAttributes(implementation: Mechanic.MechanicImplementationLike, basename: string?)
+	basename = basename or "Touch"
 
-local SupportsCharacter = Attribute.new("SupportsCharacter", gt.boolean(), false)
-local SupportsBoxes = Attribute.new("SupportsBoxes", gt.boolean(), false)
-local BoxesRequiresMatchingId = Attribute.new("BoxesRequiresMatchingId", gt.boolean(), false)
-local RequiredBoxId = Attribute.new("RequiredBoxId", gt.string())
-
-local function isToucherValid(target: Attribute.ResolvableInstance, toucher: BasePart)
-	if SupportsCharacter(target) and isFromMaybeCharacter(toucher) then
-		return true
-	end
-
-	return false
+	return {
+		CollisionGroup = implementation:attribute(basename .. "CollisionGroup", gt.optional(gt.string()), nil),
+		SupportsCharacter = implementation:attribute(basename .. "SupportsCharacter", gt.boolean(), false),
+		SupportsBullets = implementation:attribute(basename .. "SupportsBullets", gt.boolean(), false),
+	}
 end
 
-local function isToucherCharacter(target: Attribute.ResolvableInstance, toucher: BasePart)
-	return SupportsCharacter(target) and isFromMaybeCharacter(toucher)
+export type TouchAttributes = typeof(useAttributes(nil :: any))
+
+local function isToucherValid(
+	attributes: TouchAttributes,
+	instance: Instance,
+	instanceConfiguration: Instance,
+	toucher: BasePart
+)
+	-- local collisionGroup = attributes.CollisionGroup(instanceConfiguration)
+	-- local isCollisionGroupEmpty = collisionGroup == nil or collisionGroup == ""
+	-- local isCollisionGroupValid = (
+	-- 	collisionGroup == nil
+	-- 	or collisionGroup == ""
+	-- 	or PhysicsService:CollisionGroupsAreCollidable(toucher.CollisionGroup, collisionGroup :: string)
+	-- )
+
+	-- if not isCollisionGroupValid then
+	-- 	return false
+	-- end
+
+    -- stylua: ignore
+	return (attributes.SupportsCharacter(instanceConfiguration) and character.isFromMaybeCharacter(toucher))
+		or (attributes.SupportsBullets(instanceConfiguration) and (toucher:HasTag("Bullet") or toucher:FindFirstAncestor("Bullet") ~= nil))
 end
 
-return {
+return table.freeze {
+	useAttributes = useAttributes,
 	isToucherValid = isToucherValid,
-	isToucherCharacter = isToucherCharacter,
-	SupportsCharacter = SupportsCharacter,
-	SupportsBoxes = SupportsBoxes,
-	BoxesRequiresMatchingId = BoxesRequiresMatchingId,
-	RequiredBoxId = RequiredBoxId,
 }

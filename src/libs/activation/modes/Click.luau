@@ -5,12 +5,12 @@ local useChildOfClass = require("../useChildOfClass")
 
 local Click = {} :: types.ActivationMode
 
-function Click.implement(ctx: types.ActivationContext)
-	local detector = useChildOfClass(ctx, "ActivationClickDetector", "ClickDetector")
-	ctx.activationLife:add(detector.MouseClick:Connect(function(player: Player)
+function Click.implement(context: types.ActivationContext)
+	local detector = useChildOfClass(context, "ActivationClickDetector", "ClickDetector")
+	context.activationLife:add(detector.MouseClick:Connect(function(player: Player)
 		-- TODO: is this check needed?
 		if player == Players.LocalPlayer then
-			ctx:onActivate { kind = "Click", detector = detector }
+			context:onActivate { kind = "Click", detector = detector }
 		end
 	end))
 end

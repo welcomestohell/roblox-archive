@@ -11,9 +11,7 @@ WeaponsProvider.inputManager = input.new()
 
 -- is it worth using prvd lifecycles here??
 -- are they even a thing with this version of prvd
-function WeaponsProvider.onClick(self: WeaponsProvider)
-	print("evil click of doom and despair")
-end
+function WeaponsProvider.onClick(self: WeaponsProvider) end
 
 function WeaponsProvider.onStart(self: WeaponsProvider)
 	local context = self.inputManager:createContext({
@@ -47,8 +45,6 @@ function WeaponsProvider.onStart(self: WeaponsProvider)
 		context = context,
 		action = action,
 	})
-
-	print(context, action, _)
 end
 
 return prvd(WeaponsProvider)

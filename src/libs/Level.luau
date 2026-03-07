@@ -138,8 +138,8 @@ function Level.startMechanic(self: Level, mechanic: Mechanic.Mechanic<any>)
 			activationLife = mechanic.life,
 			instanceLife = mechanic.life,
 			instance = mechanic.instance,
-			instanceConfiguration = mechanic.instanceConfiguration or mechanic.instance,
-			onActivate = function(ctx: activation.ActivationContext)
+			instanceConfiguration = mechanic.instanceConfiguration,
+			onActivate = function(context: activation.ActivationContext)
 				implementation:onActivate(mechanic, self)
 			end,
 		})
