@@ -26,5 +26,7 @@ task.spawn(
 )
 task.spawn(process.run, { "blink", ".blink", "--watch" }, { stdio = "inherit" } :: process.ProcessRunOptions)
 
+task.spawn(process.run, { "rojo", "serve" }, { stdio = "inherit" } :: process.ProcessRunOptions)
+
 task.wait(1)
-print "Now watching for changes (run `rojo serve` in a new terminal)"
+print "Now watching for changes"
