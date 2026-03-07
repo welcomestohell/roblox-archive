@@ -1,3 +1,4 @@
+local repr = require("./repr")
 local Result = {}
 Result.__index = Result
 
@@ -50,7 +51,7 @@ function Result.match<T, E, R>(
 end
 
 function Result.__tostring(self: Result<any, any>): string
-	return string.format(if Result.isOk(self) then "Result.Ok(%q)" else "Result.Err(%q)" :: any, self.value)
+	return if self:isOk() then `Result.Ok({repr(self.value)})` else `Result.Err({repr(self.value)})`
 end
 
 return table.freeze(Result)

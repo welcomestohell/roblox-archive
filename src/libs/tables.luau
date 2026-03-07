@@ -135,7 +135,7 @@ local function values<V>(target: { [any]: V }): { V }
 end
 
 local function weak(mode: keyof<typeof(WEAK_METATABLES)>): { [any]: any }
-	return setmetatable({}, WEAK_METATABLES[mode])
+	return setmetatable({}, WEAK_METATABLES[mode]) :: any
 end
 
 local function deepCopy<T>(target: T & {})

@@ -1,6 +1,7 @@
 local Attribute = require("./Attribute")
 local Level = require("./Level")
 local LevelState = require("./LevelState")
+local Life = require("@libs/memory/Life")
 local Mechanic = require("./Mechanic")
 local gt = require("./gt")
 
@@ -29,6 +30,7 @@ export type Attribute<T> = Attribute.Attribute<T>
 return table.freeze {
 	Mechanic = Mechanic.new,
 	Attribute = Attribute.new,
+	Life = Life.new,
 	LevelState = LevelState.new,
 
 	gt = gt,

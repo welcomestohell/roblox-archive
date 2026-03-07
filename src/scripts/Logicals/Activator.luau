@@ -3,6 +3,12 @@ local CollectionService = game:GetService("CollectionService")
 local activation = require("@libs/activation")
 local std = require("@libs/std")
 
+--[=[
+	@class Activator
+	@tag Mechanic
+
+	Activates the targeted instances when the mechanic itself is activated.
+]=]
 local Activator = std.Mechanic({})
 export type ActivatorMechanic = std.Mechanic<typeof(Activator)>
 Activator.instanceTag = "Activator"

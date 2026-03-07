@@ -1,4 +1,5 @@
 local ids = require("@libs/ids")
+local properties = require("@libs/properties")
 local std = require("@libs/std")
 local tweens = require("@libs/tweens")
 
@@ -63,13 +64,13 @@ function ButtonEnabled.toggle(be: ButtonEnabledMechanic)
 	be:Enabled(enabled)
 
 	if be.instance:IsA("BasePart") and be:AffectsPropertyCollision() then
-		(be.instance :: BasePart).CanCollide = enabled
+		properties.setUnsafe(be.instance, "CanCollide", enabled)
 	end
 
 	if be:AffectsPropertyEnabled() then
 		for class in CLASSES_TO_TOGGLE_ENABLED do
 			if be.instance:IsA(class) then
-				(be.instance :: any).Enabled = enabled
+				properties.setUnsafe(be.instance, "Enabled", true)
 				break
 			end
 		end
@@ -90,7 +91,8 @@ function ButtonEnabled.toggle(be: ButtonEnabledMechanic)
 						else be:TransparencyDisabled()
 				end
 
-				tweens.playFromAttributes(be.instance, { [property] = transparency }, be.Transition)
+				local tweenConfiguration = tweens.configurationFromAttributes(be.Transition, be)
+				tweens.play(be.instance, { [property] = transparency }, tweenConfiguration)
 
 				return
 			end

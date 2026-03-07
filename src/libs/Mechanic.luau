@@ -111,6 +111,7 @@ function Mechanic.tryMechanize<Self>(
 	local instanceConfiguration = instance
 	if instance.ClassName == "Configuration" and instance.Parent then
 		instanceConfiguration, instance = instance, instance.Parent
+		print("now using config:", instanceConfiguration:GetFullName(), instance:GetFullName())
 	end
 
 	if implementation.instanceType then

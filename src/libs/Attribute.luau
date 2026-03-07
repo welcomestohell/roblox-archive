@@ -42,11 +42,21 @@ export type Attribute<T> = setmetatable<{
 	_fetchListeners: { [Instance]: { [(value: T, attribute: any) -> ()]: true } },
 }, typeof(Attribute)>
 
-local function resolveInstance(resolvable: ResolvableInstance): Instance
-	if type(resolvable) == "table" then
-		return (resolvable :: any).instanceConfiguration or (resolvable :: any).instance
+local function resolveInstance(self: Attribute<any>, resolvable: any): Instance
+	local type = typeof(resolvable)
+	if type == "Instance" then
+		return resolvable
+	elseif
+		type == "table" and typeof(resolvable.instanceConfiguration) == "Instance"
+		or typeof(resolvable.instance) == "Instance"
+	then
+		return resolvable.instanceConfiguration or resolvable.instance
 	else
-		return resolvable :: Instance
+		error(
+			`Expected an instance or a mechanic to resolve {self.attribute}, got {resolvable} of type {typeof(
+				resolvable
+			)}`
+		)
 	end
 end
 
@@ -134,7 +144,7 @@ local function observeListener<T>(
 	listenerMap: { [Instance]: { [(value: T, attribute: Attribute<T>) -> ()]: true } },
 	listener: (value: T, attribute: Attribute<T>) -> ()
 ): () -> ()
-	local resolved = resolveInstance(instance)
+	local resolved = resolveInstance(attribute, instance)
 
 	local instanceListeners = listenerMap[resolved]
 	if not instanceListeners then
@@ -198,7 +208,7 @@ function Attribute.isAttribute(x: any)
 end
 
 function Attribute.peek<T>(self: Attribute<T>, instance: ResolvableInstance): T
-	local value = self._cache[resolveInstance(instance)] :: any
+	local value = self._cache[resolveInstance(self, instance)] :: any
 
 	if value == nil then
 		value = self.defaultValue
@@ -208,7 +218,7 @@ function Attribute.peek<T>(self: Attribute<T>, instance: ResolvableInstance): T
 end
 
 function Attribute.fetch<T>(self: Attribute<T>, instance: ResolvableInstance): T
-	local fetched = fetchAttribute(self, resolveInstance(instance))
+	local fetched = fetchAttribute(self, resolveInstance(self, instance))
 
 	if fetched == nil then
 		fetched = self.defaultValue
@@ -218,7 +228,7 @@ function Attribute.fetch<T>(self: Attribute<T>, instance: ResolvableInstance): T
 end
 
 function Attribute.get<T>(self: Attribute<T>, instance: ResolvableInstance): T
-	local resolved = resolveInstance(instance)
+	local resolved = resolveInstance(self, instance)
 
 	if not self._updated[resolved] then
 		return fetchAttribute(self, resolved)
@@ -262,7 +272,7 @@ function Attribute.set<T>(self: Attribute<T>, instance: ResolvableInstance, valu
 		value = self.defaultValue
 	end
 
-	local resolved = resolveInstance(instance)
+	local resolved = resolveInstance(self, instance)
 
 	resolved:SetAttribute(self.attribute, value)
 
@@ -276,7 +286,7 @@ function Attribute.assert<T>(self: Attribute<T?>, instance: ResolvableInstance, 
 	local value = Attribute.get(self :: any, instance)
 	assert(
 		value ~= nil,
-		message or `Instance {resolveInstance(instance):GetFullName()} is missing attribute {self.attribute}!`
+		message or `Instance {resolveInstance(self, instance):GetFullName()} is missing attribute {self.attribute}!`
 	)
 	return value
 end

@@ -107,6 +107,7 @@ function Button.toggleId(self: typeof(Button), level: std.Level, id: string)
 end
 
 function Button.onActivate(self: typeof(Button), button: ButtonMechanic, level: std.Level)
+	button.log:debug("activating")
 	if not button:Enabled() or button:Active() then
 		return
 	end
@@ -116,6 +117,7 @@ function Button.onActivate(self: typeof(Button), button: ButtonMechanic, level: 
 		return
 	end
 
+	button.log:debug("we active")
 	local enabledButtonsById = self.enabledButtonsById:getOrSet(level, {})
 	local enabledButtonsForId = enabledButtonsById[id]
 	if not enabledButtonsForId then

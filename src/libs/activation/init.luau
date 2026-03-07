@@ -53,7 +53,6 @@ end
 export type ActivationError = { id: "noMode" } | { id: "unknownMode" } | { id: "predicateFailed", error: string }
 
 local function activate(ctx: types.ActivationContext): Result.Result<nil, ActivationError>
-	log:trace("Activate", ctx.instance:GetFullName())
 	local modeKey = ctx.attributes.Mode(ctx.instanceConfiguration)
 	if modeKey then
 		local mode: ActivationMode? = modes[modeKey]
@@ -78,26 +77,30 @@ local function activate(ctx: types.ActivationContext): Result.Result<nil, Activa
 	return Result.Err({ id = functions.literal "noMode" })
 end
 
-local function bindActivation(bindCtx: BindContext)
-	local ctx = table.clone(bindCtx) :: ActivationContext
-	local life = ctx.instanceLife:extend()
-	ctx.activationLife = life:extend()
+local function bindActivation(bindContext: BindContext)
+	local context = table.clone(bindContext) :: ActivationContext
+	local life = context.instanceLife:extend()
+	context.activationLife = life:extend()
 
 	local function update()
-		ctx.activationLife:destroy()
-		ctx.activationLife = life:extend()
+		context.activationLife:destroy()
+		context.activationLife = life:extend()
 
-		if bindCtx.attributes.Enabled(ctx.instanceConfiguration) then
-			local result = activate(ctx)
+		if context.attributes.Enabled(context.instanceConfiguration) then
+			local result = activate(context)
 			if result:isErr() then
-				log:warn("Failed to bind activation for", ctx.instance:GetFullName(), "because:", result:unwrapErr())
+				log:warn(
+					"Failed to bind activation for",
+					context.instance:GetFullName(),
+					"because:",
+					result:unwrapErr()
+				)
 			end
 		end
 	end
 
-	log:trace("Binding activation to", ctx.instance:GetFullName())
-	life:add(bindCtx.attributes.Enabled:onBind(ctx.instanceConfiguration, update))
-	life:add(bindCtx.attributes.Mode:onBind(ctx.instanceConfiguration, update))
+	life:add(context.attributes.Enabled:onBind(context.instanceConfiguration, update))
+	life:add(context.attributes.Mode:onBind(context.instanceConfiguration, update))
 end
 
 return table.freeze {
