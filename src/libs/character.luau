@@ -16,6 +16,7 @@ export type Character = {
 	["Right Leg"]: BasePart,
 } & Model
 
+local ROOT_OFFSET = CFrame.new(0, 1, 0)
 local LIMB_MAP: { [Enum.Limb]: string? } = {
 	[Enum.Limb.Torso] = "HumanoidRootPart",
 	[Enum.Limb.LeftArm] = "Left Arm",
@@ -110,6 +111,7 @@ local function isCharacterAlive(): boolean
 end
 
 return {
+	ROOT_OFFSET = ROOT_OFFSET,
 	LIMB_MAP = LIMB_MAP,
 	isCharacter = isCharacter,
 	isLocalPlayerCharacter = isLocalPlayerCharacter,

@@ -8,7 +8,7 @@ local function useSeamlessAttributes(implementation: Mechanic.MechanicImplementa
 	basename = basename or "Seamless"
 
 	local attributes = {}
-	attributes.Enabled = implementation:attribute(basename .. "Enabled", gt.boolean(), true)
+	attributes.Enabled = implementation:attribute(basename .. "Enabled", gt.boolean(), false)
 	attributes.Scaled = implementation:attribute(basename .. "Scaled", gt.boolean(), true)
 	attributes.Clamped = implementation:attribute(basename .. "Clamped", gt.boolean(), true)
 

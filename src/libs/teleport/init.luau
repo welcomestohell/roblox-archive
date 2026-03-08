@@ -60,7 +60,7 @@ local function teleport(context: types.TeleportContext)
 
 		transitionContext.destinationCFrame = if context.seamlessAttributes.Enabled(context.teleporterConfiguration)
 			then calculateSeamless(context)
-			else (context.destination.CFrame * context.attributes.Offset(context.teleporterConfiguration))
+			else (context.destination.CFrame * context.attributes.Offset(context.destinationConfiguration))
 
 		-- TODO: calculate seamless camera cframe
 		transitionContext.destinationCameraCFrame = Workspace.CurrentCamera.CFrame

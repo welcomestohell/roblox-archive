@@ -46,10 +46,10 @@ local function resolveInstance(self: Attribute<any>, resolvable: any): Instance
 	local type = typeof(resolvable)
 	if type == "Instance" then
 		return resolvable
-	elseif
-		type == "table" and typeof(resolvable.instanceConfiguration) == "Instance"
-		or typeof(resolvable.instance) == "Instance"
-	then
+	elseif type == "table" then
+		if not resolvable.instanceConfiguration and not resolvable.instance then
+			print(resolvable)
+		end
 		return resolvable.instanceConfiguration or resolvable.instance
 	else
 		error(

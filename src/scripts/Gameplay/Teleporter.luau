@@ -60,25 +60,26 @@ function Teleporter.onActivate(self: typeof(Teleporter), teleporter: TeleporterM
 		self.activation.Enabled(teleporter, true)
 	end, teleporter)
 
-	math.randomseed(os.time() ^ 2)
+	math.randomseed(os.clock())
 	local targetDestination = allDestinations[if len == 1 then 1 else math.random(1, len)]
 
 	if self.Sound.Play(teleporter) then
 		sounds.playInstance(self.Sound, teleporter.instance, teleporter.instanceConfiguration, sounds.sfx.teleport)
 	end
 
-	teleport.teleport({
+	teleport.teleport {
 		teleporter = teleporter.instance,
 		teleporterConfiguration = teleporter.instanceConfiguration or teleporter.instance,
 		teleporterLife = teleporter.life,
 
 		target = root,
 		destination = targetDestination.instance,
+		destinationConfiguration = targetDestination.instanceConfiguration,
 
 		attributes = self.Teleport,
 		seamlessAttributes = self.Seamless,
 		tweenAttributes = self.Transition,
-	})
+	}
 
 	self.debounce = false
 end

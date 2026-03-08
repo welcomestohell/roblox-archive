@@ -17,7 +17,7 @@ CheckpointTeleporter.Cooldown = CheckpointTeleporter:attribute("Cooldown", std.g
 CheckpointTeleporter.OnNoCheckpoint = CheckpointTeleporter:attribute(
 	"OnNoCheckpoint",
 	std.gt.unionLiterals2("DoNothing", "ReturnToSpawn"),
-	functions.literal "ReturnToSpawn"
+	functions.literal "DoNothing"
 )
 
 CheckpointTeleporter:attributeSection("Activation")
@@ -42,16 +42,18 @@ function CheckpointTeleporter:onActivate(teleporter: CheckpointTeleporterMechani
 	end
 
 	local currentCheckpoint = Checkpoint.currentCheckpoint:get(level)
-	local destination: BasePart
+	local destination: BasePart, destinationConfiguration: Instance
 
 	if currentCheckpoint then
 		destination = currentCheckpoint.instance
+		destinationConfiguration = currentCheckpoint.instanceConfiguration
 	else
 		local behavior = teleporter:OnNoCheckpoint()
 		if behavior == "DoNothing" then
 			return
 		elseif behavior == "ReturnToSpawn" then
 			destination = level.instance.SpawnCharacter
+			destinationConfiguration = destination
 		end
 	end
 
@@ -71,6 +73,7 @@ function CheckpointTeleporter:onActivate(teleporter: CheckpointTeleporterMechani
 
 		target = root,
 		destination = destination,
+		destinationConfiguration = destinationConfiguration,
 
 		attributes = self.Teleport,
 		seamlessAttributes = self.Seamless,
