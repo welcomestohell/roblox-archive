@@ -29,7 +29,7 @@ export type MechanicImplementationMetadata = {
 	An instance loaded in a `Level` with user-implemented behavior as defined by a
 	`MechanicImplementation`.
 ]=]
-export type Mechanic<Self> = Self & {
+export type Mechanic<Self, Mixin = {}> = Self & Mixin & {
 	life: Life.Life,
 	log: Log.Log,
 	id: string,

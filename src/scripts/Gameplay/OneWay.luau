@@ -17,10 +17,7 @@ function OneWay:onPreSimulation(deltaTime: number, level: std.Level)
 
 	local rootPivot = root:GetPivot()
 	for _, platform in level:getMechanics(OneWay) do
-		-- local config: Configuration = platform.instanceConfiguration
 		local instance: BasePart = platform.instance
-
-		-- this is nil for some reason???
 		local enabled: boolean = platform:Enabled()
 
 		if enabled then

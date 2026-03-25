@@ -1,6 +1,12 @@
 local std = require("@libs/std")
 local threadpool = require("@libs/threadpool")
 
+--[=[
+	@class Hidden
+	@tag Mechanic
+
+	Hidden hides the instance when the kit is loaded.
+]=]
 local Hidden = std.Mechanic({})
 export type Hidden = std.Mechanic<typeof(Hidden)>
 Hidden.instanceTag = "Hidden"

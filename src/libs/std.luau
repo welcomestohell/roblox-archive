@@ -8,7 +8,7 @@ local gt = require("./gt")
 local sounds = require("./sounds")
 local tweens = require("./tweens")
 
-export type Mechanic<Self = any> = Mechanic.Mechanic<Self>
+export type Mechanic<Self = any, Mixin = {}> = Mechanic.Mechanic<Self, Mixin>
 export type MechanicImplementation = Mechanic.MechanicImplementation
 export type MechanicImplementationLike = Mechanic.MechanicImplementationLike
 export type MechanicImplementationMetadata = Mechanic.MechanicImplementationMetadata
@@ -17,6 +17,8 @@ export type Level = Level.Level
 
 export type LevelState<T> = LevelState.LevelState<T>
 export type Attribute<T> = Attribute.Attribute<T>
+
+export type Life = Life.Life
 
 --[=[
 	@class std

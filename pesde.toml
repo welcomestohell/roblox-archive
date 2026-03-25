@@ -1,8 +1,8 @@
-name = "wthrblx/game"
+name = "team-fireworks/wth-kit"
 version = "0.1.0"
 description = "Source code for Welcome To Hell"
 authors = ["Team Fireworks"]
-repository = "https://github.com/wthrblx/game"
+repository = "https://github.com/team-fireworks/wth-kit"
 private = true
 
 [target]

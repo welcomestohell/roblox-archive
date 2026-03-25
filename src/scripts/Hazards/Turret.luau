@@ -95,16 +95,15 @@ function Turret.fireBullet(turret: TurretMechanic, bulletTemplate: Part)
 	end
 
 	if turret.FireSound.Play(turret) then
-		sounds.playInstance(turret.FireSound, turret.instance, turret.instanceConfiguration, sounds.sfx.tick)
+		sounds.playInstance(turret.FireSound, instance, turret.instanceConfiguration, sounds.sfx.tick)
 	end
 
-	for _, descendant in turret.instance:GetDescendants() do
+	for _, descendant in instance:GetDescendants() do
 		if descendant:HasTag("TurretFireParticle") and descendant:IsA("ParticleEmitter") then
 			descendant:Emit(descendant.Rate)
 		end
 	end
 
-	-- v ?????? fym scope
 	local bulletLife = turret.life:extend()
 	local bulletInstance = bulletLife:add(bulletTemplate:Clone())
 
@@ -164,19 +163,19 @@ function Turret.onStart(self: typeof(Turret), turret: TurretMechanic, level: std
 	local primaryPart = instance.PrimaryPart
 
 	if not primaryPart then
-		turret.log:error("Turret", turret.instance:GetFullName(), "is missing the PrimaryPart.")
+		turret.log:error("Turret", instance:GetFullName(), "is missing the PrimaryPart.")
 
 		return
 	end
 
 	local bulletTemplate = instance.Bullet
+
 	bulletTemplate.Parent = nil
 
 	turret.life:spawn(function()
 		while turret.life.destroyed == false do
 			local firerate = turret:Firerate()
-			-- local enabled = turret:Enabled()
-			local enabled = true
+			local enabled = turret:Enabled()
 
 			task.wait(1 / firerate)
 
