@@ -82,6 +82,8 @@ function Vine.onActivate(self: typeof(Vine), vine: VineMechanic, level: std.Leve
 	local handle = attachmentTrove:add(vine:useTemplateHandle():Clone())
 	local attachment0, attachment1 = constraints.populateAttachments(attachmentTrove, constraint)
 	attachment0.Parent, attachment1.Parent = vine.instance.Top, handle
+
+	
 end
 
 return Vine

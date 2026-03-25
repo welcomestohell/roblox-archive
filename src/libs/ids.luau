@@ -2,7 +2,7 @@ local LevelState = require("./LevelState")
 local Mechanic = require("./Mechanic")
 local gt = require("./gt")
 local std = require("./std")
-local tables = require("./tables")
+local tables = require("./collections/tables")
 
 export type MechanicsById<Mechanic> = { [string]: { Mechanic } }
 
@@ -13,7 +13,7 @@ end
 -- LUAU: needs generic bounds
 local function trackMechanic<T>(level: std.Level, mechanic: T, mechanicsByIdState: LevelState.LevelState<MechanicsById<T>>)
 	local oldId: string? = nil
-	local mechanicsById = mechanicsByIdState:getOrSet(level, {} :: MechanicsById<T>);
+	local mechanicsById = mechanicsByIdState:get(level);
 
 	(mechanic :: any).Id:onBind(mechanic, function(newId: string?)
 		if oldId then

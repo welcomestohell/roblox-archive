@@ -1,6 +1,4 @@
-local activation = require("@libs/activation")
 local std = require("@libs/std")
-local tweens = require("@libs/tweens")
 
 local Anchor = std.Mechanic({})
 export type AnchorMechanic = std.Mechanic<typeof(Anchor)>
@@ -11,13 +9,13 @@ Anchor.debuggerEmoji = "🔱"
 Anchor.JumpOnDismount = Anchor:attribute("JumpOnDismount", std.gt.boolean(), true)
 
 Anchor:attributeSection("Activation")
-Anchor.Activation = activation.useAttributes(Anchor)
+Anchor.Activation = std.useActivation(Anchor)
 
 Anchor:attributeSection("Deactivation")
-Anchor.Deactivation = activation.useAttributes(Anchor)
+Anchor.Deactivation = std.useActivation(Anchor, "Deactivation")
 
 Anchor:attributeSection("Transition")
-Anchor.Transition = tweens.useAttributes(Anchor)
+Anchor.Transition = std.useTween(Anchor)
 
 function Anchor.onActivate(self: typeof(Anchor), mechanic: AnchorMechanic, level: std.Level) end
 

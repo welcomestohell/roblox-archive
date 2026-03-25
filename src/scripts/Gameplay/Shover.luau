@@ -15,7 +15,7 @@ type ShoverDirectionAttributes = {
 	power: std.Attribute<number>,
 }
 
-Shover.threads = std.LevelState({} :: any)
+Shover.threads = std.LevelState({} :: { [ShoverMechanic]: thread })
 Shover.directions = {} :: { [ShoverDirection]: ShoverDirectionAttributes }
 
 Shover:attributeSection("In")
@@ -45,7 +45,7 @@ function Shover.shove(shover: ShoverMechanic, direction: ShoverDirection)
 end
 
 function Shover:onPreSimulation(_, level: std.Level)
-	local threads = Shover.threads:getOrSet(level, {})
+	local threads = Shover.threads:get(level)
 	for _, shover: ShoverMechanic in level:getMechanics(Shover) do
 		if not threads[shover] then
 			threads[shover] = level.life:add(threadpool.spawn(function(shover: ShoverMechanic)

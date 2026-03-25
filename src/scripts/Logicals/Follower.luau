@@ -4,7 +4,7 @@ local Workspace = game:GetService("Workspace")
 local character = require("@libs/character")
 local functions = require("@libs/functions")
 local std = require("@libs/std")
-local tables = require("@libs/tables")
+local tables = require("@libs/collections/tables")
 
 local mouse = Players.LocalPlayer:GetMouse()
 

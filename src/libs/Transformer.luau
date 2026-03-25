@@ -7,8 +7,8 @@ local character = require("./character")
 local functions = require("./functions")
 local properties = require("./properties")
 local roblox = require("@shared/generated/types/roblox")
-local tables = require("./tables")
-local tweens = require("./tweens")
+local tables = require("@libs/collections/tables")
+local tweens = require("@libs/tweens")
 
 export type EvaluationContext = {
 	level: Level.Level,
@@ -24,6 +24,7 @@ export type Transformation = StaticValue | Evaluation
 
 -- molly im really sorry for this shit ass code im better than this
 local function createHierachyMethod(method)
+	-- 𒅒𒈔𒅒𒇫𒄆̼͙̈́͆̈́ͯ̒̆̀̓ͧ͠𒀱҈  ҉ ҈  ҉ ҈  ҉FUCK THIS SHIT
 	return function<I>(self: Transformer<I>, ...): Transformer<Instance>
 		self = self:clone()
 

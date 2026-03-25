@@ -4,6 +4,8 @@ local Life = require("@libs/memory/Life")
 local Signal = require("@pkgs/Signal")
 local activation = require("@libs/activation")
 local emission = require("@libs/emission")
+local marrays = require("@libs/collections/marrays")
+local msets = require("@libs/collections/msets")
 local properties = require("@libs/properties")
 local sounds = require("@libs/sounds")
 local std = require("@libs/std")
@@ -107,7 +109,6 @@ function Button.toggleId(self: typeof(Button), level: std.Level, id: string)
 end
 
 function Button.onActivate(self: typeof(Button), button: ButtonMechanic, level: std.Level)
-	button.log:debug("activating")
 	if not button:Enabled() or button:Active() then
 		return
 	end
@@ -117,22 +118,16 @@ function Button.onActivate(self: typeof(Button), button: ButtonMechanic, level: 
 		return
 	end
 
-	button.log:debug("we active")
-	local enabledButtonsById = self.enabledButtonsById:getOrSet(level, {})
-	local enabledButtonsForId = enabledButtonsById[id]
-	if not enabledButtonsForId then
-		enabledButtonsForId = {}
-		enabledButtonsById[id] = enabledButtonsForId
-	end
+	local enabledButtonsById = msets.get(self.enabledButtonsById:get(level), id)
 
 	self.Activation.Enabled(button, false)
 	button:Active(true)
-	enabledButtonsForId[button] = true
+	enabledButtonsById[button] = true
 
 	local deactivationLife = button.life:extend()
 	deactivationLife:add(function()
 		button:Active(false)
-		enabledButtonsForId[button] = nil
+		enabledButtonsById[button] = nil
 		emission.emitTaggedDescendants(button.instance, button:DeactivatedEmissionTag())
 		task.delay(button:Cooldown(), Attribute.set :: any, self.Activation.Enabled, button, true)
 	end)

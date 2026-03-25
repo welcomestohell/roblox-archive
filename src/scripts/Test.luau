@@ -1,6 +1,6 @@
 local functions = require("@libs/functions")
 local std = require("@libs/std")
-local tables = require("@libs/tables")
+local tables = require("@libs/collections/tables")
 
 --[=[
     @class Test

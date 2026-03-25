@@ -1,5 +1,5 @@
 local Level = require("./Level")
-local tables = require("@libs/tables")
+local tables = require("@libs/collections/tables")
 
 local LevelState = {}
 LevelState.__index = LevelState
@@ -31,27 +31,15 @@ function LevelState.new<T>(default: T): LevelState<T>
 end
 
 function LevelState.get<T>(self: LevelState<T>, level: Level.Level): T
-	return self._values[level]
-end
-
-function LevelState.getOrDefault<T>(self: LevelState<T>, level: Level.Level): T
 	local value = self._values[level]
 	if value == nil then
+		self._values[level] = self._default
 		return self._default
 	end
 	return value
 end
 
-function LevelState.getOrSet<T>(self: LevelState<T>, level: Level.Level, fallback: unknown): T
-	local value = self._values[level]
-	if value == nil then
-		self._values[level] = fallback
-		return fallback
-	end
-	return value
-end
-
-function LevelState.getOrInitialize<T>(self: LevelState<T>, level: Level.Level, initialize: (level: Level.Level) -> T): T
+function LevelState.getOrElse<T>(self: LevelState<T>, level: Level.Level, initialize: (level: Level.Level) -> T): T
 	local value = self._values[level]
 	if value == nil then
 		value = initialize(level)

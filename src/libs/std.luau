@@ -3,7 +3,10 @@ local Level = require("./Level")
 local LevelState = require("./LevelState")
 local Life = require("@libs/memory/Life")
 local Mechanic = require("./Mechanic")
+local activation = require("./activation")
 local gt = require("./gt")
+local sounds = require("./sounds")
+local tweens = require("./tweens")
 
 export type Mechanic<Self = any> = Mechanic.Mechanic<Self>
 export type MechanicImplementation = Mechanic.MechanicImplementation
@@ -32,6 +35,10 @@ return table.freeze {
 	Attribute = Attribute.new,
 	Life = Life.new,
 	LevelState = LevelState.new,
+
+	useActivation = activation.useAttributes,
+	useSound = sounds.useAttributes,
+	useTween = tweens.useAttributes,
 
 	gt = gt,
 	isA = gt.isA,
