@@ -7,6 +7,14 @@ local damage = require("@libs/damage")
 local gt = require("@pkgs/gt")
 local sounds = require("@libs/sounds")
 
+--[=[
+	@class Turret
+	@tag Mechanic
+
+	Turret makes the instance shoot bullets based on its current orientation.
+	
+	It can also, optionally, make a noise when shooting.
+]=]
 local Turret = std.Mechanic({})
 export type TurretMechanic = std.Mechanic<typeof(Turret)>
 

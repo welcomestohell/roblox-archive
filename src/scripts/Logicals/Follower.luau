@@ -8,6 +8,14 @@ local tables = require("@libs/collections/tables")
 
 local mouse = Players.LocalPlayer:GetMouse()
 
+--[=[
+	@class Follower
+	@tag Mechanic
+
+	Follower makes the instance follow the player's character/camera/mouse/pointer.
+
+	The instance can follow by looking towards the target, or taking the rotation/position/pivot of the target.
+]=]
 local Follower = std.Mechanic({})
 export type FollowerMechanic = std.Mechanic<typeof(Follower)>
 

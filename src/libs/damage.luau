@@ -6,11 +6,13 @@ local gt = require("@libs/gt")
 local attribute = require("@libs/Attribute")
 local character = require("@libs/character")
 
-function useAttributes(mechanic: Mechanic.MechanicImplementationLike): attribute.Attribute<number>
+local damage = {}
+
+function damage.useAttributes(mechanic: Mechanic.MechanicImplementationLike): attribute.Attribute<number>
 	return mechanic:attribute("Damage", gt.number(), 20)
 end
 
-function damagePlayer(player: Player, damage: number): boolean
+function damage.damagePlayer(player: Player, damage: number): boolean
 	if not player or not damage then
 		return false
 	end
@@ -38,7 +40,4 @@ function damagePlayer(player: Player, damage: number): boolean
 	return true
 end
 
-return table.freeze({
-	useAttributes = useAttributes,
-	damagePlayer = damagePlayer,
-})
+return table.freeze(damage)

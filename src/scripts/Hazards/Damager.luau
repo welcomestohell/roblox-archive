@@ -3,6 +3,12 @@ local std = require("@libs/std")
 local character = require("@libs/character")
 local damage = require("@libs/damage")
 
+--[=[
+	@class Damager
+	@tag Mechanic
+
+	Damager makes the instance hurt the player when touched by any limb.
+]=]
 local Damager = std.Mechanic({})
 export type DamagerMechanic = std.Mechanic<typeof(Damager)>
 
