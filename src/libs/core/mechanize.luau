@@ -7,6 +7,18 @@ local MechanicImplementation = require("@libs/core/MechanicImplementation")
 local Result = require("@libs/Result")
 local gt = require("@libs/gt")
 
+--[=[
+	@function mechanize
+	@tag Library
+	@since 0.1.0
+
+	Constructs a new Mechanic of an Instance from a MechanicImplementation.
+
+	@param implementation Self -- The MechanicImplementation to use.
+	@param outerLife Life.Life -- The outermost Life to be extended for the Mechanic.
+	@param instance Instance -- The Instance to create a Mechanic for.
+	@return Result<Mechanic<Self>, string> -- A Result with the created Mechanic if successful, or otherwise an error message.
+]=]
 local function mechanize<Self>(
 	implementation: Self,
 	outerLife: Life.Life,

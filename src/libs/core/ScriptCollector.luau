@@ -6,6 +6,7 @@ local log = Log.new("ScriptCollector")
 
 --[=[
     @class ScriptCollector
+    @since 0.1.0
     @tag Class
     @tag Library
 
@@ -152,7 +153,7 @@ ScriptCollector.collectInstanceAsync =
     @param instances { Instance } -- Instances to collect.
     @return Promise -- A Promise which resolves when all instances has been processed.
 ]=]
-function ScriptCollector.collectInstancesAsync(self: ScriptCollector, instances: { Instance })
+function ScriptCollector.collectInstancesAsync(self: ScriptCollector, instances: { Instance }): Promise.Promise
 	local promises: { Promise.Promise } = {}
 	for index, instance in instances do
 		promises[index] = self:collectInstanceAsync(instance)
