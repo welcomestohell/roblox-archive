@@ -1,5 +1,5 @@
 local Iris = require("@pkgs/Iris")
-local tables = require("./tables")
+local tables = require("@libs/collections/tables")
 
 type Cleanup = () -> ()
 

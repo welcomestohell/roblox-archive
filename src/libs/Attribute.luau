@@ -1,6 +1,6 @@
 local Log = require("./Log")
 local gt = require("@pkgs/gt")
-local tables = require(script.Parent.tables)
+local tables = require("@libs/collections/tables")
 local threadpool = require("@libs/threadpool")
 
 export type AttributeValue =

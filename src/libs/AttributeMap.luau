@@ -1,5 +1,5 @@
-local gt = require("./gt")
-local tables = require("./tables")
+local gt = require("@libs/gt")
+local tables = require("@libs/collections/tables")
 
 local AttributeMap = {}
 AttributeMap.__index = AttributeMap

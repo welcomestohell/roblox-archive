@@ -108,4 +108,4 @@ function MechanicImplementation.__tostring(self: AnyMechanicImplementation)
 	return self.instanceTag
 end
 
-return MechanicImplementation
+return table.freeze(MechanicImplementation)
