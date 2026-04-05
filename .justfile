@@ -13,6 +13,9 @@ push branch="main":
     just push-game {{ branch }}
     just push-kit {{ branch }}
 
+pull-kit branch="main":
+    git subtree pull --prefix=kit origin {{ branch }} --squash
+
 serve-kit:
     cd kit
     just serve-kit
