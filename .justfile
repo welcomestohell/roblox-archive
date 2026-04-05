@@ -1,7 +1,10 @@
-set allow-duplicate-recipes := true
-
 default:
-    @just --list
+    just --list
+
+setup:
+    -git remote add kit https://github.com/team-fireworks/wth-kit.git
+    rokit install
+    rojo plugin install
 
 push-kit branch="main":
     git subtree push --prefix=kit kit {{ branch }}
@@ -14,7 +17,7 @@ push branch="main":
     just push-kit {{ branch }}
 
 pull-kit branch="main":
-    git subtree pull --prefix=kit origin {{ branch }} --squash
+    git subtree pull --prefix=kit kit {{ branch }}
 
 serve-kit:
     cd kit
