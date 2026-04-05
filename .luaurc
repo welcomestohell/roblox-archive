@@ -5,11 +5,10 @@
 		"LocalShadow": false
 	},
 	"aliases": {
-		"client": "src/client",
-		"server": "src/server",
-		"shared": "src/shared",
-		"ui": "src/ui",
-		"libs": "src/libs",
+		"core": "kit/src/core",
+		"kit": "kit/src/kit",
+		"libs": "kit/src/libs",
+		"src": "src",
 		"pkgs": "roblox_packages"
 	}
 }
