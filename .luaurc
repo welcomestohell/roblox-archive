@@ -1,0 +1,13 @@
+{
+	"languageMode": "strict",
+	"lint": {
+		"*": true,
+		"LocalShadow": false
+	},
+	"aliases": {
+		"core": "src/core",
+		"kit": "src/kit",
+		"libs": "libs",
+		"pkgs": "roblox_packages"
+	}
+}
