@@ -18,12 +18,12 @@ push branch="main":
 
 pull-kit branch="main":
     if [ ! -d kit ]; then \
-		echo "initializing kit subtree"; \
-		git subtree add --prefix=kit kit {{ branch }} --squash; \
-	else \
-		echo "pulling kit subtree"; \
-		git subtree pull --prefix=kit kit {{ branch }} --squash; \
-	fi
+        echo "initializing kit subtree"; \
+        git subtree add --prefix=kit kit {{ branch }} --squash; \
+    else \
+        echo "pulling kit subtree"; \
+        git subtree pull --prefix=kit kit {{ branch }} --squash; \
+    fi
 
 serve-kit:
     cd kit
