@@ -24,6 +24,7 @@ pull-kit branch="main":
         echo "pulling kit subtree"; \
         git subtree pull --prefix=kit kit {{ branch }} --squash; \
     fi
+    echo "HITLER DEAD?"
 
 serve-kit:
     cd kit
