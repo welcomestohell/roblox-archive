@@ -16,15 +16,14 @@ push branch="main":
     just push-game {{ branch }}
     just push-kit {{ branch }}
 
-reinitialize-kit branch="main":
-    echo "FUCK github oml"
-    git fetch kit {{ branch }} && \
-    rm -rf kit && \
-    git subtree add --prefix=kit kit {{ branch }} --squash
-
 pull-kit branch="main":
-    git diff --quiet || (echo "worktree is dirty"; exit 1)
-    git subtree pull --prefix=kit kit {{ branch }} --squash || just reinitialize-kit {{ branch }}
+    if [ ! -d kit ]; then \
+		echo "initializing kit subtree"; \
+		git subtree add --prefix=kit kit {{ branch }} --squash; \
+	else \
+		echo "pulling kit subtree"; \
+		git subtree pull --prefix=kit kit {{ branch }} --squash; \
+	fi
 
 serve-kit:
     cd kit
