@@ -1,14 +1,32 @@
 {
-	"name": "Welcome To Hell Kit",
+	"name": "Welcome To Hell",
 	"emitLegacyScripts": false,
 	"tree": {
 		"$className": "DataModel",
 		"ReplicatedStorage": {
-			"Internal": {
+			"Core": {
 				"$className": "Folder",
-				"Client": { "$path": "out/client" },
-				"Shared": { "$path": "out/shared" },
-				"UI": { "$path": "out/ui" }
+				"Client": {
+					"$path": "out/core/client"
+				},
+				"Shared": {
+					"$path": "out/core/shared"
+				},
+				"UI": {
+					"$path": "out/core/ui"
+				}
+			},
+			"Game": {
+				"$className": "Folder",
+				"Client": {
+					"$path": "out/game/client"
+				},
+				"Shared": {
+					"$path": "out/game/shared"
+				},
+				"UI": {
+					"$path": "out/game/ui"
+				}
 			},
 			"Libs": {
 				"$path": "out/libs"
@@ -20,16 +38,28 @@
 				}
 			},
 			"Packages": {
-				"$path": { "optional": "roblox_packages" }
+				"$path": {
+					"optional": "roblox_packages"
+				}
 			}
 		},
 		"ServerScriptService": {
-			"Internal": {
+			"Core": {
 				"$className": "Folder",
-				"Server": { "$path": "out/server" }
+				"Server": {
+					"$path": "out/core/server"
+				}
+			},
+			"Game": {
+				"$className": "Folder",
+				"Server": {
+					"$path": "out/game/server"
+				}
 			},
 			"Packages": {
-				"$path": { "optional": "roblox_server_packages" }
+				"$path": {
+					"optional": "roblox_server_packages"
+				}
 			}
 		}
 	}
