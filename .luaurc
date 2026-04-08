@@ -9,6 +9,12 @@
 		"kit": "kit/src/kit",
 		"libs": "kit/src/libs",
 		"src": "src",
-		"pkgs": "roblox_packages"
+		"pkgs": "roblox_packages",
+		"std": "~/.lute/typedefs/0.1.0/std",
+		"lute": "~/.lute/typedefs/0.1.0/lute",
+		"lint": "~/.lute/typedefs/0.1.0/lint",
+		"batteries": ".lute/batteries",
+		"config": ".config",
+		"scripts": ".lute"
 	}
 }
