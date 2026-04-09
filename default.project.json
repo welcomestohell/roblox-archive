@@ -16,16 +16,16 @@
 					"$path": "out/core/ui"
 				}
 			},
-			"Game": {
+			"Flagship": {
 				"$className": "Folder",
 				"Client": {
-					"$path": "out/game/client"
+					"$path": "out/flagship/client"
 				},
 				"Shared": {
-					"$path": "out/game/shared"
+					"$path": "out/flagship/shared"
 				},
 				"UI": {
-					"$path": "out/game/ui"
+					"$path": "out/flagship/ui"
 				}
 			},
 			"Libs": {
@@ -50,10 +50,10 @@
 					"$path": "out/core/server"
 				}
 			},
-			"Game": {
+			"Flagship": {
 				"$className": "Folder",
 				"Server": {
-					"$path": "out/game/server"
+					"$path": "out/flagship/server"
 				}
 			},
 			"Packages": {
