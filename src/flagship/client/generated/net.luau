@@ -7,15 +7,15 @@
 -- This file is not meant to be edited
 
 _G._BLINK = _G._BLINK or {}
-if _G._BLINK["WELCOME_TO_HELL_CORE"] then
-	error("[Blink]: An instance of blink is already running with the remote scope \"WELCOME_TO_HELL_CORE\". Change the remote scope of either instance to avoid conflicts.")
+if _G._BLINK["WELCOME_TO_HELL_FLAGSHIP"] then
+	error("[Blink]: An instance of blink is already running with the remote scope \"WELCOME_TO_HELL_FLAGSHIP\". Change the remote scope of either instance to avoid conflicts.")
 end
-_G._BLINK["WELCOME_TO_HELL_CORE"] = true
+_G._BLINK["WELCOME_TO_HELL_FLAGSHIP"] = true
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 local Promise = require(ReplicatedStorage.Packages.Promise)
-local BASE_EVENT_NAME = "WELCOME_TO_HELL_CORE_BLINK"
+local BASE_EVENT_NAME = "WELCOME_TO_HELL_FLAGSHIP_BLINK"
 local Invocations = 0
 
 local SendSize = 64
@@ -158,19 +158,9 @@ local Queue: any = {
 
 local SerdesEvent = "?"
 local SerdesThread: thread?
-local function WriteEVENT_damage(Value: number): ()
-	-- Allocate BLOCK: 2 bytes
-	local BLOCK_START = Allocate(2)
-	buffer.writeu8(SendBuffer, BLOCK_START + 0, 0)
-	buffer.writeu8(SendBuffer, BLOCK_START + 1, Value)
-end
-
 if not RunService:IsRunning() then
 	local NOOP = function() end
 	local Returns = table.freeze({
-	damage = {
-		fire = NOOP
-	},
 	})
 	return Returns :: BLINK_EVENTS_SYMBOL
 end
@@ -237,11 +227,6 @@ end)
 local Returns = table.freeze({
 	stepReplication = StepReplication,
 
-	damage = {
-		fire = function(Value: number): ()
-			WriteEVENT_damage(Value)
-		end
-	},
 })
 type BLINK_EVENTS_SYMBOL = typeof(Returns)
 return Returns :: BLINK_EVENTS_SYMBOL

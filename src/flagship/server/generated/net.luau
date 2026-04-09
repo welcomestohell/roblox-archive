@@ -7,15 +7,16 @@
 -- This file is not meant to be edited
 
 _G._BLINK = _G._BLINK or {}
-if _G._BLINK["WELCOME_TO_HELL_CORE"] then
-	error("[Blink]: An instance of blink is already running with the remote scope \"WELCOME_TO_HELL_CORE\". Change the remote scope of either instance to avoid conflicts.")
+if _G._BLINK["WELCOME_TO_HELL_FLAGSHIP"] then
+	error("[Blink]: An instance of blink is already running with the remote scope \"WELCOME_TO_HELL_FLAGSHIP\". Change the remote scope of either instance to avoid conflicts.")
 end
-_G._BLINK["WELCOME_TO_HELL_CORE"] = true
+_G._BLINK["WELCOME_TO_HELL_FLAGSHIP"] = true
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 local Promise = require(ReplicatedStorage.Packages.Promise)
-local BASE_EVENT_NAME = "WELCOME_TO_HELL_CORE_BLINK"
+local BASE_EVENT_NAME = "WELCOME_TO_HELL_FLAGSHIP_BLINK"
 local Invocations = 0
 
 local SendSize = 64
@@ -158,47 +159,57 @@ local Queue: any = {
 
 local SerdesEvent = "?"
 local SerdesThread: thread?
-local function WriteEVENT_damage(Value: number): ()
-	-- Allocate BLOCK: 2 bytes
-	local BLOCK_START = Allocate(2)
-	buffer.writeu8(SendBuffer, BLOCK_START + 0, 0)
-	buffer.writeu8(SendBuffer, BLOCK_START + 1, Value)
-end
-
 if not RunService:IsRunning() then
 	local NOOP = function() end
 	local Returns = table.freeze({
-	damage = {
-		fire = NOOP
-	},
 	})
 	return Returns :: BLINK_EVENTS_SYMBOL
 end
 
-if not RunService:IsClient() then
-    error("Client network module can only be required from the client.")
+if not RunService:IsServer() then
+    error("Server network module can only be required from the server.")
 end
 
-local Reliable: RemoteEvent = ReplicatedStorage:WaitForChild(BASE_EVENT_NAME .. "_RELIABLE_REMOTE") :: RemoteEvent
-local Unreliable: UnreliableRemoteEvent = ReplicatedStorage:WaitForChild(BASE_EVENT_NAME .. "_UNRELIABLE_REMOTE") :: UnreliableRemoteEvent
+local Reliable: RemoteEvent = ReplicatedStorage:FindFirstChild(BASE_EVENT_NAME .. "_RELIABLE_REMOTE") :: RemoteEvent
+if not Reliable then
+    local RemoteEvent = Instance.new("RemoteEvent")
+    RemoteEvent.Name = BASE_EVENT_NAME .. "_RELIABLE_REMOTE"
+    RemoteEvent.Parent = ReplicatedStorage
+    Reliable = RemoteEvent
+end
+
+local Unreliable: UnreliableRemoteEvent = ReplicatedStorage:FindFirstChild(BASE_EVENT_NAME .. "_UNRELIABLE_REMOTE") :: UnreliableRemoteEvent
+if not Unreliable then
+    local UnreliableRemoteEvent = Instance.new("UnreliableRemoteEvent")
+    UnreliableRemoteEvent.Name = BASE_EVENT_NAME .. "_UNRELIABLE_REMOTE"
+    UnreliableRemoteEvent.Parent = ReplicatedStorage
+    Unreliable = UnreliableRemoteEvent
+end
+
+local PlayersMap: {[Player]: BufferSave} = {}
+
+Players.PlayerRemoving:Connect(function(Player)
+    PlayersMap[Player] = nil
+end)
 
 local function StepReplication()
-    if SendCursor <= 0 then
-        return
+    for Player, Send in PlayersMap do
+        if Send.Cursor <= 0 then
+            continue
+        end
+
+        local Buffer = buffer.create(Send.Cursor)
+        buffer.copy(Buffer, 0, Send.Buffer, 0, Send.Cursor)
+        Reliable:FireClient(Player, Buffer, Send.Instances)
+
+        Send.Size = 64
+        Send.Cursor = 0
+        Send.Buffer = buffer.create(64)
+        table.clear(Send.Instances)
     end
-
-    local Buffer = buffer.create(SendCursor)
-    buffer.copy(Buffer, 0, SendBuffer, 0, SendCursor)
-    Reliable:FireServer(Buffer, SendInstances)
-
-    SendSize = 64
-    SendCursor = 0
-    SendOffset = 0
-    SendBuffer = buffer.create(64)
-    table.clear(SendInstances)
 end
 RunService.Heartbeat:Connect(StepReplication)
-Reliable.OnClientEvent:Connect(function(Buffer: buffer, Instances: {Instance})
+Reliable.OnServerEvent:Connect(function(Player: Player, Buffer: buffer, Instances: {Instance})
 	RecieveCursor = 0
 	RecieveBuffer = Buffer
 	RecieveInstances = Instances
@@ -215,7 +226,7 @@ Reliable.OnClientEvent:Connect(function(Buffer: buffer, Instances: {Instance})
 		local Index = buffer.readu8(RecieveBuffer, BLOCK_START + 0)
 	end
 end)
-Unreliable.OnClientEvent:Connect(function(Buffer: buffer, Instances: {Instance})
+Unreliable.OnServerEvent:Connect(function(Player: Player, Buffer: buffer, Instances: {Instance})
 	RecieveCursor = 0
 	RecieveBuffer = Buffer
 	RecieveInstances = Instances
@@ -237,11 +248,6 @@ end)
 local Returns = table.freeze({
 	stepReplication = StepReplication,
 
-	damage = {
-		fire = function(Value: number): ()
-			WriteEVENT_damage(Value)
-		end
-	},
 })
 type BLINK_EVENTS_SYMBOL = typeof(Returns)
 return Returns :: BLINK_EVENTS_SYMBOL

@@ -34,7 +34,10 @@
 			"Scripts": {
 				"$className": "Folder",
 				"Core": {
-					"$path": "out/scripts"
+					"$path": "out/core/scripts"
+				},
+				"Flagship": {
+					"$path": "out/flagship/scripts"
 				}
 			},
 			"Packages": {

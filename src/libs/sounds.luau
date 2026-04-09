@@ -4,7 +4,7 @@ local SoundService = game:GetService("SoundService")
 
 local Attribute = require("./Attribute")
 local Mechanic = require("./Mechanic")
-local audios = require("@kit/shared/generated/audios")
+local audios = require("@core/shared/generated/audios")
 local gt = require("./gt")
 
 export type SoundConfiguration = {

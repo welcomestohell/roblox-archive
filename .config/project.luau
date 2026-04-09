@@ -4,7 +4,7 @@ return {
 
 	blinkFiles = {
 		"src/core/.blink",
-		"src/kit/.blink",
+		"src/flagship/.blink",
 	},
 
 	rojoProjects = {

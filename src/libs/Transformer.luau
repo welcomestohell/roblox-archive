@@ -6,7 +6,7 @@ local activation = require("./activation")
 local character = require("./character")
 local functions = require("./functions")
 local properties = require("./properties")
-local roblox = require("@kit/shared/generated/types/roblox")
+local roblox = require("@core/shared/generated/types/roblox")
 local tables = require("@libs/collections/tables")
 local tweens = require("@libs/tweens")
 

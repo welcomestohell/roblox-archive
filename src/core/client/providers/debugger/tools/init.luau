@@ -1,4 +1,4 @@
-local types = require("@kit/client/providers/debugger/types")
+local types = require("@core/client/providers/debugger/types")
 
 return table.freeze {
 	require("@self/Levels"),
