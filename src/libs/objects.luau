@@ -79,7 +79,7 @@ local function update<T, K>(object: T & {}, key: K & keyof<T>, fn: (NonNilable<i
 end
 
 local function join<T>(object: T & {}, source: Partial<T>?): T
-	if not source then
+	if source == nil then
 		return object
 	end
 	local result = object
