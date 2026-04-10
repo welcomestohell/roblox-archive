@@ -4,3 +4,10 @@ option ServerOutput = "./server/generated/net.luau"
 option ClientOutput = "./client/generated/net.luau"
 option PromiseLibrary = "ReplicatedStorage.Packages.Promise"
 option RemoteScope = "WELCOME_TO_HELL_FLAGSHIP"
+
+event patch {
+    from: Server,
+    type: Reliable,
+    call: SingleSync,
+    data: unknown,
+}

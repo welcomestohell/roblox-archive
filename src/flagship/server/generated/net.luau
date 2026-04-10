@@ -159,9 +159,22 @@ local Queue: any = {
 
 local SerdesEvent = "?"
 local SerdesThread: thread?
+local function WriteEVENT_patch(Value: any): ()
+	-- Allocate BLOCK: 1 bytes
+	local BLOCK_START = Allocate(1)
+	buffer.writeu8(SendBuffer, BLOCK_START + 0, 0)
+	table.insert(SendInstances, if Value == nil then Null else Value)
+end
+
 if not RunService:IsRunning() then
 	local NOOP = function() end
 	local Returns = table.freeze({
+	patch = {
+		fire = NOOP,
+		fireAll = NOOP,
+		fireList = NOOP,
+		fireExcept = NOOP
+	},
 	})
 	return Returns :: BLINK_EVENTS_SYMBOL
 end
@@ -248,6 +261,52 @@ end)
 local Returns = table.freeze({
 	stepReplication = StepReplication,
 
+	patch = {
+		fire = function(Player: Player, Value: any): ()
+			Load(PlayersMap[Player])
+			WriteEVENT_patch(Value)
+			PlayersMap[Player] = Save()
+		end,
+		fireAll = function(Value: any): ()
+			Load()
+			WriteEVENT_patch(Value)
+			local Buffer, Size, Instances = SendBuffer, SendCursor, SendInstances
+			for _, Player in Players:GetPlayers() do
+				Load(PlayersMap[Player])
+				local Position = Allocate(Size)
+				buffer.copy(SendBuffer, Position, Buffer, 0, Size)
+				table.move(Instances, 1, #Instances, #SendInstances + 1, SendInstances)
+				PlayersMap[Player] = Save()
+			end
+		end,
+		fireList = function(List: {Player}, Value: any): ()
+			Load()
+			WriteEVENT_patch(Value)
+			local Buffer, Size, Instances = SendBuffer, SendCursor, SendInstances
+			for _, Player in List do
+				Load(PlayersMap[Player])
+				local Position = Allocate(Size)
+				buffer.copy(SendBuffer, Position, Buffer, 0, Size)
+				table.move(Instances, 1, #Instances, #SendInstances + 1, SendInstances)
+				PlayersMap[Player] = Save()
+			end
+		end,
+		fireExcept = function(Except: Player, Value: any): ()
+			Load()
+			WriteEVENT_patch(Value)
+			local Buffer, Size, Instances = SendBuffer, SendCursor, SendInstances
+			for _, Player in Players:GetPlayers() do
+				if Player == Except then
+					continue
+				end
+				Load(PlayersMap[Player])
+				local Position = Allocate(Size)
+				buffer.copy(SendBuffer, Position, Buffer, 0, Size)
+				table.move(Instances, 1, #Instances, #SendInstances + 1, SendInstances)
+				PlayersMap[Player] = Save()
+			end
+		end,
+	},
 })
 type BLINK_EVENTS_SYMBOL = typeof(Returns)
 return Returns :: BLINK_EVENTS_SYMBOL
