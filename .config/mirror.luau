@@ -1,5 +1,5 @@
 return {
-	remote = "https://github.com/team-fireworks/wth.git",
+	remote = "https://github.com/welcomestohell/kit.git",
 	branch = "main",
 
 	directory = "mirror",
