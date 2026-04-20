@@ -40,4 +40,6 @@ end
 
 function LensFlareProvider.onStart(self: LensFlareProvider) end
 
+function LensFlareProvider.onPreRender(self: LensFlareProvider) end
+
 return prvd(LensFlareProvider)
