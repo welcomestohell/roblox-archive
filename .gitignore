@@ -1,23 +1,23 @@
-.pesde
-*.lock
-
-out
-sourcemap.json
-
-roblox_packages
-roblox_server_packages
-luau_packages
-lune_packages
-
-.DS_Store
-Thumbs.db
-
-src/*/generated/**/*.luau
-!src/shared/generated/types/roblox.luau
-inspiration
-molly.md
-
-mirror
+# Wally
 Packages
 DevPackages
 ServerPackages
+
+# Output files
+out
+default.project.json
+sourcemap.project.json
+sourcemap.json
+.darklua.json
+src/.config.luau
+
+# Generated files
+src/*/generated/**/*.luau
+!src/shared/generated/types/roblox.luau
+
+# OS
+.DS_Store
+Thumbs.db
+
+# The Holy Bible
+molly.md
