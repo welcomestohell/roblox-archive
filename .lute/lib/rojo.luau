@@ -2,7 +2,6 @@ local deepClone = require("./deepClone")
 local json = require("@std/json")
 local path = require("@std/path")
 local places = require("./places")
-local pp = require("@batteries/pp")
 local repositoryConfig = require("@lib/utils/repositoryConfig")
 
 export type RojoMappings = { [keyof<typeof(repositoryConfig().wth.rojo.mappings)>]: { RojoMappingSegment } }
