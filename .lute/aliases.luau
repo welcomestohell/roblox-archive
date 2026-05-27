@@ -25,7 +25,7 @@ end
 local luauContents = table.concat({
 	"-- This file is @generated. Do not edit!",
 	"",
-	`return {pp(luauAliases)}`,
+	`return {pp({ luau = { aliases = luauAliases } })}`,
 	"",
 }, "\n")
 
