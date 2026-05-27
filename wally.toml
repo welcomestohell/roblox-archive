@@ -1,7 +1,7 @@
 [package]
 name = "welcomestohell/game"
 description = "Source code for the Roblox tower-obby game Welcome To Hell"
-version = "0.0.0"
+version = "1000.0.0-beta"                                                  # https://antfu.me/posts/epoch-semver
 authors = ["Team Fireworks <contact@teamfireworks.org>"]
 realm = "shared"
 registry = "https://github.com/upliftgames/wally-index"

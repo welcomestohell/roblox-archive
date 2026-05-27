@@ -1,14 +1,14 @@
 local cli = require("@batteries/cli")
-local richterm = require("@batteries/richterm")
-local toml = require("@batteries/toml")
-local run = require("@lib/run")
 local fs = require("@std/fs")
 local path = require("@std/path")
+local process = require("@std/process")
+local repositoryConfig = require("@lib/utils/repositoryConfig")()
+local richterm = require("@batteries/richterm")
+local run = require("@lib/utils/run")
 local stringext = require("@std/stringext")
+local toml = require("@batteries/toml")
 
-export type Wally = {
-	dependencies: { [string]: string? },
-}
+export type Wally = { dependencies: { [string]: string? } }
 
 local args = cli.parser()
 args:add("script", "positional", { help = "This script", required = true })
@@ -16,8 +16,11 @@ args:add("subcommand", "positional", { help = "One of: apply, init, deinit, gene
 args:add("alias", "positional", { help = "Alias of package to path" })
 args:parse({ ... })
 
+local packagesDir = repositoryConfig.wth.dirs.packages
+local patchesDir = repositoryConfig.wth.dirs.patches
+
 local function formatPackageDir(dirName: string)
-	return path.join("Packages", "_Index", dirName)
+	return path.join(packagesDir, "_Index", dirName)
 end
 
 local function collectRejects(dir: path.Pathlike): { path.Pathlike }
@@ -55,17 +58,17 @@ local function applyPatch(
 	elseif conflicts.ok then
 		return "ok", conflicts.stdout, {}
 	else
-		-- both attempts did nothing useful
+		-- assume patch can't be applied
 		return "failed", apply.stderr, {}
 	end
 end
 
 local function applyPatches()
 	local patchFiles: { { path: path.Path, name: string, dirName: string } } = {}
-	for _, file in fs.listDirectory("patches") do
+	for _, file in fs.listDirectory(patchesDir) do
 		local dirName = string.match(file.name, "([%w%-]+_[%w%-]+@%d+%.%d+%.%d+)_?%d*%.patch$")
 		if dirName then
-			table.insert(patchFiles, { path = path.join("patches", file.name), name = file.name, dirName = dirName })
+			table.insert(patchFiles, { path = path.join(patchesDir, file.name), name = file.name, dirName = dirName })
 		end
 	end
 
@@ -105,6 +108,7 @@ local function applyPatches()
 		print("Once done, regenerate individual patches by running:")
 		print()
 		print("  " .. richterm.cyan("lute patch regenerate <alias>"))
+		process.exit(1)
 	else
 		print(richterm.green("Successfully applied all patches!"))
 	end
@@ -175,7 +179,7 @@ do
 	local dirName = `{scope}_{name}@{version}`
 	local dirPath = formatPackageDir(dirName)
 
-	if not fs.exists("Packages") then
+	if not fs.exists(packagesDir) then
 		error("Packages aren't installed! Run `lute install` prior to patching")
 	end
 

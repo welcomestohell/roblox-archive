@@ -2,8 +2,8 @@ local Players = game:GetService("Players")
 
 local Charm = require("@pkgs/Charm")
 local CharmSync = require("@pkgs/CharmSync")
-local accountStore = require("@flagship/server/providers/AccountProvider/accountStore")
-local net = require("@flagship/server/generated/net")
+local accountStore = require("@chapter/server/providers/AccountProvider/accountStore")
+local net = require("@chapter/server/generated/net")
 local prvd = require("@core/shared/prvdmwrong/prvdmwrong")
 
 local SyncProvider = {}

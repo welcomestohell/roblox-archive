@@ -1,7 +1,7 @@
-local richterm = require("@batteries/richterm")
 local io = require("@std/io")
 local path = require("@std/path")
 local process = require("@std/process")
+local richterm = require("@batteries/richterm")
 
 export type Options = {
 	cwd: path.Pathlike?,
@@ -11,7 +11,7 @@ export type Options = {
 	captureOutput: boolean?,
 }
 
-local function run(program: string, args: { string | number | boolean | path.Pathlike }, options: Options?)
+local function run(program: string, args: { any }, options: Options?)
 	options = options or {} :: Options
 
 	local stringifiedArgs = table.create(#args + 1) :: { string }
