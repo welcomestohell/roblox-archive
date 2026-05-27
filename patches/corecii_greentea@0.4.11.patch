@@ -1,7 +1,7 @@
-diff --git a/src/init.luau b/src/init.luau
+diff --git a/greentea/src/init.luau b/greentea/src/init.luau
 index 7f8d1d2..29f6f7e 100644
---- a/src/init.luau
-+++ b/src/init.luau
+--- a/greentea/src/init.luau
++++ b/greentea/src/init.luau
 @@ -101,6 +101,9 @@ export.wrapFn = GreenTea.wrapFn
  export.wrapFnArgs = GreenTea.wrapFnArgs
  export.wrapFnReturns = GreenTea.wrapFnReturns

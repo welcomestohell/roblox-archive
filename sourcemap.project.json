@@ -29,7 +29,7 @@
 				}
 			},
 			"Libs": {
-				"$path": "src/libs"
+				"$path": "./libs"
 			},
 			"Scripts": {
 				"$className": "Folder",
