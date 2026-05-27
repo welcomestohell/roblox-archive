@@ -80,7 +80,7 @@ local function initialize()
 			local sourceMapping = path.join(sourcePath, key)
 			if fs.exists(sourceMapping) then
 				place.mappingSourceDirs[key] = sourceMapping
-				place.mappingOutputDirs[key] = outputPath
+				place.mappingOutputDirs[key] = path.join(outputPath, key)
 			end
 		end
 

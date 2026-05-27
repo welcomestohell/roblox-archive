@@ -11,13 +11,13 @@
                 "Server": {
                     "core": {
                         "$path": {
-                            "optional": "out/core"
+                            "optional": "out/core/server"
                         }
                     }, 
                     "$className": "Folder", 
                     "chapter": {
                         "$path": {
-                            "optional": "out/chapter"
+                            "optional": "out/chapter/server"
                         }
                     }
                 }, 
@@ -39,13 +39,13 @@
                 "UI": {
                     "core": {
                         "$path": {
-                            "optional": "out/core"
+                            "optional": "out/core/ui"
                         }
                     }, 
                     "$className": "Folder", 
                     "chapter": {
                         "$path": {
-                            "optional": "out/chapter"
+                            "optional": "out/chapter/ui"
                         }
                     }
                 }, 
@@ -53,26 +53,26 @@
                 "Shared": {
                     "core": {
                         "$path": {
-                            "optional": "out/core"
+                            "optional": "out/core/shared"
                         }
                     }, 
                     "$className": "Folder", 
                     "chapter": {
                         "$path": {
-                            "optional": "out/chapter"
+                            "optional": "out/chapter/shared"
                         }
                     }
                 }, 
                 "Client": {
                     "core": {
                         "$path": {
-                            "optional": "out/core"
+                            "optional": "out/core/client"
                         }
                     }, 
                     "$className": "Folder", 
                     "chapter": {
                         "$path": {
-                            "optional": "out/chapter"
+                            "optional": "out/chapter/client"
                         }
                     }
                 }
@@ -85,13 +85,13 @@
             "TowerScripts": {
                 "core": {
                     "$path": {
-                        "optional": "out/core"
+                        "optional": "out/core/tower"
                     }
                 }, 
                 "$className": "Folder", 
                 "chapter": {
                     "$path": {
-                        "optional": "out/chapter"
+                        "optional": "out/chapter/tower"
                     }
                 }
             }
