@@ -1,11 +1,11 @@
 -- Based on LensFlare module by gluGPU:
 -- https://devforum.roblox.com/t/lens-flare-system-easily-usable-by-builders-or-scripters/4021857/31
 
-local prvd = require("@core/shared/prvdmwrong/prvdmwrong")
 local Attribute = require("@libs/Attribute")
-local gt = require("@libs/gt")
-local Life = require("@libs/memory/Life")
 local Charm = require("@pkgs/Charm")
+local Life = require("@libs/memory/Life")
+local gt = require("@libs/gt")
+local prvd = require("@core/shared/prvdmwrong/prvdmwrong")
 
 local LensFlareProvider = {
 	LENS_FLARE_TAG = "LensFlare",

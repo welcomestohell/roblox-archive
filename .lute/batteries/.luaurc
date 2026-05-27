@@ -1,3 +1,6 @@
 {
-    "languageMode": "nocheck"
+    "languageMode": "strict",
+    "aliases": {
+        "batteries": "./"
+    }
 }

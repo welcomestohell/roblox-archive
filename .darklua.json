@@ -1,16 +1,23 @@
 {
-	"rules": [
-		{
-			"rule": "convert_require",
-			"current": {
-				"name": "luau",
-				"use_luau_configuration": true
-			},
-			"target": {
-				"name": "roblox",
-				"rojo_sourcemap": "./sourcemap.json",
-				"indexing_style": "wait_for_child"
-			}
-		}
-	]
+    "rules": [
+        {
+            "target": {
+                "rojo_sourcemap": "./sourcemap.json", 
+                "name": "roblox", 
+                "indexing_style": "wait_for_child"
+            }, 
+            "current": {
+                "use_luau_configuration": false, 
+                "name": "luau", 
+                "aliases": {
+                    "@pkgs": "./Packages", 
+                    "@core": "./src/core", 
+                    "@chapter": "./src/chapter", 
+                    "@libs": "./src/libs", 
+                    "@title": "./src/title"
+                }
+            }, 
+            "rule": "convert_require"
+        }
+    ]
 }

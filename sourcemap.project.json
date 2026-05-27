@@ -1,69 +1,102 @@
 {
-	"name": "Welcome To Hell",
-	"emitLegacyScripts": false,
-	"tree": {
-		"$className": "DataModel",
-		"ReplicatedStorage": {
-			"Core": {
-				"$className": "Folder",
-				"Client": {
-					"$path": "src/core/client"
-				},
-				"Shared": {
-					"$path": "src/core/shared"
-				},
-				"UI": {
-					"$path": "src/core/ui"
-				}
-			},
-			"Flagship": {
-				"$className": "Folder",
-				"Client": {
-					"$path": "src/flagship/client"
-				},
-				"Shared": {
-					"$path": "src/flagship/shared"
-				},
-				"UI": {
-					"$path": "src/flagship/ui"
-				}
-			},
-			"Libs": {
-				"$path": "src/libs"
-			},
-			"Scripts": {
-				"$className": "Folder",
-				"Core": {
-					"$path": "src/core/scripts"
-				},
-				"Flagship": {
-					"$path": "src/flagship/scripts"
-				}
-			},
-			"Packages": {
-				"$path": {
-					"optional": "roblox_packages"
-				}
-			}
-		},
-		"ServerScriptService": {
-			"Core": {
-				"$className": "Folder",
-				"Server": {
-					"$path": "src/core/server"
-				}
-			},
-			"Flagship": {
-				"$className": "Folder",
-				"Server": {
-					"$path": "src/flagship/server"
-				}
-			},
-			"Packages": {
-				"$path": {
-					"optional": "roblox_server_packages"
-				}
-			}
-		}
-	}
+    "tree": {
+        "$className": "DataModel", 
+        "ServerScriptService": {
+            "Packages": {
+                "$path": {
+                    "optional": "ServerPackages"
+                }
+            }, 
+            "Internal": {
+                "Server": {
+                    "core": {
+                        "$path": {
+                            "optional": "src/core/server"
+                        }
+                    }, 
+                    "$className": "Folder", 
+                    "chapter": {
+                        "$path": {
+                            "optional": "src/chapter/server"
+                        }
+                    }
+                }, 
+                "$className": "Folder"
+            }
+        }, 
+        "ReplicatedStorage": {
+            "DevPackages": {
+                "$path": {
+                    "optional": "DevPackages"
+                }
+            }, 
+            "Libs": {
+                "$path": {
+                    "optional": "src/libs"
+                }
+            }, 
+            "Internal": {
+                "UI": {
+                    "core": {
+                        "$path": {
+                            "optional": "src/core/ui"
+                        }
+                    }, 
+                    "$className": "Folder", 
+                    "chapter": {
+                        "$path": {
+                            "optional": "src/chapter/ui"
+                        }
+                    }
+                }, 
+                "$className": "Folder", 
+                "Shared": {
+                    "core": {
+                        "$path": {
+                            "optional": "src/core/shared"
+                        }
+                    }, 
+                    "$className": "Folder", 
+                    "chapter": {
+                        "$path": {
+                            "optional": "src/chapter/shared"
+                        }
+                    }
+                }, 
+                "Client": {
+                    "core": {
+                        "$path": {
+                            "optional": "src/core/client"
+                        }
+                    }, 
+                    "$className": "Folder", 
+                    "chapter": {
+                        "$path": {
+                            "optional": "src/chapter/client"
+                        }
+                    }
+                }
+            }, 
+            "Packages": {
+                "$path": {
+                    "optional": "Packages"
+                }
+            }, 
+            "TowerScripts": {
+                "core": {
+                    "$path": {
+                        "optional": "src/core/tower"
+                    }
+                }, 
+                "$className": "Folder", 
+                "chapter": {
+                    "$path": {
+                        "optional": "src/chapter/tower"
+                    }
+                }
+            }
+        }
+    }, 
+    "name": "core", 
+    "emitLegacyScripts": false
 }

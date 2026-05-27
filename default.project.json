@@ -1,69 +1,102 @@
 {
-	"name": "Welcome To Hell",
-	"emitLegacyScripts": false,
-	"tree": {
-		"$className": "DataModel",
-		"ReplicatedStorage": {
-			"Core": {
-				"$className": "Folder",
-				"Client": {
-					"$path": "out/core/client"
-				},
-				"Shared": {
-					"$path": "out/core/shared"
-				},
-				"UI": {
-					"$path": "out/core/ui"
-				}
-			},
-			"Flagship": {
-				"$className": "Folder",
-				"Client": {
-					"$path": "out/flagship/client"
-				},
-				"Shared": {
-					"$path": "out/flagship/shared"
-				},
-				"UI": {
-					"$path": "out/flagship/ui"
-				}
-			},
-			"Libs": {
-				"$path": "out/libs"
-			},
-			"Scripts": {
-				"$className": "Folder",
-				"Core": {
-					"$path": "out/core/scripts"
-				},
-				"Flagship": {
-					"$path": "out/flagship/scripts"
-				}
-			},
-			"Packages": {
-				"$path": {
-					"optional": "roblox_packages"
-				}
-			}
-		},
-		"ServerScriptService": {
-			"Core": {
-				"$className": "Folder",
-				"Server": {
-					"$path": "out/core/server"
-				}
-			},
-			"Flagship": {
-				"$className": "Folder",
-				"Server": {
-					"$path": "out/flagship/server"
-				}
-			},
-			"Packages": {
-				"$path": {
-					"optional": "roblox_server_packages"
-				}
-			}
-		}
-	}
+    "tree": {
+        "$className": "DataModel", 
+        "ServerScriptService": {
+            "Packages": {
+                "$path": {
+                    "optional": "ServerPackages"
+                }
+            }, 
+            "Internal": {
+                "Server": {
+                    "core": {
+                        "$path": {
+                            "optional": "out/core"
+                        }
+                    }, 
+                    "$className": "Folder", 
+                    "chapter": {
+                        "$path": {
+                            "optional": "out/chapter"
+                        }
+                    }
+                }, 
+                "$className": "Folder"
+            }
+        }, 
+        "ReplicatedStorage": {
+            "DevPackages": {
+                "$path": {
+                    "optional": "DevPackages"
+                }
+            }, 
+            "Libs": {
+                "$path": {
+                    "optional": "out/libs"
+                }
+            }, 
+            "Internal": {
+                "UI": {
+                    "core": {
+                        "$path": {
+                            "optional": "out/core"
+                        }
+                    }, 
+                    "$className": "Folder", 
+                    "chapter": {
+                        "$path": {
+                            "optional": "out/chapter"
+                        }
+                    }
+                }, 
+                "$className": "Folder", 
+                "Shared": {
+                    "core": {
+                        "$path": {
+                            "optional": "out/core"
+                        }
+                    }, 
+                    "$className": "Folder", 
+                    "chapter": {
+                        "$path": {
+                            "optional": "out/chapter"
+                        }
+                    }
+                }, 
+                "Client": {
+                    "core": {
+                        "$path": {
+                            "optional": "out/core"
+                        }
+                    }, 
+                    "$className": "Folder", 
+                    "chapter": {
+                        "$path": {
+                            "optional": "out/chapter"
+                        }
+                    }
+                }
+            }, 
+            "Packages": {
+                "$path": {
+                    "optional": "Packages"
+                }
+            }, 
+            "TowerScripts": {
+                "core": {
+                    "$path": {
+                        "optional": "out/core"
+                    }
+                }, 
+                "$className": "Folder", 
+                "chapter": {
+                    "$path": {
+                        "optional": "out/chapter"
+                    }
+                }
+            }
+        }
+    }, 
+    "name": "core", 
+    "emitLegacyScripts": false
 }
