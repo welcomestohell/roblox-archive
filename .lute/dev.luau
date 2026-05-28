@@ -52,6 +52,7 @@ task.spawn(run, "rojo", { "sourcemap", "--watch", "--output", "sourcemap.json", 
 
 print(richterm.dim("Launch!"))
 for _, p in rojoPlaces do
+	run("blink", { ".blink", "--yes" }, { cwd = p.sourcePath, ignoreFailure = true })
 	task.spawn(run, "blink", { ".blink", "--watch" }, { cwd = p.sourcePath } :: run.Options)
 end
 task.spawn(run, "darklua", { "process", "--watch", repositoryConfig.wth.dirs.source, repositoryConfig.wth.dirs.output })

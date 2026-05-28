@@ -2,10 +2,6 @@ return {
 	luau = {
 		languageMode = "strict",
 		lint = { ["*"] = true },
-		aliases = {
-			src = "./src",
-			pkgs = "./Packages",
-		},
 	},
 	wth = {
 		dirs = {

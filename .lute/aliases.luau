@@ -9,11 +9,13 @@ places.initialize()
 
 local luauAliases = {
 	pkgs = `../{repositoryConfig.wth.dirs.packages}`,
+	devpkgs = `../Dev{repositoryConfig.wth.dirs.packages}`,
 	libs = "./libs",
 }
 
 local darkluaAliases = {
 	["@pkgs"] = `./{repositoryConfig.wth.dirs.packages}`,
+	["@devpkgs"] = `./Dev{repositoryConfig.wth.dirs.packages}`,
 	["@libs"] = `./{repositoryConfig.wth.dirs.source}/libs`,
 }
 

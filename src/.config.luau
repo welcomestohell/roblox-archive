@@ -3,11 +3,13 @@
 return {
   luau = {
     aliases = {
-      chapter = "./chapter",
+      ["chapter-1"] = "./chapter-1",
       core = "./core",
+      devpkgs = "../DevPackages",
       libs = "./libs",
       pkgs = "../Packages",
       title = "./title",
+      universe = "./universe",
     },
   },
 }

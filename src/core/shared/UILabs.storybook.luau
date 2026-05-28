@@ -1,6 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local UILabs = require("@pkgs/UILabs")
+local UILabs = require("@devpkgs/UILabs")
 
 return {
 	name = "Welcome To Hell",

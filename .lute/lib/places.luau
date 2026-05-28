@@ -103,13 +103,43 @@ local function fromDir(dir: unknown): Place
 end
 
 local function resolveDependencies(place: Place): { Place }
-	local dependencies = {}
-	if place.dependencies then
-		for _, dependency in place.dependencies do
-			table.insert(dependencies, fromDir(dependency))
+	local resolved = {}
+	local resolvedSet = {}
+	local visiting = {}
+
+	local function visit(current: Place, stack: { string })
+		if visiting[current.dirName] then
+			local cycleStart = table.find(stack, current.dirName) or 1
+			local cycle = table.move(stack, cycleStart, #stack, 1, {})
+			table.insert(cycle, current.dirName)
+
+			error(`Place has cyclic dependency: {table.concat(cycle, " -> ")}`)
 		end
+
+		if resolvedSet[current.dirName] then
+			return
+		end
+
+		visiting[current.dirName] = true
+		table.insert(stack, current.dirName)
+
+		for _, dependencyName in current.dependencies or {} do
+			local dependency = fromDir(dependencyName)
+			visit(dependency, stack)
+
+			if not resolvedSet[dependency.dirName] then
+				resolvedSet[dependency.dirName] = true
+				table.insert(resolved, dependency)
+			end
+		end
+
+		visiting[current.dirName] = nil
+		table.remove(stack)
 	end
-	return dependencies
+
+	visit(place, {})
+
+	return resolved
 end
 
 return table.freeze({
