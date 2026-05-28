@@ -40,23 +40,35 @@ return {
 			sourceTree = {
 				["$className"] = "DataModel",
 				ReplicatedStorage = {
-					Packages = { ["$path"] = { optional = "Packages" } },
-					DevPackages = { ["$path"] = { optional = "DevPackages" } },
+					Internal = {
+						["$className"] = "Folder",
+						Packages = { ["$path"] = { optional = "Packages" } },
+						DevPackages = { ["$path"] = { optional = "DevPackages" } },
+					},
 					Libs = { ["$path"] = { optional = "src/libs" } },
 				},
 				ServerScriptService = {
-					Packages = { ["$path"] = { optional = "ServerPackages" } },
+					Internal = {
+						["$className"] = "Folder",
+						Packages = { ["$path"] = { optional = "ServerPackages" } },
+					},
 				},
 			},
 			outputTree = {
 				["$className"] = "DataModel",
 				ReplicatedStorage = {
-					Packages = { ["$path"] = { optional = "Packages" } },
-					DevPackages = { ["$path"] = { optional = "DevPackages" } },
+					Internal = {
+						["$className"] = "Folder",
+						Packages = { ["$path"] = { optional = "Packages" } },
+						DevPackages = { ["$path"] = { optional = "DevPackages" } },
+					},
 					Libs = { ["$path"] = { optional = "out/libs" } },
 				},
 				ServerScriptService = {
-					Packages = { ["$path"] = { optional = "ServerPackages" } },
+					Internal = {
+						["$className"] = "Folder",
+						Packages = { ["$path"] = { optional = "ServerPackages" } },
+					},
 				},
 			},
 		},

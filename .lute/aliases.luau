@@ -20,8 +20,8 @@ local darkluaAliases = {
 }
 
 for _, place in places.allPlaces do
-	luauAliases[place.name] = `./{place.dirName}`
-	darkluaAliases["@" .. place.name] = `./{path.format(place.sourcePath)}`
+	luauAliases[place.dirName] = `./{place.dirName}`
+	darkluaAliases["@" .. place.dirName] = `./{path.format(place.sourcePath)}`
 end
 
 local luauContents = table.concat({

@@ -1,6 +1,7 @@
 local prvd = require("@core/shared/prvdmwrong/prvdmwrong")
+local rbxLifecycles = require("@core/shared/prvdmwrong/rbx-lifecycles")
 
-local root = prvd.root():useProvider(require("@core/shared/prvdmwrong/rbx-lifecycles") :: any)
+local root = prvd.root():useProvider(rbxLifecycles)
 
 local function useModulesFromPath(parentRoot: Instance, ...: string)
 	for index = 1, select("#", ...) do

@@ -67,7 +67,7 @@ local function projectFromPlace(kind: "source" | "output", places: { places.Plac
 
 			local sourceName, sourcePath
 			if dirPath then
-				sourceName, sourcePath = place.name, dirPath
+				sourceName, sourcePath = place.folderName, dirPath
 			end
 
 			insertMapping(tree, segments, sourceName, sourcePath)

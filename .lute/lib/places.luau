@@ -13,12 +13,15 @@ export type Mapping = {
 }
 
 export type PlaceConfiguration = {
+	title: string,
+	folderName: string,
 	placeId: string?,
 	dependencies: { string }?,
 }
 
 export type Place = {
 	name: string,
+	folderName: string,
 	placeId: string?,
 	dependencies: { string }?,
 
@@ -63,7 +66,8 @@ local function initialize()
 		local outputPath = path.join(outputDir, entry.name)
 
 		local place: Place = {
-			name = entry.name,
+			name = config.title,
+			folderName = config.folderName,
 			placeId = config.placeId,
 			dependencies = config.dependencies or {},
 
