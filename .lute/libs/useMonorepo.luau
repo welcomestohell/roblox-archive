@@ -1,40 +1,51 @@
 local fs = require("@std/fs")
 local luau = require("@std/luau")
 local path = require("@std/path")
+local useRepositoryConfig = require("./useRepositoryConfig")
 local log = require("@libs/log")
 
-type PlaceConfig = {
+type RojoMappings = typeof(useRepositoryConfig().wth.rojo.mappings)
+type RojoProjectTarget = "source" | "output"
+
+export type Place = {
 	title: string,
 	subtitle: string?,
+	folderName: string,
 	placeId: string?,
 	dependencies: { string }?,
 }
 
-type PlaceMixinConfig = {
-	transpile: boolean?,
+export type PlaceMixin = {
 	folderName: string,
 	rojo: string,
 }
 
-type Config = {
+export type Config = {
 	wth: {
-		place: PlaceConfig?,
-		placeMixin: PlaceMixinConfig?,
+		place: Place?,
+		placeMixin: PlaceMixin?,
 	},
 }
 
 export type MonorepoMember = {
-	place: PlaceConfig?,
-	placeMixin: PlaceMixinConfig?,
+	place: Place?,
+	placeMixin: PlaceMixin?,
 
+	folderName: string,
 	dirName: string,
 	dirPath: path.Pathlike,
 	configPath: path.Pathlike,
+	outputPath: path.Pathlike,
+
+	rojoMappings: {
+		[RojoProjectTarget]: { [keyof<RojoMappings>]: path.Pathlike? },
+	},
 }
 
 export type Monorepo = { [any]: MonorepoMember }
 
 local function useMonorepo(): Monorepo
+	local repository = useRepositoryConfig()
 	local monorepo: Monorepo = {}
 
 	for _, entry in fs.listDirectory(".") do
@@ -61,14 +72,31 @@ local function useMonorepo(): Monorepo
 			continue
 		end
 
+		local folderName = if placeConfig
+			then placeConfig.folderName
+			elseif placeMixinConfig then placeMixinConfig.folderName
+			else log.throw(`Missing folderName for {entry.name}`)
+
 		local member: MonorepoMember = {
 			place = placeConfig,
 			placeMixinConfig = placeMixinConfig,
 
+			folderName = folderName,
 			dirName = entry.name,
 			dirPath = entry.name,
 			configPath = configPath,
+			outputPath = path.join(repository.wth.paths.output, entry.name),
+
+			rojoMappings = {
+				source = {},
+				output = {},
+			},
 		}
+
+		for key in repository.wth.rojo.mappings :: any do
+			member.rojoMappings.source[key] = member.dirPath
+			member.rojoMappings.output[key] = path.join(repository.wth.paths.output, member.dirPath)
+		end
 
 		table.insert(monorepo, member)
 		monorepo[entry.name] = member

@@ -1,2 +1,14 @@
+# Pesde
+.pesde
+roblox_packages
+luau_packages
+lune_packages
+
+# Build files
+.output
+.luaurc
+default.project.json
+sourcemap.project.json
+
 # OS
 .DS_Store

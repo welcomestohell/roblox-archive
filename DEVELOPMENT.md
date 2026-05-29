@@ -48,14 +48,15 @@ return {
             -- specify dependencies for rojo
             -- scripts will resolve dependencies recursively, ie. depending on
             -- chapter will pull in all of it's dependencies
-            dependencies = { "chapter" }
+            dependencies = { "chapter" },
+
+            -- folder name to be used by rojo
+            folderName = "Chapter1",
         },
 
         -- specifies a child to be added across all build targets
         -- is mutually exclusive to place
-        -- this is automatically injected into roblox_packages
         placeMixin = {
-            transpile = true,
             folderName = "Libs",
             rojo = {
                 { name = "ReplicatedStorage" }
