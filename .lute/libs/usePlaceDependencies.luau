@@ -1,11 +1,11 @@
-local useMonorepo = require("./useMonorepo")
+local types = require("./types")
 
-local function usePlaceDependencies(monorepo: useMonorepo.Monorepo, member: useMonorepo.MonorepoMember)
+local function usePlaceDependencies(monorepo: types.Monorepo, member: types.MonorepoMember)
 	local resolved = {}
 	local resolvedSet = {}
 	local visiting = {}
 
-	local function visit(current: useMonorepo.MonorepoMember, stack: { string })
+	local function visit(current: types.MonorepoMember, stack: { string })
 		local place = current.place
 		if not place then
 			return

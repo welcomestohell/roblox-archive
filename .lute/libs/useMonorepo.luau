@@ -1,52 +1,13 @@
 local fs = require("@std/fs")
 local luau = require("@std/luau")
 local path = require("@std/path")
+local types = require("./types")
 local useRepositoryConfig = require("./useRepositoryConfig")
 local log = require("@libs/log")
 
-type RojoMappings = typeof(useRepositoryConfig().wth.rojo.mappings)
-type RojoProjectTarget = "source" | "output"
-
-export type Place = {
-	title: string,
-	subtitle: string?,
-	folderName: string,
-	placeId: string?,
-	dependencies: { string }?,
-}
-
-export type PlaceMixin = {
-	folderName: string,
-	rojo: string,
-}
-
-export type Config = {
-	wth: {
-		place: Place?,
-		placeMixin: PlaceMixin?,
-	},
-}
-
-export type MonorepoMember = {
-	place: Place?,
-	placeMixin: PlaceMixin?,
-
-	folderName: string,
-	dirName: string,
-	dirPath: path.Pathlike,
-	configPath: path.Pathlike,
-	outputPath: path.Pathlike,
-
-	rojoMappings: {
-		[RojoProjectTarget]: { [keyof<RojoMappings>]: path.Pathlike? },
-	},
-}
-
-export type Monorepo = { [any]: MonorepoMember }
-
-local function useMonorepo(): Monorepo
+local function useMonorepo(): types.Monorepo
 	local repository = useRepositoryConfig()
-	local monorepo: Monorepo = {}
+	local monorepo: types.Monorepo = {}
 
 	for _, entry in fs.listDirectory(".") do
 		if entry.type ~= "dir" then
@@ -58,7 +19,7 @@ local function useMonorepo(): Monorepo
 			continue
 		end
 
-		local config: Config = luau.loadModule(configPath)
+		local config: types.LuauConfig = luau.loadModule(configPath)
 		local wthConfig = config.wth
 		if not wthConfig then
 			continue
@@ -77,15 +38,15 @@ local function useMonorepo(): Monorepo
 			elseif placeMixinConfig then placeMixinConfig.folderName
 			else log.throw(`Missing folderName for {entry.name}`)
 
-		local member: MonorepoMember = {
+		local member: types.MonorepoMember = {
 			place = placeConfig,
-			placeMixinConfig = placeMixinConfig,
+			placeMixin = placeMixinConfig,
 
 			folderName = folderName,
 			dirName = entry.name,
 			dirPath = entry.name,
 			configPath = configPath,
-			outputPath = path.join(repository.wth.paths.output, entry.name),
+			outputDirPath = path.join(repository.wth.paths.output, entry.name),
 
 			rojoMappings = {
 				source = {},
@@ -102,7 +63,7 @@ local function useMonorepo(): Monorepo
 		monorepo[entry.name] = member
 	end
 
-	table.sort(monorepo, function(lhs: MonorepoMember, rhs: MonorepoMember)
+	table.sort(monorepo, function(lhs: types.MonorepoMember, rhs: types.MonorepoMember)
 		return lhs.dirName < rhs.dirName
 	end)
 

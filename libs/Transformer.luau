@@ -12,7 +12,7 @@ local tweens = require("@libs/tweens")
 
 export type EvaluationContext = {
 	level: Level.Level,
-	transformerInstance: Instance,
+	transformerInstance: Instance, 
 	transformerConfiguration: Instance,
 	activationEvent: activation.ActivationEvent,
 }

@@ -1,28 +1,12 @@
 local json = require("@std/json")
 local path = require("@std/path")
-local deepClone = require("./deepClone")
+local types = require("./types")
 local log = require("./log")
-local useMonorepo = require("./useMonorepo")
 local useRepositoryConfig = require("./useRepositoryConfig")
 
-export type RojoMappings = { [keyof<typeof(useRepositoryConfig().wth.rojo.mappings)>]: { RojoMappingSegment } }
-
-export type RojoMappingSegment = {
-	name: string,
-	className: string?,
-}
-
-export type RojoPath = string | { optional: string }
-
-export type RojoNode = {
-	["$className"]: string?,
-	["$path"]: RojoPath?,
-	[string]: RojoNode,
-}
-
 local function insertMapping(
-	tree: RojoNode,
-	segments: { RojoMappingSegment },
+	tree: types.RojoNode,
+	segments: { types.RojoMappingSegment },
 	sourceName: string?,
 	sourcePath: path.Pathlike?
 )
@@ -53,26 +37,35 @@ local function insertMapping(
 	end
 end
 
-local function projectFromMembers(kind: "source" | "output", members: { useMonorepo.MonorepoMember }): json.Object
+local function projectFromMembers(kind: "source" | "output", members: { types.MonorepoMember }): json.Object
 	local firstMember = members[1] or log.throw("Must specify atleast 1 member to build Rojo")
 	local place = firstMember.place or log.throw("First Rojo member must be a place")
 
 	local repository = useRepositoryConfig()
-	local mappings = repository.wth.rojo.mappings :: RojoMappings
-	local tree = deepClone(repository.wth.rojo.tree) :: RojoNode
+	local mappings = repository.wth.rojo.mappings :: types.RojoMappings
+	local tree: types.RojoNode = { ["$className"] = "DataModel" }
 
-	for dir, segments in mappings do
-		for _, member in members do
-			insertMapping(tree, segments, member.folderName, member.rojoMappings[kind][dir])
+	for _, member in members do
+		if member.place then
+			for dir, segments in mappings do
+				insertMapping(tree, segments, member.folderName, member.rojoMappings[kind][dir])
+			end
+		elseif member.placeMixin then
+			insertMapping(
+				tree,
+				member.placeMixin.rojo,
+				member.folderName,
+				if kind == "output" and member.placeMixin.transpile then member.outputDirPath else member.dirPath
+			)
 		end
 	end
 
 	return {
 		name = `Welcome To Hell: {place.title}`,
 		emitLegacyScripts = false,
-		servePlaceIds = { place.placeId },
-		placeId = place.placeId,
-		globIgnorePaths = { "**/.config.luau" },
+		-- servePlaceIds = { place.placeId },
+		-- placeId = place.placeId,
+		-- globIgnorePaths = { "**/.config.luau" },
 		tree = tree,
 	}
 end

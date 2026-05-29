@@ -1,0 +1,57 @@
+-- From https://github.com/checkraisefold/warmluau/blob/8299341613adfef565a19b8ee7da25c1c66ccb10/src/ingredients/resolve_require/init.luau
+
+local path = require("@std/path")
+local sanitizeQuotes = require("./sanitizeQuotes")
+
+export type Node = {
+	name: string,
+	filePaths: { string }?,
+	children: { Node }?,
+}
+
+local function sourcemapIndices(sourcemap: Node): { [string]: string }
+	local indices: { [string]: string } = {}
+
+	local nodes = sourcemap.children
+	if not nodes then
+		return {}
+	end
+
+	local lenNodes = #nodes
+	for index = 1, lenNodes do
+		local service = nodes[index]
+		service.name = `game:GetService("{sanitizeQuotes(service.name)}")`
+	end
+
+	local index = 0
+	while index < lenNodes do
+		index += 1
+		local node = nodes[index]
+		local nodeName = node.name
+
+		local filePaths = node.filePaths
+		if filePaths then
+			local lenFilePaths = #filePaths
+			for filePathsIndex = 1, lenFilePaths do
+				local filePath = filePaths[filePathsIndex]
+				local absolutePath = path.format(filePath)
+				indices[absolutePath] = nodeName
+			end
+		end
+
+		local children = node.children
+		if children then
+			local children_count = #children
+			for children_index = 1, children_count do
+				local child = children[children_index]
+				child.name = `{nodeName}:WaitForChild("{sanitizeQuotes(child.name)}")`
+			end
+			table.move(children, 1, children_count, lenNodes + 1, nodes)
+			lenNodes += children_count
+		end
+	end
+
+	return indices
+end
+
+return sourcemapIndices

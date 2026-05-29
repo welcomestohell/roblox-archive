@@ -1,8 +1,11 @@
 return {
+	luau = {
+		languageMode = "nocheck",
+		lint = { ["*"] = false },
+	},
 	wth = {
 		placeMixin = {
-			transpile = true,
-			folderName = "Libs",
+			folderName = "Packages",
 			rojo = {
 				{ name = "ReplicatedStorage" },
 			},

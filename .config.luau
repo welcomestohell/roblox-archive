@@ -6,6 +6,7 @@ return {
 	wth = {
 		paths = {
 			output = ".output",
+			outputCache = ".output/cache.json",
 
 			outputProject = "default.project.json",
 			sourcemapProject = "sourcemap.project.json",
@@ -36,15 +37,6 @@ return {
 				tower = {
 					{ name = "ReplicatedStorage" },
 					{ name = "TowerScripts", className = "Folder" },
-				},
-			},
-			tree = {
-				["$className"] = "DataModel",
-				ReplicatedStorage = {
-					Packages = { ["$path"] = { optional = "roblox_packages" } },
-				},
-				ServerScriptService = {
-					Packages = { ["$path"] = { optional = "roblox_server_packages" } },
 				},
 			},
 		},

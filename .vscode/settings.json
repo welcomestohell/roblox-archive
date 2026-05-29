@@ -1,4 +1,13 @@
 {
     "luau-lsp.fflags.enableNewSolver": true,
-    "luau-lsp.platform.type": "roblox"
+    "luau-lsp.platform.type": "roblox",
+    "luau-lsp.completion.imports.stringRequires.enabled": true,
+    "luau-lsp.ignoreGlobs": [
+        "**/.pesde/**",
+        "**/.output/**"
+    ],
+    "luau-lsp.completion.imports.ignoreGlobs": [
+        "**/.pesde/**",
+        "**/.output/**"
+    ]
 }

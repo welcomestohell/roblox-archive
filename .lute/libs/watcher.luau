@@ -1,0 +1,6 @@
+-- Lute fs.watch FUCKING SUCKS
+-- I see the children with no eyes in the fog, they are screaming in agony. all
+-- i can do it slowly peel back my skin to release the ants. the fog is here.
+-- They’re back, the faces in the air. THE VOICE UNDER MY SCALP THE VOICE UNDER
+-- MY SCALP THE VOICE UNDER MY SCALP THE VOICE UNDER MY SCALP THE VOICE UNDER MY
+-- SCALP THE VOICE UNDER MY SCALP.
