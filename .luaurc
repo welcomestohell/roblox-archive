@@ -1,7 +1,16 @@
 {
     "aliases": {
-        "std": "~/.lute/typedefs/1.0.0/std", 
-        "lute": "~/.lute/typedefs/1.0.0/lute", 
-        "lint": "~/.lute/typedefs/1.0.0/lint"
+        "chapter": "chapter", 
+        "chapter3": "chapter3", 
+        "chapter2": "chapter2", 
+        "game": "game", 
+        "chapter6": "chapter6", 
+        "core": "core", 
+        "title": "title", 
+        "chapter4": "chapter4", 
+        "libs": "libs", 
+        "chapter5": "chapter5", 
+        "chapter7": "chapter7", 
+        "chapter1": "chapter1"
     }
 }

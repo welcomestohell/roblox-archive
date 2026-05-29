@@ -32,10 +32,10 @@ export type MonorepoMember = {
 	configPath: path.Pathlike,
 }
 
-export type Monorepo = { [number | string]: MonorepoMember }
+export type Monorepo = { [any]: MonorepoMember }
 
 local function useMonorepo(): Monorepo
-	local monorepo = {}
+	local monorepo: Monorepo = {}
 
 	for _, entry in fs.listDirectory(".") do
 		if entry.type ~= "dir" then
@@ -70,9 +70,13 @@ local function useMonorepo(): Monorepo
 			configPath = configPath,
 		}
 
-		table.insert(monorepo :: { MonorepoMember }, member)
+		table.insert(monorepo, member)
 		monorepo[entry.name] = member
 	end
+
+	table.sort(monorepo, function(lhs: MonorepoMember, rhs: MonorepoMember)
+		return lhs.dirName < rhs.dirName
+	end)
 
 	return monorepo
 end
