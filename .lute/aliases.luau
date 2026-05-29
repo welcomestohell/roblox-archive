@@ -5,7 +5,7 @@ local path = require("@std/path")
 
 local monorepo = useMonorepo()
 
-local luaurcAliases = {}
+local luaurcAliases = { pkgs = "roblox_packages" }
 for _, member in ipairs(monorepo) do
 	luaurcAliases[member.dirName] = path.format(member.dirPath)
 end
