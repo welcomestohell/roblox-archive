@@ -1,0 +1,21 @@
+local pp = require("@batteries/pp")
+local richterm = require("@batteries/richterm")
+
+local function createLogger(formatter: richterm.Formatter)
+	return function(...: unknown)
+		local len = select("#", ...)
+		local prettified = table.create(len)
+		for index = 1, len do
+			local value = select(index, ...)
+			prettified[index] = formatter(if type(value) == "string" then value else pp(value))
+		end
+		print(table.concat(prettified, " "))
+	end
+end
+
+return table.freeze({
+	verbose = createLogger(richterm.dim),
+	info = createLogger(richterm.combine()),
+	warn = createLogger(richterm.yellow),
+	error = createLogger(richterm.red),
+})

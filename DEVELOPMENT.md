@@ -37,7 +37,7 @@ return {
     wth = {
         -- scripts treat a folder as a workspace member if it's .config.luau
         -- specifies the workspace field
-        workspace = {
+        place = {
             -- metadata
             title = "Chapter 1",
             subtitle = "A Star Upon A Child",
@@ -49,6 +49,17 @@ return {
             -- scripts will resolve dependencies recursively, ie. depending on
             -- chapter will pull in all of it's dependencies
             dependencies = { "chapter" }
+        },
+
+        -- specifies a child to be added across all build targets
+        -- is mutually exclusive to place
+        -- this is automatically injected into roblox_packages
+        placeMixin = {
+            transpile = true,
+            folderName = "Libs",
+            rojo = {
+                { name = "ReplicatedStorage" }
+            }
         }
     }
 }
