@@ -1,7 +1,6 @@
 --!nonstrict
 
 local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
 
 local Lyra = require("@roblox_packages/Lyra")
 
