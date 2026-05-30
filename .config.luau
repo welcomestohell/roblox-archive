@@ -1,13 +1,31 @@
+-- #region aliases
+local aliases = {
+	chapter = "chapter",
+	chapter1 = "chapter1",
+	chapter2 = "chapter2",
+	chapter3 = "chapter3",
+	chapter4 = "chapter4",
+	chapter5 = "chapter5",
+	chapter6 = "chapter6",
+	chapter7 = "chapter7",
+	core = "core",
+	game = "game",
+	libs = "libs",
+	pkgs = "roblox_packages",
+	roblox_packages = "roblox_packages",
+	title = "title",
+}
+-- #endregion
+
 return {
 	luau = {
 		languagemode = "strict",
 		lint = { ["*"] = true },
+		aliases = aliases,
 	},
 	wth = {
 		paths = {
 			output = ".output",
-			outputCache = ".output/cache.json",
-
 			outputProject = "default.project.json",
 			sourcemapProject = "sourcemap.project.json",
 			sourcemap = "sourcemap.json",

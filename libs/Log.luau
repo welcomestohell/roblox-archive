@@ -1,8 +1,8 @@
 local LocalizationService = game:GetService("LocalizationService")
 
-local Charm = require("@pkgs/Charm")
-local repr = require("@libs/repr")
-local threadpool = require("@libs/threadpool")
+local Charm = require(game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("Charm"))
+local repr = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("repr"))
+local threadpool = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("threadpool"))
 
 export type LogMessage = {
 	timestamp: DateTime,

@@ -2,7 +2,7 @@
 -- Note that Welcome To Hell plans to switch to the Boba library once runtime
 -- type inspection has been implemented.
 
-local GreenTea = require("@pkgs/gt")
+local GreenTea = require(game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("gt"))
 
 export type Type = GreenTea.Type
 export type Cause = GreenTea.Cause

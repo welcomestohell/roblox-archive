@@ -1,7 +1,7 @@
 local Workspace = game:GetService("Workspace")
 
-local tweens = require("@libs/tweens")
-local types = require("@libs/teleport/types")
+local tweens = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("tweens"))
+local types = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("teleport"):WaitForChild("types"))
 
 return function(context: types.TransitionContext)
 	local life = context.teleporterLife:extend()

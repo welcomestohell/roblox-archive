@@ -1,7 +1,7 @@
 local Log = require("./Log")
-local gt = require("@pkgs/gt")
-local tables = require("@libs/collections/tables")
-local threadpool = require("@libs/threadpool")
+local gt = require(game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("gt"))
+local tables = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("collections"):WaitForChild("tables"))
+local threadpool = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("threadpool"))
 
 export type AttributeValue =
 	| string

@@ -1,17 +1,17 @@
 local RunService = game:GetService("RunService")
 
-local Life = require("@libs/memory/Life")
+local Life = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("memory"):WaitForChild("Life"))
 local Log = require("./Log")
 local Mechanic = require("./Mechanic")
-local Promise = require("@pkgs/Promise")
+local Promise = require(game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("Promise"))
 local Result = require("./Result")
 local ScriptCollector = require("./ScriptCollector")
 local activation = require("./activation")
 local functions = require("./functions")
-local gt = require("@libs/gt")
-local tables = require("@libs/collections/tables")
-local threadpool = require("@libs/threadpool")
-local types = require("@libs/activation/types")
+local gt = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("gt"))
+local tables = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("collections"):WaitForChild("tables"))
+local threadpool = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("threadpool"))
+local types = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("activation"):WaitForChild("types"))
 
 local log = Log.new("Level")
 

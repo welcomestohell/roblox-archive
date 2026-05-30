@@ -1,7 +1,7 @@
-local Attribute = require("@libs/Attribute")
-local Life = require("@libs/memory/Life")
-local Log = require("@libs/Log")
-local types = require("@libs/types")
+local Attribute = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("Attribute"))
+local Life = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("memory"):WaitForChild("Life"))
+local Log = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("Log"))
+local types = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("types"))
 
 export type AttributeSection = {
 	title: string?,

@@ -1,5 +1,5 @@
-local Iris = require("@pkgs/Iris")
-local tables = require("@libs/collections/tables")
+local Iris = require(game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("Iris"))
+local tables = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("collections"):WaitForChild("tables"))
 
 type Cleanup = () -> ()
 

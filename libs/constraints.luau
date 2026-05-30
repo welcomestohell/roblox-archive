@@ -1,4 +1,4 @@
-local Life = require("@libs/memory/Life")
+local Life = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("memory"):WaitForChild("Life"))
 
 local function weld(life: Life.Life, from: BasePart, to: BasePart)
 	local weldConstraint = Instance.new("WeldConstraint")

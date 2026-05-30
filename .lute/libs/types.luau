@@ -1,3 +1,4 @@
+local fs = require("@std/fs")
 local path = require("@std/path")
 
 -- Rojo
@@ -27,7 +28,7 @@ export type SourcemapNode = {
 	children: { SourcemapNode }?,
 }
 
-export type Sourcemap = { [string]: string }
+export type SourcemapIndices = { [string]: string }
 
 -- Monorepo
 
@@ -78,12 +79,25 @@ export type RepositoryConfig = typeof(require("@libs/../../.config"))
 
 -- Build
 
-export type BuildCacheFile = {
-	lastModified: number,
-	hash: string,
-	size: number,
+export type BuildState = {
+	monorepo: Monorepo,
+	repository: RepositoryConfig,
+
+	member: MonorepoMember,
+	memberPlace: Place,
+	memberDependencies: { MonorepoMember },
+	rojoMembers: { MonorepoMember },
+
+	outputPath: path.Pathlike,
+	outputProjectPath: path.Pathlike,
+	sourcemapPath: path.Pathlike,
+	sourcemapProjectPath: path.Pathlike,
+
+	sourcemapIndices: SourcemapIndices,
 }
 
-export type BuildCache = { [string]: BuildCacheFile }
+-- Lute
+
+export type Watcher = typeof(fs.watch(""))
 
 return nil

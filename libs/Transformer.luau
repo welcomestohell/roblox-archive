@@ -7,12 +7,12 @@ local character = require("./character")
 local functions = require("./functions")
 local properties = require("./properties")
 local roblox = require("@core/shared/generated/types/roblox")
-local tables = require("@libs/collections/tables")
-local tweens = require("@libs/tweens")
+local tables = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("collections"):WaitForChild("tables"))
+local tweens = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("tweens"))
 
 export type EvaluationContext = {
 	level: Level.Level,
-	transformerInstance: Instance, 
+	transformerInstance: Instance,
 	transformerConfiguration: Instance,
 	activationEvent: activation.ActivationEvent,
 }

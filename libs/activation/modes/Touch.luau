@@ -1,5 +1,5 @@
-local Result = require("@libs/Result")
-local touch = require("@libs/touch")
+local Result = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("Result"))
+local touch = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("touch"))
 local types = require("../types")
 
 local Touch = {} :: types.ActivationMode

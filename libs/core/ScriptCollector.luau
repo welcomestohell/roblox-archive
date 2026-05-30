@@ -1,6 +1,6 @@
-local Log = require("@libs/Log")
-local MechanicImplementation = require("@libs/core/MechanicImplementation")
-local Promise = require("@pkgs/Promise")
+local Log = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("Log"))
+local MechanicImplementation = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("core"):WaitForChild("MechanicImplementation"))
+local Promise = require(game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("Promise"))
 
 local log = Log.new("ScriptCollector")
 

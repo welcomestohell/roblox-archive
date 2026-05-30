@@ -1,4 +1,4 @@
-local Promise = require("@pkgs/Promise")
+local Promise = require(game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("Promise"))
 
 local Lazy = {}
 Lazy.__index = Lazy

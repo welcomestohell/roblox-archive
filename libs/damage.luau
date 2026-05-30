@@ -1,10 +1,10 @@
 local RunService = game:GetService("RunService")
 
-local Mechanic = require("@libs/Mechanic")
-local gt = require("@libs/gt")
+local Mechanic = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("Mechanic"))
+local gt = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("gt"))
 
-local attribute = require("@libs/Attribute")
-local character = require("@libs/character")
+local attribute = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("Attribute"))
+local character = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("character"))
 
 local damage = {}
 

@@ -1,4 +1,4 @@
-local character = require("@libs/character")
+local character = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("character"))
 local types = require("../types")
 
 local HumanoidStateChange = {} :: types.ActivationMode

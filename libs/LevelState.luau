@@ -1,5 +1,5 @@
 local Level = require("./Level")
-local tables = require("@libs/collections/tables")
+local tables = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("collections"):WaitForChild("tables"))
 
 local LevelState = {}
 LevelState.__index = LevelState

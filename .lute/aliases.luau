@@ -1,13 +1,24 @@
-local useMonorepo = require("@libs/useMonorepo")
+local findCommentRegion = require("@libs/findCommentRegion")
 local fs = require("@std/fs")
 local json = require("@std/json")
 local path = require("@std/path")
+local pp = require("@batteries/pp")
+local run = require("@libs/run")
+local useMonorepo = require("@libs/useMonorepo")
 
 local monorepo = useMonorepo()
 
-local luaurcAliases = { pkgs = "roblox_packages" }
+local luauAliases = { pkgs = "roblox_packages" }
 for _, member in ipairs(monorepo) do
-	luaurcAliases[member.dirName] = path.format(member.dirPath)
+	luauAliases[member.dirName] = path.format(member.dirPath)
 end
 
-fs.writeStringToFile(".luaurc", json.serialize({ aliases = luaurcAliases }, true))
+local configLuau = fs.readFileToString(".config.luau")
+local aliasesStart, aliasesEnd = findCommentRegion(configLuau, "aliases")
+
+configLuau = string.sub(configLuau, 1, assert(aliasesStart) - 1)
+	.. `-- #region aliases\nlocal aliases = {pp(luauAliases)}\n-- #endregion`
+	.. string.sub(configLuau, assert(aliasesEnd) + 1)
+
+fs.writeStringToFile(".config.luau", configLuau)
+run("stylua", { ".config.luau" })

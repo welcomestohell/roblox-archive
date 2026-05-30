@@ -1,11 +1,11 @@
 local HttpService = game:GetService("HttpService")
 
-local Life = require("@libs/memory/Life")
-local Log = require("@libs/Log")
-local Mechanic = require("@libs/Mechanic")
-local MechanicImplementation = require("@libs/core/MechanicImplementation")
-local Result = require("@libs/Result")
-local gt = require("@libs/gt")
+local Life = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("memory"):WaitForChild("Life"))
+local Log = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("Log"))
+local Mechanic = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("Mechanic"))
+local MechanicImplementation = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("core"):WaitForChild("MechanicImplementation"))
+local Result = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("Result"))
+local gt = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("gt"))
 
 --[=[
 	@function mechanize

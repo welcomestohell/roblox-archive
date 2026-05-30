@@ -1,4 +1,4 @@
-local tables = require("@libs/collections/tables")
+local tables = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("collections"):WaitForChild("tables"))
 
 local observersByInstance: { [Instance]: AttributeObserver } = tables.weak("k")
 
