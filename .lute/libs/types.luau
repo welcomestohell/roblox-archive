@@ -86,15 +86,4 @@ export type BuildCacheFile = {
 
 export type BuildCache = { [string]: BuildCacheFile }
 
-export type BuildState = {
-	repository: RepositoryConfig,
-
-	member: MonorepoMember,
-	place: Place,
-	dependencies: { MonorepoMember },
-
-	cache: BuildCache,
-	sourcemap: Sourcemap,
-}
-
 return nil
