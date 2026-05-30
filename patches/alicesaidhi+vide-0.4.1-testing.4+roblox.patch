@@ -1,0 +1,15 @@
+diff --git a/src/init.luau b/src/init.luau
+index c35d56f..d7e29dc 100644
+--- a/src/init.luau
++++ b/src/init.luau
+@@ -2,9 +2,8 @@ assert(game, "when using vide outside of Roblox, require lib.luau instead")
+ 
+ local vide = require(script.lib)
+ 
+-export type source<T> = vide.source<T>
+ export type Source<T> = vide.Source<T>
+-export type context<T> = vide.context<T>
+ export type Context<T> = vide.Context<T>
++export type As<T> = T | () -> T
+ 
+ return vide

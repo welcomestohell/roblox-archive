@@ -26,4 +26,8 @@
         "default.project.json": true,
         "sourcemap.project.json": true
     },
+    "editor.formatOnSave": true,
+    "[luau]": {
+        "editor.defaultFormatter": "JohnnyMorganz.stylua"
+    }
 }
