@@ -3,7 +3,7 @@ return {
 		place = {
 			title = "Chapter",
 			folderName = "Chapter",
-			dependencies = { "game" },
+			dependencies = { "universe" },
 		},
 	},
 }

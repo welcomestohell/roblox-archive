@@ -1,8 +1,8 @@
-local Attribute = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("Attribute"))
-local Life = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("memory"):WaitForChild("Life"))
-local Result = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("Result"))
-local gt = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("gt"))
-local touch = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("touch"))
+local Attribute = require("@libs/Attribute")
+local Life = require("@libs/memory/Life")
+local Result = require("@libs/Result")
+local gt = require("@libs/gt")
+local touch = require("@libs/touch")
 
 export type ActivationAttributes = {
 	Enabled: Attribute.Attribute<boolean>,

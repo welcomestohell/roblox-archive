@@ -1,6 +1,6 @@
 local destruction = require("./destruction")
-local tables = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("collections"):WaitForChild("tables"))
-local threadpool = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("threadpool"))
+local tables = require("@libs/collections/tables")
+local threadpool = require("@libs/threadpool")
 
 --[=[
 	@class life

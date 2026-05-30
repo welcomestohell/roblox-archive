@@ -1,4 +1,4 @@
-local Promise = require(game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("Promise"))
+local Promise = require("@roblox_packages/Promise")
 
 local Lazy = {}
 Lazy.__index = Lazy

@@ -1,7 +1,7 @@
 local json = require("@std/json")
+local log = require("@libs/log")
 local path = require("@std/path")
 local types = require("@libs/types")
-local log = require("@libs/log")
 local useRepositoryConfig = require("@libs/useRepositoryConfig")
 
 local function insertMapping(
@@ -63,9 +63,9 @@ local function buildRojoProject(kind: "source" | "output", members: { types.Mono
 	return {
 		name = `Welcome To Hell: {place.title}`,
 		emitLegacyScripts = false,
-		-- servePlaceIds = { place.placeId },
-		-- placeId = place.placeId,
-		-- globIgnorePaths = { "**/.config.luau" },
+		servePlaceIds = { tonumber(place.placeId) },
+		placeId = tonumber(place.placeId),
+		globIgnorePaths = { "**/.config.luau" },
 		tree = tree,
 	}
 end

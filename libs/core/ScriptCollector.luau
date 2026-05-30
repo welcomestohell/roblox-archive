@@ -1,6 +1,6 @@
-local Log = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("Log"))
-local MechanicImplementation = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("core"):WaitForChild("MechanicImplementation"))
-local Promise = require(game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("Promise"))
+local Log = require("@libs/Log")
+local MechanicImplementation = require("@libs/core/MechanicImplementation")
+local Promise = require("@roblox_packages/Promise")
 
 local log = Log.new("ScriptCollector")
 

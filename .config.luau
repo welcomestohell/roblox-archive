@@ -10,17 +10,18 @@ local aliases = {
 	chapter6 = "chapter6",
 	chapter7 = "chapter7",
 	core = "core",
-	game = "game",
 	libs = "libs",
+	prvdmwrong = "prvdmwrong",
 	roblox_packages = "roblox_packages",
 	title = "title",
+	universe = "universe",
 }
 -- #endregion
 
 return {
 	luau = {
 		languagemode = "strict",
-		lint = { ["*"] = true },
+		lint = { ["*"] = true, LocalShadow = false },
 		aliases = aliases,
 	},
 	wth = {

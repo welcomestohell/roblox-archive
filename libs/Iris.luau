@@ -1,5 +1,5 @@
-local Iris = require(game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("Iris"))
-local tables = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("collections"):WaitForChild("tables"))
+local Iris = require("@roblox_packages/Iris")
+local tables = require("@libs/collections/tables")
 
 type Cleanup = () -> ()
 

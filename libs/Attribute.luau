@@ -1,7 +1,7 @@
-local Log = require("./Log")
-local gt = require(game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("gt"))
-local tables = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("collections"):WaitForChild("tables"))
-local threadpool = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("threadpool"))
+local Log = require("@libs/Log")
+local gt = require("@roblox_packages/gt")
+local tables = require("@libs/collections/tables")
+local threadpool = require("@libs/threadpool")
 
 export type AttributeValue =
 	| string
@@ -24,7 +24,7 @@ export type AttributeValue =
 -- we specify a proxy type.
 export type ResolvableInstance = unknown
 
-local log = Log.new("Attribute")
+local log = Log.new(script)
 
 local Attribute = {}
 Attribute.__index = Attribute

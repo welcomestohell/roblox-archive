@@ -1,5 +1,5 @@
-local Mechanic = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("Mechanic"))
-local gt = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("gt"))
+local Mechanic = require("@libs/Mechanic")
+local gt = require("@libs/gt")
 
 local SeamlessMeasurement = gt.build(gt.unionLiterals2("Relative", "World"))
 export type SeamlessMeasurement = typeof(SeamlessMeasurement:type())

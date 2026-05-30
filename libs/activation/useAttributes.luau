@@ -1,6 +1,6 @@
-local Mechanic = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("Mechanic"))
-local gt = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("gt"))
-local touch = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("touch"))
+local Mechanic = require("@libs/Mechanic")
+local gt = require("@libs/gt")
+local touch = require("@libs/touch")
 local types = require("./types")
 
 local function useAttributes(

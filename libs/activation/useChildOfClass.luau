@@ -1,13 +1,14 @@
 local createChildOfClass = require("./createChildOfClass")
 local log = require("./log")
-local roblox = require("@core/shared/generated/types/roblox")
+-- local roblox = require("@core/shared/generated/types/roblox")
 local types = require("./types")
 
-local function useChildOfClass<ClassName>(
-	context: types.ActivationContext,
-	childName: string,
-	childClass: ClassName | keyof<roblox.Instances>
-): index<roblox.Instances, ClassName>
+-- local function useChildOfClass<ClassName>(
+-- 	context: types.ActivationContext,
+-- 	childName: string,
+-- 	childClass: ClassName | keyof<roblox.Instances>
+-- ): index<roblox.Instances, ClassName>
+local function useChildOfClass(context: types.ActivationContext, childName: string, childClass: string): any
 	local child = context.instance:FindFirstChild(childName)
 
 	if child then

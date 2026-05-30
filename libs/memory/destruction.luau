@@ -1,5 +1,5 @@
-local Log = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("Log"))
-local functions = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("functions"))
+local Log = require("@libs/Log")
+local functions = require("@libs/functions")
 
 -- LUAU: Destroyable is set to any so types using Destroyable are readable
 export type Destroyable = any

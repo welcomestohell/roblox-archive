@@ -1,5 +1,5 @@
-local Life = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("memory"):WaitForChild("Life"))
-local tweens = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("tweens"))
+local Life = require("@libs/memory/Life")
+local tweens = require("@libs/tweens")
 local useAttributes = require("./useAttributes")
 local useSeamlessAttributes = require("./useSeamlessAttributes")
 

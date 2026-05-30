@@ -1,9 +1,9 @@
 local fs = require("@std/fs")
+local log = require("@libs/log")
 local luau = require("@std/luau")
 local path = require("@std/path")
 local types = require("./types")
 local useRepositoryConfig = require("./useRepositoryConfig")
-local log = require("@libs/log")
 
 local function useMonorepo(): types.Monorepo
 	local repository = useRepositoryConfig()
@@ -55,8 +55,8 @@ local function useMonorepo(): types.Monorepo
 		}
 
 		for key in repository.wth.rojo.mappings :: any do
-			member.rojoMappings.source[key] = member.dirPath
-			member.rojoMappings.output[key] = path.join(repository.wth.paths.output, member.dirPath)
+			member.rojoMappings.source[key] = path.join(member.dirPath, key)
+			member.rojoMappings.output[key] = path.join(repository.wth.paths.output, member.dirPath, key)
 		end
 
 		table.insert(monorepo, member)

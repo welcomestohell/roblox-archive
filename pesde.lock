@@ -150,6 +150,19 @@ pathfs = [{ name = "jiwonz/pathfs", version = "^0.6.0", index = "https://github.
 result = [{ name = "lukadev_0/result", version = "^1.2.1", index = "https://github.com/pesde-pkg/index" }, "peer"]
 unzip = [{ name = "0x5eal/unzip", version = "^0.2.0", index = "https://github.com/pesde-pkg/index", target = "luau" }, "standard"]
 
+[graph."realthx1/luaulog@0.3.0 roblox"]
+direct = ["Log", { name = "realthx1/luaulog", version = "^0.3.0", index = "default" }, "standard"]
+
+[graph."realthx1/luaulog@0.3.0 roblox".pkg_ref]
+ref_ty = "pesde"
+index_url = "https://github.com/pesde-pkg/index"
+
+[graph."realthx1/luaulog@0.3.0 roblox".pkg_ref.dependencies]
+argon = [{ name = "pesde/argon", version = "^2.0.26", index = "https://github.com/pesde-pkg/index", target = "lune" }, "dev"]
+luau_lsp = [{ name = "pesde/luau_lsp", version = "^1.55.0", index = "https://github.com/pesde-pkg/index", target = "lune" }, "dev"]
+selene = [{ name = "pesde/selene", version = "^0.29.0", index = "https://github.com/pesde-pkg/index", target = "lune" }, "dev"]
+stylua = [{ name = "pesde/stylua", version = "^2.3.0", index = "https://github.com/pesde-pkg/index", target = "lune" }, "dev"]
+
 [graph."wally#cameronpcampbell/typeforge@3.0.4 roblox"]
 direct = ["typeforge", { wally = "wally#cameronpcampbell/typeforge", version = "^3.0.4", index = "default" }, "standard"]
 

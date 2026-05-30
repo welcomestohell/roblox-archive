@@ -1,6 +1,8 @@
 {
     "luau-lsp.fflags.enableNewSolver": true,
     "luau-lsp.platform.type": "roblox",
+    "luau-lsp.completion.imports.separateGroupsWithLine": true,
+    "luau-lsp.completion.imports.requireStyle": "alwaysAbsolute",
     "luau-lsp.completion.imports.stringRequires.enabled": true,
     "luau-lsp.ignoreGlobs": [
         "**/.pesde/**",
@@ -9,5 +11,19 @@
     "luau-lsp.completion.imports.ignoreGlobs": [
         "**/.pesde/**",
         "**/.output/**"
-    ]
+    ],
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "**/*.lock": true,
+        ".output": true,
+        "patches": true,
+        "lune_packages": true,
+        "luau_packages": true,
+        "default.project.json": true,
+        "sourcemap.project.json": true
+    },
 }

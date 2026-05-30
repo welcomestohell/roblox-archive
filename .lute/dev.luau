@@ -79,32 +79,54 @@ task.spawn(function()
 			sourcemapProcessor.onChanged(state.sourcemapIndices)
 		end
 
+		local processedFiles = {}
+
 		for fileChanged in sourcemapProcessor.filesChanged do
-			if shouldFileBeTranspiled(monorepo, fileChanged) then
+			if
+				not processedFiles[fileChanged]
+				and fs.exists(fileChanged)
+				and shouldFileBeTranspiled(monorepo, fileChanged)
+			then
 				fs.writeStringToFile(
 					path.join(outputPath, path.relative(process.cwd(), fileChanged)),
 					transpile(state, fileChanged, fs.readFileToString(fileChanged))
 				)
 			end
+			processedFiles[fileChanged] = true
 		end
 
 		for fileRemoved in sourcemapProcessor.filesRemoved do
-			if shouldFileBeTranspiled(monorepo, fileRemoved) then
+			if
+				not processedFiles[fileRemoved]
+				and fs.exists(fileRemoved)
+				and shouldFileBeTranspiled(monorepo, fileRemoved)
+			then
 				fs.remove(path.join(outputPath, path.relative(process.cwd(), fileRemoved)))
 			end
+			processedFiles[fileRemoved] = true
 		end
 
 		for fileAdded in sourcemapProcessor.filesAdded do
-			if shouldFileBeTranspiled(monorepo, fileAdded) then
+			if
+				not processedFiles[fileAdded]
+				and fs.exists(fileAdded)
+				and shouldFileBeTranspiled(monorepo, fileAdded)
+			then
 				local outputFilepath = path.join(outputPath, path.relative(process.cwd(), fileAdded))
 				local fileContents = fs.readFileToString(fileAdded)
+				local dirs = path.dirname(outputFilepath)
+				if not fs.exists(dirs) then
+					fs.createDirectory(dirs, { makeParents = true })
+				end
 				fs.writeStringToFile(outputFilepath, transpile(state, fileAdded, fileContents))
 			end
+			processedFiles[fileAdded] = true
 		end
 
 		table.clear(sourcemapProcessor.filesChanged)
 		table.clear(sourcemapProcessor.filesRemoved)
 		table.clear(sourcemapProcessor.filesAdded)
+		table.clear(processedFiles)
 	end
 end)
 

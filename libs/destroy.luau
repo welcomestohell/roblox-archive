@@ -1,4 +1,4 @@
-local Log = require("./Log")
+local Log = require("@libs/Log")
 
 export type DestroyableClass = {
 	[any]: any,

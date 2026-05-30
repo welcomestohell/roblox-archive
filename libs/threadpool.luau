@@ -1,1 +1,1 @@
-return require("@core/shared/prvdmwrong/runtime").threadpool
+return require("@prvdmwrong/runtime").threadpool

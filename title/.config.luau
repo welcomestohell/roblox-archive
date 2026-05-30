@@ -4,7 +4,7 @@ return {
 			title = "Title Menu",
 			folderName = "Title",
 			placeId = "79485745632134",
-			dependencies = { "game" },
+			dependencies = { "universe" },
 		},
 	},
 }

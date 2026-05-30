@@ -1,5 +1,5 @@
-local gt = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("gt"))
-local tables = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("collections"):WaitForChild("tables"))
+local gt = require("@libs/gt")
+local tables = require("@libs/collections/tables")
 
 local AttributeMap = {}
 AttributeMap.__index = AttributeMap

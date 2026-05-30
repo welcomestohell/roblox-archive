@@ -8,6 +8,7 @@ lune_packages
 # Build files
 .output
 .luaurc
+**/generated/**
 default.project.json
 sourcemap.project.json
 sourcemap.json

@@ -1,8 +1,8 @@
 return {
 	wth = {
 		place = {
-			title = "Game",
-			folderName = "Game",
+			title = "Universe",
+			folderName = "Universe",
 			dependencies = { "core" },
 		},
 	},

@@ -1,3 +1,3 @@
-local Log = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("Log"))
+local Log = require("@libs/Log")
 
 return Log.new("activation")

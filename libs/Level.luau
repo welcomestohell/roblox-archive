@@ -1,19 +1,17 @@
 local RunService = game:GetService("RunService")
 
-local Life = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("memory"):WaitForChild("Life"))
-local Log = require("./Log")
+local Life = require("@libs/memory/Life")
+local Log = require("@libs/Log")
 local Mechanic = require("./Mechanic")
-local Promise = require(game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("Promise"))
+local Promise = require("@roblox_packages/Promise")
 local Result = require("./Result")
 local ScriptCollector = require("./ScriptCollector")
 local activation = require("./activation")
 local functions = require("./functions")
-local gt = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("gt"))
-local tables = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("collections"):WaitForChild("tables"))
-local threadpool = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("threadpool"))
-local types = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("activation"):WaitForChild("types"))
-
-local log = Log.new("Level")
+local gt = require("@libs/gt")
+local tables = require("@libs/collections/tables")
+local threadpool = require("@libs/threadpool")
+local types = require("@libs/activation/types")
 
 --[=[
 	@class Level
@@ -40,6 +38,8 @@ Level.LevelInstance = gt.build(gt.instanceTree({
 	SpawnCharacter = gt.isA.BasePart(),
 	SpawnCamera = gt.optional(gt.isA.BasePart()),
 }))
+
+local log = Log.new(script)
 
 export type LevelInstance = typeof(Level.LevelInstance:type())
 

@@ -1,12 +1,12 @@
 local HttpService = game:GetService("HttpService")
 
-local Attribute = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("Attribute"))
-local AttributeMap = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("AttributeMap"))
-local Life = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("memory"):WaitForChild("Life"))
+local Attribute = require("@libs/Attribute")
+local AttributeMap = require("@libs/AttributeMap")
+local Life = require("@libs/memory/Life")
 local Log = require("./Log")
-local Result = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("Result"))
-local functions = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("functions"))
-local gt = require(game:GetService("ReplicatedStorage"):WaitForChild("Libs"):WaitForChild("gt"))
+local Result = require("@libs/Result")
+local functions = require("@libs/functions")
+local gt = require("@libs/gt")
 
 --[=[
 	@interface MechanicImplementationMetadata
