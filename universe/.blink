@@ -1,0 +1,13 @@
+option Casing = Camel
+option TypesOutput = "./shared/generated/net.luau"
+option ServerOutput = "./server/generated/net.luau"
+option ClientOutput = "./client/generated/net.luau"
+option PromiseLibrary = "ReplicatedStorage.Packages.Promise"
+option RemoteScope = "WELCOME_TO_HELL_UNIVERSE"
+
+event patch {
+    from: Server,
+    type: Reliable,
+    call: SingleSync,
+    data: unknown,
+}

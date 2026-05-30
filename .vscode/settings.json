@@ -1,53 +1,29 @@
 {
-    // Ai can go shit urselves
-    "chat.disableAIFeatures": true,
-    "chat.agent.enabled": false,
-    "chat.commandCenter.enabled": false,
-    "terminal.integrated.initialHint": false,
-    // rest
-    "editor.formatOnSave": true,
-    "editor.rulers": [
-        80,
-        120
-    ],
-    "files.associations": {
-        ".luaurc": "jsonc",
-        ".zed/settings.json": "jsonc"
-    },
-    "luau-lsp.completion.showPropertiesOnMethodCall": true,
-    "luau-lsp.completion.imports.separateGroupsWithLine": true,
-    "luau-lsp.completion.imports.stringRequires.enabled": true,
     "luau-lsp.fflags.enableNewSolver": true,
+    "luau-lsp.platform.type": "roblox",
+    "luau-lsp.completion.imports.separateGroupsWithLine": true,
+    "luau-lsp.completion.imports.requireStyle": "alwaysAbsolute",
+    "luau-lsp.completion.imports.stringRequires.enabled": true,
     "luau-lsp.ignoreGlobs": [
         "**/.pesde/**",
-        "out/**",
-        "inspiration/**"
+        "**/.output/**"
+    ],
+    "luau-lsp.completion.imports.ignoreGlobs": [
+        "**/.pesde/**",
+        "**/.output/**"
     ],
     "files.exclude": {
-        // VSCode
         "**/.git": true,
         "**/.svn": true,
         "**/.hg": true,
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
-        "**/.pesde": true,
         "**/*.lock": true,
-        // Welcome To Hell
-        ".zed": true,
+        ".output": true,
         "patches": true,
-        "out": true,
-        "site": true,
-        "Packages": true,
-        "DevPackages": true,
-        "ServerPackages": true,
-        "sourcemap.json": true,
-        "sourcemap.project.json": true,
+        "lune_packages": true,
+        "luau_packages": true,
         "default.project.json": true,
-        ".darklua.json": true,
-    },
-    "luau-lsp.platform.type": "roblox",
-    "luau-lsp.types.robloxSecurityLevel": "None",
-    "[luau]": {
-        "editor.defaultFormatter": "JohnnyMorganz.stylua",
+        "sourcemap.project.json": true
     },
 }

@@ -1,9 +1,8 @@
-local cli = require("@batteries/cli")
-local run = require("@lib/utils/run")
+local cli = require("@libs/cli")
+local run = require("@libs/run")
 local system = require("@lute/system")
 
-local args = cli.parser()
-args:add("script", "positional", { help = "This script", required = true })
+local args = cli.parser({ description = "Opens a given place ID in Roblox Studio" })
 args:add("placeid", "positional", { help = "Place ID to open", required = true })
 args:parse({ ... })
 

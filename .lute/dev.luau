@@ -1,62 +1,137 @@
-local cli = require("@batteries/cli")
-local copyInto = require("@lib/utils/copyInto")
-local emptyDir = require("@lib/utils/emptyDir")
+local cli = require("@libs/cli")
 local fs = require("@std/fs")
-local json = require("@std/json")
+local initializeOutput = require("@libs/build/initializeOutput")
+local initializeRojo = require("@libs/build/initializeRojo")
+local log = require("@libs/log")
 local path = require("@std/path")
-local places = require("@lib/places")
-local repositoryConfig = require("@lib/utils/repositoryConfig")()
-local richterm = require("@batteries/richterm")
-local rojo = require("@lib/rojo")
-local run = require("@lib/utils/run")
+local process = require("@std/process")
+local run = require("@libs/run")
+local shouldFileBeTranspiled = require("@libs/build/shouldFileBeTranspiled")
 local task = require("@std/task")
+local transpile = require("@libs/build/transpile")
+local types = require("./libs/types")
+local useMonorepo = require("@libs/useMonorepo")
+local usePlaceDependencies = require("@libs/usePlaceDependencies")
+local useRepositoryConfig = require("@libs/useRepositoryConfig")
+local useSourcemapIndices = require("@libs/useSourcemapIndices")
+local useSourcemapProcessor = require("@libs/useSourcemapProcessor")
 
-local args = cli.parser()
-args:add("script", "positional", { help = "This script", required = true })
-args:add("place", "positional", { help = `Place under {repositoryConfig.wth.dirs.source}`, required = true })
+local args = cli.parser({ description = "Launches and observes the given place for development" })
+args:add("place", "positional", { help = "Name of place to build", required = true })
+args:add("open", "flag", { help = "Whether to open the place in Roblox Studio" })
 args:parse({ ... })
 
-places.initialize()
-local place = places.fromDir(args:get("place"))
+local repository = useRepositoryConfig()
+local outputPath = repository.wth.paths.output
+local outputProjectPath = repository.wth.paths.outputProject
+local sourcemapPath = repository.wth.paths.sourcemap
+local sourcemapProjectPath = repository.wth.paths.sourcemapProject
 
-print(richterm.dim(`Resolving dependencies for {place.name}...`))
-local dependencies = places.resolveDependencies(place)
+local monorepo = useMonorepo()
+local member = monorepo[args:get("place")] or log.throw(`Unknown place named {args:get("place")}`)
+local memberPlace = member.place or log.throw(`Member {member.dirName} is not a place (does it have a place field?)`)
+local placeId = memberPlace.placeId or log.throw(`{memberPlace.title} is an abstract place (does it have a placeId?)`)
 
-print(richterm.dim("Preparing output folder..."))
-if fs.exists(repositoryConfig.wth.dirs.output) then
-	emptyDir(repositoryConfig.wth.dirs.output)
-else
-	fs.createDirectory(repositoryConfig.wth.dirs.output, { makeParents = true })
-end
-copyInto(place.sourcePath, place.outputPath)
-copyInto(path.join(repositoryConfig.wth.dirs.source, "libs"), path.join(repositoryConfig.wth.dirs.output, "libs"))
-for _, dependency in dependencies do
-	copyInto(dependency.sourcePath, dependency.outputPath)
-end
+local memberDependencies = usePlaceDependencies(monorepo, member)
+local rojoMembers = table.clone(memberDependencies)
+table.insert(rojoMembers, 1, member)
 
-print(richterm.dim("Preparing require aliases..."))
-run("lute", { "aliases" })
+local state: types.BuildContext = {
+	monorepo = monorepo,
+	repository = repository,
 
-print(richterm.dim("Preparing Rojo projects..."))
-local rojoPlaces = table.clone(dependencies)
-table.insert(rojoPlaces, place)
-local sourceProject = rojo.projectFromPlace("source", rojoPlaces)
-local outputProject = rojo.projectFromPlace("output", rojoPlaces)
-fs.writeStringToFile("default.project.json", json.serialize(outputProject, true))
-fs.writeStringToFile("sourcemap.project.json", json.serialize(sourceProject, true))
+	member = member,
+	memberPlace = memberPlace,
+	memberDependencies = memberDependencies,
+	rojoMembers = rojoMembers,
 
-print(richterm.dim("Preparing Rojo sourcemap..."))
--- run it once synchronously so darklua has something to work with
-run("rojo", { "sourcemap", "--output", "sourcemap.json", "sourcemap.project.json" })
-task.spawn(run, "rojo", { "sourcemap", "--watch", "--output", "sourcemap.json", "sourcemap.project.json" })
+	outputPath = outputPath,
+	outputProjectPath = outputProjectPath,
+	sourcemapPath = sourcemapPath,
+	sourcemapProjectPath = sourcemapProjectPath,
 
-print(richterm.dim("Launch!"))
-for _, p in rojoPlaces do
-	run("blink", { ".blink", "--yes" }, { cwd = p.sourcePath, ignoreFailure = true })
-	task.spawn(run, "blink", { ".blink", "--watch" }, { cwd = p.sourcePath } :: run.Options)
-end
-task.spawn(run, "darklua", { "process", "--watch", repositoryConfig.wth.dirs.source, repositoryConfig.wth.dirs.output })
+	sourcemapIndices = {},
+}
+
+initializeOutput(state)
+initializeRojo(state)
+
+local sourcemapProcessor = useSourcemapProcessor(sourcemapPath)
+local sourcemapWatcher = fs.watch(sourcemapPath)
+
+local sourcemapArgs = { "sourcemap", "--absolute", "--output", sourcemapPath, sourcemapProjectPath }
+run("rojo", sourcemapArgs)
+table.insert(sourcemapArgs, 2, "--watch")
+task.spawn(run, "rojo", sourcemapArgs)
+
+task.spawn(function()
+	while task.wait(0.05) do
+		for absolutePath, fileWatcher in sourcemapProcessor.fileWatchers do
+			if fileWatcher:next() then
+				sourcemapProcessor.filesChanged[absolutePath] = true
+			end
+		end
+
+		-- print(string.rep("\n", 67))
+
+		if sourcemapWatcher:next() then
+			state.sourcemapIndices = useSourcemapIndices(sourcemapPath)
+			sourcemapProcessor.onChanged(state.sourcemapIndices)
+		end
+
+		local processedFiles = {}
+
+		for fileChanged in sourcemapProcessor.filesChanged do
+			if
+				not processedFiles[fileChanged]
+				and fs.exists(fileChanged)
+				and shouldFileBeTranspiled(monorepo, fileChanged)
+			then
+				fs.writeStringToFile(
+					path.join(outputPath, path.relative(process.cwd(), fileChanged)),
+					transpile(state, fileChanged, fs.readFileToString(fileChanged))
+				)
+			end
+			processedFiles[fileChanged] = true
+		end
+
+		for fileRemoved in sourcemapProcessor.filesRemoved do
+			if
+				not processedFiles[fileRemoved]
+				and fs.exists(fileRemoved)
+				and shouldFileBeTranspiled(monorepo, fileRemoved)
+			then
+				fs.remove(path.join(outputPath, path.relative(process.cwd(), fileRemoved)))
+			end
+			processedFiles[fileRemoved] = true
+		end
+
+		for fileAdded in sourcemapProcessor.filesAdded do
+			if
+				not processedFiles[fileAdded]
+				and fs.exists(fileAdded)
+				and shouldFileBeTranspiled(monorepo, fileAdded)
+			then
+				local outputFilepath = path.join(outputPath, path.relative(process.cwd(), fileAdded))
+				local fileContents = fs.readFileToString(fileAdded)
+				local dirs = path.dirname(outputFilepath)
+				if not fs.exists(dirs) then
+					fs.createDirectory(dirs, { makeParents = true })
+				end
+				fs.writeStringToFile(outputFilepath, transpile(state, fileAdded, fileContents))
+			end
+			processedFiles[fileAdded] = true
+		end
+
+		table.clear(sourcemapProcessor.filesChanged)
+		table.clear(sourcemapProcessor.filesRemoved)
+		table.clear(sourcemapProcessor.filesAdded)
+		table.clear(processedFiles)
+	end
+end)
+
 task.spawn(run, "rojo", { "serve" })
 
-print()
-print(richterm.green("Now watching for changes!"))
+if args:has("open") then
+	run("lute", { "ropen", placeId })
+end

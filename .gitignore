@@ -1,23 +1,17 @@
-# Wally
-Packages
-DevPackages
-ServerPackages
+# Pesde
+.pesde
+roblox_packages/*
+luau_packages
+lune_packages
+!roblox_packages/.config.luau
 
-# Output files
-out
+# Build files
+.output
+.luaurc
+**/generated/**
 default.project.json
 sourcemap.project.json
 sourcemap.json
-.darklua.json
-src/.config.luau
-
-# Generated files
-src/*/generated/**/*.luau
-!src/shared/generated/types/roblox.luau
 
 # OS
 .DS_Store
-Thumbs.db
-
-# The Holy Bible
-molly.md

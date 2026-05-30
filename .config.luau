@@ -1,14 +1,35 @@
+-- Aliases are generated with the `lute aliases` script. Don't edit this region!
+-- #region aliases
+local aliases = {
+	chapter = "chapter",
+	chapter1 = "chapter1",
+	chapter2 = "chapter2",
+	chapter3 = "chapter3",
+	chapter4 = "chapter4",
+	chapter5 = "chapter5",
+	chapter6 = "chapter6",
+	chapter7 = "chapter7",
+	core = "core",
+	libs = "libs",
+	prvdmwrong = "prvdmwrong",
+	roblox_packages = "roblox_packages",
+	title = "title",
+	universe = "universe",
+}
+-- #endregion
+
 return {
 	luau = {
-		languageMode = "strict",
-		lint = { ["*"] = true },
+		languagemode = "strict",
+		lint = { ["*"] = true, LocalShadow = false },
+		aliases = aliases,
 	},
 	wth = {
-		dirs = {
-			source = "src",
-			output = "out",
-			patches = "patches",
-			packages = "Packages",
+		paths = {
+			output = ".output",
+			outputProject = "default.project.json",
+			sourcemapProject = "sourcemap.project.json",
+			sourcemap = "sourcemap.json",
 		},
 		rojo = {
 			mappings = {
@@ -35,40 +56,6 @@ return {
 				tower = {
 					{ name = "ReplicatedStorage" },
 					{ name = "TowerScripts", className = "Folder" },
-				},
-			},
-			sourceTree = {
-				["$className"] = "DataModel",
-				ReplicatedStorage = {
-					Internal = {
-						["$className"] = "Folder",
-						Packages = { ["$path"] = { optional = "Packages" } },
-						DevPackages = { ["$path"] = { optional = "DevPackages" } },
-					},
-					Libs = { ["$path"] = { optional = "src/libs" } },
-				},
-				ServerScriptService = {
-					Internal = {
-						["$className"] = "Folder",
-						Packages = { ["$path"] = { optional = "ServerPackages" } },
-					},
-				},
-			},
-			outputTree = {
-				["$className"] = "DataModel",
-				ReplicatedStorage = {
-					Internal = {
-						["$className"] = "Folder",
-						Packages = { ["$path"] = { optional = "Packages" } },
-						DevPackages = { ["$path"] = { optional = "DevPackages" } },
-					},
-					Libs = { ["$path"] = { optional = "out/libs" } },
-				},
-				ServerScriptService = {
-					Internal = {
-						["$className"] = "Folder",
-						Packages = { ["$path"] = { optional = "ServerPackages" } },
-					},
 				},
 			},
 		},

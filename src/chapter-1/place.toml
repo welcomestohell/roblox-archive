@@ -1,4 +1,0 @@
-title = "Chapter 1: A Star Upon A Child"
-placeId = "79485745632134"
-folderName = "Chapter1"
-dependencies = ["chapter-core", "core"]
