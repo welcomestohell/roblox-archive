@@ -18,6 +18,7 @@ local useSourcemapProcessor = require("@libs/useSourcemapProcessor")
 
 local args = cli.parser({ description = "Launches and observes the given place for development" })
 args:add("place", "positional", { help = "Name of place to build", required = true })
+args:add("open", "flag", { help = "Whether to open the place in Roblox Studio" })
 args:parse({ ... })
 
 local repository = useRepositoryConfig()
@@ -35,7 +36,7 @@ local memberDependencies = usePlaceDependencies(monorepo, member)
 local rojoMembers = table.clone(memberDependencies)
 table.insert(rojoMembers, 1, member)
 
-local state: types.BuildState = {
+local state: types.BuildContext = {
 	monorepo = monorepo,
 	repository = repository,
 
@@ -60,18 +61,37 @@ local sourcemapWatcher = fs.watch(sourcemapPath)
 
 local sourcemapArgs = { "sourcemap", "--absolute", "--output", sourcemapPath, sourcemapProjectPath }
 run("rojo", sourcemapArgs)
+table.insert(sourcemapArgs, 2, "--watch")
+task.spawn(run, "rojo", sourcemapArgs)
 
 task.spawn(function()
-	while task.wait(0.1) do
+	while task.wait(0.05) do
 		for absolutePath, fileWatcher in sourcemapProcessor.fileWatchers do
 			if fileWatcher:next() then
 				sourcemapProcessor.filesChanged[absolutePath] = true
 			end
 		end
 
+		-- print(string.rep("\n", 67))
+
 		if sourcemapWatcher:next() then
 			state.sourcemapIndices = useSourcemapIndices(sourcemapPath)
 			sourcemapProcessor.onChanged(state.sourcemapIndices)
+		end
+
+		for fileChanged in sourcemapProcessor.filesChanged do
+			if shouldFileBeTranspiled(monorepo, fileChanged) then
+				fs.writeStringToFile(
+					path.join(outputPath, path.relative(process.cwd(), fileChanged)),
+					transpile(state, fileChanged, fs.readFileToString(fileChanged))
+				)
+			end
+		end
+
+		for fileRemoved in sourcemapProcessor.filesRemoved do
+			if shouldFileBeTranspiled(monorepo, fileRemoved) then
+				fs.remove(path.join(outputPath, path.relative(process.cwd(), fileRemoved)))
+			end
 		end
 
 		for fileAdded in sourcemapProcessor.filesAdded do
@@ -82,14 +102,14 @@ task.spawn(function()
 			end
 		end
 
-		for fileRemoved in sourcemapProcessor.filesRemoved do
-			if shouldFileBeTranspiled(monorepo, fileRemoved) then
-				fs.remove(path.join(outputPath, path.relative(process.cwd(), fileRemoved)))
-			end
-		end
-
-		table.clear(sourcemapProcessor.filesAdded)
 		table.clear(sourcemapProcessor.filesChanged)
 		table.clear(sourcemapProcessor.filesRemoved)
+		table.clear(sourcemapProcessor.filesAdded)
 	end
 end)
+
+task.spawn(run, "rojo", { "serve" })
+
+if args:has("open") then
+	run("lute", { "ropen", placeId })
+end

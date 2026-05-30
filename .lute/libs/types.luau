@@ -1,5 +1,7 @@
 local fs = require("@std/fs")
 local path = require("@std/path")
+local syntax = require("@std/syntax")
+local syntaxTypes = require("@std/syntax/types")
 
 -- Rojo
 
@@ -79,7 +81,7 @@ export type RepositoryConfig = typeof(require("@libs/../../.config"))
 
 -- Build
 
-export type BuildState = {
+export type BuildContext = {
 	monorepo: Monorepo,
 	repository: RepositoryConfig,
 
@@ -95,6 +97,15 @@ export type BuildState = {
 
 	sourcemapIndices: SourcemapIndices,
 }
+
+export type TransfomerContext = {
+	tree: syntax.ParseResult,
+	filepath: path.Pathlike,
+	source: string,
+	build: BuildContext,
+}
+
+export type Transformer = (ctx: TransfomerContext) -> syntaxTypes.Replacements
 
 -- Lute
 

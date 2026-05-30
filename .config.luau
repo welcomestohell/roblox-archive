@@ -1,3 +1,4 @@
+-- Aliases are generated with the `lute aliases` script. Don't edit this region!
 -- #region aliases
 local aliases = {
 	chapter = "chapter",
@@ -11,7 +12,6 @@ local aliases = {
 	core = "core",
 	game = "game",
 	libs = "libs",
-	pkgs = "roblox_packages",
 	roblox_packages = "roblox_packages",
 	title = "title",
 }

@@ -1,14 +1,11 @@
-local types = require("@libs/types")
 local buildRojoProject = require("./buildRojoProject")
 local fs = require("@std/fs")
 local json = require("@std/json")
+local types = require("@libs/types")
 
-local function initializeRojo(state: types.BuildState)
-	fs.writeStringToFile(state.outputProjectPath, json.serialize(buildRojoProject("output", state.rojoMembers), true))
-	fs.writeStringToFile(
-		state.sourcemapProjectPath,
-		json.serialize(buildRojoProject("source", state.rojoMembers), true)
-	)
+local function initializeRojo(ctx: types.BuildContext)
+	fs.writeStringToFile(ctx.outputProjectPath, json.serialize(buildRojoProject("output", ctx.rojoMembers), true))
+	fs.writeStringToFile(ctx.sourcemapProjectPath, json.serialize(buildRojoProject("source", ctx.rojoMembers), true))
 end
 
 return initializeRojo

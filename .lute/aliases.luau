@@ -8,7 +8,7 @@ local useMonorepo = require("@libs/useMonorepo")
 
 local monorepo = useMonorepo()
 
-local luauAliases = { pkgs = "roblox_packages" }
+local luauAliases = {}
 for _, member in ipairs(monorepo) do
 	luauAliases[member.dirName] = path.format(member.dirPath)
 end
