@@ -1,0 +1,21 @@
+#:schema https://raw.githubusercontent.com/godmothersfire/asphalt/refs/heads/main/schema.json
+
+[creator]
+type = "group"
+id = 12787072
+
+[codegen]
+typescript = false
+style = "nested"
+strip_extensions = true
+content = false
+
+[inputs.core]
+path = "assets/core/**/*"
+output_path = "core/shared/generated"
+output_basename = "assets"
+
+[inputs.universe]
+path = "assets/universe/**/*"
+output_path = "universe/shared/generated"
+output_basename = "assets"
