@@ -78,7 +78,7 @@ local WEAK_METATABLES = {
 	kv = table.freeze({ __mode = "kv" }),
 }
 
-local function map<KI, VI, KO, VO>(input: { [KI]: VO }, transform: (KI, VI, { [KI]: VI }) -> (KO, VO))
+local function map<KI, VI, KO, VO>(input: { [KI]: VI }, transform: (KI, VI, { [KI]: VI }) -> (KO, VO))
 	local result = table.create(#input) :: any
 
 	for inputKey, inputValue in input do
@@ -102,7 +102,7 @@ local function filter<KI, VI, KO, VO>(input: { [KI]: VO }, predicate: (KI, VI, {
 end
 
 local function filterMap<KI, VI, KO, VO>(
-	input: { [KI]: VO },
+	input: { [KI]: VI },
 	predicate: (KI, VI, { [KI]: VI }) -> boolean,
 	transform: (KI, VI, { [KI]: VI }) -> (KO, VO)
 )

@@ -25,7 +25,7 @@ local function useRem()
 		return calculateRem(viewportSize())
 	end)
 
-	return function(value: Fluid.UsedAs<number>, mode: "scale" | "unit" | nil)
+	return function(value: Fluid.UsedAs<number>, mode: "scale" | "offset" | nil)
 		return if mode == "scale" then Fluid.read(value) * rem() / BASE_REM else Fluid.read(value) * rem()
 	end
 end

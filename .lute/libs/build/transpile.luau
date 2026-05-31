@@ -1,11 +1,9 @@
-local luau = require("@std/luau")
+local log = require("@libs/log")
 local path = require("@std/path")
 local printer = require("@std/syntax/printer")
-local query = require("@std/syntax/query")
 local resolveRequires = require("@libs/build/transformers/resolveRequires")
 local syntax = require("@std/syntax")
 local types = require("@libs/types")
-local utils = require("@std/syntax/utils")
 
 local transformers: { types.Transformer } = {
 	resolveRequires,
@@ -13,15 +11,21 @@ local transformers: { types.Transformer } = {
 
 local function transpile(ctx: types.BuildContext, filepath: path.Pathlike, source: string)
 	for _, transformer in transformers do
-		local tree = syntax.parse(source)
+		local parseSuccess, treeOrError = pcall(syntax.parse, source)
+		if not parseSuccess then
+			log.warn("Failed to parse", filepath)
+			log.warn(treeOrError)
+			return source
+		end
+
 		local transformerCtx: types.TransfomerContext = {
 			build = ctx,
 			filepath = filepath,
 			source = source,
-			tree = tree,
+			tree = treeOrError,
 		}
 
-		source = printer.printFile(tree, transformer(transformerCtx))
+		source = printer.printFile(treeOrError, transformer(transformerCtx))
 	end
 
 	return source

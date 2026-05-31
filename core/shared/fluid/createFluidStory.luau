@@ -33,20 +33,7 @@ local function createFluidStory<C>(storyProps: {
 
 			local rendered = storyProps.render({ controls = states :: Controls<C> })
 			UILabs.Environment.SetStoryHolder(rendered)
-
-			Fluid.create("Frame")({
-				Name = "Stage",
-				BackgroundTransparency = 1,
-				Size = UDim2.fromScale(1, 1),
-				Parent = props.target,
-
-				Fluid.create("UIListLayout")({
-					VerticalAlignment = Enum.VerticalAlignment.Center,
-					HorizontalAlignment = Enum.HorizontalAlignment.Center,
-				}),
-
-				rendered,
-			})
+			rendered.Parent = props.target
 		end)
 	end)
 end

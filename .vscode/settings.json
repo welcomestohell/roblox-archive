@@ -26,6 +26,10 @@
         "default.project.json": true,
         "sourcemap.project.json": true
     },
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.patterns": {
+        "*.luau": "${capture}.story.luau"
+    },
     "editor.formatOnSave": true,
     "[luau]": {
         "editor.defaultFormatter": "JohnnyMorganz.stylua"
