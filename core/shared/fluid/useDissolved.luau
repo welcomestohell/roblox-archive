@@ -1,9 +1,9 @@
-local Vide = require("@roblox_packages/Vide")
+local Fluid = require("@roblox_packages/Fluid")
 
 --[=[
     Dissolves a source into a constant value if it has no `read` dependencies.
 ]=]
-local function useDissolved<T>(source: (read: <T>(value: Vide.As<T>) -> T) -> T): Vide.As<T>
+local function useDissolved<T>(source: (read: <T>(value: Fluid.UsedAs<T>) -> T) -> T): Fluid.UsedAs<T>
 	local isDependencyRead = false
 
 	local function mockRead(value: unknown)
@@ -19,7 +19,7 @@ local function useDissolved<T>(source: (read: <T>(value: Vide.As<T>) -> T) -> T)
 	return if initialSuccess
 		then dissolvedOrError
 		elseif isDependencyRead then function()
-			return source(Vide.read :: never)
+			return source(Fluid.read :: never)
 		end
 		else error(`Dissolving source threw an error: {dissolvedOrError}`)
 end

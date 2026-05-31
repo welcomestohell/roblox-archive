@@ -1,0 +1,268 @@
+diff --git a/src/lib.luau b/src/lib.luau
+index 4795a9e..622775c 100644
+--- a/src/lib.luau
++++ b/src/lib.luau
+@@ -1,26 +1,28 @@
+ local version = { major = 0, minor = 3, patch = 1 }
+ 
+-local root = require "./root"
+-local mount = require "./mount"
+-local create = require "./create"
+-local apply = require "./apply"
+-local source = require "./source"
+-local effect = require "./effect"
+-local derive = require "./derive"
+-local cleanup = require "./cleanup"
+-local untrack = require "./untrack"
+-local read = require "./read"
+-local batch = require "./batch"
+-local context = require "./context"
+-local switch = require "./switch"
+-local show = require "./show"
+-local indexes = require "./indexes"
+-local values = require "./values"
+-local spring, update_springs = require "./spring"()
+-local tween, update_tweens = require "./tween"()
+-local action = require "./action"()
+-local changed = require "./changed"
+-local flags = require "./flags"
++local root = require("./root")
++local mount = require("./mount")
++local create = require("./create")
++local apply = require("./apply")
++local source = require("./source")
++local effect = require("./effect")
++local derive = require("./derive")
++local cleanup = require("./cleanup")
++local untrack = require("./untrack")
++local read = require("./read")
++local batch = require("./batch")
++local context = require("./context")
++local switch = require("./switch")
++local show = require("./show")
++local indexes = require("./indexes")
++local values = require("./values")
++local spring, update_springs = require("./spring")()
++local tween, update_tweens = require("./tween")()
++local action = require("./action")()
++local changed = require("./changed")
++local flags = require("./flags")
++
++export type Derivable<T> = T | () -> T
+ 
+ export type Source<T> = source.Source<T>
+ export type source<T> = Source<T>
+@@ -45,101 +47,97 @@ export type function getvideproperties(instance, instancetype)
+ 	end
+ 
+ 	local function insert(object: type)
+-        if object:is("class") == false then return end
+-		if object:readparent() == nil then return end
++		if object:is("class") == false then
++			return
++		end
++		if object:readparent() == nil then
++			return
++		end
+ 		for key, value in object:properties() do
+ 			local read = value.read
+-			if not read then continue end
++			if not read then
++				continue
++			end
+ 			local is_a_signal = is_signal(read)
+ 			if is_a_signal ~= false and read:is("table") then -- luau-lsp
+ 				local connect_fn = is_a_signal :: type
+ 				local params = connect_fn:parameters()
+-				if params and params.head then table.remove(params.head, 1) end
++				if params and params.head then
++					table.remove(params.head, 1)
++				end
+ 
+-				local typ = types.unionof(
+-					nil_type,
+-					types.newfunction(params)
+-				)
++				local typ = types.unionof(nil_type, types.newfunction(params))
+ 
+ 				properties[key] = typ
+ 			elseif is_a_signal ~= false and read:is("class") then -- roblox-studio
+-
+ 			elseif read:is("function") or read:is("intersection") then
+ 				continue
+ 			elseif value.write then
+-
+ 				local wvalue = value.write
+ 
+-				local typ = types.unionof(
+-					types.newfunction({}, { head = { wvalue } }),
+-					wvalue,
+-					nil_type
+-				)
++				local typ = types.unionof(types.newfunction({}, { head = { wvalue } }), wvalue, nil_type)
+ 
+ 				properties[key] = typ
+ 			end
+ 		end
+ 
+ 		local parent = object:readparent()
+-		if parent then insert(parent) end
++		if parent then
++			insert(parent)
++		end
+ 	end
+ 	insert(instance)
+ 
+ 	local vide_props = types.newtable(properties)
+ 	local vide_action: { [type]: type } = {
+-		[types.singleton "priority"] = types.number,
+-		[types.singleton "callback"] = types.newfunction({ head = { instancetype } })
++		[types.singleton("priority")] = types.number,
++		[types.singleton("callback")] = types.newfunction({ head = { instancetype } }),
+ 	}
+ 	local vide_action_table = types.newtable(vide_action)
+ 
+ 	local function_returns_child = types.newfunction()
+ 	local nested_table_or_function_or_child = types.newtable()
+-	local union = types.unionof( instancetype, function_returns_child, nested_table_or_function_or_child )
++	local union = types.unionof(instancetype, function_returns_child, nested_table_or_function_or_child)
+ 
+ 	nested_table_or_function_or_child:setindexer(types.number, union)
+ 	function_returns_child:setreturns({ types.unionof(union, nil_type) })
+ 
+ 	vide_props:setindexer(
+ 		types.number,
+-		types.unionof(
+-			vide_action_table,
+-			instancetype,
+-			function_returns_child,
+-			vide_props,
+-			nil_type
+-		)
++		types.unionof(vide_action_table, instancetype, function_returns_child, vide_props, nil_type)
+ 	)
+ 
+ 	return vide_props
+ end
+ 
+ local function step(dt: number)
+-    if game then
+-        debug.profilebegin("VIDE STEP")
+-        debug.profilebegin("VIDE SPRING")
+-    end
++	if game then
++		debug.profilebegin("VIDE STEP")
++		debug.profilebegin("VIDE SPRING")
++	end
+ 
+-    update_springs(dt)
++	update_springs(dt)
+ 
+-    if game then
+-        debug.profileend()
+-        debug.profilebegin("VIDE TWEEN")
+-    end
++	if game then
++		debug.profileend()
++		debug.profilebegin("VIDE TWEEN")
++	end
+ 
+-    update_tweens(dt)
++	update_tweens(dt)
+ 
+-    if game then
+-        debug.profileend()
+-        debug.profileend()
+-    end
++	if game then
++		debug.profileend()
++		debug.profileend()
++	end
+ end
+ 
+-local stepped: RBXScriptConnection? = game and game:GetService("RunService").Heartbeat:Connect(function(dt: number)
+-    task.defer(step, dt)
+-end)
++local stepped: RBXScriptConnection? = game
++	and game:GetService("RunService").Heartbeat:Connect(function(dt: number)
++		task.defer(step, dt)
++	end)
+ 
+ local vide = {
+-    version = version,
++	version = version,
+ 
+ 	-- core
+ 	root = root,
+@@ -174,40 +172,40 @@ local vide = {
+ 	defaults = (nil :: any) :: boolean,
+ 	defer_nested_properties = (nil :: any) :: boolean,
+ 
+-    -- temporary
+-    apply = function<T>(instance: T & Instance)
+-        return function(props: getvideproperties<T, Instance>)
+-            apply(instance, props)
+-            return instance
+-        end
+-    end,
+-
+-    -- runtime
+-    step = function(dt: number)
+-        if stepped then
+-            stepped:Disconnect()
+-            stepped = nil
+-        end
+-        step(dt)
+-    end
++	-- temporary
++	apply = function<T>(instance: T & Instance)
++		return function(props: getvideproperties<T, Instance>)
++			apply(instance, props)
++			return instance
++		end
++	end,
++
++	-- runtime
++	step = function(dt: number)
++		if stepped then
++			stepped:Disconnect()
++			stepped = nil
++		end
++		step(dt)
++	end,
+ }
+ 
+ setmetatable(vide :: any, {
+-    __index = function<T>(_, index: keyof<typeof(flags)>): index<typeof(flags), T>
+-        if (flags :: any)[index] == nil then
+-            error(`{tostring(index)} is not a valid member of vide`, 0)
+-        else
+-            return (flags :: any)[index]
+-        end
+-    end,
+-
+-    __newindex = function<T>(_, index: T & keyof<typeof(flags)>, value: index<typeof(flags), T>)
+-        if (flags :: any)[index] == nil then
+-            error(`{tostring(index)} is not a valid member of vide, 0`)
+-        else
+-            (flags :: any)[index] = value
+-        end
+-    end
++	__index = function<T>(_, index: keyof<typeof(flags)>): index<typeof(flags), T>
++		if (flags :: any)[index] == nil then
++			error(`{tostring(index)} is not a valid member of vide`, 0)
++		else
++			return (flags :: any)[index]
++		end
++	end,
++
++	__newindex = function<T>(_, index: T & keyof<typeof(flags)>, value: index<typeof(flags), T>)
++		if (flags :: any)[index] == nil then
++			error(`{tostring(index)} is not a valid member of vide, 0`)
++		else
++			(flags :: any)[index] = value
++		end
++	end,
+ })
+ 
+ return vide

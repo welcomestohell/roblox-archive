@@ -1,5 +1,5 @@
-local Vide = require("@roblox_packages/Vide")
-local useCamera = require("@core/shared/vide/useCamera")
+local Fluid = require("@roblox_packages/Fluid")
+local useCamera = require("@core/shared/fluid/useCamera")
 
 const BASE_REM = 16
 const MIN_REM = 10
@@ -17,18 +17,16 @@ end
 local function useRem()
 	local camera = useCamera()
 
-	local viewportSize = Vide.derive(function()
+	local viewportSize = Fluid.derive(function()
 		return camera().ViewportSize
 	end)
 
-	local rem = Vide.derive(function()
+	local rem = Fluid.derive(function()
 		return calculateRem(viewportSize())
 	end)
 
-	return function(value: Vide.As<number>, mode: "scale" | "unit" | nil)
-		return Vide.derive(function()
-			return if mode == "scale" then Vide.read(value) * rem() / BASE_REM else Vide.read(value) * rem()
-		end)
+	return function(value: Fluid.UsedAs<number>, mode: "scale" | "unit" | nil)
+		return if mode == "scale" then Fluid.read(value) * rem() / BASE_REM else Fluid.read(value) * rem()
 	end
 end
 

@@ -1,10 +1,10 @@
 local RunService = game:GetService("RunService")
 
-local Vide = require("@roblox_packages/Vide")
+local Fluid = require("@roblox_packages/Fluid")
 
 local function useLifetime()
-	local lifetime = Vide.source(0)
-	Vide.cleanup(RunService.PreSimulation:Connect(function(dt)
+	local lifetime = Fluid.source(0)
+	Fluid.cleanup(RunService.PreSimulation:Connect(function(dt)
 		lifetime(lifetime() + dt)
 	end))
 	return lifetime
