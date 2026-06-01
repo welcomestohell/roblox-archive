@@ -1,9 +1,11 @@
 local Fluid = require("@roblox_packages/Fluid")
 
+export type Read = <T>(value: Fluid.UsedAs<T>) -> T
+
 --[=[
     Dissolves a source into a constant value if it has no `read` dependencies.
 ]=]
-local function useDissolved<T>(source: (read: <T>(value: Fluid.UsedAs<T>) -> T) -> T): Fluid.UsedAs<T>
+local function useDissolved<T>(source: (read: Read) -> T): Fluid.UsedAs<T>
 	local isDependencyRead = false
 
 	local function mockRead(value: unknown)

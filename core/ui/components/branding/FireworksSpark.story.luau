@@ -1,4 +1,4 @@
-local FireworksLogo = require("@core/ui/components/FireworksLogo")
+local FireworksSpark = require("./FireworksSpark")
 local createFluidStory = require("@core/shared/fluid/createFluidStory")
 
 return createFluidStory({
@@ -7,7 +7,7 @@ return createFluidStory({
 		color = Color3.fromHex("#FF004D"),
 	},
 	render = function(props)
-		return FireworksLogo({
+		return FireworksSpark({
 			visible = props.controls.visible,
 			color = props.controls.color,
 			anchorPoint = Vector2.new(0.5, 0.5),

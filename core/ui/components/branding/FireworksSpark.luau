@@ -12,6 +12,7 @@ local function FireworksSpark(props: {
 	anchorPoint: Fluid.UsedAs<Vector2>?,
 	position: Fluid.UsedAs<UDim2>?,
 	rotation: Fluid.UsedAs<number>?,
+	layoutOrder: Fluid.UsedAs<number>?,
 	zIndex: Fluid.UsedAs<number>?,
 })
 	local rem = useRem()
@@ -33,6 +34,7 @@ local function FireworksSpark(props: {
 		AnchorPoint = props.anchorPoint,
 		Position = props.position,
 		Rotation = props.rotation,
+		LayoutOrder = props.layoutOrder,
 		Size = props.size or function()
 			return UDim2.fromOffset(rem(24), rem(24))
 		end,

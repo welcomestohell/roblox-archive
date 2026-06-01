@@ -5,6 +5,7 @@ local useToggled = require("@core/shared/fluid/useToggled")
 
 local function FireworksLogo(props: {
 	visible: Fluid.UsedAs<boolean>,
+	transparency: Fluid.UsedAs<number>?,
 
 	name: Fluid.UsedAs<string>?,
 	size: Fluid.UsedAs<UDim2>?,
@@ -12,12 +13,15 @@ local function FireworksLogo(props: {
 
 	anchorPoint: Fluid.UsedAs<Vector2>?,
 	position: Fluid.UsedAs<UDim2>?,
+	layoutOrder: Fluid.UsedAs<number>?,
 	zIndex: Fluid.UsedAs<number>?,
 })
 	local rem = useRem()
 
 	local progress = useToggled(props.visible, 0, 1)
-	local transparency = Fluid.spring(progress, 15, 0.5)
+	local transparency = Fluid.spring(function()
+		return Fluid.read(progress) * math.map(Fluid.read(props.transparency or 0), 0, 1, 1, 0)
+	end, 15, 0.5)
 	local sparkSize = useToggled(props.visible, UDim2.fromScale(14 / 74, 14 / 24), UDim2.fromScale(0, 0))
 	local topPosition =
 		Fluid.spring(useToggled(props.visible, UDim2.fromScale(0, 0), UDim2.fromScale(0.025, 0)), 10, 1 / 3)
@@ -35,6 +39,7 @@ local function FireworksLogo(props: {
 
 		AnchorPoint = props.anchorPoint,
 		Position = props.position,
+		LayoutOrder = props.layoutOrder,
 		Size = props.size or function()
 			return UDim2.fromOffset(rem(24), rem(24))
 		end,

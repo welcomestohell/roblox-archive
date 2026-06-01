@@ -1,7 +1,7 @@
 local Players = game:GetService("Players")
 local StarterGui = game:GetService("StarterGui")
 
-local FireworksLogo = require("@core/ui/components/FireworksLogo")
+local FireworksLogo = require("@core/ui/components/branding/FireworksLogo")
 local Fluid = require("@roblox_packages/Fluid")
 local prvd = require("@prvdmwrong/prvdmwrong")
 local useRem = require("@core/shared/fluid/useRem")

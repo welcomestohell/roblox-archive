@@ -51,6 +51,7 @@ local function WTHLogo(props: {
 
 	anchorPoint: Fluid.UsedAs<Vector2>?,
 	position: Fluid.UsedAs<UDim2>?,
+	layoutOrder: Fluid.UsedAs<number>?,
 	zIndex: Fluid.UsedAs<number>?,
 })
 	local rem = useRem()
@@ -62,6 +63,7 @@ local function WTHLogo(props: {
 
 		AnchorPoint = props.anchorPoint,
 		Position = props.position,
+		LayoutOrder = props.layoutOrder,
 		Size = props.size or function()
 			return UDim2.fromOffset(rem(24), rem(24))
 		end,

@@ -1,4 +1,4 @@
-local WTHLogo = require("@core/ui/components/WTHLogo")
+local WTHLogo = require("./WTHLogo")
 local createFluidStory = require("@core/shared/fluid/createFluidStory")
 
 return createFluidStory({
