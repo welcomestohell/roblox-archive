@@ -1,6 +1,6 @@
-local pp = require("@batteries/pp")
-local richterm = require("@batteries/richterm")
-local process = require("@std/process")
+local pp = require "@batteries/pp"
+local process = require "@std/process"
+local richterm = require "@batteries/richterm"
 
 local function stringify(formatter: richterm.Formatter, ...: unknown)
 	local len = select("#", ...)
@@ -23,10 +23,10 @@ local function throw(...: unknown): never
 	return process.exit(1)
 end
 
-return table.freeze({
+return table.freeze {
 	verbose = createLogger(richterm.dim),
 	info = createLogger(richterm.combine()),
 	warn = createLogger(richterm.yellow),
 	error = createLogger(richterm.red),
 	throw = throw,
-})
+}

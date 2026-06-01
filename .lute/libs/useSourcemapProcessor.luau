@@ -1,6 +1,6 @@
-local fs = require("@std/fs")
-local path = require("@std/path")
-local types = require("./types")
+local fs = require "@std/fs"
+local path = require "@std/path"
+local types = require "./types"
 
 --[=[
     Watches the project's sourcemap.json for files added and removed. Also

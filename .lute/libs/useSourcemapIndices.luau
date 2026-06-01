@@ -1,10 +1,10 @@
 -- From https://github.com/checkraisefold/warmluau/blob/8299341613adfef565a19b8ee7da25c1c66ccb10/src/ingredients/resolve_require/init.luau
 
-local fs = require("@std/fs")
-local json = require("@std/json")
-local path = require("@std/path")
-local sanitizeQuotes = require("./sanitizeQuotes")
-local types = require("./types")
+local fs = require "@std/fs"
+local json = require "@std/json"
+local path = require "@std/path"
+local sanitizeQuotes = require "./sanitizeQuotes"
+local types = require "./types"
 
 local function sourcemapIndices(sourcemapPath: path.Pathlike): types.SourcemapIndices
 	local sourcemap = json.deserialize(fs.readFileToString(sourcemapPath)) :: types.SourcemapNode

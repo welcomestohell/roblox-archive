@@ -1,5 +1,5 @@
-local fs = require("@std/fs")
-local path = require("@std/path")
+local fs = require "@std/fs"
+local path = require "@std/path"
 
 local function copyInto(from: path.Pathlike, to: path.Pathlike)
 	if fs.type(from) == "dir" then

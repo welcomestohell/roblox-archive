@@ -1,25 +1,25 @@
-local cli = require("@libs/cli")
-local fs = require("@std/fs")
-local initializeOutput = require("@libs/build/initializeOutput")
-local initializeRojo = require("@libs/build/initializeRojo")
-local log = require("@libs/log")
-local path = require("@std/path")
-local process = require("@std/process")
-local run = require("@libs/run")
-local shouldFileBeTranspiled = require("@libs/build/shouldFileBeTranspiled")
-local task = require("@std/task")
-local transpile = require("@libs/build/transpile")
-local types = require("./libs/types")
-local useMonorepo = require("@libs/useMonorepo")
-local usePlaceDependencies = require("@libs/usePlaceDependencies")
-local useRepositoryConfig = require("@libs/useRepositoryConfig")
-local useSourcemapIndices = require("@libs/useSourcemapIndices")
-local useSourcemapProcessor = require("@libs/useSourcemapProcessor")
+local cli = require "@libs/cli"
+local fs = require "@std/fs"
+local initializeOutput = require "@libs/build/initializeOutput"
+local initializeRojo = require "@libs/build/initializeRojo"
+local log = require "@libs/log"
+local path = require "@std/path"
+local process = require "@std/process"
+local run = require "@libs/run"
+local shouldFileBeTranspiled = require "@libs/build/shouldFileBeTranspiled"
+local task = require "@std/task"
+local transpile = require "@libs/build/transpile"
+local types = require "./libs/types"
+local useMonorepo = require "@libs/useMonorepo"
+local usePlaceDependencies = require "@libs/usePlaceDependencies"
+local useRepositoryConfig = require "@libs/useRepositoryConfig"
+local useSourcemapIndices = require "@libs/useSourcemapIndices"
+local useSourcemapProcessor = require "@libs/useSourcemapProcessor"
 
-local args = cli.parser({ description = "Launches and observes the given place for development" })
+local args = cli.parser { description = "Launches and observes the given place for development" }
 args:add("place", "positional", { help = "Name of place to build", required = true })
 args:add("open", "flag", { help = "Whether to open the place in Roblox Studio" })
-args:parse({ ... })
+args:parse { ... }
 
 local repository = useRepositoryConfig()
 local outputPath = repository.wth.paths.output
@@ -28,7 +28,7 @@ local sourcemapPath = repository.wth.paths.sourcemap
 local sourcemapProjectPath = repository.wth.paths.sourcemapProject
 
 local monorepo = useMonorepo()
-local member = monorepo[args:get("place")] or log.throw(`Unknown place named {args:get("place")}`)
+local member = monorepo[args:get "place"] or log.throw(`Unknown place named {args:get "place"}`)
 local memberPlace = member.place or log.throw(`Member {member.dirName} is not a place (does it have a place field?)`)
 local placeId = memberPlace.placeId or log.throw(`{memberPlace.title} is an abstract place (does it have a placeId?)`)
 
@@ -132,6 +132,6 @@ end)
 
 task.spawn(run, "rojo", { "serve" })
 
-if args:has("open") then
+if args:has "open" then
 	run("lute", { "ropen", placeId })
 end

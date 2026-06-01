@@ -1,6 +1,6 @@
-local copyInto = require("@libs/copyInto")
-local emptyDir = require("@libs/emptyDir")
-local types = require("@libs/types")
+local copyInto = require "@libs/copyInto"
+local emptyDir = require "@libs/emptyDir"
+local types = require "@libs/types"
 
 local function initializeOutput(ctx: types.BuildContext)
 	pcall(emptyDir, ctx.outputPath)

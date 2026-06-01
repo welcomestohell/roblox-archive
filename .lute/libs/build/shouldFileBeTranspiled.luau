@@ -1,7 +1,7 @@
-local getMemberFromPath = require("@libs/getMemberFromPath")
-local types = require("@libs/types")
-local path = require("@std/path")
-local process = require("@std/process")
+local getMemberFromPath = require "@libs/getMemberFromPath"
+local path = require "@std/path"
+local process = require "@std/process"
+local types = require "@libs/types"
 
 local function shouldFileBeTranspiled(monorepo: types.Monorepo, absolutePath: path.Pathlike)
 	local filepath = path.relative(process.cwd(), absolutePath)

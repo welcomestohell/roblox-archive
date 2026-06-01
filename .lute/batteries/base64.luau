@@ -136,7 +136,7 @@ local function decode(input_buffer: buffer): buffer
 	return output
 end
 
-return table.freeze({
+return table.freeze {
 	encode = encode,
 	decode = decode,
-})
+}

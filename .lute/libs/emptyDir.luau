@@ -1,5 +1,5 @@
-local fs = require("@std/fs")
-local path = require("@std/path")
+local fs = require "@std/fs"
+local path = require "@std/path"
 
 local function emptyDir(dir: path.Pathlike)
 	for _, file in fs.listDirectory(dir) do

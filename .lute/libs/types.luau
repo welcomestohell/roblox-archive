@@ -1,7 +1,7 @@
-local fs = require("@std/fs")
-local path = require("@std/path")
-local syntax = require("@std/syntax")
-local syntaxTypes = require("@std/syntax/types")
+local fs = require "@std/fs"
+local path = require "@std/path"
+local syntax = require "@std/syntax"
+local syntaxTypes = require "@std/syntax/types"
 
 -- Rojo
 
@@ -77,7 +77,7 @@ export type MonorepoMember = {
 
 export type Monorepo = { [any]: MonorepoMember }
 
-export type RepositoryConfig = typeof(require("@libs/../../.config"))
+export type RepositoryConfig = typeof(require "@libs/../../.config")
 
 -- Build
 
@@ -109,6 +109,6 @@ export type Transformer = (ctx: TransfomerContext) -> syntaxTypes.Replacements
 
 -- Lute
 
-export type Watcher = typeof(fs.watch(""))
+export type Watcher = typeof(fs.watch "")
 
 return nil

@@ -1,12 +1,12 @@
-local cst = require("@std/syntax")
-local query = require("@std/syntax/query")
-local utils = require("@std/syntax/utils")
-local log = require("@libs/log")
-local useRepositoryConfig = require("@libs/useRepositoryConfig")
-local fs = require("@std/fs")
-local json = require("@std/json")
-local luau = require("@std/luau")
-local path = require("@std/path")
+local cst = require "@std/syntax"
+local fs = require "@std/fs"
+local json = require "@std/json"
+local log = require "@libs/log"
+local luau = require "@std/luau"
+local path = require "@std/path"
+local query = require "@std/syntax/query"
+local useRepositoryConfig = require "@libs/useRepositoryConfig"
+local utils = require "@std/syntax/utils"
 
 type Context<Options = { [any]: any }> = {
 	path: string,

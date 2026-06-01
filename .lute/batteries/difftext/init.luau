@@ -1,6 +1,6 @@
-local myersdiff = require("@self/myersdiff")
-local printdiff = require("@self/printdiff")
-local types = require("@self/types")
+local myersdiff = require "@self/myersdiff"
+local printdiff = require "@self/printdiff"
+local types = require "@self/types"
 
 export type diff = types.diff
 export type diffoptions = types.diffoptions

@@ -1,6 +1,6 @@
 -- Forked for use in Welcome To Hell
 
-local process = require("@std/process")
+local process = require "@std/process"
 
 local cli = {}
 cli.__index = cli
@@ -232,7 +232,7 @@ function cli.help(self: Parser, formatter: ((s: string) -> string)?): ()
 		return s
 	end
 
-	print(fmt("Usage:"))
+	print(fmt "Usage:")
 	for _, argument in self.arguments do
 		if argument.options.hidden then
 			continue

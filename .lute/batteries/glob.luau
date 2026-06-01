@@ -17,8 +17,8 @@
     - Metacharacters can be matched literally by wrapping them in brackets,
       e.g. `[?]` matches a literal `?`, `[*]` matches a literal `*`
 ]]
-local fs = require("@std/fs")
-local path = require("@std/path")
+local fs = require "@std/fs"
+local path = require "@std/path"
 
 local function matchesSegment(pattern: string, name: string, patternStart: number?, nameStart: number?): boolean
 	local patternIndex = patternStart or 1

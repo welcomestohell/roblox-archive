@@ -11,4 +11,4 @@ export type diffoptions = {
 	byChar: boolean?,
 }?
 
-return table.freeze({})
+return table.freeze {}

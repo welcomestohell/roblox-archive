@@ -1,9 +1,9 @@
-local log = require("@libs/log")
-local path = require("@std/path")
-local printer = require("@std/syntax/printer")
-local resolveRequires = require("@libs/build/transformers/resolveRequires")
-local syntax = require("@std/syntax")
-local types = require("@libs/types")
+local log = require "@libs/log"
+local path = require "@std/path"
+local printer = require "@std/syntax/printer"
+local resolveRequires = require "@libs/build/transformers/resolveRequires"
+local syntax = require "@std/syntax"
+local types = require "@libs/types"
 
 local transformers: { types.Transformer } = {
 	resolveRequires,

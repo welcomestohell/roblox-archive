@@ -1,8 +1,8 @@
-local richterm = require("@batteries/richterm")
-local myersdiff = require("./myersdiff")
+local myersdiff = require "./myersdiff"
+local richterm = require "@batteries/richterm"
 local myersdiffbychar = myersdiff.myersdiffbychar
 local myersdiffbyline = myersdiff.myersdiffbyline
-local types = require("./types")
+local types = require "./types"
 local brightGreen = richterm.brightGreen
 local brightRed = richterm.brightRed
 local bgGreen = richterm.bgGreen
@@ -78,7 +78,7 @@ local function formatLineSideHeader(
 end
 
 local function printDiffByLineDetailed(a: string, b: string, includeLineNumbers: boolean?): string
-	local src, dest = a:split("\n"), b:split("\n")
+	local src, dest = a:split "\n", b:split "\n"
 	local maxNumLines = math.max(#src, #dest)
 	local maxLineNumberLen = math.floor(math.log10(maxNumLines)) + 1
 	local diff = myersdiffbyline(src, dest)
@@ -112,8 +112,8 @@ local function printDiffByLineDetailed(a: string, b: string, includeLineNumbers:
 					)
 					oldLine, newLine = oldLine + 1, newLine + 1
 				else
-					table.insert(result, brightRed("- ") .. srcLine)
-					table.insert(result, brightGreen("+ ") .. destLine)
+					table.insert(result, brightRed "- " .. srcLine)
+					table.insert(result, brightGreen "+ " .. destLine)
 				end
 			else
 				for _, deleted in deletes do
@@ -168,7 +168,7 @@ local function prettydiff(
 	end
 
 	local result = {} :: { string }
-	local src, dest = a:split("\n"), b:split("\n")
+	local src, dest = a:split "\n", b:split "\n"
 	local diff = myersdiffbyline(src, dest)
 	if options and options.includeLineNumbers then
 		-- Helper to format line number tables so we don't get too verbose

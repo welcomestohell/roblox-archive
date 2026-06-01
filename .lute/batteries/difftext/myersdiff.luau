@@ -1,6 +1,6 @@
-local deque = require("@batteries/collections/deque")
-local tableext = require("@std/tableext")
-local types = require("./types")
+local deque = require "@batteries/collections/deque"
+local tableext = require "@std/tableext"
+local types = require "./types"
 
 type diffoperation = types.diffoperation
 type diff = types.diff
@@ -26,10 +26,10 @@ local function hasDiagonalEdge(node: EditGraphNode, a: string | { string }, b: s
 		if typeof(b) == "table" then
 			return x < #a and y < #b and a[x + 1] == b[y + 1]
 		else
-			error("hasDiagonalEdge inputs should have the same type.")
+			error "hasDiagonalEdge inputs should have the same type."
 		end
 	elseif typeof(b) == "table" then
-		error("hasDiagonalEdge inputs should have the same type.")
+		error "hasDiagonalEdge inputs should have the same type."
 	end
 
 	return x < #a and y < #b and a:sub(x + 1, x + 1) == b:sub(y + 1, y + 1)
@@ -125,10 +125,10 @@ local function myersdiffbyline(a: string | { string }, b: string | { string }): 
 	local src = a
 	local dest = b
 	if typeof(a) == "string" then
-		src = a:split("\n")
+		src = a:split "\n"
 	end
 	if typeof(b) == "string" then
-		dest = b:split("\n")
+		dest = b:split "\n"
 	end
 	return myersdiff(src, dest)
 end
@@ -137,7 +137,7 @@ local function myersdiffbychar(a: string, b: string): diff
 	return myersdiff(a, b)
 end
 
-return table.freeze({
+return table.freeze {
 	myersdiffbyline = myersdiffbyline,
 	myersdiffbychar = myersdiffbychar,
-})
+}

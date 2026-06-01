@@ -1,11 +1,11 @@
-local log = require("@libs/log")
-local luau = require("@std/luau")
-local path = require("@std/path")
-local query = require("@std/syntax/query")
-local richterm = require("@batteries/richterm")
-local syntax = require("@std/syntax")
-local types = require("@libs/types")
-local utils = require("@std/syntax/utils")
+local log = require "@libs/log"
+local luau = require "@std/luau"
+local path = require "@std/path"
+local query = require "@std/syntax/query"
+local richterm = require "@batteries/richterm"
+local syntax = require "@std/syntax"
+local types = require "@libs/types"
+local utils = require "@std/syntax/utils"
 
 local function resolveRequires(ctx: types.TransfomerContext)
 	return query

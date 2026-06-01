@@ -1,8 +1,8 @@
-local json = require("@std/json")
-local log = require("@libs/log")
-local path = require("@std/path")
-local types = require("@libs/types")
-local useRepositoryConfig = require("@libs/useRepositoryConfig")
+local json = require "@std/json"
+local log = require "@libs/log"
+local path = require "@std/path"
+local types = require "@libs/types"
+local useRepositoryConfig = require "@libs/useRepositoryConfig"
 
 local function insertMapping(
 	tree: types.RojoNode,
@@ -38,8 +38,8 @@ local function insertMapping(
 end
 
 local function buildRojoProject(kind: "source" | "output", members: { types.MonorepoMember }): json.Object
-	local firstMember = members[1] or log.throw("Must specify atleast 1 member to build Rojo")
-	local place = firstMember.place or log.throw("First Rojo member must be a place")
+	local firstMember = members[1] or log.throw "Must specify atleast 1 member to build Rojo"
+	local place = firstMember.place or log.throw "First Rojo member must be a place"
 
 	local repository = useRepositoryConfig()
 	local mappings = repository.wth.rojo.mappings :: types.RojoMappings

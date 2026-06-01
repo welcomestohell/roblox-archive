@@ -38,7 +38,7 @@ end
 
 function deque.popfront<T>(self: Deque<T>): T
 	if self._tail < self._head then
-		error("Popping from empty deque")
+		error "Popping from empty deque"
 	end
 	local toReturn = self._values[self._head]
 	self._values[self._head] = nil
@@ -48,7 +48,7 @@ end
 
 function deque.popback<T>(self: Deque<T>): T
 	if self._tail < self._head then
-		error("Popping from empty deque")
+		error "Popping from empty deque"
 	end
 	local toReturn = self._values[self._tail]
 	self._values[self._tail] = nil

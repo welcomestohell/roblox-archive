@@ -1,4 +1,4 @@
-local types = require("./types")
+local types = require "./types"
 
 local function usePlaceDependencies(monorepo: types.Monorepo, member: types.MonorepoMember)
 	local resolved = {}

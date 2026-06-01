@@ -1,10 +1,10 @@
-local findCommentRegion = require("@libs/findCommentRegion")
-local fs = require("@std/fs")
-local json = require("@std/json")
-local path = require("@std/path")
-local pp = require("@batteries/pp")
-local run = require("@libs/run")
-local useMonorepo = require("@libs/useMonorepo")
+local findCommentRegion = require "@libs/findCommentRegion"
+local fs = require "@std/fs"
+local json = require "@std/json"
+local path = require "@std/path"
+local pp = require "@batteries/pp"
+local run = require "@libs/run"
+local useMonorepo = require "@libs/useMonorepo"
 
 local monorepo = useMonorepo()
 
@@ -13,7 +13,7 @@ for _, member in ipairs(monorepo) do
 	luauAliases[member.dirName] = path.format(member.dirPath)
 end
 
-local configLuau = fs.readFileToString(".config.luau")
+local configLuau = fs.readFileToString ".config.luau"
 local aliasesStart, aliasesEnd = findCommentRegion(configLuau, "aliases")
 
 configLuau = string.sub(configLuau, 1, assert(aliasesStart) - 1)

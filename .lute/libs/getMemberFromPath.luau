@@ -1,5 +1,5 @@
-local path = require("@std/path")
-local types = require("./types")
+local path = require "@std/path"
+local types = require "./types"
 
 local function getMemberFromPath(monorepo: types.Monorepo, filepath: path.Pathlike): types.MonorepoMember
 	local firstPart = path.parse(filepath).parts[1]
@@ -8,7 +8,7 @@ local function getMemberFromPath(monorepo: types.Monorepo, filepath: path.Pathli
 			return member
 		end
 	end
-	return error("unreachable")
+	return error "unreachable"
 end
 
 return getMemberFromPath

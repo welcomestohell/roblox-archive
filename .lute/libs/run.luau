@@ -1,7 +1,7 @@
-local io = require("@std/io")
-local path = require("@std/path")
-local process = require("@std/process")
-local richterm = require("@batteries/richterm")
+local io = require "@std/io"
+local path = require "@std/path"
+local process = require "@std/process"
+local richterm = require "@batteries/richterm"
 
 export type Options = {
 	cwd: path.Pathlike?,
