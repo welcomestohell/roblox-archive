@@ -1,10 +1,10 @@
-local Players = game:GetService("Players")
-local Workspace = game:GetService("Workspace")
+local Players = game:GetService "Players"
+local Workspace = game:GetService "Workspace"
 
-local character = require("@libs/character")
-local functions = require("@libs/functions")
-local std = require("@libs/std")
-local tables = require("@libs/collections/tables")
+local character = require "@libs/character"
+local functions = require "@libs/functions"
+local std = require "@libs/std"
+local tables = require "@libs/collections/tables"
 
 local mouse = Players.LocalPlayer:GetMouse()
 
@@ -16,7 +16,7 @@ local mouse = Players.LocalPlayer:GetMouse()
 
 	The instance can follow by looking towards the target, or taking the rotation/position/pivot of the target.
 ]=]
-local Follower = std.Mechanic({})
+local Follower = std.Mechanic {}
 export type FollowerMechanic = std.Mechanic<typeof(Follower)>
 
 Follower.instanceTag = "Follower"
@@ -28,30 +28,30 @@ Follower.Enabled = Follower:withEnabled()
 Follower.FollowMode = Follower:attribute(
 	"FollowMode",
 	std.gt.unionLiterals5("LookAt", "RotationOf", "PositionOf", "PivotOf", "None"),
-	functions.literal("None")
+	functions.literal "None"
 )
 
 Follower.FollowTarget = Follower:attribute(
 	"FollowTarget",
 	std.gt.unionLiterals5("Character", "Mouse", "Camera", "Pointer", "None"),
-	functions.literal("None")
+	functions.literal "None"
 )
 
-Follower:attributeSection("Origin")
+Follower:attributeSection "Origin"
 Follower.Origin = Follower:attribute("Origin", std.gt.optional(std.gt.CFrame()), nil)
 Follower.UseOriginRotation = Follower:attribute("UseOriginRotation", std.gt.boolean(), false)
 
-Follower:attributeSection("Position Axes")
+Follower:attributeSection "Position Axes"
 Follower.UseXPosition = Follower:attribute("UseXPosition", std.gt.boolean(), true)
 Follower.UseYPosition = Follower:attribute("UseYPosition", std.gt.boolean(), true)
 Follower.UseZPosition = Follower:attribute("UseZPosition", std.gt.boolean(), true)
 
-Follower:attributeSection("Rotation Axes")
+Follower:attributeSection "Rotation Axes"
 Follower.UseXRotation = Follower:attribute("UseXRotation", std.gt.boolean(), true)
 Follower.UseYRotation = Follower:attribute("UseYRotation", std.gt.boolean(), true)
 Follower.UseZRotation = Follower:attribute("UseZRotation", std.gt.boolean(), true)
 
-Follower:attributeSection("Smoothness")
+Follower:attributeSection "Smoothness"
 Follower.Smooth = Follower:attribute("Smooth", std.gt.boolean(), false)
 Follower.Responsiveness = Follower:attribute("Responsiveness", std.gt.positiveNumber, 1)
 

@@ -1,19 +1,19 @@
-local Workspace = game:GetService("Workspace")
+local Workspace = game:GetService "Workspace"
 
-local activation = require("@libs/activation")
-local std = require("@libs/std")
-local tweens = require("@libs/tweens")
+local activation = require "@libs/activation"
+local std = require "@libs/std"
+local tweens = require "@libs/tweens"
 
-local Camera = std.Mechanic({})
+local Camera = std.Mechanic {}
 export type CameraMechanic = std.Mechanic<typeof(Camera)>
 Camera.instanceTag = "Camera"
 Camera.instanceType = std.gt.union2(std.isA.BasePart(), std.isA.Camera())
 Camera.debuggerEmoji = "📷"
 
-Camera:attributeSection("Activation")
+Camera:attributeSection "Activation"
 Camera.Activation = activation.useAttributes(Camera)
 
-Camera:attributeSection("Transition")
+Camera:attributeSection "Transition"
 Camera.Transition = tweens.useAttributes(Camera)
 
 function Camera:onActivate(camera: CameraMechanic)

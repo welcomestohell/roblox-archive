@@ -1,5 +1,5 @@
-local lifecycles = require("../lifecycles")
-local providers = require("../providers")
+local lifecycles = require "../lifecycles"
+local providers = require "../providers"
 
 type Set<T> = { [T]: true }
 

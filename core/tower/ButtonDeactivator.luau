@@ -1,8 +1,8 @@
-local Button = require("./Button")
-local ids = require("@libs/ids")
-local std = require("@libs/std")
+local Button = require "./Button"
+local ids = require "@libs/ids"
+local std = require "@libs/std"
 
-local ButtonDeactivator = std.Mechanic({})
+local ButtonDeactivator = std.Mechanic {}
 export type ButtonDeactivatorMechanic = std.Mechanic<typeof(ButtonDeactivator)>
 ButtonDeactivator.instanceTag = "ButtonDeactivator"
 ButtonDeactivator.instanceType = std.isA.Instance()
@@ -10,7 +10,7 @@ ButtonDeactivator.debuggerEmoji = "💠"
 
 ButtonDeactivator.Id = ids.withAttribute(ButtonDeactivator)
 
-ButtonDeactivator:attributeSection("Activation")
+ButtonDeactivator:attributeSection "Activation"
 ButtonDeactivator.Activation = std.useActivation(ButtonDeactivator)
 
 function ButtonDeactivator:onActivate(deactivator: ButtonDeactivatorMechanic, level: std.Level)

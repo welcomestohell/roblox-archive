@@ -1,7 +1,7 @@
-local ids = require("@libs/ids")
-local std = require("@libs/std")
+local ids = require "@libs/ids"
+local std = require "@libs/std"
 
-local TeleporterDestination = std.Mechanic({})
+local TeleporterDestination = std.Mechanic {}
 export type TeleporterDestinationMechanic = std.Mechanic<typeof(TeleporterDestination)>
 
 TeleporterDestination.instanceTag = "TeleporterDestination"

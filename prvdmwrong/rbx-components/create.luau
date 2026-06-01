@@ -1,5 +1,5 @@
-local componentClasses = require("./component-classes")
-local types = require("./types")
+local componentClasses = require "./component-classes"
+local types = require "./types"
 
 -- TODO: prvdmwrong/classes package?
 local function create<Self>(self: Self): types.Component<Self, any>

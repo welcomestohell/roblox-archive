@@ -1,7 +1,7 @@
-local Fluid = require("@roblox_packages/Fluid")
-local assets = require("@core/shared/generated/assets")
-local useRem = require("@core/shared/fluid/useRem")
-local useToggled = require("@core/shared/fluid/useToggled")
+local Fluid = require "@roblox_packages/Fluid"
+local assets = require "@core/shared/generated/assets"
+local useRem = require "@core/shared/fluid/useRem"
+local useToggled = require "@core/shared/fluid/useToggled"
 
 local function FireworksLogo(props: {
 	visible: Fluid.UsedAs<boolean>,
@@ -28,11 +28,19 @@ local function FireworksLogo(props: {
 	local bottomPosition =
 		Fluid.spring(useToggled(props.visible, UDim2.fromScale(0, 0), UDim2.fromScale(0.025, 0)), 10, 1 / 3)
 
+	local sparkRotation = Fluid.source(0)
+	Fluid.effect(function()
+		Fluid.read(props.visible)
+		Fluid.untrack(function()
+			return sparkRotation(sparkRotation() + 3)
+		end)
+	end)
+
 	local function bottomRightPosition()
 		return UDim2.fromScale(-Fluid.read(bottomPosition).X.Scale, 0)
 	end
 
-	return Fluid.create("Frame")({
+	return Fluid.create "Frame" {
 		Name = props.name or "FireworksSpark",
 		BackgroundTransparency = 1,
 		ZIndex = props.zIndex,
@@ -44,11 +52,11 @@ local function FireworksLogo(props: {
 			return UDim2.fromOffset(rem(24), rem(24))
 		end,
 
-		Fluid.create("UIAspectRatioConstraint")({
+		Fluid.create "UIAspectRatioConstraint" {
 			AspectRatio = 74 / 24,
-		}),
+		},
 
-		Fluid.create("ImageLabel")({
+		Fluid.create "ImageLabel" {
 			Name = "Top",
 			BackgroundTransparency = 1,
 			Size = UDim2.fromScale(1, 1),
@@ -57,9 +65,9 @@ local function FireworksLogo(props: {
 			Image = assets.branding.fireworks.wordmarkTop,
 			ImageColor3 = props.color,
 			ImageTransparency = transparency,
-		}),
+		},
 
-		Fluid.create("ImageLabel")({
+		Fluid.create "ImageLabel" {
 			Name = "BottomLeft",
 			BackgroundTransparency = 1,
 			Size = UDim2.fromScale(1, 1),
@@ -68,9 +76,9 @@ local function FireworksLogo(props: {
 			Image = assets.branding.fireworks.wordmarkBottomLeft,
 			ImageColor3 = props.color,
 			ImageTransparency = transparency,
-		}),
+		},
 
-		Fluid.create("ImageLabel")({
+		Fluid.create "ImageLabel" {
 			Name = "BottomRight",
 			BackgroundTransparency = 1,
 			Size = UDim2.fromScale(1, 1),
@@ -79,9 +87,9 @@ local function FireworksLogo(props: {
 			Image = assets.branding.fireworks.wordmarkBottomRight,
 			ImageColor3 = props.color,
 			ImageTransparency = transparency,
-		}),
+		},
 
-		Fluid.create("Frame")({
+		Fluid.create "Frame" {
 			Name = "Spark",
 			BackgroundTransparency = 1,
 			AnchorPoint = Vector2.new(0.5, 0.5),
@@ -89,7 +97,7 @@ local function FireworksLogo(props: {
 			Position = UDim2.fromScale(35.25 / 74 + 7 / 74, 10 / 24 + 7 / 24),
 			Size = Fluid.spring(sparkSize, 15, 2 / 3),
 
-			Fluid.create("ImageLabel")({
+			Fluid.create "ImageLabel" {
 				BackgroundTransparency = 1,
 
 				AnchorPoint = Vector2.new(0.5, 0.5),
@@ -101,11 +109,11 @@ local function FireworksLogo(props: {
 				ImageTransparency = transparency,
 
 				Rotation = Fluid.spring(function()
-					return Fluid.read(progress) * -60 * 4
+					return sparkRotation() * -60 * 2
 				end, 20, 1),
-			}),
+			},
 
-			Fluid.create("ImageLabel")({
+			Fluid.create "ImageLabel" {
 				BackgroundTransparency = 1,
 
 				AnchorPoint = Vector2.new(0.5, 0.5),
@@ -117,11 +125,11 @@ local function FireworksLogo(props: {
 				ImageTransparency = transparency,
 
 				Rotation = Fluid.spring(function()
-					return Fluid.read(progress) * -60 * 2
+					return sparkRotation() * -60
 				end, 20, 1),
-			}),
-		}),
-	})
+			},
+		},
+	}
 end
 
 return FireworksLogo

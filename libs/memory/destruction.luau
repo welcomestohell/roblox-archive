@@ -1,5 +1,5 @@
-local Log = require("@libs/Log")
-local functions = require("@libs/functions")
+local Log = require "@libs/Log"
+local functions = require "@libs/functions"
 
 -- LUAU: Destroyable is set to any so types using Destroyable are readable
 export type Destroyable = any
@@ -57,8 +57,8 @@ function typeDestructors.table(tbl: { [any]: any })
 	end
 end
 
-return table.freeze({
+return table.freeze {
 	destroy = destroy,
 	destructorMethods = destructorMethods,
 	typeDestructors = typeDestructors,
-})
+}

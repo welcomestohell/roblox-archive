@@ -1,5 +1,5 @@
-local Iris = require("@roblox_packages/Iris")
-local tables = require("@libs/collections/tables")
+local Iris = require "@roblox_packages/Iris"
+local tables = require "@libs/collections/tables"
 
 type Cleanup = () -> ()
 

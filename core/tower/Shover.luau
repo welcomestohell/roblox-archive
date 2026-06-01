@@ -1,12 +1,12 @@
-local std = require("@libs/std")
-local threadpool = require("@libs/threadpool")
+local std = require "@libs/std"
+local threadpool = require "@libs/threadpool"
 
-local Shover = std.Mechanic({})
+local Shover = std.Mechanic {}
 export type ShoverMechanic = std.Mechanic<typeof(Shover)>
 Shover.instanceTag = "Shover"
-Shover.instanceType = std.gt.instanceTree({
+Shover.instanceType = std.gt.instanceTree {
 	ShoverConstraint = std.isA.PrismaticConstraint(),
-})
+}
 Shover.debuggerEmoji = "🤜"
 
 type ShoverDirection = "In" | "Out"
@@ -18,13 +18,13 @@ type ShoverDirectionAttributes = {
 Shover.threads = std.LevelState({} :: { [ShoverMechanic]: thread })
 Shover.directions = {} :: { [ShoverDirection]: ShoverDirectionAttributes }
 
-Shover:attributeSection("In")
+Shover:attributeSection "In"
 Shover.directions.In = {
 	delay = Shover:attribute("InDelay", std.gt.positiveNumber, 1),
 	power = Shover:attribute("InPower", std.gt.positiveNumber, 0),
 }
 
-Shover:attributeSection("Out")
+Shover:attributeSection "Out"
 Shover.directions.Out = {
 	delay = std.Attribute("OutDelay", std.gt.positiveNumber, 1),
 	power = std.Attribute("OutPower", std.gt.positiveNumber, 0),
@@ -50,8 +50,8 @@ function Shover:onPreSimulation(_, level: std.Level)
 		if not threads[shover] then
 			threads[shover] = level.life:add(threadpool.spawn(function(shover: ShoverMechanic)
 				while shover:Enabled() do
-					shover:shove("In")
-					shover:shove("Out")
+					shover:shove "In"
+					shover:shove "Out"
 				end
 			end, shover))
 		end

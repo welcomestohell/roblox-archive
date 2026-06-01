@@ -1,12 +1,12 @@
-local HttpService = game:GetService("HttpService")
+local HttpService = game:GetService "HttpService"
 
-local Attribute = require("@libs/Attribute")
-local AttributeMap = require("@libs/AttributeMap")
-local Life = require("@libs/memory/Life")
-local Log = require("./Log")
-local Result = require("@libs/Result")
-local functions = require("@libs/functions")
-local gt = require("@libs/gt")
+local Attribute = require "@libs/Attribute"
+local AttributeMap = require "@libs/AttributeMap"
+local Life = require "@libs/memory/Life"
+local Log = require "./Log"
+local Result = require "@libs/Result"
+local functions = require "@libs/functions"
+local gt = require "@libs/gt"
 
 --[=[
 	@interface MechanicImplementationMetadata
@@ -96,7 +96,7 @@ function Mechanic.new<T>(implementation: T): setmetatable<T, typeof(Mechanic)>
 
 	local implementation: any = setmetatable(implementation, Mechanic)
 	Mechanic._metadata[implementation] = metadata
-	implementation:attributeSection("Configuration")
+	implementation:attributeSection "Configuration"
 	initializeProxy(implementation)
 	return implementation
 end
@@ -117,7 +117,7 @@ function Mechanic.tryMechanize<Self>(
 		local instanceType = gt.build(implementation.instanceType)
 		local isValid, reason = instanceType:matches(instance)
 		if not isValid then
-			return Result.Err({ id = functions.literal("invalidInstance"), cause = reason })
+			return Result.Err { id = functions.literal "invalidInstance", cause = reason }
 		end
 	end
 

@@ -1,5 +1,5 @@
-local dependencies = require("../dependencies")
-local roots = require("../roots")
+local dependencies = require "../dependencies"
+local roots = require "../roots"
 
 export type Component<Self, Instance = Instance> = dependencies.Dependency<Self & {
 	__index: Component<Self, Instance>,

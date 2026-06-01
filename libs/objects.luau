@@ -1,10 +1,10 @@
 type function NonNilable(ty: type): type
-	if not ty:is("union") then
+	if not ty:is "union" then
 		return ty
 	end
 	local union = nil
 	for _, member in ty:components() do
-		if not member:is("nil") then
+		if not member:is "nil" then
 			union = if union then types.unionof(union, member) else member
 		end
 	end

@@ -1,4 +1,4 @@
-local repr = require("./repr")
+local repr = require "./repr"
 local Result = {}
 Result.__index = Result
 

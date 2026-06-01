@@ -1,7 +1,7 @@
-local CollectionService = game:GetService("CollectionService")
+local CollectionService = game:GetService "CollectionService"
 
-local activation = require("@libs/activation")
-local std = require("@libs/std")
+local activation = require "@libs/activation"
+local std = require "@libs/std"
 
 --[=[
 	@class Activator
@@ -9,19 +9,19 @@ local std = require("@libs/std")
 
 	Activates the targeted instances when the mechanic itself is activated.
 ]=]
-local Activator = std.Mechanic({})
+local Activator = std.Mechanic {}
 export type ActivatorMechanic = std.Mechanic<typeof(Activator)>
 Activator.instanceTag = "Activator"
-Activator.instanceType = std.gt.instanceTree({
+Activator.instanceType = std.gt.instanceTree {
 	Target = std.gt.optional(std.isA.ObjectValue()),
-})
+}
 Activator.debuggerEmoji = "👆"
 
 Activator.Enabled = Activator:withEnabled()
 Activator.Cooldown = Activator:attribute("Cooldown", std.gt.positiveNumber, 0)
 Activator.TargetTag = Activator:attribute("TargetTag", std.gt.string(), "")
 
-Activator:attributeSection("Activation")
+Activator:attributeSection "Activation"
 Activator.Activation = activation.useAttributes(Activator)
 
 function Activator.tryActivate(instance: Instance, level: std.Level)

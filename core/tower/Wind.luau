@@ -1,8 +1,8 @@
-local character = require("@libs/character")
-local std = require("@libs/std")
-local threadpool = require("@libs/threadpool")
+local character = require "@libs/character"
+local std = require "@libs/std"
+local threadpool = require "@libs/threadpool"
 
-local Wind = std.Mechanic({})
+local Wind = std.Mechanic {}
 export type WindMechanic = std.Mechanic<typeof(Wind)>
 Wind.instanceTag = "Wind"
 Wind.instanceType = std.isA.BasePart()
@@ -26,10 +26,10 @@ function Wind:onStart(wind: WindMechanic)
 
 		touching[root] = true
 
-		local attachment = Instance.new("Attachment")
+		local attachment = Instance.new "Attachment"
 		attachment.Parent = root
 
-		local velocity = Instance.new("LinearVelocity")
+		local velocity = Instance.new "LinearVelocity"
 		velocity.Attachment0 = attachment
 		velocity.RelativeTo = Enum.ActuatorRelativeTo.World
 		velocity.ForceLimitMode = Enum.ForceLimitMode.PerAxis

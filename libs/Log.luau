@@ -1,8 +1,8 @@
-local LocalizationService = game:GetService("LocalizationService")
+local LocalizationService = game:GetService "LocalizationService"
 
-local Charm = require("@roblox_packages/Charm")
-local repr = require("@libs/repr")
-local threadpool = require("@libs/threadpool")
+local Charm = require "@roblox_packages/Charm"
+local repr = require "@libs/repr"
+local threadpool = require "@libs/threadpool"
 
 export type LogMessage = {
 	timestamp: DateTime,

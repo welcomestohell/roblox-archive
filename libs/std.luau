@@ -1,12 +1,12 @@
-local Attribute = require("./Attribute")
-local Level = require("./Level")
-local LevelState = require("./LevelState")
-local Life = require("@libs/memory/Life")
-local Mechanic = require("./Mechanic")
-local activation = require("./activation")
-local gt = require("./gt")
-local sounds = require("./sounds")
-local tweens = require("./tweens")
+local Attribute = require "./Attribute"
+local Level = require "./Level"
+local LevelState = require "./LevelState"
+local Life = require "@libs/memory/Life"
+local Mechanic = require "./Mechanic"
+local activation = require "./activation"
+local gt = require "./gt"
+local sounds = require "./sounds"
+local tweens = require "./tweens"
 
 export type Mechanic<Self = any, Mixin = {}> = Mechanic.Mechanic<Self, Mixin>
 export type MechanicImplementation = Mechanic.MechanicImplementation
@@ -32,7 +32,7 @@ export type Life = Life.Life
 	The standard library is kept as small as possible to focus on things
 	that are most frequently used for tower scripting.
 ]=]
-return table.freeze({
+return table.freeze {
 	Mechanic = Mechanic.new,
 	Attribute = Attribute.new,
 	Life = Life.new,
@@ -44,4 +44,4 @@ return table.freeze({
 
 	gt = gt,
 	isA = gt.isA,
-})
+}

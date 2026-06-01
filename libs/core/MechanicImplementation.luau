@@ -1,7 +1,7 @@
-local Attribute = require("@libs/Attribute")
-local Life = require("@libs/memory/Life")
-local Log = require("@libs/Log")
-local types = require("@libs/types")
+local Attribute = require "@libs/Attribute"
+local Life = require "@libs/memory/Life"
+local Log = require "@libs/Log"
+local types = require "@libs/types"
 
 export type AttributeSection = {
 	title: string?,

@@ -15,6 +15,11 @@ path = "assets/core/**/*"
 output_path = "core/shared/generated"
 output_basename = "assets"
 
+[inputs.title]
+path = "assets/title/**/*"
+output_path = "title/shared/generated"
+output_basename = "assets"
+
 [inputs.universe]
 path = "assets/universe/**/*"
 output_path = "universe/shared/generated"

@@ -1,6 +1,6 @@
 local rootUsed = require("../hooks/root-used").callbacks
-local runtime = require("../../runtime")
-local types = require("../types")
+local runtime = require "../../runtime"
+local types = require "../types"
 
 local threadpool = runtime.threadpool
 

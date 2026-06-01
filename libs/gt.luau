@@ -2,7 +2,7 @@
 -- Note that Welcome To Hell plans to switch to the Boba library once runtime
 -- type inspection has been implemented.
 
-local GreenTea = require("@roblox_packages/gt")
+local GreenTea = require "@roblox_packages/gt"
 
 export type Type = GreenTea.Type
 export type Cause = GreenTea.Cause
@@ -21,7 +21,7 @@ local gt = {
 	build = GreenTea.build,
 	CFrame = GreenTea.CFrame,
 	Color3 = GreenTea.Color3,
-	ColorSequence = GreenTea.isTypeof("ColorSequence") :: ColorSequence,
+	ColorSequence = GreenTea.isTypeof "ColorSequence" :: ColorSequence,
 	coroutine = GreenTea.coroutine,
 	custom = GreenTea.custom,
 	dictionary = GreenTea.dictionary,
@@ -39,8 +39,8 @@ local gt = {
 	never = GreenTea.never,
 	none = GreenTea.none,
 	number = GreenTea.number,
-	NumberRange = GreenTea.isTypeof("NumberRange") :: NumberRange,
-	NumberSequence = GreenTea.isTypeof("NumberSequence") :: NumberSequence,
+	NumberRange = GreenTea.isTypeof "NumberRange" :: NumberRange,
+	NumberSequence = GreenTea.isTypeof "NumberSequence" :: NumberSequence,
 	oneOf = GreenTea.oneOf,
 	optional = GreenTea.optional,
 	Ray = GreenTea.Ray,
@@ -96,11 +96,11 @@ local function instanceTree(treeOrParent: any, tree: any): GreenTea.Type
 end
 
 function gt.constrainNumber(min: number?, max: number?)
-	return gt.number({ options = { min = min, max = max } })
+	return gt.number { options = { min = min, max = max } }
 end
 
 function gt.constrainNumberExclusive(min: number?, max: number?)
-	return gt.number({ options = { minExclusive = min, maxExclusive = max } })
+	return gt.number { options = { minExclusive = min, maxExclusive = max } }
 end
 
 function gt.enumOf<T>(enum: Enum): any

@@ -1,7 +1,7 @@
 local providerUsed = require("../hooks/provider-used").callbacks
-local providers = require("../../providers")
-local runtime = require("../../runtime")
-local types = require("../types")
+local providers = require "../../providers"
+local runtime = require "../../runtime"
+local types = require "../types"
 
 local threadpool = runtime.threadpool
 

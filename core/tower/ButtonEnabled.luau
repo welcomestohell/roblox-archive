@@ -1,7 +1,7 @@
-local ids = require("@libs/ids")
-local properties = require("@libs/properties")
-local std = require("@libs/std")
-local tweens = require("@libs/tweens")
+local ids = require "@libs/ids"
+local properties = require "@libs/properties"
+local std = require "@libs/std"
+local tweens = require "@libs/tweens"
 
 local CLASSES_TO_TOGGLE_ENABLED: { [string]: true } = {
 	Beam = true,
@@ -27,7 +27,7 @@ local CLASSES_TO_TWEEN: { [string]: string } = {
 	ImageLabel = "ImageTransparency",
 }
 
-local ButtonEnabled = std.Mechanic({})
+local ButtonEnabled = std.Mechanic {}
 export type ButtonEnabledMechanic = std.Mechanic<typeof(ButtonEnabled)>
 
 ButtonEnabled.instanceTag = "ButtonEnabled"
@@ -39,7 +39,7 @@ ButtonEnabled.Enabled = ButtonEnabled:withEnabled()
 ButtonEnabled.Id = ids.withAttribute(ButtonEnabled)
 ButtonEnabled.besById = std.LevelState({} :: ids.MechanicsById<ButtonEnabledMechanic>)
 
-ButtonEnabled:attributeSection("Properties")
+ButtonEnabled:attributeSection "Properties"
 -- TODO: itll probably be smarter to have AttributeGroups for these
 ButtonEnabled.AffectsPropertyCollision = ButtonEnabled:attribute("AffectsPropertyCollision", std.gt.boolean(), true)
 ButtonEnabled.AffectsPropertyTransparency =
@@ -48,7 +48,7 @@ ButtonEnabled.AffectsPropertyEnabled = ButtonEnabled:attribute("AffectsPropertyE
 ButtonEnabled.TransparencyEnabled = ButtonEnabled:attribute("TransparencyEnabled", std.gt.constrainNumber(0, 1), 0)
 ButtonEnabled.TransparencyDisabled = ButtonEnabled:attribute("TransparencyDisabled", std.gt.constrainNumber(0, 1), 0)
 
-ButtonEnabled:attributeSection("Transitions")
+ButtonEnabled:attributeSection "Transitions"
 ButtonEnabled.Transition = tweens.useAttributes(ButtonEnabled)
 
 ButtonEnabled.CLASSES_TO_TOGGLE_ENABLED = CLASSES_TO_TOGGLE_ENABLED
@@ -63,7 +63,7 @@ function ButtonEnabled.toggle(be: ButtonEnabledMechanic)
 	local enabled = not be:Enabled()
 	be:Enabled(enabled)
 
-	if be.instance:IsA("BasePart") and be:AffectsPropertyCollision() then
+	if be.instance:IsA "BasePart" and be:AffectsPropertyCollision() then
 		properties.setUnsafe(be.instance, "CanCollide", enabled)
 	end
 

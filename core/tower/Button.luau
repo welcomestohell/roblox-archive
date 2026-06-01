@@ -1,19 +1,19 @@
-local Attribute = require("@libs/Attribute")
-local ButtonEnabled = require("./ButtonEnabled")
-local Life = require("@libs/memory/Life")
-local Signal = require("@roblox_packages/Signal")
-local activation = require("@libs/activation")
-local emission = require("@libs/emission")
-local msets = require("@libs/collections/msets")
-local properties = require("@libs/properties")
-local sounds = require("@libs/sounds")
-local std = require("@libs/std")
-local threadpool = require("@libs/threadpool")
-local tweens = require("@libs/tweens")
+local Attribute = require "@libs/Attribute"
+local ButtonEnabled = require "./ButtonEnabled"
+local Life = require "@libs/memory/Life"
+local Signal = require "@roblox_packages/Signal"
+local activation = require "@libs/activation"
+local emission = require "@libs/emission"
+local msets = require "@libs/collections/msets"
+local properties = require "@libs/properties"
+local sounds = require "@libs/sounds"
+local std = require "@libs/std"
+local threadpool = require "@libs/threadpool"
+local tweens = require "@libs/tweens"
 
 local GLOW_PADDING = Vector3.new(0.05, 0.05, 0.05)
 
-local Button = std.Mechanic({})
+local Button = std.Mechanic {}
 export type ButtonMechanic = std.Mechanic<typeof(Button)>
 Button.instanceTag = "Button"
 Button.instanceType = std.isA.BasePart()
@@ -44,13 +44,13 @@ Button.Duration = attributes.Duration
 Button.ActivatedEmissionTag = Button:attribute("ActivatedEmissionTag", std.gt.string(), "EmitOnButtonActivated")
 Button.DeactivatedEmissionTag = Button:attribute("DeactivatedEmissionTag", std.gt.string(), "EmitOnButtonDeactivated")
 
-Button:attributeSection("Activation")
+Button:attributeSection "Activation"
 Button.Activation = activation.useAttributes(Button)
 
-Button:attributeSection("Sound Effects")
+Button:attributeSection "Sound Effects"
 Button.Sound = sounds.useAttributes(Button)
 
-Button:attributeSection("Transition")
+Button:attributeSection "Transition"
 Button.Transition = tweens.useAttributes(Button)
 
 Button.enabledButtonsById = std.LevelState({} :: { [string]: { [ButtonMechanic]: true } })
@@ -60,7 +60,7 @@ activation
 	.registerMode("ButtonActivated", {
 		implement = function(context: activation.ActivationContext) end,
 	})
-	:expect("Failed to register ButtonActivated activation mode")
+	:expect "Failed to register ButtonActivated activation mode"
 
 function Button.glowButton(props: {
 	life: Life.Life,
@@ -71,7 +71,7 @@ function Button.glowButton(props: {
 })
 	local life = props.life:extend()
 
-	local adornment = Instance.new("BoxHandleAdornment")
+	local adornment = Instance.new "BoxHandleAdornment"
 	adornment.Adornee = props.instance
 	adornment.Color3 = props.instance.Color
 	adornment.Name = props.instance.Name .. "Glow"
@@ -131,12 +131,12 @@ function Button.onActivate(self: typeof(Button), button: ButtonMechanic, level: 
 		task.delay(button:Cooldown(), Attribute.set :: any, self.Activation.Enabled, button, true)
 	end)
 
-	self.glowButton({
+	self.glowButton {
 		life = deactivationLife,
 		instance = button.instance,
 		instanceConfiguration = button.instanceConfiguration,
 		tweenAttributes = self.Transition,
-	})
+	}
 
 	emission.emitTaggedDescendants(button.instance, button:ActivatedEmissionTag())
 

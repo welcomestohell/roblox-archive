@@ -1,5 +1,5 @@
-local Fluid = require("@roblox_packages/Fluid")
-local useDissolved = require("@core/shared/fluid/useDissolved")
+local Fluid = require "@roblox_packages/Fluid"
+local useDissolved = require "@core/shared/fluid/useDissolved"
 
 local function Text(props: {
 	name: Fluid.UsedAs<string>?,
@@ -8,6 +8,9 @@ local function Text(props: {
 	automaticSize: Fluid.UsedAs<Enum.AutomaticSize>?,
 	layoutOrder: Fluid.UsedAs<number>?,
 	zIndex: Fluid.UsedAs<number>?,
+
+	transparency: Fluid.UsedAs<number>?,
+	lineHeight: Fluid.UsedAs<number>?,
 
 	text: Fluid.UsedAs<string>?,
 	textSize: Fluid.UsedAs<number>?,
@@ -25,7 +28,7 @@ local function Text(props: {
 
 	[number]: Fluid.UsedAs<Instance>,
 })
-	return Fluid.create("TextLabel")({
+	return Fluid.create "TextLabel" {
 		Name = props.name or props.text or "Text",
 		BackgroundTransparency = 1,
 
@@ -34,6 +37,9 @@ local function Text(props: {
 		AutomaticSize = props.automaticSize or Enum.AutomaticSize.XY,
 		LayoutOrder = props.layoutOrder,
 		ZIndex = props.zIndex,
+
+		TextTransparency = props.transparency,
+		LineHeight = props.lineHeight,
 
 		Text = props.text,
 		TextSize = props.textSize,
@@ -55,7 +61,7 @@ local function Text(props: {
 		end),
 
 		table.unpack(props),
-	})
+	}
 end
 
 return Text

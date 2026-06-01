@@ -1,7 +1,7 @@
-local allowWebLinks = require("./allow-web-links")
-local formatLog = require("./format-log")
-local runtime = require("../runtime")
-local types = require("./types")
+local allowWebLinks = require "./allow-web-links"
+local formatLog = require "./format-log"
+local runtime = require "../runtime"
+local types = require "./types"
 
 local warn = runtime.warn
 local threadpool = runtime.threadpool

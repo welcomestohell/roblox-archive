@@ -1,4 +1,4 @@
-local types = require("../types")
+local types = require "../types"
 
 local function willFinish(root: types.Self, callback: () -> ())
 	root._finish:register(callback)

@@ -1,6 +1,6 @@
-local std = require("@libs/std")
+local std = require "@libs/std"
 
-local ScrollingTexture = std.Mechanic({})
+local ScrollingTexture = std.Mechanic {}
 export type ScrollingTextureMechanic = std.Mechanic<typeof(ScrollingTexture)>
 ScrollingTexture.instanceTag = "ScrollingTexture"
 ScrollingTexture.instanceType = std.isA.Texture()

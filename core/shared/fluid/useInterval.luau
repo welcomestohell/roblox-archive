@@ -1,6 +1,6 @@
-local RunService = game:GetService("RunService")
+local RunService = game:GetService "RunService"
 
-local Fluid = require("@roblox_packages/Fluid")
+local Fluid = require "@roblox_packages/Fluid"
 
 local function useInterval(seconds: Fluid.UsedAs<number>, callback: () -> (), immediate: boolean?)
 	local timer = 0

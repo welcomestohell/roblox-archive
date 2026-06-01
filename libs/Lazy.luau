@@ -1,4 +1,4 @@
-local Promise = require("@roblox_packages/Promise")
+local Promise = require "@roblox_packages/Promise"
 
 local Lazy = {}
 Lazy.__index = Lazy

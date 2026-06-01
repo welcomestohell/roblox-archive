@@ -1,5 +1,5 @@
-local Fluid = require("@roblox_packages/Fluid")
-local UILabs = require("@roblox_packages/UILabs")
+local Fluid = require "@roblox_packages/Fluid"
+local UILabs = require "@roblox_packages/UILabs"
 
 type function Controls(controls: type)
 	assert(controls.tag == "table", "expected controls to be a table")
@@ -31,7 +31,7 @@ local function createFluidStory<C>(storyProps: {
 				end)
 			end)
 
-			local rendered = storyProps.render({ controls = states :: Controls<C> })
+			local rendered = storyProps.render { controls = states :: Controls<C> }
 			UILabs.Environment.SetStoryHolder(rendered)
 			rendered.Parent = props.target
 		end)

@@ -1,17 +1,17 @@
-local RunService = game:GetService("RunService")
+local RunService = game:GetService "RunService"
 
-local Life = require("@libs/memory/Life")
-local Log = require("@libs/Log")
-local Mechanic = require("./Mechanic")
-local Promise = require("@roblox_packages/Promise")
-local Result = require("./Result")
-local ScriptCollector = require("./ScriptCollector")
-local activation = require("./activation")
-local functions = require("./functions")
-local gt = require("@libs/gt")
-local tables = require("@libs/collections/tables")
-local threadpool = require("@libs/threadpool")
-local types = require("@libs/activation/types")
+local Life = require "@libs/memory/Life"
+local Log = require "@libs/Log"
+local Mechanic = require "./Mechanic"
+local Promise = require "@roblox_packages/Promise"
+local Result = require "./Result"
+local ScriptCollector = require "./ScriptCollector"
+local activation = require "./activation"
+local functions = require "./functions"
+local gt = require "@libs/gt"
+local tables = require "@libs/collections/tables"
+local threadpool = require "@libs/threadpool"
+local types = require "@libs/activation/types"
 
 --[=[
 	@class Level
@@ -32,12 +32,12 @@ Level.__index = Level
 Level.baseScripts = ScriptCollector.new()
 Level.activeLevels = {} :: { Level }
 
-Level.LevelInstance = gt.build(gt.instanceTree({
+Level.LevelInstance = gt.build(gt.instanceTree {
 	Mechanics = gt.Instance(),
 	Scripts = gt.optional(gt.Instance()),
 	SpawnCharacter = gt.isA.BasePart(),
 	SpawnCamera = gt.optional(gt.isA.BasePart()),
-}))
+})
 
 local log = Log.new(script)
 
@@ -72,7 +72,7 @@ function Level.new(
 			scripts = Level.baseScripts:clone(),
 			mechanics = {},
 			mechanicsByImplementations = {},
-			mechanicsByInstance = tables.weak("k"),
+			mechanicsByInstance = tables.weak "k",
 
 			startTimestamp = os.clock(),
 		}, Level)
@@ -80,7 +80,7 @@ function Level.new(
 		return Result.Ok(self)
 	end
 
-	return Result.Err({ id = functions.literal("invalidInstance"), cause = instanceCause })
+	return Result.Err { id = functions.literal "invalidInstance", cause = instanceCause }
 end
 
 function Level.getLifetime(self: Level)
@@ -133,7 +133,7 @@ function Level.startMechanic(self: Level, mechanic: Mechanic.Mechanic<any>)
 			implementation.activation = activationAttributes
 		end
 
-		activation.bindActivation({
+		activation.bindActivation {
 			attributes = activationAttributes,
 			activationLife = mechanic.life,
 			instanceLife = mechanic.life,
@@ -142,7 +142,7 @@ function Level.startMechanic(self: Level, mechanic: Mechanic.Mechanic<any>)
 			onActivate = function(context: activation.ActivationContext)
 				implementation:onActivate(mechanic, self)
 			end,
-		})
+		}
 	end
 
 	if implementation.onStart then
@@ -169,7 +169,7 @@ function Level.start(self: Level)
 	self.life:destroyOn(self.instance.Destroying)
 
 	local levelInstance = self.instance :: Instance
-	local levelScripts = levelInstance:FindFirstChild("Scripts")
+	local levelScripts = levelInstance:FindFirstChild "Scripts"
 	if levelScripts then
 		self.scripts:tryInstances(levelScripts:GetDescendants())
 	end

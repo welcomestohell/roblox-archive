@@ -1,5 +1,5 @@
-local componentClasses = require("../component-classes")
-local types = require("../types")
+local componentClasses = require "../component-classes"
+local types = require "../types"
 
 local function useModulesAsComponents(
 	root: types.RootPrivate,
@@ -9,7 +9,7 @@ local function useModulesAsComponents(
 	for index = 1, #modules do
 		local module = modules[index]
 
-		if not module:IsA("ModuleScript") then
+		if not module:IsA "ModuleScript" then
 			continue
 		end
 

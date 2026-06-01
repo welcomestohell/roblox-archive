@@ -1,4 +1,4 @@
-local types = require("../types")
+local types = require "../types"
 
 local function useComponent(root: types.RootPrivate, component: types.AnyComponent)
 	table.insert(root._classes, component)

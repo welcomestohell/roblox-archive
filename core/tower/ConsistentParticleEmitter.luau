@@ -1,6 +1,6 @@
-local std = require("@libs/std")
+local std = require "@libs/std"
 
-local ConsistentParticleEmitter = std.Mechanic({})
+local ConsistentParticleEmitter = std.Mechanic {}
 export type ConsistentParticleEmitterMechanic = std.Mechanic<typeof(ConsistentParticleEmitter)>
 ConsistentParticleEmitter.instanceTag = "ConsistentParticleEmitter"
 ConsistentParticleEmitter.instanceType = std.isA.ParticleEmitter()

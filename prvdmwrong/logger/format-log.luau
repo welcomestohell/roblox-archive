@@ -1,4 +1,4 @@
-local types = require("./types")
+local types = require "./types"
 
 local function formatLog<Templates>(self: types.Logger<Templates>, log: types.Log, errorInfoUrl: string?): string
 	local formattedTemplate = string.format(log.template, table.unpack(log))

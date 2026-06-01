@@ -1,5 +1,5 @@
-local Charm = require("@roblox_packages/Charm")
-local objects = require("@libs/objects")
+local Charm = require "@roblox_packages/Charm"
+local objects = require "@libs/objects"
 
 export type Account = {
 	read gold: number,

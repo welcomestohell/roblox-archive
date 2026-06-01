@@ -1,8 +1,8 @@
-local Log = require("@libs/Log")
-local MechanicImplementation = require("@libs/core/MechanicImplementation")
-local Promise = require("@roblox_packages/Promise")
+local Log = require "@libs/Log"
+local MechanicImplementation = require "@libs/core/MechanicImplementation"
+local Promise = require "@roblox_packages/Promise"
 
-local log = Log.new("ScriptCollector")
+local log = Log.new "ScriptCollector"
 
 --[=[
     @class ScriptCollector
@@ -121,7 +121,7 @@ end
     @param instance Instance -- The Instance to collect.
 ]=]
 function ScriptCollector.collectInstance(self: ScriptCollector, instance: Instance)
-	if instance:IsA("ModuleScript") then
+	if instance:IsA "ModuleScript" then
 		self:collectModuleScript(instance)
 	end
 end

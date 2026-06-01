@@ -1,5 +1,5 @@
-local Fluid = require("@roblox_packages/Fluid")
-local useDissolved = require("@core/shared/fluid/useDissolved")
+local Fluid = require "@roblox_packages/Fluid"
+local useDissolved = require "@core/shared/fluid/useDissolved"
 
 local function useToggled<T>(
 	condition: Fluid.UsedAs<unknown>,

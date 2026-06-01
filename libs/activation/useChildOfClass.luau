@@ -1,7 +1,7 @@
-local createChildOfClass = require("./createChildOfClass")
-local log = require("./log")
+local createChildOfClass = require "./createChildOfClass"
+local log = require "./log"
 -- local roblox = require("@core/shared/generated/types/roblox")
-local types = require("./types")
+local types = require "./types"
 
 -- local function useChildOfClass<ClassName>(
 -- 	context: types.ActivationContext,

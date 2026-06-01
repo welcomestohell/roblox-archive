@@ -1,4 +1,4 @@
-local types = require("./types")
+local types = require "./types"
 
 local function nameOf(provider: types.Provider<any, any>)
 	return provider.name or "Provider"

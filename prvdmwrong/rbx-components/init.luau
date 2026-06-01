@@ -1,7 +1,7 @@
-local componentClasses = require("@self/component-classes")
-local create = require("@self/create")
-local extendRoot = require("@self/extend-root")
-local types = require("@self/types")
+local componentClasses = require "@self/component-classes"
+local create = require "@self/create"
+local extendRoot = require "@self/extend-root"
+local types = require "@self/types"
 
 export type Component<Self, Instance = Instance> = types.Component<Self, Instance>
 export type Root = types.Root
@@ -9,9 +9,9 @@ export type Root = types.Root
 local components = {
 	create = create,
 	extendRoot = extendRoot,
-	_ = table.freeze({
+	_ = table.freeze {
 		componentClasses = componentClasses,
-	}),
+	},
 }
 
 local mt = {}

@@ -1,7 +1,7 @@
-local character = require("@libs/character")
-local std = require("@libs/std")
+local character = require "@libs/character"
+local std = require "@libs/std"
 
-local Tripper = std.Mechanic({})
+local Tripper = std.Mechanic {}
 export type TripperMechanic = std.Mechanic<typeof(Tripper)>
 
 Tripper.instanceTag = "Tripper"

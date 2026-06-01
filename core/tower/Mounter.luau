@@ -1,9 +1,9 @@
-local Attribute = require("@libs/Attribute")
-local activation = require("@libs/activation")
-local character = require("@libs/character")
-local constraints = require("@libs/constraints")
-local destroy = require("@libs/destroy")
-local std = require("@libs/std")
+local Attribute = require "@libs/Attribute"
+local activation = require "@libs/activation"
+local character = require "@libs/character"
+local constraints = require "@libs/constraints"
+local destroy = require "@libs/destroy"
+local std = require "@libs/std"
 
 local LIMB_MAP: { [Enum.Limb]: string } = {
 	[Enum.Limb.Torso] = "HumanoidRootPart",
@@ -22,13 +22,13 @@ local LIMB_MAP: { [Enum.Limb]: string } = {
     Followers, mounted models are physically attached to the player. Therefore, 
     collisions on the mounted model also affects the player.
 ]=]
-local Mounter = std.Mechanic({})
+local Mounter = std.Mechanic {}
 export type MounterMechanic = std.Mechanic<typeof(Mounter)> & { model: BasePart | Model }
 Mounter.instanceTag = "Attacher"
-Mounter.instanceType = std.gt.instanceTree({
+Mounter.instanceType = std.gt.instanceTree {
 	MounterActivator = std.isA.Instance(),
 	MounterModel = std.gt.union2(std.isA.BasePart(), std.isA.Model()),
-})
+}
 Mounter.debuggerEmoji = "🔌"
 
 Mounter.Enabled = Mounter:withEnabled()
@@ -38,10 +38,10 @@ Mounter.Debounced = Mounter:attribute("Debounced", std.gt.boolean(), false)
 Mounter.Offset = Mounter:attribute("Offset", std.gt.CFrame(), CFrame.identity)
 Mounter.Limb = Mounter:attribute("Target", std.gt.enumOf(Enum.Limb) :: Enum.Limb, Enum.Limb.Torso)
 
-Mounter:attributeSection("Activation")
+Mounter:attributeSection "Activation"
 Mounter.Activation = activation.useAttributes(Mounter)
 
-Mounter:attributeSection("Dismount")
+Mounter:attributeSection "Dismount"
 Mounter.Dismount = activation.useAttributes(Mounter, "Dismount")
 
 function Mounter:onStart(mounter: MounterMechanic)
@@ -67,11 +67,11 @@ function Mounter:onActivate(mounter: MounterMechanic)
 	mountLife:destroyOn(model.Destroying)
 	model.Parent = mounter.instance
 
-	local weldTarget = if model:IsA("BasePart") then model else model.PrimaryPart
+	local weldTarget = if model:IsA "BasePart" then model else model.PrimaryPart
 	if weldTarget then
 		local limbName = LIMB_MAP[Mounter:Limb()]
 		local weldLimb = limbName and character.getCharacter():FindFirstChild(limbName) :: BasePart?
-			or mounter.log:error("Invalid Limb to weld.")
+			or mounter.log:error "Invalid Limb to weld."
 
 		if weldLimb then
 			weldTarget:PivotTo(weldLimb.CFrame * mounter:Offset())
@@ -80,10 +80,10 @@ function Mounter:onActivate(mounter: MounterMechanic)
 			cleanupLife:destroyOn(weldLimb.Destroying)
 		end
 	else
-		mounter.log:error("MounterModel will not be welded as it's PrimaryPart is unset.")
+		mounter.log:error "MounterModel will not be welded as it's PrimaryPart is unset."
 	end
 
-	activation.bindActivation({
+	activation.bindActivation {
 		instance = mounter.instance,
 		instanceConfiguration = mounter.instanceConfiguration or mounter.instance,
 		instanceLife = mountLife,
@@ -93,7 +93,7 @@ function Mounter:onActivate(mounter: MounterMechanic)
 			mountLife:destroy()
 			task.delay(mounter:Cooldown(), Attribute.set :: any, mounter.Activation.Enabled, mounter, true)
 		end,
-	})
+	}
 
 	cleanupLife:add(mounter.Enabled:onChange(mounter, function(isEnabled)
 		if not isEnabled then

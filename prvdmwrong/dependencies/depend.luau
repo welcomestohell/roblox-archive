@@ -1,8 +1,8 @@
-local logger = require("./logger")
-local types = require("./types")
+local logger = require "./logger"
+local types = require "./types"
 
 local function useBeforeConstructed(unresolved: types.UnresolvedDependency)
-	logger:fatalError({ template = logger.useBeforeConstructed, unresolved.dependency.name or "subdependency" })
+	logger:fatalError { template = logger.useBeforeConstructed, unresolved.dependency.name or "subdependency" }
 end
 
 local unresolvedMt = {

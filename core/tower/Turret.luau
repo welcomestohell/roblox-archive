@@ -1,11 +1,11 @@
-local Players = game:GetService("Players")
+local Players = game:GetService "Players"
 
-local std = require("@libs/std")
+local std = require "@libs/std"
 
-local character = require("@libs/character")
-local damage = require("@libs/damage")
-local gt = require("@roblox_packages/gt")
-local sounds = require("@libs/sounds")
+local character = require "@libs/character"
+local damage = require "@libs/damage"
+local gt = require "@roblox_packages/gt"
+local sounds = require "@libs/sounds"
 
 --[=[
 	@class Turret
@@ -15,7 +15,7 @@ local sounds = require("@libs/sounds")
 	
 	It can also, optionally, make a noise when shooting.
 ]=]
-local Turret = std.Mechanic({})
+local Turret = std.Mechanic {}
 export type TurretMechanic = std.Mechanic<typeof(Turret)>
 
 Turret.instanceTag = "Turret"
@@ -31,7 +31,7 @@ Turret.debuggerEmoji = "🔫"
 
 Turret.Enabled = Turret:withEnabled()
 
-Turret:attributeSection("Bullets")
+Turret:attributeSection "Bullets"
 Turret.Firerate = Turret:attribute("Firerate", std.gt.positiveNumber, 1)
 Turret.Speed = Turret:attribute("Speed", std.gt.positiveNumber, 25)
 Turret.Acceleration = Turret:attribute("Acceleration", std.gt.Vector3(), Vector3.zero)
@@ -39,20 +39,20 @@ Turret.Lifetime = Turret:attribute("Lifetime", std.gt.positiveNumber, 2)
 Turret.DestroyOnTouch = Turret:attribute("DestroyOnTouch", std.gt.boolean(), true)
 Turret.IgnoreTag = Turret:attribute("IgnoreTag", std.gt.string(), "Ignore")
 
-Turret:attributeSection("Damage")
+Turret:attributeSection "Damage"
 Turret.Damage = damage.useAttributes(Turret)
 Turret.Cooldown = Turret:attribute("Cooldown", std.gt.positiveNumber, 0.5)
 
-Turret:attributeSection("Spread Angle")
+Turret:attributeSection "Spread Angle"
 Turret.SpreadAngle = Turret:attribute("SpreadAngle", std.gt.NumberRange, NumberRange.new(0, 0))
 
-Turret:attributeSection("Sound")
+Turret:attributeSection "Sound"
 Turret.FireSound = sounds.useAttributes(Turret, "FireSound")
 
-Turret:attributeSection("Culling")
+Turret:attributeSection "Culling"
 Turret.Range = Turret:attribute("Range", std.gt.positiveNumber, 50)
 
-Turret:attributeSection("Tags")
+Turret:attributeSection "Tags"
 Turret.FireBasename = Turret:attribute("FireBasename", gt.string(), "TurretFire")
 Turret.ExpireBasename = Turret:attribute("ExpireBasename", gt.string(), "TurretExpire")
 
@@ -107,7 +107,7 @@ function Turret.fireBullet(turret: TurretMechanic, bulletTemplate: Part)
 	end
 
 	for _, descendant in instance:GetDescendants() do
-		if descendant:HasTag("TurretFireParticle") and descendant:IsA("ParticleEmitter") then
+		if descendant:HasTag "TurretFireParticle" and descendant:IsA "ParticleEmitter" then
 			descendant:Emit(descendant.Rate)
 		end
 	end
@@ -124,8 +124,8 @@ function Turret.fireBullet(turret: TurretMechanic, bulletTemplate: Part)
 
 	bulletInstance.CFrame = spawnCFrame
 
-	local mainAttachment = bulletInstance:FindFirstChildOfClass("Attachment")
-	local linearVelocity = bulletInstance:FindFirstChildOfClass("LinearVelocity")
+	local mainAttachment = bulletInstance:FindFirstChildOfClass "Attachment"
+	local linearVelocity = bulletInstance:FindFirstChildOfClass "LinearVelocity"
 
 	if not mainAttachment or not linearVelocity then
 		cleanup()
@@ -138,7 +138,7 @@ function Turret.fireBullet(turret: TurretMechanic, bulletTemplate: Part)
 	linearVelocity.Attachment0 = mainAttachment
 	linearVelocity.VectorVelocity = finalCFrame.LookVector * turret:Speed()
 
-	local alignOrientation = bulletInstance:FindFirstChildOfClass("AlignOrientation")
+	local alignOrientation = bulletInstance:FindFirstChildOfClass "AlignOrientation"
 
 	if not alignOrientation then
 		cleanup()

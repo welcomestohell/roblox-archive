@@ -1,4 +1,4 @@
-local types = require("./types")
+local types = require "./types"
 
 type Set<T> = { [T]: true }
 

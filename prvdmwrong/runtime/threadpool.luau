@@ -30,7 +30,7 @@ local function spawnCallbacks<Args...>(callbacks: { (Args...) -> () }, ...: Args
 	end
 end
 
-return table.freeze({
+return table.freeze {
 	spawn = spawn,
 	spawnCallbacks = spawnCallbacks,
-})
+}

@@ -1,7 +1,7 @@
-local Log = require("@libs/Log")
-local gt = require("@roblox_packages/gt")
-local tables = require("@libs/collections/tables")
-local threadpool = require("@libs/threadpool")
+local Log = require "@libs/Log"
+local gt = require "@roblox_packages/gt"
+local tables = require "@libs/collections/tables"
+local threadpool = require "@libs/threadpool"
 
 export type AttributeValue =
 	| string
@@ -148,7 +148,7 @@ local function observeListener<T>(
 
 	local instanceListeners = listenerMap[resolved]
 	if not instanceListeners then
-		instanceListeners = tables.weak("k") :: any
+		instanceListeners = tables.weak "k" :: any
 		listenerMap[resolved] = instanceListeners
 	end
 	instanceListeners[listener] = true
@@ -184,13 +184,13 @@ local function new(attribute: any, check: any, defaultValue: any): Attribute<any
 		attribute = attribute,
 		check = check,
 		defaultValue = defaultValue,
-		_cache = tables.weak("k"),
-		_signals = tables.weak("k"),
-		_updated = tables.weak("k"),
-		_observers = tables.weak("k"),
-		_observerCallbacks = tables.weak("k"),
-		_changeListeners = tables.weak("k"),
-		_fetchListeners = tables.weak("k"),
+		_cache = tables.weak "k",
+		_signals = tables.weak "k",
+		_updated = tables.weak "k",
+		_observers = tables.weak "k",
+		_observerCallbacks = tables.weak "k",
+		_changeListeners = tables.weak "k",
+		_fetchListeners = tables.weak "k",
 	}, Attribute) :: any
 end
 
@@ -200,7 +200,7 @@ Attribute.new = new :: (
 )
 
 function Attribute.type<T>(_: Attribute<T>): T
-	error("This function can only be used for type definitions, ie. `typeof(attribute:type())`")
+	error "This function can only be used for type definitions, ie. `typeof(attribute:type())`"
 end
 
 function Attribute.isAttribute(x: any)

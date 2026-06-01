@@ -1,7 +1,7 @@
-local character = require("@libs/character")
-local std = require("@libs/std")
+local character = require "@libs/character"
+local std = require "@libs/std"
 
-local OneWay = std.Mechanic({})
+local OneWay = std.Mechanic {}
 export type OneWayMechanic = std.Mechanic<typeof(OneWay)>
 OneWay.instanceTag = "OneWay"
 OneWay.instanceType = std.isA.BasePart()

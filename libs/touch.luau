@@ -1,6 +1,6 @@
-local Mechanic = require("./Mechanic")
-local character = require("./character")
-local gt = require("./gt")
+local Mechanic = require "./Mechanic"
+local character = require "./character"
+local gt = require "./gt"
 
 local function useAttributes(implementation: Mechanic.MechanicImplementationLike, basename: string?)
 	basename = basename or "Touch"
@@ -37,7 +37,7 @@ local function isToucherValid(
 		or (attributes.SupportsBullets(instanceConfiguration) and (toucher:HasTag("Bullet") or toucher:FindFirstAncestor("Bullet") ~= nil))
 end
 
-return table.freeze({
+return table.freeze {
 	useAttributes = useAttributes,
 	isToucherValid = isToucherValid,
-})
+}

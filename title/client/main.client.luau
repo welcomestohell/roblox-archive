@@ -1,3 +1,3 @@
-local framework = require("@core/shared/framework")
+local framework = require "@core/shared/framework"
 
 framework.bootstrapClient()

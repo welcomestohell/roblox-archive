@@ -1,11 +1,11 @@
-local HttpService = game:GetService("HttpService")
+local HttpService = game:GetService "HttpService"
 
-local Life = require("@libs/memory/Life")
-local Log = require("@libs/Log")
-local Mechanic = require("@libs/Mechanic")
-local MechanicImplementation = require("@libs/core/MechanicImplementation")
-local Result = require("@libs/Result")
-local gt = require("@libs/gt")
+local Life = require "@libs/memory/Life"
+local Log = require "@libs/Log"
+local Mechanic = require "@libs/Mechanic"
+local MechanicImplementation = require "@libs/core/MechanicImplementation"
+local Result = require "@libs/Result"
+local gt = require "@libs/gt"
 
 --[=[
 	@function mechanize

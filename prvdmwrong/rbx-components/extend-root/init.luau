@@ -1,16 +1,16 @@
-local ComponentProvider = require("./component-provider")
-local createComponentClassProvider = require("@self/create-component-class-provider")
-local logger = require("./logger")
-local roots = require("../roots")
-local types = require("./types")
-local useComponent = require("@self/use-component")
-local useComponents = require("@self/use-components")
-local useModuleAsComponent = require("@self/use-module-as-component")
-local useModulesAsComponents = require("@self/use-modules-as-components")
+local ComponentProvider = require "./component-provider"
+local createComponentClassProvider = require "@self/create-component-class-provider"
+local logger = require "./logger"
+local roots = require "../roots"
+local types = require "./types"
+local useComponent = require "@self/use-component"
+local useComponents = require "@self/use-components"
+local useModuleAsComponent = require "@self/use-module-as-component"
+local useModulesAsComponents = require "@self/use-modules-as-components"
 
 local function extendRoot(root: types.RootPrivate): types.Root
 	if root._hasComponentExtensions then
-		return logger:fatalError({ template = logger.alreadyExtendedRoot })
+		return logger:fatalError { template = logger.alreadyExtendedRoot }
 	end
 
 	root._hasComponentExtensions = true

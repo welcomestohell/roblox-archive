@@ -1,13 +1,13 @@
-local await = require("./methods/await")
-local clear = require("./methods/unregister-all")
-local destroy = require("./methods/destroy")
-local lifecycleConstructed = require("./hooks/lifecycle-constructed")
-local methodToLifecycles = require("./method-to-lifecycles")
-local onRegistered = require("./methods/on-registered")
-local onUnregistered = require("./methods/on-unregistered")
-local register = require("./methods/register")
-local types = require("./types")
-local unregister = require("./methods/unregister")
+local await = require "./methods/await"
+local clear = require "./methods/unregister-all"
+local destroy = require "./methods/destroy"
+local lifecycleConstructed = require "./hooks/lifecycle-constructed"
+local methodToLifecycles = require "./method-to-lifecycles"
+local onRegistered = require "./methods/on-registered"
+local onUnregistered = require "./methods/on-unregistered"
+local register = require "./methods/register"
+local types = require "./types"
+local unregister = require "./methods/unregister"
 
 local function create<Args...>(
 	method: string,

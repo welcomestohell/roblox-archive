@@ -1,1 +1,1 @@
-local test = require("@libs/Attribute")
+local test = require "@libs/Attribute"

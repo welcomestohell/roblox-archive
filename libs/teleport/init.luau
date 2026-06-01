@@ -1,8 +1,8 @@
-local Workspace = game:GetService("Workspace")
+local Workspace = game:GetService "Workspace"
 
-local types = require("@self/types")
-local useAttributes = require("@self/useAttributes")
-local useSeamlessAttributes = require("@self/useSeamlessAttributes")
+local types = require "@self/types"
+local useAttributes = require "@self/useAttributes"
+local useSeamlessAttributes = require "@self/useSeamlessAttributes"
 
 export type TeleporterAttributes = types.TeleporterAttributes
 export type SeamlessAttributes = types.SeamlessAttributes
@@ -11,9 +11,9 @@ export type TransitionContext = types.TransitionContext
 export type Transition = types.Transition
 
 local transitions: { [string]: Transition } = {
-	Instant = require("@self/transitions/Instant"),
-	ScreenFade = require("@self/transitions/ScreenFade"),
-	Tween = require("@self/transitions/Tween"),
+	Instant = require "@self/transitions/Instant",
+	ScreenFade = require "@self/transitions/ScreenFade",
+	Tween = require "@self/transitions/Tween",
 }
 
 local function calculateSeamless(context: TeleportContext)
@@ -69,10 +69,10 @@ local function teleport(context: types.TeleportContext)
 	end
 end
 
-return table.freeze({
+return table.freeze {
 	transitions = transitions,
 	calculateSeamless = calculateSeamless,
 	teleport = teleport,
 	useAttributes = useAttributes,
 	useSeamlessAttributes = useSeamlessAttributes,
-})
+}

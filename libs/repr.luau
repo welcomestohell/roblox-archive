@@ -63,7 +63,7 @@ local function isLuaIdentifier(str)
 		return false
 	end
 	-- can only contain a-z, A-Z, 0-9 and underscore
-	if str:find("[^%d%a_]") then
+	if str:find "[^%d%a_]" then
 		return false
 	end
 	-- cannot begin with digit

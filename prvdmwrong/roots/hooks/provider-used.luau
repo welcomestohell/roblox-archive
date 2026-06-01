@@ -1,5 +1,5 @@
-local providers = require("../../providers")
-local types = require("../types")
+local providers = require "../../providers"
+local types = require "../types"
 
 local callbacks: { (root: types.Self, provider: providers.Provider<unknown>) -> () } = {}
 
@@ -10,7 +10,7 @@ local function onProviderUsed(listener: (root: types.Root, provider: providers.P
 	end
 end
 
-return table.freeze({
+return table.freeze {
 	callbacks = callbacks,
 	onProviderUsed = onProviderUsed,
-})
+}

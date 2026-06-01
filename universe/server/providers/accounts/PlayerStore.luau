@@ -1,11 +1,11 @@
 --!nonstrict
 
-local Players = game:GetService("Players")
+local Players = game:GetService "Players"
 
-local Lyra = require("@roblox_packages/Lyra")
+local Lyra = require "@roblox_packages/Lyra"
 
-local AccountSchema = require("./AccountSchema")
-local AccountStore = require("./AccountStore")
+local AccountSchema = require "./AccountSchema"
+local AccountStore = require "./AccountStore"
 
 type Account = AccountStore.Account
 
@@ -21,7 +21,7 @@ local function onAccountChanged(key: string, account: Account)
 	end
 end
 
-return Lyra.createPlayerStore({
+return Lyra.createPlayerStore {
 	name = "PlayerData",
 	template = accountTemplate,
 	schema = function(value)
@@ -31,4 +31,4 @@ return Lyra.createPlayerStore({
 	changedCallbacks = { onAccountChanged },
 	-- memoryStoreService = if RunService:IsStudio() then Lyra.MockMemoryStoreService.new() else nil,
 	-- dataStoreService = if RunService:IsStudio() then Lyra.MockDataStoreService.new() else nil,
-})
+}

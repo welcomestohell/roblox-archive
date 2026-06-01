@@ -8,6 +8,6 @@ local function Runtime(x: Runtime)
 	return table.freeze(x)
 end
 
-return table.freeze({
+return table.freeze {
 	Runtime = Runtime,
-})
+}

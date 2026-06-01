@@ -1,3 +1,3 @@
-local Log = require("@libs/Log")
+local Log = require "@libs/Log"
 
-return Log.new("activation")
+return Log.new "activation"

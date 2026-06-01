@@ -1,6 +1,6 @@
-local logger = require("../logger")
+local logger = require "../logger"
 
-return logger.create("@prvdmwrong/rbx-components", logger.standardErrorInfoUrl("rbx-components"), {
+return logger.create("@prvdmwrong/rbx-components", logger.standardErrorInfoUrl "rbx-components", {
 	alreadyExtendedRoot = "Root already has component extension.",
 	invalidComponent = "Not a component, create one with `components(MyComponent)` or `components.create(MyComponent)`.",
 	alreadyRegisteredComponent = "Component already registered.",

@@ -1,5 +1,5 @@
-local lifecycles = require("../lifecycles")
-local types = require("./types")
+local lifecycles = require "../lifecycles"
+local types = require "./types"
 
 export type ProccessDependencyResult = {
 	sortedDependencies: { types.Dependency<any> },

@@ -1,10 +1,10 @@
-local RunService = game:GetService("RunService")
+local RunService = game:GetService "RunService"
 
-local Mechanic = require("@libs/Mechanic")
-local gt = require("@libs/gt")
+local Mechanic = require "@libs/Mechanic"
+local gt = require "@libs/gt"
 
-local attribute = require("@libs/Attribute")
-local character = require("@libs/character")
+local attribute = require "@libs/Attribute"
+local character = require "@libs/character"
 
 local damage = {}
 
@@ -23,16 +23,16 @@ function damage.damagePlayer(player: Player, damage: number): boolean
 		return false
 	end
 
-	local humanoid = char:FindFirstChild("Humanoid")
+	local humanoid = char:FindFirstChild "Humanoid"
 
-	if not humanoid or not humanoid:IsA("Humanoid") or humanoid.Health <= 0 then
+	if not humanoid or not humanoid:IsA "Humanoid" or humanoid.Health <= 0 then
 		return false
 	end
 
 	if RunService:IsServer() then
 		humanoid:TakeDamage(damage)
 	elseif RunService:IsClient() then
-		local net = require("@core/client/generated/net")
+		local net = require "@core/client/generated/net"
 
 		net.damage.fire(damage)
 	end

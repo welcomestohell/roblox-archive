@@ -1,12 +1,12 @@
-local TeleporterDestination = require("./TeleporterDestination")
-local activation = require("@libs/activation")
-local character = require("@libs/character")
-local sounds = require("@libs/sounds")
-local std = require("@libs/std")
-local teleport = require("@libs/teleport")
-local tweens = require("@libs/tweens")
+local TeleporterDestination = require "./TeleporterDestination"
+local activation = require "@libs/activation"
+local character = require "@libs/character"
+local sounds = require "@libs/sounds"
+local std = require "@libs/std"
+local teleport = require "@libs/teleport"
+local tweens = require "@libs/tweens"
 
-local Teleporter = std.Mechanic({})
+local Teleporter = std.Mechanic {}
 export type TeleporterMechanic = std.Mechanic<typeof(Teleporter)>
 
 Teleporter.instanceTag = "Teleporter"
@@ -17,13 +17,13 @@ Teleporter.Id = Teleporter:attribute("Id", std.gt.optional(std.gt.string()), nil
 Teleporter.Cooldown = Teleporter:attribute("Cooldown", std.gt.positiveNumber, 0)
 Teleporter.Teleport = teleport.useAttributes(Teleporter)
 
-Teleporter:attributeSection("Seamless")
+Teleporter:attributeSection "Seamless"
 Teleporter.Seamless = teleport.useSeamlessAttributes(Teleporter)
 
-Teleporter:attributeSection("Transitions")
+Teleporter:attributeSection "Transitions"
 Teleporter.Transition = tweens.useAttributes(Teleporter)
 
-Teleporter:attributeSection("Sound")
+Teleporter:attributeSection "Sound"
 Teleporter.Sound = sounds.useAttributes(Teleporter)
 
 Teleporter.debounce = false
@@ -67,7 +67,7 @@ function Teleporter.onActivate(self: typeof(Teleporter), teleporter: TeleporterM
 		sounds.playInstance(self.Sound, teleporter.instance, teleporter.instanceConfiguration, sounds.sfx.teleport)
 	end
 
-	teleport.teleport({
+	teleport.teleport {
 		teleporter = teleporter.instance,
 		teleporterConfiguration = teleporter.instanceConfiguration or teleporter.instance,
 		teleporterLife = teleporter.life,
@@ -79,7 +79,7 @@ function Teleporter.onActivate(self: typeof(Teleporter), teleporter: TeleporterM
 		attributes = self.Teleport,
 		seamlessAttributes = self.Seamless,
 		tweenAttributes = self.Transition,
-	})
+	}
 
 	self.debounce = false
 end

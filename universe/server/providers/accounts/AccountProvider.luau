@@ -1,8 +1,8 @@
-local AccountStore = require("./AccountStore")
-local Log = require("@libs/Log")
-local PlayerStore = require("./PlayerStore")
-local objects = require("@libs/objects")
-local prvd = require("@prvdmwrong/prvdmwrong")
+local AccountStore = require "./AccountStore"
+local Log = require "@libs/Log"
+local PlayerStore = require "./PlayerStore"
+local objects = require "@libs/objects"
+local prvd = require "@prvdmwrong/prvdmwrong"
 
 type Account = AccountStore.Account
 

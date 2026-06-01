@@ -1,4 +1,4 @@
-local Players = game:GetService("Players")
+local Players = game:GetService "Players"
 
 export type Character = {
 	Humanoid: {
@@ -84,25 +84,25 @@ end
 local function getMaybeHumanoidRootPart(): BasePart?
 	local character = getMaybeCharacter()
 	if character ~= nil then
-		return character:FindFirstChild("HumanoidRootPart") :: BasePart
+		return character:FindFirstChild "HumanoidRootPart" :: BasePart
 	end
 	return nil
 end
 
 local function getHumanoidRootPart(): BasePart
-	return getCharacter():WaitForChild("HumanoidRootPart") :: BasePart
+	return getCharacter():WaitForChild "HumanoidRootPart" :: BasePart
 end
 
 local function getMaybeHumanoid(): Humanoid?
 	local character = getMaybeCharacter()
 	if character ~= nil then
-		return character:FindFirstChild("Humanoid") :: Humanoid
+		return character:FindFirstChild "Humanoid" :: Humanoid
 	end
 	return nil
 end
 
 local function getHumanoid(): Humanoid
-	return getCharacter():WaitForChild("Humanoid") :: Humanoid
+	return getCharacter():WaitForChild "Humanoid" :: Humanoid
 end
 
 local function isCharacterAlive(): boolean

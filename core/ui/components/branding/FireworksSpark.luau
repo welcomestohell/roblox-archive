@@ -1,6 +1,6 @@
-local Fluid = require("@roblox_packages/Fluid")
-local assets = require("@core/shared/generated/assets")
-local useRem = require("@core/shared/fluid/useRem")
+local Fluid = require "@roblox_packages/Fluid"
+local assets = require "@core/shared/generated/assets"
+local useRem = require "@core/shared/fluid/useRem"
 
 local function FireworksSpark(props: {
 	visible: Fluid.UsedAs<boolean>,
@@ -26,7 +26,15 @@ local function FireworksSpark(props: {
 		return UDim2.fromScale(scale, scale)
 	end, 30, 1)
 
-	return Fluid.create("Frame")({
+	local sparkRotation = Fluid.source(0)
+	Fluid.effect(function()
+		Fluid.read(props.visible)
+		Fluid.untrack(function()
+			return sparkRotation(sparkRotation() + 3)
+		end)
+	end)
+
+	return Fluid.create "Frame" {
 		Name = props.name or "FireworksSpark",
 		BackgroundTransparency = 1,
 		ZIndex = props.zIndex,
@@ -39,7 +47,7 @@ local function FireworksSpark(props: {
 			return UDim2.fromOffset(rem(24), rem(24))
 		end,
 
-		Fluid.create("ImageLabel")({
+		Fluid.create "ImageLabel" {
 			BackgroundTransparency = 1,
 
 			AnchorPoint = Vector2.new(0.5, 0.5),
@@ -51,11 +59,11 @@ local function FireworksSpark(props: {
 			ImageTransparency = Fluid.spring(transparency, 15, 0.5),
 
 			Rotation = Fluid.spring(function()
-				return transparency() * -60 * 4
+				return sparkRotation() * -60 * 2
 			end, 15, 1),
-		}),
+		},
 
-		Fluid.create("ImageLabel")({
+		Fluid.create "ImageLabel" {
 			BackgroundTransparency = 1,
 
 			AnchorPoint = Vector2.new(0.5, 0.5),
@@ -67,10 +75,10 @@ local function FireworksSpark(props: {
 			ImageTransparency = Fluid.spring(transparency, 15, 0.5),
 
 			Rotation = Fluid.spring(function()
-				return transparency() * -60 * 2
+				return sparkRotation() * -60
 			end, 15, 1),
-		}),
-	})
+		},
+	}
 end
 
 return FireworksSpark

@@ -1,8 +1,8 @@
-local Players = game:GetService("Players")
-local Workspace = game:GetService("Workspace")
+local Players = game:GetService "Players"
+local Workspace = game:GetService "Workspace"
 
-local tweens = require("@libs/tweens")
-local types = require("@libs/teleport/types")
+local tweens = require "@libs/tweens"
+local types = require "@libs/teleport/types"
 
 return function(context: types.TransitionContext)
 	local life = context.teleporterLife:extend()
@@ -23,12 +23,12 @@ return function(context: types.TransitionContext)
 	context.target.AssemblyAngularVelocity = Vector3.zero
 	context.target.AssemblyLinearVelocity = Vector3.zero
 
-	local screen = life:add(Instance.new("ScreenGui"))
+	local screen = life:add(Instance.new "ScreenGui")
 	screen.Name = "ScreenFadeTeleport"
 	screen.ResetOnSpawn = false
 	screen.IgnoreGuiInset = true
 
-	local frame = life:add(Instance.new("Frame"))
+	local frame = life:add(Instance.new "Frame")
 	frame.Size = UDim2.fromScale(1, 1)
 	frame.BackgroundColor3 = context.attributes.ScreenFadeColor(context.teleporterConfiguration)
 	frame.BackgroundTransparency = 1

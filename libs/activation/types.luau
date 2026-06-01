@@ -1,8 +1,8 @@
-local Attribute = require("@libs/Attribute")
-local Life = require("@libs/memory/Life")
-local Result = require("@libs/Result")
-local gt = require("@libs/gt")
-local touch = require("@libs/touch")
+local Attribute = require "@libs/Attribute"
+local Life = require "@libs/memory/Life"
+local Result = require "@libs/Result"
+local gt = require "@libs/gt"
+local touch = require "@libs/touch"
 
 export type ActivationAttributes = {
 	Enabled: Attribute.Attribute<boolean>,
@@ -41,13 +41,13 @@ export type ActivationContext = BindContext & {
 	activationLife: Life.Life,
 }
 
-local ActivationMode = gt.build(gt.table({
+local ActivationMode = gt.build(gt.table {
 	predicate = gt.optional(gt.anyfn() :: (PredicateContext) -> Result.Result<nil, string>),
 	implement = gt.anyfn() :: (ActivationContext) -> (),
-}))
+})
 
 export type ActivationMode = typeof(ActivationMode:type())
 
-return table.freeze({
+return table.freeze {
 	ActivationMode = ActivationMode,
-})
+}

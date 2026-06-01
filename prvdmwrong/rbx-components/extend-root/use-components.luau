@@ -1,4 +1,4 @@
-local types = require("../types")
+local types = require "../types"
 
 local function useComponents(root: types.RootPrivate, components: { types.AnyComponent })
 	for index = 1, #components do

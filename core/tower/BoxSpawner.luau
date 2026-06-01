@@ -1,13 +1,13 @@
-local std = require("@libs/std")
+local std = require "@libs/std"
 
-local BoxSpawner = std.Mechanic({})
+local BoxSpawner = std.Mechanic {}
 export type BoxSpawnerMechanic = std.Mechanic<typeof(BoxSpawner), { template: PVInstance, boxLife: std.Life? }>
 BoxSpawner.instanceTag = "BoxSpawner"
-BoxSpawner.instanceType = std.gt.instanceTree({
+BoxSpawner.instanceType = std.gt.instanceTree {
 	Button = std.isA.BasePart(),
 	Box = std.isA.PVInstance(),
 	Spawn = std.isA.BasePart(),
-})
+}
 BoxSpawner.debuggerEmoji = "📦"
 
 BoxSpawner.Cooldown = BoxSpawner:attribute("Cooldown", std.gt.positiveNumber, 0)
@@ -16,7 +16,7 @@ BoxSpawner.SpawnOnStart = BoxSpawner:attribute("SpawnOnStart", std.gt.boolean(),
 
 BoxSpawner.TagKeepAnchor = BoxSpawner:attribute("TagKeepAnchor", std.gt.string(), "KeepAnchor")
 
-BoxSpawner:attributeSection("Activation")
+BoxSpawner:attributeSection "Activation"
 BoxSpawner.Activation = std.useActivation(BoxSpawner)
 
 function BoxSpawner.spawn(spawner: BoxSpawnerMechanic)
@@ -37,7 +37,7 @@ function BoxSpawner.spawn(spawner: BoxSpawnerMechanic)
 	local descendants = box:GetDescendants()
 	table.insert(descendants, box)
 	for _, descendant in descendants do
-		if descendant:IsA("BasePart") and not descendant:HasTag(tagKeepAnchor) then
+		if descendant:IsA "BasePart" and not descendant:HasTag(tagKeepAnchor) then
 			descendant.Anchored = false
 		end
 	end

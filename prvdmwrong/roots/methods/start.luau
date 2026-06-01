@@ -1,10 +1,10 @@
-local dependencies = require("../../dependencies")
-local lifecycles = require("../../lifecycles")
-local logger = require("../logger")
-local providers = require("../../providers")
+local dependencies = require "../../dependencies"
+local lifecycles = require "../../lifecycles"
+local logger = require "../logger"
+local providers = require "../../providers"
 local rootFinished = require("../hooks/root-finished").callbacks
 local rootStarted = require("../hooks/root-started").callbacks
-local types = require("../types")
+local types = require "../types"
 
 local function bindLifecycle(lifecycle: lifecycles.Lifecycle<...any>, provider: providers.Provider<any>)
 	local lifecycleMethod = (provider :: any)[lifecycle.method]
@@ -73,7 +73,7 @@ local function start(root: types.Self): types.StartedRoot
 
 	function startedRoot:finish()
 		if didFinish then
-			return logger:fatalError({ template = logger.alreadyFinished })
+			return logger:fatalError { template = logger.alreadyFinished }
 		end
 
 		didFinish = true

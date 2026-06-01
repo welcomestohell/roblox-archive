@@ -1,5 +1,5 @@
-local componentClasses = require("../component-classes")
-local types = require("../types")
+local componentClasses = require "../component-classes"
+local types = require "../types"
 
 local function useModuleAsComponent(root: types.RootPrivate, module: ModuleScript)
 	local required = (require)(module)

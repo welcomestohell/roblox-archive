@@ -1,8 +1,8 @@
-local LevelState = require("./LevelState")
-local Mechanic = require("./Mechanic")
-local gt = require("./gt")
-local std = require("./std")
-local tables = require("./collections/tables")
+local LevelState = require "./LevelState"
+local Mechanic = require "./Mechanic"
+local gt = require "./gt"
+local std = require "./std"
+local tables = require "./collections/tables"
 
 export type MechanicsById<Mechanic> = { [string]: { Mechanic } }
 
@@ -34,7 +34,7 @@ local function trackMechanic<T>(level: std.Level, mechanic: T, mechanicsByIdStat
 	end)
 end
 
-return table.freeze({
+return table.freeze {
 	withAttribute = withAttribute,
 	trackMechanic = trackMechanic,
-})
+}

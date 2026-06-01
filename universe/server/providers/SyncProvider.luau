@@ -1,10 +1,10 @@
-local Players = game:GetService("Players")
+local Players = game:GetService "Players"
 
-local AccountStore = require("@universe/server/providers/accounts/AccountStore")
-local Charm = require("@roblox_packages/Charm")
-local CharmSync = require("@roblox_packages/CharmSync")
-local net = require("@universe/server/generated/net")
-local prvd = require("@prvdmwrong/prvdmwrong")
+local AccountStore = require "@universe/server/providers/accounts/AccountStore"
+local Charm = require "@roblox_packages/Charm"
+local CharmSync = require "@roblox_packages/CharmSync"
+local net = require "@universe/server/generated/net"
+local prvd = require "@prvdmwrong/prvdmwrong"
 
 local SyncProvider = {}
 export type SyncProvider = typeof(SyncProvider)

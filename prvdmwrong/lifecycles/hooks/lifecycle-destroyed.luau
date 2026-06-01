@@ -1,4 +1,4 @@
-local types = require("../types")
+local types = require "../types"
 
 local callbacks: { (lifecycle: types.Lifecycle) -> () } = {}
 
@@ -9,7 +9,7 @@ local function onLifecycleDestroyed(listener: (lifecycle: types.Lifecycle) -> ()
 	end
 end
 
-return table.freeze({
+return table.freeze {
 	callbacks = callbacks,
 	onLifecycleDestroyed = onLifecycleDestroyed,
-})
+}

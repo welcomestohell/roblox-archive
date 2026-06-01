@@ -1,18 +1,18 @@
-local activation = require("@libs/activation")
-local character = require("@libs/character")
-local constraints = require("@libs/constraints")
-local sounds = require("@libs/sounds")
-local std = require("@libs/std")
+local activation = require "@libs/activation"
+local character = require "@libs/character"
+local constraints = require "@libs/constraints"
+local sounds = require "@libs/sounds"
+local std = require "@libs/std"
 
-local Vine = std.Mechanic({})
+local Vine = std.Mechanic {}
 export type VineMechanic = std.Mechanic<typeof(Vine)> & { templateHandle: BasePart? }
 Vine.instanceTag = "Vine"
-Vine.instanceType = std.gt.instanceTree({
+Vine.instanceType = std.gt.instanceTree {
 	Top = std.isA.BasePart(),
 	Activator = std.isA.BasePart(),
 	Constraint = std.gt.optional(std.isA.Constraint()),
 	Handle = std.gt.optional(std.isA.BasePart()),
-})
+}
 Vine.debuggerEmoji = "🪝"
 
 Vine.Enabled = Vine:withEnabled()
@@ -20,13 +20,13 @@ Vine.Cooldown = Vine:attribute("Cooldown", std.gt.positiveNumber, 0)
 Vine.Debounced = Vine:attribute("Debounced", std.gt.boolean(), false)
 Vine.KeepVelocity = Vine:attribute("KeepVelocity", std.gt.boolean(), true)
 
-Vine:attributeSection("Activation")
+Vine:attributeSection "Activation"
 Vine.Activation = activation.useAttributes(Vine)
 
-Vine:attributeSection("Dismount")
+Vine:attributeSection "Dismount"
 Vine.Dismount = activation.useAttributes(Vine, "Dismount")
 
-Vine:attributeSection("Sound Effects")
+Vine:attributeSection "Sound Effects"
 Vine.GrabSound = sounds.useAttributes(Vine, "GrabSound")
 Vine.JumpSound = sounds.useAttributes(Vine, "JumpSound")
 
@@ -35,7 +35,7 @@ function Vine.useTemplateConstraint(vine: VineMechanic): Constraint
 		return vine.instance.Constraint
 	end
 
-	local rope: RopeConstraint = vine.life:add(Instance.new("RopeConstraint"))
+	local rope: RopeConstraint = vine.life:add(Instance.new "RopeConstraint")
 	rope.Name = "Constraint"
 	rope.Color = BrickColor.new(vine.instance.Top.Color)
 	rope.Parent = vine.instance
@@ -48,7 +48,7 @@ function Vine.useTemplateHandle(vine: VineMechanic): BasePart
 		return vine.templateHandle
 	end
 
-	local handle: Part = vine.life:add(Instance.new("Part"))
+	local handle: Part = vine.life:add(Instance.new "Part")
 	handle.Name = "Handle"
 	handle.Color = vine.instance.Color
 	handle.Size = Vector3.new(3, 0.5, 0.5)

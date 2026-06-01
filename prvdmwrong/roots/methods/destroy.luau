@@ -1,9 +1,9 @@
-local logger = require("../logger")
-local types = require("../types")
+local logger = require "../logger"
+local types = require "../types"
 
 local function destroy(root: types.Self)
 	if root._destroyed then
-		logger:fatalError({ template = logger.alreadyDestroyed })
+		logger:fatalError { template = logger.alreadyDestroyed }
 	end
 	root._destroyed = true
 	table.clear(root._rootLifecycles)

@@ -1,4 +1,4 @@
-local Fluid = require("@roblox_packages/Fluid")
+local Fluid = require "@roblox_packages/Fluid"
 
 local function useDelay<T>(delaySeconds: Fluid.UsedAs<number>, observed: Fluid.UsedAs<T>): () -> T
 	local delayed = Fluid.source(Fluid.read(observed))

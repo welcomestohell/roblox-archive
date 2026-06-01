@@ -1,5 +1,5 @@
 -- local roblox = require("@core/shared/generated/types/roblox")
-local types = require("./types")
+local types = require "./types"
 
 -- local function createChildOfClass<ClassName>(
 -- 	context: types.ActivationContext,

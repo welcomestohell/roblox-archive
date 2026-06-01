@@ -1,7 +1,7 @@
-local Mechanic = require("@libs/Mechanic")
-local gt = require("@libs/gt")
-local touch = require("@libs/touch")
-local types = require("./types")
+local Mechanic = require "@libs/Mechanic"
+local gt = require "@libs/gt"
+local touch = require "@libs/touch"
+local types = require "./types"
 
 local function useAttributes(
 	implementation: Mechanic.MechanicImplementationLike,

@@ -1,9 +1,9 @@
-local Signal = require("@roblox_packages/Signal")
-local activation = require("@libs/activation")
-local sounds = require("@libs/sounds")
-local std = require("@libs/std")
+local Signal = require "@roblox_packages/Signal"
+local activation = require "@libs/activation"
+local sounds = require "@libs/sounds"
+local std = require "@libs/std"
 
-local Checkpoint = std.Mechanic({})
+local Checkpoint = std.Mechanic {}
 export type CheckpointMechanic = std.Mechanic<typeof(Checkpoint)>
 Checkpoint.instanceTag = "Checkpoint"
 Checkpoint.instanceType = std.isA.BasePart()
@@ -12,10 +12,10 @@ Checkpoint.debuggerEmoji = "🚩"
 Checkpoint.Cooldown = Checkpoint:attribute("Cooldown", std.gt.positiveNumber, 0)
 Checkpoint.Persistent = Checkpoint:attribute("Persistent", std.gt.boolean(), false)
 
-Checkpoint:attributeSection("Activation")
+Checkpoint:attributeSection "Activation"
 Checkpoint.Activation = activation.useAttributes(Checkpoint)
 
-Checkpoint:attributeSection("Sounds")
+Checkpoint:attributeSection "Sounds"
 Checkpoint.Sound = sounds.useAttributes(Checkpoint)
 
 Checkpoint.currentCheckpoint = std.LevelState(nil :: CheckpointMechanic?)

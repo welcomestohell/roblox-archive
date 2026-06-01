@@ -1,6 +1,6 @@
-local Workspace = game:GetService("Workspace")
+local Workspace = game:GetService "Workspace"
 
-local Fluid = require("@roblox_packages/Fluid")
+local Fluid = require "@roblox_packages/Fluid"
 
 local function useCamera()
 	local camera = Fluid.source(Workspace.CurrentCamera)

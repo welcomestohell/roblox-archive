@@ -1,4 +1,4 @@
-local Mechanic = require("./Mechanic")
+local Mechanic = require "./Mechanic"
 
 local ScriptCollector = {}
 ScriptCollector.__index = ScriptCollector
@@ -24,7 +24,7 @@ function ScriptCollector.tryMechanicImplementation(
 	if Mechanic.isMechanicImplementation(implementation) then
 		local tagged = self.mechanicImplementationByTag[implementation.instanceTag]
 		if tagged then
-			error("Duplicate mechanic found")
+			error "Duplicate mechanic found"
 		end
 		self.mechanicImplementationByTag[implementation.instanceTag] = implementation
 		table.insert(self.mechanicImplementations, implementation)
@@ -38,7 +38,7 @@ function ScriptCollector.tryRegister(self: ScriptCollector, x: any)
 end
 
 function ScriptCollector.tryInstance(self: ScriptCollector, instance: Instance)
-	if not instance:IsA("ModuleScript") then
+	if not instance:IsA "ModuleScript" then
 		return
 	end
 

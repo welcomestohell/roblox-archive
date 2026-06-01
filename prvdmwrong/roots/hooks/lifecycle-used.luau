@@ -1,5 +1,5 @@
-local lifecycles = require("../../lifecycles")
-local types = require("../types")
+local lifecycles = require "../../lifecycles"
+local types = require "../types"
 
 local callbacks: { (root: types.Self, provider: lifecycles.Lifecycle) -> () } = {}
 
@@ -10,7 +10,7 @@ local function onLifecycleUsed(listener: (root: types.Root, lifecycle: lifecycle
 	end
 end
 
-return table.freeze({
+return table.freeze {
 	callbacks = callbacks,
 	onLifecycleUsed = onLifecycleUsed,
-})
+}

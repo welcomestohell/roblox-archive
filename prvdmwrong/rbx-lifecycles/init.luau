@@ -1,7 +1,7 @@
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
+local Players = game:GetService "Players"
+local RunService = game:GetService "RunService"
 
-local prvd = require("./prvdmwrong")
+local prvd = require "./prvdmwrong"
 
 local fireConcurrent = prvd.fireConcurrent
 

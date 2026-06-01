@@ -1,16 +1,16 @@
-local destroy = require("./methods/destroy")
-local lifecycles = require("../lifecycles")
-local rootConstructing = require("./hooks/root-constructing")
-local start = require("./methods/start")
-local types = require("./types")
-local useModule = require("./methods/use-module")
-local useModules = require("./methods/use-modules")
-local useProvider = require("./methods/use-provider")
-local useProviders = require("./methods/use-providers")
-local useRoot = require("./methods/use-root")
-local useRoots = require("./methods/use-roots")
-local willFinish = require("./methods/will-finish")
-local willStart = require("./methods/will-start")
+local destroy = require "./methods/destroy"
+local lifecycles = require "../lifecycles"
+local rootConstructing = require "./hooks/root-constructing"
+local start = require "./methods/start"
+local types = require "./types"
+local useModule = require "./methods/use-module"
+local useModules = require "./methods/use-modules"
+local useProvider = require "./methods/use-provider"
+local useProviders = require "./methods/use-providers"
+local useRoot = require "./methods/use-root"
+local useRoots = require "./methods/use-roots"
+local willFinish = require "./methods/will-finish"
+local willStart = require "./methods/will-start"
 
 local function create(): types.Root
 	local self: types.Self = {

@@ -1,4 +1,4 @@
-local types = require("./types")
+local types = require "./types"
 
 local function sortByPriority(dependencies: { types.Dependency<unknown> })
 	table.sort(dependencies, function(left: any, right: any)

@@ -1,5 +1,5 @@
-local gt = require("@libs/gt")
-local tables = require("@libs/collections/tables")
+local gt = require "@libs/gt"
+local tables = require "@libs/collections/tables"
 
 local AttributeMap = {}
 AttributeMap.__index = AttributeMap
@@ -17,7 +17,7 @@ function AttributeMap.new<T>(pattern: string, expectedType: T): AttributeMap<T>
 	return setmetatable({
 		pattern = pattern,
 		expectedType = gt.build(expectedType),
-		_instances = tables.weak("k"),
+		_instances = tables.weak "k",
 	}, AttributeMap)
 end
 

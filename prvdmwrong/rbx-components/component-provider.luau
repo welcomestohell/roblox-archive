@@ -1,10 +1,10 @@
-local CollectionService = game:GetService("CollectionService")
+local CollectionService = game:GetService "CollectionService"
 
-local componentClasses = require("./component-classes")
-local logger = require("./logger")
-local providers = require("../providers")
-local runtime = require("../runtime")
-local types = require("./types")
+local componentClasses = require "./component-classes"
+local logger = require "./logger"
+local providers = require "../providers"
+local runtime = require "../runtime"
+local types = require "./types"
 
 local threadpool = runtime.threadpool
 
@@ -113,11 +113,11 @@ end
 
 function ComponentProvider.addComponentClass(self: ComponentProvider, class: types.AnyComponent)
 	if not componentClasses[class] then
-		logger:fatalError({ template = logger.invalidComponent })
+		logger:fatalError { template = logger.invalidComponent }
 	end
 
 	if self.componentClasses[class] then
-		logger:fatalError({ template = logger.alreadyRegisteredComponent })
+		logger:fatalError { template = logger.alreadyRegisteredComponent }
 	end
 
 	if class.tag then
@@ -125,7 +125,7 @@ function ComponentProvider.addComponentClass(self: ComponentProvider, class: typ
 
 		if tagToComponentClasses then
 			if not _G.PRVDMWRONG_SUPPRESS_MULTIPLE_SAME_TAG and #tagToComponentClasses > 0 then
-				logger:warn({ template = logger.multipleSameTag, class.tag })
+				logger:warn { template = logger.multipleSameTag, class.tag }
 			end
 		else
 			tagToComponentClasses = {}
@@ -167,7 +167,7 @@ function ComponentProvider.addComponent<C, I>(
 	class: types.Component<C, I>,
 	instance: I
 ): types.Component<C, I>?
-	error("not yet implemented")
+	error "not yet implemented"
 end
 
 function ComponentProvider.removeComponent<C, I>(self: ComponentProvider, class: types.Component<C, I>, instance: I)

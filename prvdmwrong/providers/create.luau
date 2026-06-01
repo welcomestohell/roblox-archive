@@ -1,6 +1,6 @@
-local nameOf = require("./name-of")
-local providerClasses = require("./provider-classes")
-local types = require("./types")
+local nameOf = require "./name-of"
+local providerClasses = require "./provider-classes"
+local types = require "./types"
 
 local PROVIDER_MT = { __tostring = nameOf }
 

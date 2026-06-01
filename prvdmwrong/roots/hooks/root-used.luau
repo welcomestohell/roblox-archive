@@ -1,4 +1,4 @@
-local types = require("../types")
+local types = require "../types"
 
 local callbacks: { (root: types.Self, subRoot: types.Root) -> () } = {}
 
@@ -9,7 +9,7 @@ local function onRootUsed(listener: (root: types.Root, subRoot: types.Root) -> (
 	end
 end
 
-return table.freeze({
+return table.freeze {
 	callbacks = callbacks,
 	onRootUsed = onRootUsed,
-})
+}

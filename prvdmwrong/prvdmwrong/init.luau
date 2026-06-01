@@ -1,7 +1,7 @@
-local dependencies = require("./dependencies")
-local lifecycles = require("./lifecycles")
-local providers = require("./providers")
-local roots = require("./roots")
+local dependencies = require "./dependencies"
+local lifecycles = require "./lifecycles"
+local providers = require "./providers"
+local roots = require "./roots"
 
 export type Provider<Self, Dependencies = nil> = providers.Provider<Self, Dependencies>
 export type Lifecycle<Args... = ...unknown> = lifecycles.Lifecycle<Args...>
@@ -18,7 +18,7 @@ local prvd = {
 	fireConcurrent = lifecycles.handlers.fireConcurrent,
 	fireSequential = lifecycles.handlers.fireSequential,
 
-	hooks = table.freeze({
+	hooks = table.freeze {
 		onProviderUsed = roots.hooks.onProviderUsed,
 		onLifecycleUsed = roots.hooks.onLifecycleUsed,
 		onRootConstructing = roots.hooks.onRootConstructing,
@@ -31,7 +31,7 @@ local prvd = {
 		onLifecycleDestroyed = lifecycles.hooks.onLifecycleDestroyed,
 		onLifecycleRegistered = lifecycles.hooks.onLifecycleRegistered,
 		onLifecycleUnregistered = lifecycles.hooks.onLifecycleUnregistered,
-	}),
+	},
 }
 
 type PrvdModule = (<Self>(provider: Self) -> Provider<Self, any>) & typeof(prvd)

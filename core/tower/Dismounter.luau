@@ -1,8 +1,8 @@
-local Signal = require("@roblox_packages/Signal")
-local activation = require("@libs/activation")
-local std = require("@libs/std")
+local Signal = require "@roblox_packages/Signal"
+local activation = require "@libs/activation"
+local std = require "@libs/std"
 
-local Dismounter = std.Mechanic({})
+local Dismounter = std.Mechanic {}
 export type DismounterMechanic = std.Mechanic<typeof(Dismounter)>
 
 Dismounter.instanceTag = "Dismounter"
@@ -11,7 +11,7 @@ Dismounter.debuggerEmoji = "⏏️"
 
 Dismounter.Dismounts = Dismounter:prefixedAttributeMap("Dismounts", std.gt.boolean())
 
-Dismounter:attributeSection("Activation")
+Dismounter:attributeSection "Activation"
 Dismounter.Activation = activation.useAttributes(Dismounter)
 
 Dismounter.onDismount = Signal.new() :: Signal.Signal<{ [string]: boolean }>

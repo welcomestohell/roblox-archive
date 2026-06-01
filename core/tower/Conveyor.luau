@@ -1,6 +1,6 @@
-local std = require("@libs/std")
+local std = require "@libs/std"
 
-local Conveyor = std.Mechanic({})
+local Conveyor = std.Mechanic {}
 export type ConveyorMechanic = std.Mechanic<typeof(Conveyor)>
 Conveyor.instanceTag = "Conveyor"
 Conveyor.instanceType = std.isA.BasePart()

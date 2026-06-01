@@ -1,6 +1,6 @@
-local Workspace = game:GetService("Workspace")
+local Workspace = game:GetService "Workspace"
 
-local types = require("@libs/teleport/types")
+local types = require "@libs/teleport/types"
 
 return function(context: types.TransitionContext)
 	context.target:PivotTo(context.destinationCFrame)

@@ -1,14 +1,14 @@
-local UserInputService = game:GetService("UserInputService")
+local UserInputService = game:GetService "UserInputService"
 
-local activation = require("@libs/activation")
-local character = require("@libs/character")
-local constraints = require("@libs/constraints")
-local std = require("@libs/std")
+local activation = require "@libs/activation"
+local character = require "@libs/character"
+local constraints = require "@libs/constraints"
+local std = require "@libs/std"
 
 local DISTANCE_FROM_ROOT_TO_GROUND_STUDS = 4
 local DEFAULT_OFFSET = CFrame.new(0, DISTANCE_FROM_ROOT_TO_GROUND_STUDS / 2, 0)
 
-local Seat = std.Mechanic({})
+local Seat = std.Mechanic {}
 export type SeatMechanic = std.Mechanic<typeof(Seat)>
 
 Seat.instanceTag = "Seat"

@@ -1,13 +1,13 @@
-local ComponentProvider = require("../component-provider")
-local providers = require("../../providers")
-local types = require("../types")
+local ComponentProvider = require "../component-provider"
+local providers = require "../../providers"
+local types = require "../types"
 
 local ComponentClassProvider = {}
 ComponentClassProvider.priority = -math.huge
 ComponentClassProvider.name = "@rbx-components.ComponentClassProvider"
-ComponentClassProvider.dependencies = table.freeze({
+ComponentClassProvider.dependencies = table.freeze {
 	componentProvider = ComponentProvider,
-})
+}
 
 ComponentClassProvider._components = {} :: { types.AnyComponent }
 

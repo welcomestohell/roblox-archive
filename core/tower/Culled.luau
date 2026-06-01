@@ -1,7 +1,7 @@
-local Players = game:GetService("Players")
+local Players = game:GetService "Players"
 local localPlayer = Players.LocalPlayer or Players.PlayerAdded:Wait()
 
-local std = require("@libs/std")
+local std = require "@libs/std"
 
 --[=[
 	@class Culled
@@ -14,7 +14,7 @@ local std = require("@libs/std")
 
 	Culled can be triggered by distance, or by camera culling. 
 ]=]
-local Culled = std.Mechanic({})
+local Culled = std.Mechanic {}
 export type CulledMechanic = std.Mechanic<typeof(Culled)>
 
 Culled.instanceTag = "Culled"
@@ -23,7 +23,7 @@ Culled.debuggerEmoji = "😶"
 
 Culled.Enabled = Culled:withEnabled()
 
-Culled:attributeSection("Distance")
+Culled:attributeSection "Distance"
 Culled.MinimumDistance = Culled:attribute("MinimumDistance", std.gt.number(), 100)
 Culled.MaximumDistance = Culled:attribute("MaximumDistance", std.gt.number(), math.huge)
 

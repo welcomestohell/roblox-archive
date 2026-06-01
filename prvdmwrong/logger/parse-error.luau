@@ -1,4 +1,4 @@
-local types = require("./types")
+local types = require "./types"
 
 local function parseError(err: string): types.Error
 	return {

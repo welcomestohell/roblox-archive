@@ -1,5 +1,5 @@
-local Level = require("./Level")
-local tables = require("@libs/collections/tables")
+local Level = require "./Level"
+local tables = require "@libs/collections/tables"
 
 local LevelState = {}
 LevelState.__index = LevelState
@@ -25,8 +25,8 @@ end
 function LevelState.new<T>(default: T): LevelState<T>
 	return setmetatable({
 		_default = default,
-		_values = tables.weak("k"),
-		_cleanup = tables.weak("k"),
+		_values = tables.weak "k",
+		_cleanup = tables.weak "k",
 	}, LevelState)
 end
 

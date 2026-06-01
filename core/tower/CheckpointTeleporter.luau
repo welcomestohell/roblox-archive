@@ -1,13 +1,13 @@
-local Checkpoint = require("./Checkpoint")
-local activation = require("@libs/activation")
-local character = require("@libs/character")
-local functions = require("@libs/functions")
-local sounds = require("@libs/sounds")
-local std = require("@libs/std")
-local teleport = require("@libs/teleport")
-local tweens = require("@libs/tweens")
+local Checkpoint = require "./Checkpoint"
+local activation = require "@libs/activation"
+local character = require "@libs/character"
+local functions = require "@libs/functions"
+local sounds = require "@libs/sounds"
+local std = require "@libs/std"
+local teleport = require "@libs/teleport"
+local tweens = require "@libs/tweens"
 
-local CheckpointTeleporter = std.Mechanic({})
+local CheckpointTeleporter = std.Mechanic {}
 export type CheckpointTeleporterMechanic = std.Mechanic<typeof(CheckpointTeleporter)>
 CheckpointTeleporter.instanceTag = "CheckpointTeleporter"
 CheckpointTeleporter.instanceType = std.isA.BasePart()
@@ -17,22 +17,22 @@ CheckpointTeleporter.Cooldown = CheckpointTeleporter:attribute("Cooldown", std.g
 CheckpointTeleporter.OnNoCheckpoint = CheckpointTeleporter:attribute(
 	"OnNoCheckpoint",
 	std.gt.unionLiterals2("DoNothing", "ReturnToSpawn"),
-	functions.literal("DoNothing")
+	functions.literal "DoNothing"
 )
 
-CheckpointTeleporter:attributeSection("Activation")
+CheckpointTeleporter:attributeSection "Activation"
 CheckpointTeleporter.Activation = activation.useAttributes(CheckpointTeleporter)
 
-CheckpointTeleporter:attributeSection("Teleportation")
+CheckpointTeleporter:attributeSection "Teleportation"
 CheckpointTeleporter.Teleport = teleport.useAttributes(CheckpointTeleporter)
 
-CheckpointTeleporter:attributeSection("Seamless")
+CheckpointTeleporter:attributeSection "Seamless"
 CheckpointTeleporter.Seamless = teleport.useSeamlessAttributes(CheckpointTeleporter)
 
-CheckpointTeleporter:attributeSection("Sound Effects")
+CheckpointTeleporter:attributeSection "Sound Effects"
 CheckpointTeleporter.Sound = sounds.useAttributes(CheckpointTeleporter)
 
-CheckpointTeleporter:attributeSection("Transition")
+CheckpointTeleporter:attributeSection "Transition"
 CheckpointTeleporter.Transition = tweens.useAttributes(CheckpointTeleporter)
 
 function CheckpointTeleporter:onActivate(teleporter: CheckpointTeleporterMechanic, level: std.Level)
@@ -66,7 +66,7 @@ function CheckpointTeleporter:onActivate(teleporter: CheckpointTeleporterMechani
 		sounds.playInstance(self.Sound, teleporter.instance, teleporter.instanceConfiguration, sounds.sfx.teleport)
 	end
 
-	teleport.teleport({
+	teleport.teleport {
 		teleporter = teleporter.instance,
 		teleporterConfiguration = teleporter.instanceConfiguration or teleporter.instance,
 		teleporterLife = teleporter.life,
@@ -78,7 +78,7 @@ function CheckpointTeleporter:onActivate(teleporter: CheckpointTeleporterMechani
 		attributes = self.Teleport,
 		seamlessAttributes = self.Seamless,
 		tweenAttributes = self.Transition,
-	})
+	}
 end
 
 return CheckpointTeleporter

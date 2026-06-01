@@ -1,6 +1,6 @@
-local destruction = require("./destruction")
-local tables = require("@libs/collections/tables")
-local threadpool = require("@libs/threadpool")
+local destruction = require "./destruction"
+local tables = require "@libs/collections/tables"
+local threadpool = require "@libs/threadpool"
 
 --[=[
 	@class life

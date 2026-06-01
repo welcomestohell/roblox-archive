@@ -1,8 +1,8 @@
-local Checkpoint = require("./Checkpoint")
-local activation = require("@libs/activation")
-local std = require("@libs/std")
+local Checkpoint = require "./Checkpoint"
+local activation = require "@libs/activation"
+local std = require "@libs/std"
 
-local CheckpointResetter = std.Mechanic({})
+local CheckpointResetter = std.Mechanic {}
 export type CheckpointResetterMechanic = std.Mechanic<typeof(CheckpointResetter)>
 CheckpointResetter.instanceTag = "CheckpointResetter"
 CheckpointResetter.instanceType = std.isA.BasePart()
@@ -10,7 +10,7 @@ CheckpointResetter.debuggerEmoji = "🔄"
 
 CheckpointResetter.Cooldown = Checkpoint:attribute("CheckpointResetter", std.gt.positiveNumber, 0)
 
-CheckpointResetter:attributeSection("Activation")
+CheckpointResetter:attributeSection "Activation"
 CheckpointResetter.Activation = activation.useAttributes(CheckpointResetter)
 
 function CheckpointResetter:onActivate(resetter: CheckpointResetterMechanic, level: std.Level)

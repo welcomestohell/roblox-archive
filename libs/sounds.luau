@@ -1,11 +1,11 @@
-local ContentProvider = game:GetService("ContentProvider")
-local Debris = game:GetService("Debris")
-local SoundService = game:GetService("SoundService")
+local ContentProvider = game:GetService "ContentProvider"
+local Debris = game:GetService "Debris"
+local SoundService = game:GetService "SoundService"
 
-local Attribute = require("./Attribute")
-local Mechanic = require("./Mechanic")
+local Attribute = require "./Attribute"
+local Mechanic = require "./Mechanic"
 local audios = { sfx = {} } --require("@core/shared/generated/audios")
-local gt = require("./gt")
+local gt = require "./gt"
 
 export type SoundConfiguration = {
 	id: string?,
@@ -76,7 +76,7 @@ local function idFromConfiguration(configuration: SoundConfiguration): string?
 end
 
 local function soundFromConfiguration(configuration: SoundConfiguration, fallbackId: string?)
-	local sound = Instance.new("Sound")
+	local sound = Instance.new "Sound"
 	sound.SoundId = idFromConfiguration(configuration) or fallbackId or FALLBACK_ID
 	sound.PlaybackSpeed = configuration.speed
 	sound.Volume = configuration.volume
@@ -95,11 +95,11 @@ local function playInstance(
 
 	local pointer = instanceConfiguration:FindFirstChild(attributes.Basename(instanceConfiguration))
 	if pointer then
-		if pointer:IsA("ObjectValue") then
+		if pointer:IsA "ObjectValue" then
 			pointer = pointer.Value or pointer
 		end
 
-		if pointer:IsA("Sound") then
+		if pointer:IsA "Sound" then
 			sound = sound
 		end
 	end
@@ -123,7 +123,7 @@ end
 local function preloadAssets()
 	local assets: { Sound } = {}
 	for path, asset in assetPaths do
-		local sound = Instance.new("Sound")
+		local sound = Instance.new "Sound"
 		sound.Name = path .. " (preload)"
 		sound.SoundId = asset
 		sound.Parent = SoundService
@@ -137,7 +137,7 @@ local function preloadAssets()
 	end
 end
 
-return table.freeze({
+return table.freeze {
 	sfx = table.freeze(table.clone(audios.sfx)),
 	assetPaths = assetPaths,
 	useAssets = useAssets :: <T>(assets: T) -> (),
@@ -148,4 +148,4 @@ return table.freeze({
 	playInstance = playInstance,
 	playMechanic = playMechanic,
 	preloadAssets = preloadAssets,
-})
+}

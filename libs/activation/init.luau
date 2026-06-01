@@ -1,11 +1,11 @@
-local Result = require("@libs/Result")
-local createChildOfClass = require("@self/createChildOfClass")
-local functions = require("@libs/functions")
-local gt = require("@libs/gt")
-local log = require("@self/log")
-local types = require("@self/types")
-local useAttributes = require("@self/useAttributes")
-local useChildOfClass = require("@self/useChildOfClass")
+local Result = require "@libs/Result"
+local createChildOfClass = require "@self/createChildOfClass"
+local functions = require "@libs/functions"
+local gt = require "@libs/gt"
+local log = require "@self/log"
+local types = require "@self/types"
+local useAttributes = require "@self/useAttributes"
+local useChildOfClass = require "@self/useChildOfClass"
 
 export type ActivationAttributes = types.ActivationAttributes
 export type PredicateContext = types.PredicateContext
@@ -15,12 +15,12 @@ export type ActivationEvent = types.ActivationEvent
 export type ActivationMode = types.ActivationMode
 
 local modes: { [string]: ActivationMode } = {
-	Click = require("@self/modes/Click"),
-	Died = require("@self/modes/Died"),
-	HumanoidStateChanged = require("@self/modes/HumanoidStateChanged"),
-	Jumped = require("@self/modes/Jumped"),
-	Prompt = require("@self/modes/Prompt"),
-	Touch = require("@self/modes/Touch"),
+	Click = require "@self/modes/Click",
+	Died = require "@self/modes/Died",
+	HumanoidStateChanged = require "@self/modes/HumanoidStateChanged",
+	Jumped = require "@self/modes/Jumped",
+	Prompt = require "@self/modes/Prompt",
+	Touch = require "@self/modes/Touch",
 }
 
 export type RegisterModeError = { id: "invalidMode", cause: gt.Cause } | { id: "alreadyExists" }
@@ -30,7 +30,7 @@ local function registerMode(
 	mode: types.ActivationMode
 ): Result.Result<types.ActivationMode, RegisterModeError>
 	if modes[key] then
-		return Result.Err({ id = functions.literal("alreadyExists") })
+		return Result.Err { id = functions.literal "alreadyExists" }
 	end
 
 	local isValid, invalidatedCause = types.ActivationMode:matches(mode)
@@ -40,10 +40,10 @@ local function registerMode(
 		return Result.Ok(mode)
 	end
 
-	return Result.Err({
-		id = functions.literal("invalidMode"),
+	return Result.Err {
+		id = functions.literal "invalidMode",
 		cause = invalidatedCause,
-	})
+	}
 end
 
 local function unregisterMode(key: string)
@@ -61,10 +61,10 @@ local function activate(context: types.ActivationContext): Result.Result<nil, Ac
 			if mode.predicate then
 				local predicateResult = mode.predicate(context)
 				if predicateResult:isErr() then
-					return Result.Err({
-						id = functions.literal("predicateFailed"),
+					return Result.Err {
+						id = functions.literal "predicateFailed",
 						error = predicateResult:unwrapErr() :: string,
-					})
+					}
 				end
 			end
 
@@ -72,9 +72,9 @@ local function activate(context: types.ActivationContext): Result.Result<nil, Ac
 			return Result.Ok(nil)
 		end
 
-		return Result.Err({ id = functions.literal("unknownMode") })
+		return Result.Err { id = functions.literal "unknownMode" }
 	end
-	return Result.Err({ id = functions.literal("noMode") })
+	return Result.Err { id = functions.literal "noMode" }
 end
 
 local function bindActivation(bindContext: BindContext)
@@ -103,7 +103,7 @@ local function bindActivation(bindContext: BindContext)
 	life:add(context.attributes.Mode:onBind(context.instanceConfiguration, update))
 end
 
-return table.freeze({
+return table.freeze {
 	modes = modes,
 	registerMode = registerMode,
 	unregisterMode = unregisterMode,
@@ -114,4 +114,4 @@ return table.freeze({
 	createChildOfClass = createChildOfClass,
 	useChildOfClass = useChildOfClass,
 	useAttributes = useAttributes,
-})
+}

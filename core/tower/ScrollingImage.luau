@@ -1,6 +1,6 @@
-local std = require("@libs/std")
+local std = require "@libs/std"
 
-local ScrollingImage = std.Mechanic({})
+local ScrollingImage = std.Mechanic {}
 export type ScrollingImageMechanic = std.Mechanic<typeof(ScrollingImage)>
 ScrollingImage.instanceTag = "ScrollingImage"
 ScrollingImage.instanceType = std.isA.ImageLabel()

@@ -1,4 +1,4 @@
-local Fluid = require("@roblox_packages/Fluid")
+local Fluid = require "@roblox_packages/Fluid"
 
 export type Read = <T>(value: Fluid.UsedAs<T>) -> T
 
@@ -11,7 +11,7 @@ local function useDissolved<T>(source: (read: Read) -> T): Fluid.UsedAs<T>
 	local function mockRead(value: unknown)
 		if typeof(value) == "function" then
 			isDependencyRead = true
-			error("used dependency")
+			error "used dependency"
 		end
 		return value
 	end

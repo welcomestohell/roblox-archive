@@ -1,6 +1,6 @@
-local tables = require("@libs/collections/tables")
+local tables = require "@libs/collections/tables"
 
-local observersByInstance: { [Instance]: AttributeObserver } = tables.weak("k")
+local observersByInstance: { [Instance]: AttributeObserver } = tables.weak "k"
 
 local AttributeObserver = {}
 AttributeObserver.__index = AttributeObserver
