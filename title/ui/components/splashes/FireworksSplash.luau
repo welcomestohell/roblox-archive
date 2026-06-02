@@ -1,11 +1,13 @@
 local FireworksLogo = require "@core/ui/components/branding/FireworksLogo"
 local Fluid = require "@roblox_packages/Fluid"
--- local assets = require "@core/shared/generated/assets"
+local useDelay = require "@core/shared/fluid/useDelay"
+-- local assets = require "@core/assets"
 -- local useMotion = require "@core/shared/fluid/useMotion"
 local useNextOrder = require "@core/shared/fluid/useNextOrder"
 
 local function FireworksSplash(props: {
 	visible: Fluid.UsedAs<boolean>,
+	layoutOrder: Fluid.UsedAs<number>?,
 })
 	local nextOrder = useNextOrder()
 
@@ -25,6 +27,8 @@ local function FireworksSplash(props: {
 	return Fluid.create "Frame" {
 		Name = "FireworksSplash",
 		Size = UDim2.fromScale(1, 1),
+		LayoutOrder = props.layoutOrder,
+		Visible = props.visible,
 
 		BackgroundColor3 = Color3.new(0, 0, 0),
 

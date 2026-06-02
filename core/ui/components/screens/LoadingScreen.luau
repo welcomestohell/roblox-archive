@@ -1,7 +1,7 @@
 local Fluid = require "@roblox_packages/Fluid"
 local Padding = require "@core/ui/components/base/Padding"
 local Text = require "@core/ui/components/base/Text"
-local assets = require "@core/shared/generated/assets"
+local assets = require "@core/assets"
 local useDelay = require "@core/shared/fluid/useDelay"
 local useNextOrder = require "@core/shared/fluid/useNextOrder"
 local useRem = require "@core/shared/fluid/useRem"

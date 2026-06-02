@@ -1,5 +1,5 @@
 local Fluid = require "@roblox_packages/Fluid"
-local assets = require "@core/shared/generated/assets"
+local assets = require "@core/assets"
 local useDelay = require "@core/shared/fluid/useDelay"
 local useRem = require "@core/shared/fluid/useRem"
 
@@ -71,6 +71,8 @@ local function WTHLogo(props: {
 		Size = props.size or function()
 			return UDim2.fromOffset(rem(24), rem(24))
 		end,
+
+		Fluid.create "UIAspectRatioConstraint" {},
 
 		Letter {
 			name = "W",

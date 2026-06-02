@@ -1,6 +1,7 @@
 --!nonstrict
 
 local Players = game:GetService "Players"
+local RunService = game:GetService "RunService"
 
 local Lyra = require "@roblox_packages/Lyra"
 
@@ -29,6 +30,5 @@ return Lyra.createPlayerStore {
 		return ok, tostring(reason)
 	end,
 	changedCallbacks = { onAccountChanged },
-	-- memoryStoreService = if RunService:IsStudio() then Lyra.MockMemoryStoreService.new() else nil,
-	-- dataStoreService = if RunService:IsStudio() then Lyra.MockDataStoreService.new() else nil,
+	useMock = RunService:IsStudio(),
 }

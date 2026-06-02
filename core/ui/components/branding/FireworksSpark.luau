@@ -1,5 +1,5 @@
 local Fluid = require "@roblox_packages/Fluid"
-local assets = require "@core/shared/generated/assets"
+local assets = require "@core/assets"
 local useRem = require "@core/shared/fluid/useRem"
 
 local function FireworksSpark(props: {

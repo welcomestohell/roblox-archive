@@ -1,0 +1,21 @@
+diff --git a/src/init.luau b/src/init.luau
+index 78471c3..a6fcde5 100644
+--- a/src/init.luau
++++ b/src/init.luau
+@@ -8,6 +8,8 @@
+ 	Users of the library should typically only need to require this top-level module.
+ ]=]
+ 
++local MockDataStoreService = require("@self/MockDataStoreService")
++local MockMemoryStoreService = require("@self/MockMemoryStoreService")
+ local Log = require(script.Log)
+ local Migrations = require(script.Migrations)
+ local PlayerStore = require(script.PlayerStore)
+@@ -50,4 +52,7 @@ return {
+ 	MigrationStep = MigrationStep,
+ 	createPlayerStore = createPlayerStore,
+ 	setLogLevel = setLogLevel,
++
++	MockDataStoreService = MockMemoryStoreService,
++	MockMemoryStoreService = MockMemoryStoreService,
+ }

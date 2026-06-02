@@ -1,5 +1,5 @@
 local LoadingScreen = require "@core/ui/components/screens/LoadingScreen"
-local assets = require "@core/shared/generated/assets"
+local assets = require "@core/assets"
 local createFluidStory = require "@core/shared/fluid/createFluidStory"
 
 return createFluidStory {

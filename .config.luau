@@ -57,6 +57,11 @@ return {
 					{ name = "ReplicatedStorage" },
 					{ name = "TowerScripts", className = "Folder" },
 				},
+				assets = {
+					{ name = "ReplicatedStorage" },
+					{ name = "Internal", className = "Folder" },
+					{ name = "Assets", className = "Folder" },
+				},
 			},
 		},
 	},

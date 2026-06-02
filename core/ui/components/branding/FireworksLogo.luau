@@ -1,5 +1,5 @@
 local Fluid = require "@roblox_packages/Fluid"
-local assets = require "@core/shared/generated/assets"
+local assets = require "@core/assets"
 local useRem = require "@core/shared/fluid/useRem"
 local useToggled = require "@core/shared/fluid/useToggled"
 
@@ -21,7 +21,7 @@ local function FireworksLogo(props: {
 	local progress = useToggled(props.visible, 0, 1)
 	local transparency = Fluid.spring(function()
 		return Fluid.read(progress) * math.map(Fluid.read(props.transparency or 0), 0, 1, 1, 0)
-	end, 15, 0.5)
+	end, 10, 0.5)
 	local sparkSize = useToggled(props.visible, UDim2.fromScale(14 / 74, 14 / 24), UDim2.fromScale(0, 0))
 	local topPosition =
 		Fluid.spring(useToggled(props.visible, UDim2.fromScale(0, 0), UDim2.fromScale(0.025, 0)), 10, 1 / 3)
@@ -95,7 +95,7 @@ local function FireworksLogo(props: {
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			-- Trust me bro
 			Position = UDim2.fromScale(35.25 / 74 + 7 / 74, 10 / 24 + 7 / 24),
-			Size = Fluid.spring(sparkSize, 15, 2 / 3),
+			Size = Fluid.spring(sparkSize, 10, 2 / 3),
 
 			Fluid.create "ImageLabel" {
 				BackgroundTransparency = 1,
