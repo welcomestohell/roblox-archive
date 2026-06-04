@@ -17,10 +17,8 @@ local function Letter(props: {
 		return Fluid.read(props.visible) and 0 or 1
 	end
 
-	local transparency = props.transparency or progress
-
 	local function size()
-		local scale = 1 + Fluid.read(progress) / 100
+		local scale = 1 + Fluid.read(progress) / 20
 		return UDim2.fromScale(scale, scale)
 	end
 
@@ -38,11 +36,11 @@ local function Letter(props: {
 		BackgroundTransparency = 1,
 
 		Image = props.imageId,
-		ImageTransparency = Fluid.spring(progress, 30, 2 / 3),
+		ImageTransparency = Fluid.spring(progress, 20, 2 / 3),
 
 		AnchorPoint = Vector2.new(0.5, 0),
-		Position = Fluid.spring(position, 30, 2 / 3),
-		Size = Fluid.spring(size, 20, 2 / 3),
+		Position = Fluid.spring(position, 20, 1 / 3),
+		Size = Fluid.spring(size, 10, 1 / 3),
 	}
 end
 

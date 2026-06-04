@@ -59,7 +59,15 @@ initializeRojo(state)
 local sourcemapProcessor = useSourcemapProcessor(sourcemapPath)
 local sourcemapWatcher = fs.watch(sourcemapPath)
 
-local sourcemapArgs = { "sourcemap", "--absolute", "--output", sourcemapPath, sourcemapProjectPath }
+local sourcemapArgs = {
+	"sourcemap",
+	"--absolute",
+	"--include-non-scripts",
+	"--output",
+	sourcemapPath,
+	sourcemapProjectPath,
+}
+
 run("rojo", sourcemapArgs)
 table.insert(sourcemapArgs, 2, "--watch")
 task.spawn(run, "rojo", sourcemapArgs)

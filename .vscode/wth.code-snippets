@@ -17,12 +17,48 @@
 			""
 		],
 	},
+	"Component": {
+		"scope": "luau",
+		"prefix": "component",
+		"description": "Fluid component",
+		"body": [
+			"local Fluid = require \"@roblox_packages/Fluid\"",
+			"",
+			"local function ${0:$TM_FILENAME_BASE}(props: {",
+			"\tname: Fluid.UsedAs<string>?",
+			"})",
+			"\treturn Fluid.create \"Frame\" {",
+			"\t\tName = props.name or \"${0:$TM_FILENAME_BASE}\"",
+			"\t}",
+			"end",
+			"",
+			"return ${0:$TM_FILENAME_BASE}",
+			""
+		],
+	},
+	"Story": {
+		"scope": "luau",
+		"prefix": "story",
+		"description": "Fluid Story",
+		"body": [
+			"local createFluidStory = require \"@core/shared/fluid/createFluidStory\"",
+			"local ${0:$TM_FILENAME_BASE} = require \"./${0:$TM_FILENAME_BASE}\"",
+			"",
+			"return createFluidStory({",
+			"\tcontrols = {},",
+			"\trender = function(props)",
+			"\t\treturn ${0:$TM_FILENAME_BASE}({})",
+			"\tend,",
+			"})",
+			""
+		],
+	},
 	"Provider": {
 		"scope": "luau",
 		"prefix": "prvd",
 		"description": "Prvd 'M Wrong Provider",
 		"body": [
-			"local prvd = require(\"@core/shared/prvdmwrong/prvdmwrong\")",
+			"local prvd = require(\"@prvdmwrong/prvdmwrong\")",
 			"",
 			"local ${0:$TM_FILENAME_BASE} = {}",
 			"export type ${0:$TM_FILENAME_BASE} = typeof(${0:$TM_FILENAME_BASE})",

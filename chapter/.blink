@@ -3,11 +3,10 @@ option TypesOutput = "./shared/generated/net.luau"
 option ServerOutput = "./server/generated/net.luau"
 option ClientOutput = "./client/generated/net.luau"
 option PromiseLibrary = "ReplicatedStorage.Packages.Promise"
-option RemoteScope = "WTH_CORE"
+option RemoteScope = "WTH_CHAPTER"
 
-event damage {
-    From: Client,
-    Type: Reliable,
-    Call: SingleAsync,
-    Data: u8
+function loadMechanics {
+    Yield: Promise,
+    Data: (),
+    Return: Instance
 }

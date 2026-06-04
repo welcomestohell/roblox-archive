@@ -47,16 +47,16 @@ function AccountProvider.setCompletedTowers(
 	end)
 end
 
-function AccountProvider.onPlayerAdded(self: AccountProvider, player: Player)
-	self.log:debug("Loading account for", player.Name)
-	PlayerStore:load(player)
-end
+-- function AccountProvider.onPlayerAdded(self: AccountProvider, player: Player)
+-- 	self.log:debug("Loading account for", player.Name)
+--  PlayerStore:load(player)
+-- end
 
-function AccountProvider.onPlayerRemoving(self: AccountProvider, player: Player)
-	self.log:debug("Unloading account for", player.Name)
-	PlayerStore:unload(player)
-	AccountStore.removeAccount(player.Name)
-end
+-- function AccountProvider.onPlayerRemoving(self: AccountProvider, player: Player)
+-- 	self.log:debug("Unloading account for", player.Name)
+-- 	PlayerStore:unload(player)
+-- 	AccountStore.removeAccount(player.Name)
+-- end
 
 function AccountProvider.onFinish(self: AccountProvider)
 	PlayerStore:closeAsync()

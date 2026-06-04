@@ -18,17 +18,17 @@ local useToggled = require "@core/shared/fluid/useToggled"
 
 const DISABLED_CORE_GUIS = {
 	Enum.CoreGuiType.All,
-	Enum.CoreGuiType.AvatarSwitcher,
-	Enum.CoreGuiType.Backpack,
-	Enum.CoreGuiType.Captures,
-	Enum.CoreGuiType.Chat,
-	Enum.CoreGuiType.EmotesMenu,
-	Enum.CoreGuiType.Health,
-	Enum.CoreGuiType.PlayerList,
-	Enum.CoreGuiType.SelfView,
+	-- Enum.CoreGuiType.AvatarSwitcher,
+	-- Enum.CoreGuiType.Backpack,
+	-- Enum.CoreGuiType.Captures,
+	-- Enum.CoreGuiType.Chat,
+	-- Enum.CoreGuiType.EmotesMenu,
+	-- Enum.CoreGuiType.Health,
+	-- Enum.CoreGuiType.PlayerList,
+	-- Enum.CoreGuiType.SelfView,
 }
 
-const FIREWORKS_SPLASH_DURATION = 6
+const FIREWORKS_SPLASH_DURATION = 3
 
 local TitleProvider = {}
 export type TitleProvider = typeof(TitleProvider)
@@ -51,7 +51,12 @@ function TitleProvider.onStart(self: TitleProvider)
 
 			task.wait(0.5)
 		end
-		StarterGui:SetCore("ResetCallback", false)
+
+		local disableSuccess = false
+		repeat
+			disableSuccess = pcall(StarterGui.SetCore, StarterGui, "ResetCallback", false)
+			task.wait(0.5)
+		until disableSuccess
 	end)
 
 	Fluid.root(function()
@@ -67,7 +72,7 @@ function TitleProvider.onStart(self: TitleProvider)
 		local assetsLoaded = Fluid.source(0)
 		local isAssetsLoading = Fluid.source(true)
 		local isFireworksVisible = Fluid.source(false)
-		Fluid.cleanup(task.spawn(ContentProvider.PreloadAsync, ContentProvider, assetIds, function(...)
+		Fluid.cleanup(task.spawn(ContentProvider.PreloadAsync, ContentProvider, assetIds, function()
 			assetsLoaded(assetsLoaded() + 1)
 			isAssetsLoading(assetsLoaded() ~= #assetIds)
 			isFireworksVisible(assetsLoaded() == #assetIds)
@@ -87,9 +92,9 @@ function TitleProvider.onStart(self: TitleProvider)
 		Fluid.create "Sound" {
 			Name = "Fireworks",
 			Parent = SoundService,
-			SoundId = coreAssets.sfx.victory,
-			Volume = 1,
-			Playing = useDelay<<boolean>>(0.5, isFireworksVisible),
+			SoundId = coreAssets.sfx.speed,
+			Volume = 0.5,
+			Playing = useDelay<<boolean>>(2 / 3, isFireworksVisible),
 		}
 
 		Fluid.create "ScreenGui" {

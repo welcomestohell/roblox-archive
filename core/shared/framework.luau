@@ -7,6 +7,10 @@ local prvd = require "@prvdmwrong/prvdmwrong"
 local rbxLifecycles = require "@prvdmwrong/rbx-lifecycles"
 
 local log = Log.new(script)
+prvd.hooks.onProviderUsed(function(_, provider)
+	log:debug("Used provider", tostring(provider))
+end)
+
 local root = prvd.root()
 	:useProvider(rbxLifecycles :: any)
 	:willStart(function()

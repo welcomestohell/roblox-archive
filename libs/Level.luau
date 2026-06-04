@@ -34,7 +34,6 @@ Level.activeLevels = {} :: { Level }
 
 Level.LevelInstance = gt.build(gt.instanceTree {
 	Mechanics = gt.Instance(),
-	Scripts = gt.optional(gt.Instance()),
 	SpawnCharacter = gt.isA.BasePart(),
 	SpawnCamera = gt.optional(gt.isA.BasePart()),
 })
