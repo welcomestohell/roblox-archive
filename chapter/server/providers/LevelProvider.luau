@@ -1,8 +1,6 @@
-local CollectionService = game:GetService "CollectionService"
 local ServerStorage = game:GetService "ServerStorage"
 local StarterGui = game:GetService "StarterGui"
 local StarterPlayer = game:GetService "StarterPlayer"
-local TeleportService = game:GetService "TeleportService"
 local Workspace = game:GetService "Workspace"
 
 local Level = require "@libs/Level"

@@ -11,3 +11,15 @@ event damage {
     Call: SingleAsync,
     Data: u8
 }
+
+event patch {
+    from: Server,
+    type: Reliable,
+    call: SingleSync,
+    data: unknown,
+}
+
+function fetchAssetIds {
+    yield: Promise,
+    return: string[]?,
+}
