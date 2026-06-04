@@ -8,6 +8,7 @@ lune_packages
 # Build files
 .output
 .luaurc
+*/assets/init.luau
 **/generated/**
 default.project.json
 sourcemap.project.json
@@ -15,3 +16,6 @@ sourcemap.json
 
 # OS
 .DS_Store
+
+# Environment variables
+.env
