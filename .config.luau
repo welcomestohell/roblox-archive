@@ -10,6 +10,7 @@ local aliases = {
 	chapter6 = "chapter6",
 	chapter7 = "chapter7",
 	core = "core",
+	kit = "kit",
 	libs = "libs",
 	prvdmwrong = "prvdmwrong",
 	roblox_packages = "roblox_packages",

@@ -36,6 +36,7 @@ export type AnyMechanicImplementation = {
 	onInit: (self: any, level: any) -> ()?,
 	onStart: (self: any, mechanic: Mechanic<any>, level: any) -> ()?,
 	onActivate: (self: any, mechanic: Mechanic<any>, level: any, activationEvent: any) -> ()?,
+	onBindActivation: (self: any, mechanic: Mechanic<any>, level: any) -> ()?,
 }
 
 local MechanicImplementation = {}

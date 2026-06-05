@@ -2,7 +2,7 @@ local Log = require "@libs/Log"
 local MechanicImplementation = require "@libs/core/MechanicImplementation"
 local Promise = require "@roblox_packages/Promise"
 
-local log = Log.new "ScriptCollector"
+local log = Log.new(script)
 
 --[=[
     @class ScriptCollector

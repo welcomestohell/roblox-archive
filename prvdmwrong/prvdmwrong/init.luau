@@ -4,7 +4,7 @@ local providers = require "./providers"
 local roots = require "./roots"
 
 export type Provider<Self, Dependencies = nil> = providers.Provider<Self, Dependencies>
-export type Lifecycle<Args... = ...unknown> = lifecycles.Lifecycle<Args...>
+export type Lifecycle<Args... = ...any> = lifecycles.Lifecycle<Args...>
 export type Root = roots.Root
 export type StartedRoot = roots.StartedRoot
 
