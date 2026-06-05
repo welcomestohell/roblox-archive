@@ -1,10 +1,10 @@
-local Mechanic = require "@libs/Mechanic"
+local Mechanic = require "@libs/core/Mechanic"
 local gt = require "@libs/gt"
 
 local SeamlessMeasurement = gt.build(gt.unionLiterals2("Relative", "World"))
 export type SeamlessMeasurement = typeof(SeamlessMeasurement:type())
 
-local function useSeamlessAttributes(implementation: Mechanic.MechanicImplementationLike, basename: string?)
+local function useSeamlessAttributes(implementation: Mechanic.AnyMechanicImplementation, basename: string?)
 	basename = basename or "Seamless"
 
 	local attributes = {}

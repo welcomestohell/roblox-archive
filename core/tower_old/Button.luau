@@ -19,7 +19,7 @@ Button.instanceTag = "Button"
 Button.instanceType = std.isA.BasePart()
 Button.debuggerEmoji = "🖲️"
 
-function Button.useAttributes(implementation: std.MechanicImplementationLike)
+function Button.useAttributes(implementation: std.AnyMechanicImplementation)
 	local attributes = {}
 
 	attributes.Enabled = implementation:withEnabled()

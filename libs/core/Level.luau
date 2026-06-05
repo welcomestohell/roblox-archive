@@ -1,3 +1,5 @@
+-- LUAU: this file seemingly lost all typechecking??
+
 local RunService = game:GetService "RunService"
 
 local Life = require "@libs/memory/Life"
@@ -219,7 +221,7 @@ function Level.loadMechanicsFromInstance(self: Level, instance: Instance)
 			table.insert(self.mechanics, mechanic)
 			marrays.push(self.mechanicsByImplementations, implementation, mechanic)
 			marrays.push(self.mechanicsByInstance, instance, mechanic)
-			self:registerMechanicLifecycles(mechanic)
+			self:registerLifecyclesForMechanic(mechanic)
 		end
 	end
 end
@@ -231,7 +233,13 @@ function Level.start(self: Level)
 	self.startedTimestamp = os.clock()
 
 	self.life:add(self.instance)
-	self.life:destroyOn(self.instance)
+	self.life:destroyOn(self.instance.Destroying)
+
+	local instancePromises: { Promise.Promise } = {}
+	for index, instance in self.instance.Mechanics:GetDescendants() do
+		instancePromises[index] = Promise.try(Level.loadMechanicsFromInstance, self, instance) :: Promise.Promise
+	end
+	Promise.all(instancePromises):await()
 
 	for _, implementation in self.scripts.mechanicImplementations do
 		self:registerLifecyclesForImplementation(implementation)
@@ -266,8 +274,8 @@ function Level.start(self: Level)
 	end)
 end
 
-function Level.__tostring(self: Level)
-	return `Level({self.name})`
-end
+-- function Level.__tostring(self: Level)
+-- 	return `Level({self.name})`
+-- end
 
 return table.freeze(Level)

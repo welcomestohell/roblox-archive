@@ -1,15 +1,15 @@
-local CollectionService = game:GetService("CollectionService")
-local ServerStorage = game:GetService("ServerStorage")
-local StarterGui = game:GetService("StarterGui")
-local StarterPlayer = game:GetService("StarterPlayer")
-local TeleportService = game:GetService("TeleportService")
-local Workspace = game:GetService("Workspace")
+local CollectionService = game:GetService "CollectionService"
+local ServerStorage = game:GetService "ServerStorage"
+local StarterGui = game:GetService "StarterGui"
+local StarterPlayer = game:GetService "StarterPlayer"
+local TeleportService = game:GetService "TeleportService"
+local Workspace = game:GetService "Workspace"
 
-local Level = require("@libs/Level")
-local Log = require("@libs/Log")
-local PlayerInstanceLoader = require("@core/server/PlayerInstanceLoader")
-local net = require("@kit/server/generated/net")
-local prvd = require("@core/shared/prvdmwrong/prvdmwrong")
+local Level = require "@libs/core/Level"
+local Log = require "@libs/Log"
+local PlayerInstanceLoader = require "@core/server/PlayerInstanceLoader"
+local net = require "@kit/server/generated/net"
+local prvd = require "@prvdmwrong/prvdmwrong"
 
 local TOWER_FALLBACK_TAG = "Welcome To Hell Kit Tower"
 
@@ -28,13 +28,13 @@ KitServerProvider.decorationsLoader = PlayerInstanceLoader.new(15)
 KitServerProvider.mechanicLoader = PlayerInstanceLoader.new(15)
 
 local function getTower(): Instance?
-	return Workspace:FindFirstChild("Kit") or CollectionService:GetTagged(TOWER_FALLBACK_TAG)[1]
+	return Workspace:FindFirstChild "Kit" or CollectionService:GetTagged(TOWER_FALLBACK_TAG)[1]
 end
 
 local function storeOrDefault(fromParent: Instance, childName: string): Instance
 	local child = fromParent:FindFirstChild(childName) :: Instance
 	if not child then
-		child = Instance.new("Folder")
+		child = Instance.new "Folder"
 		child.Name = childName
 	end
 	child.Parent = ServerStorage

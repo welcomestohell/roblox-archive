@@ -1,13 +1,15 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ReplicatedStorage = game:GetService "ReplicatedStorage"
 
-local Level = require("@libs/Level")
-local Life = require("@libs/memory/Life")
-local Log = require("@libs/Log")
-local audios = require("@core/shared/generated/audios")
-local character = require("@libs/character")
-local net = require("@kit/client/generated/net")
-local prvd = require("@core/shared/prvdmwrong/prvdmwrong")
-local sounds = require("@libs/sounds")
+local Level = require "@libs/core/Level"
+local Life = require "@libs/memory/Life"
+local Log = require "@libs/Log"
+local Promise = require "@roblox_packages/Promise"
+-- local audios = require "@core"
+local await = require "@prvdmwrong/lifecycles/methods/await"
+local character = require "@libs/character"
+local net = require "@kit/client/generated/net"
+local prvd = require "@prvdmwrong/prvdmwrong"
+local sounds = require "@libs/sounds"
 
 local KitClientProvider = {}
 export type KitClientProvider = typeof(KitClientProvider)
@@ -15,25 +17,27 @@ KitClientProvider.log = Log.new(KitClientProvider)
 
 function KitClientProvider.constructor(self: KitClientProvider)
 	self.life = Life.new()
-	Level.baseScripts:tryInstances(ReplicatedStorage.Scripts.Core:GetDescendants())
-	Level.baseScripts:tryInstances(ReplicatedStorage.Scripts.Kit:GetDescendants())
+	Promise.all({
+		Level.baseScripts:collectInstancesAsync(ReplicatedStorage.TowerScripts.Core:GetDescendants()),
+		Level.baseScripts:collectInstancesAsync(ReplicatedStorage.TowerScripts.Kit:GetDescendants()),
+	}):await()
 end
 
 function KitClientProvider.onStart(self: KitClientProvider)
 	if not game:IsLoaded() then
-		self.log:trace("Waiting for game to finish loading")
+		self.log:trace "Waiting for game to finish loading"
 		game.Loaded:Wait()
 	end
 
-	sounds.useAssets(audios :: any)
+	-- sounds.useAssets(audios :: any)
 	self.log:trace("Loaded audios from assets:", sounds.assetPaths)
 	task.spawn(sounds.preloadAssets)
 
 	local tower = net.getTower.invoke():expect()
 
-	local existingMechanics = tower:FindFirstChild("Mechanic")
+	local existingMechanics = tower:FindFirstChild "Mechanic"
 	if existingMechanics then
-		self.log:trace("Removing existing mechanics")
+		self.log:trace "Removing existing mechanics"
 		existingMechanics:Destroy()
 	end
 
@@ -44,10 +48,11 @@ function KitClientProvider.onStart(self: KitClientProvider)
 	local levelResult = Level.new(self.life, tower.Name, tower)
 	levelResult:match({
 		Ok = function(level: Level.Level)
-			self.log:trace("Starting kit...")
-			character.getCharacter():PivotTo(level.instance.SpawnCharacter.CFrame)
+			self.log:trace "Starting kit..."
+			character.getCharacter():PivotTo(level.instance.Spawn.CFrame)
 			level:start()
-			self.log:info("Kit has started!")
+			self.log:info "Kit has started!"
+			self.log:debug("LEVEL DUMP:", level.mechanicLifecycles)
 		end,
 		Err = function(e)
 			if e.id == "invalidInstance" then
@@ -59,7 +64,7 @@ function KitClientProvider.onStart(self: KitClientProvider)
 end
 
 function KitClientProvider.onFinish(self: KitClientProvider)
-	self.log:trace("Cleaning up!")
+	self.log:trace "Cleaning up!"
 	self.life:destroy()
 end
 

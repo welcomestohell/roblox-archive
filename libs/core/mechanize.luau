@@ -2,8 +2,7 @@ local HttpService = game:GetService "HttpService"
 
 local Life = require "@libs/memory/Life"
 local Log = require "@libs/Log"
-local Mechanic = require "@libs/Mechanic"
-local MechanicImplementation = require "@libs/core/MechanicImplementation"
+local Mechanic = require "@libs/core/Mechanic"
 local Result = require "@libs/Result"
 local gt = require "@libs/gt"
 
@@ -23,8 +22,8 @@ local function mechanize<Self>(
 	implementation: Self,
 	outerLife: Life.Life,
 	instance: Instance
-): Result.Result<MechanicImplementation.Mechanic<Self>, string>
-	local implementation = MechanicImplementation.downcast(implementation)
+): Result.Result<Mechanic.Mechanic<Self>, string>
+	local implementation = Mechanic.downcast(implementation)
 
 	local instanceConfiguration = instance
 	if instance.ClassName == "Configuration" and instance.Parent then
@@ -49,7 +48,7 @@ local function mechanize<Self>(
 		implementation = implementation,
 		instance = instance,
 		instanceConfiguration = instanceConfiguration,
-	}, Mechanic._proxies[implementation])
+	}, implementation._proxy)
 	mechanic.log = Log.new(mechanic)
 
 	return Result.Ok(mechanic)

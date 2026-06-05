@@ -3,7 +3,7 @@ local StarterGui = game:GetService "StarterGui"
 local StarterPlayer = game:GetService "StarterPlayer"
 local Workspace = game:GetService "Workspace"
 
-local Level = require "@libs/Level"
+local Level = require "@libs/core/Level"
 local Log = require "@libs/Log"
 local PlayerInstanceLoader = require "@core/server/PlayerInstanceLoader"
 local net = require "@chapter/server/generated/net"

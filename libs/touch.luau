@@ -1,8 +1,8 @@
-local Mechanic = require "./Mechanic"
+local Mechanic = require "@libs/core/Mechanic"
 local character = require "./character"
 local gt = require "./gt"
 
-local function useAttributes(implementation: Mechanic.MechanicImplementationLike, basename: string?)
+local function useAttributes(implementation: Mechanic.AnyMechanicImplementation, basename: string?)
 	basename = basename or "Touch"
 
 	return {

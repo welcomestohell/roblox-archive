@@ -1,7 +1,7 @@
 local ReplicatedStorage = game:GetService "ReplicatedStorage"
 local Workspace = game:GetService "Workspace"
 
-local Level = require "@libs/Level"
+local Level = require "@libs/core/Level"
 local Life = require "@libs/memory/Life"
 local Log = require "@libs/Log"
 local character = require "@libs/character"

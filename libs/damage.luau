@@ -1,6 +1,6 @@
 local RunService = game:GetService "RunService"
 
-local Mechanic = require "@libs/Mechanic"
+local Mechanic = require "@libs/core/Mechanic"
 local gt = require "@libs/gt"
 
 local attribute = require "@libs/Attribute"
@@ -8,7 +8,7 @@ local character = require "@libs/character"
 
 local damage = {}
 
-function damage.useAttributes(mechanic: Mechanic.MechanicImplementationLike): attribute.Attribute<number>
+function damage.useAttributes(mechanic: Mechanic.AnyMechanicImplementation): attribute.Attribute<number>
 	return mechanic:attribute("Damage", gt.number(), 20)
 end
 

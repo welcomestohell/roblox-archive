@@ -1,12 +1,12 @@
-local LevelState = require "./LevelState"
-local Mechanic = require "./Mechanic"
+local LevelState = require "@libs/core/LevelState"
+local Mechanic = require "@libs/core/Mechanic"
 local gt = require "./gt"
 local std = require "./std"
 local tables = require "./collections/tables"
 
 export type MechanicsById<Mechanic> = { [string]: { Mechanic } }
 
-local function withAttribute(implementation: Mechanic.MechanicImplementationLike)
+local function withAttribute(implementation: Mechanic.MechanicImplementation)
 	return implementation:attribute("Id", gt.optional(gt.string()), nil)
 end
 

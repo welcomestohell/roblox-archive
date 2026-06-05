@@ -11,6 +11,10 @@ prvd.hooks.onProviderUsed(function(_, provider)
 	log:debug("Used provider", tostring(provider))
 end)
 
+prvd.hooks.onLifecycleUsed(function(_, lifecycle)
+	log:debug("Used lifecycle", tostring(lifecycle))
+end)
+
 local root = prvd.root()
 	:useProvider(rbxLifecycles :: any)
 	:willStart(function()

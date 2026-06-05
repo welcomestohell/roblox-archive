@@ -3,7 +3,7 @@ local Debris = game:GetService "Debris"
 local SoundService = game:GetService "SoundService"
 
 local Attribute = require "./Attribute"
-local Mechanic = require "./Mechanic"
+local Mechanic = require "@libs/core/Mechanic"
 local audios = { sfx = {} } --require("@core/shared/generated/audios")
 local gt = require "./gt"
 
@@ -37,7 +37,7 @@ local function useAssets(assets: { [string]: AsphaltAsset }, cwd: string?)
 	end
 end
 
-local function useAttributes(implementation: Mechanic.MechanicImplementationLike, basename: string?)
+local function useAttributes(implementation: Mechanic.MechanicImplementation, basename: string?)
 	basename = basename or "Sound"
 
 	local attributes = {}

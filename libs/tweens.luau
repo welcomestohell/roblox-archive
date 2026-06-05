@@ -1,7 +1,7 @@
 local TweenService = game:GetService "TweenService"
 
 local Attribute = require "./Attribute"
-local Mechanic = require "./Mechanic"
+local Mechanic = require "@libs/core/Mechanic"
 local gt = require "./gt"
 
 export type TweenConfiguration = {
@@ -22,7 +22,7 @@ export type TweenAttributes = {
 local isEasingStyle = gt.build(gt.enumOf(Enum.EasingStyle) :: Enum.EasingStyle)
 local isEasingDirection = gt.build(gt.enumOf(Enum.EasingDirection) :: Enum.EasingDirection)
 
-local function useAttributes(implementation: Mechanic.MechanicImplementationLike, prefix: string?): TweenAttributes
+local function useAttributes(implementation: Mechanic.AnyMechanicImplementation, prefix: string?): TweenAttributes
 	local prefix = prefix or "Transition"
 
 	local attributes = {}

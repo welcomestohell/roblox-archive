@@ -1,10 +1,10 @@
-local Mechanic = require "@libs/Mechanic"
+local Mechanic = require "@libs/core/Mechanic"
 local gt = require "@libs/gt"
 local touch = require "@libs/touch"
 local types = require "./types"
 
 local function useAttributes(
-	implementation: Mechanic.MechanicImplementationLike,
+	implementation: Mechanic.AnyMechanicImplementation,
 	basename: string?
 ): types.ActivationAttributes
 	basename = basename or "Activation"
