@@ -3,6 +3,7 @@ local Players = game:GetService "Players"
 
 local Fluid = require "@roblox_packages/Fluid"
 local LoadingScreen = require "@core/ui/components/screens/LoadingScreen"
+local assets = require "@core/assets"
 local collectAssets = require "@core/shared/assets/collectAssets"
 local flattenAssetIds = require "@core/shared/assets/flattenAssetIds"
 local net = require "@core/client/generated/net"
@@ -50,7 +51,8 @@ function PreloadProvider.onStart(self: PreloadProvider)
 			LoadingScreen {
 				visible = isLoading,
 				label = loadingMessage,
-				title = "A Star Upon A Child",
+				title = _G.WTH_PLACE_SUBTITLE or _G.WTH_PLACE_TITLE,
+				imageId = assets.placeholder,
 			},
 		}
 	end)

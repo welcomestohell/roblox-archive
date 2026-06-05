@@ -1,12 +1,12 @@
 local path = require "@std/path"
 local printer = require "@std/syntax/printer"
-local resolveRequires = require "@scripts/libs/build/transformers/resolveRequires"
 local richterm = require "@batteries/richterm"
 local syntax = require "@std/syntax"
 local types = require "@scripts/libs/types"
 
 local transformers: { types.Transformer } = {
-	resolveRequires,
+	require "@scripts/libs/build/transformers/resolveGlobals",
+	require "@scripts/libs/build/transformers/resolveRequires",
 }
 
 local function transpile(ctx: types.BuildContext, filepath: path.Pathlike, source: string)

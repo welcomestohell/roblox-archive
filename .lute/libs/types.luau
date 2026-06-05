@@ -96,6 +96,7 @@ export type BuildContext = {
 	sourcemapProjectPath: path.Pathlike,
 
 	sourcemapIndices: SourcemapIndices,
+	globals: { [string]: string | boolean | nil },
 }
 
 export type TransfomerContext = {

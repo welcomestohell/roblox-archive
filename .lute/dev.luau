@@ -54,6 +54,14 @@ local ctx: types.BuildContext = {
 	sourcemapProjectPath = sourcemapProjectPath,
 
 	sourcemapIndices = {},
+
+	globals = {
+		__DEV__ = true,
+		WTH_DIR_NAME = member.dirName,
+		WTH_PLACE_FOLDER = memberPlace.folderName,
+		WTH_PLACE_TITLE = memberPlace.title,
+		WTH_PLACE_SUBTITLE = memberPlace.subtitle,
+	},
 }
 
 print(divider "Initializing output...")
@@ -144,7 +152,7 @@ task.spawn(run, "rojo", { "serve" })
 task.delay(0.1, function()
 	print(richterm.blue(`Press {richterm.bold "Enter"} to open {memberPlace.title} in Roblox Studio.`))
 	print(divider "Polling for changes...")
-	while task.wait(0.1) do
+	while task.wait(0.05) do
 		processChanges()
 	end
 end)
