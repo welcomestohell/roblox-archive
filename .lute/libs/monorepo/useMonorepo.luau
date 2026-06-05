@@ -1,8 +1,8 @@
 local fs = require "@std/fs"
-local log = require "@libs/log"
+local log = require "@scripts/libs/log"
 local luau = require "@std/luau"
 local path = require "@std/path"
-local types = require "./types"
+local types = require "@scripts/libs/types"
 local useRepositoryConfig = require "./useRepositoryConfig"
 
 local function useMonorepo(): types.Monorepo

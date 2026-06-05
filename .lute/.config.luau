@@ -8,7 +8,8 @@ return {
 			-- Lute @batteries
 			batteries = "./batteries",
 			-- Welcome To Hell
-			libs = "./libs",
+			libs = "../libs",
+			scripts = ".",
 		},
 	},
 }

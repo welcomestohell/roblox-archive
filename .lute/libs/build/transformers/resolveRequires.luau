@@ -1,10 +1,9 @@
-local log = require "@libs/log"
 local luau = require "@std/luau"
 local path = require "@std/path"
 local query = require "@std/syntax/query"
 local richterm = require "@batteries/richterm"
 local syntax = require "@std/syntax"
-local types = require "@libs/types"
+local types = require "@scripts/libs/types"
 local utils = require "@std/syntax/utils"
 
 local function resolveRequires(ctx: types.TransfomerContext)
@@ -23,9 +22,9 @@ local function resolveRequires(ctx: types.TransfomerContext)
 				pcall(luau.resolveModule, pathArgument.node.token.text, ctx.filepath)
 
 			if not resolveSuccess then
-				log.warn(`Failed to resolve require {pathArgument.node.token.text}:`)
-				log.warn(`  {resolvedOrError}`)
-				log.warn(richterm.dim(`  in {path.format(ctx.filepath)}`))
+				print(richterm.yellow(`! Failed to resolve require {pathArgument.node.token.text}:`))
+				print(richterm.yellow(`  {resolvedOrError}`))
+				print(richterm.yellow(`  in {path.format(ctx.filepath)}`))
 				return nil
 			end
 

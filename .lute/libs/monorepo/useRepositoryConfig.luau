@@ -1,5 +1,5 @@
 local luau = require "@std/luau"
-local types = require "./types"
+local types = require "@scripts/libs/types"
 
 local cache: any
 

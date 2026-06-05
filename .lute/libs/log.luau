@@ -24,8 +24,12 @@ local function throw(...: unknown): never
 end
 
 return table.freeze {
+	bare = createLogger(function(s: string, nocolor: boolean?): string
+		return s
+	end),
+
 	verbose = createLogger(richterm.dim),
-	info = createLogger(richterm.combine()),
+	info = createLogger(richterm.cyan),
 	warn = createLogger(richterm.yellow),
 	error = createLogger(richterm.red),
 	throw = throw,

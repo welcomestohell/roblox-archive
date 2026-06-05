@@ -12,4 +12,6 @@ return table.freeze {
 
 	RICH_TOP = `{PRIMARY "▄ █ "}{SECONDARY "▀█▀"}{PRIMARY " █ ▄"}`,
 	RICH_BOT = `{PRIMARY " █▀█"}{SECONDARY " █ "}{PRIMARY "█▀█ "}`,
+
+	INDENT = "           ",
 }

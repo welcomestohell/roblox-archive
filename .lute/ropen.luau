@@ -1,7 +1,7 @@
-local cli = require "@libs/cli"
-local run = require "@libs/run"
+local cli = require "@scripts/libs/cli"
+local run = require "@scripts/libs/run"
 local system = require "@lute/system"
-local useMonorepo = require "@libs/useMonorepo"
+local useMonorepo = require "@scripts/libs/monorepo/useMonorepo"
 
 local args = cli.parser { description = "Opens a given place ID in Roblox Studio" }
 args:add("place", "positional", { help = "Place name or ID to open", required = true })

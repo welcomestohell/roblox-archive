@@ -77,7 +77,7 @@ export type MonorepoMember = {
 
 export type Monorepo = { [any]: MonorepoMember }
 
-export type RepositoryConfig = typeof(require "@libs/../../.config")
+export type RepositoryConfig = typeof(require "@scripts/libs/../../.config")
 
 -- Build
 

@@ -1,7 +1,7 @@
 local io = require "@std/io"
 local path = require "@std/path"
 local process = require "@std/process"
-local richterm = require "@batteries/richterm"
+-- local richterm = require "@batteries/richterm"
 
 export type Options = {
 	cwd: path.Pathlike?,
@@ -20,9 +20,9 @@ local function run(program: string, args: { any }, options: Options?)
 	end
 	table.insert(stringifiedArgs, 1, program)
 
-	if not options.quiet then
-		print(richterm.dim(`$ {table.concat(stringifiedArgs, " ")}`))
-	end
+	-- if not options.quiet then
+	-- print(richterm.dim(`$ {table.concat(stringifiedArgs, " ")}`))
+	-- end
 
 	local result = process.run(stringifiedArgs, {
 		cwd = options.cwd and tostring(options.cwd),

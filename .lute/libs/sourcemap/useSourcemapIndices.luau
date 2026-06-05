@@ -3,8 +3,8 @@
 local fs = require "@std/fs"
 local json = require "@std/json"
 local path = require "@std/path"
-local sanitizeQuotes = require "./sanitizeQuotes"
-local types = require "./types"
+local sanitizeQuotes = require "@scripts/libs/sourcemap/sanitizeQuotes"
+local types = require "@scripts/libs/types"
 
 local function sourcemapIndices(sourcemapPath: path.Pathlike): types.SourcemapIndices
 	local sourcemap = json.deserialize(fs.readFileToString(sourcemapPath)) :: types.SourcemapNode

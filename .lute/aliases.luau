@@ -1,10 +1,10 @@
-local findCommentRegion = require "@libs/findCommentRegion"
+local findCommentRegion = require "@scripts/libs/findCommentRegion"
 local fs = require "@std/fs"
 local json = require "@std/json"
 local path = require "@std/path"
 local pp = require "@batteries/pp"
-local run = require "@libs/run"
-local useMonorepo = require "@libs/useMonorepo"
+local run = require "@scripts/libs/run"
+local useMonorepo = require "@scripts/libs/monorepo/useMonorepo"
 
 local monorepo = useMonorepo()
 

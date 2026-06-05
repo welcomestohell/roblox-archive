@@ -1,5 +1,5 @@
 local path = require "@std/path"
-local types = require "./types"
+local types = require "@scripts/libs/types"
 
 local function getMemberFromPath(monorepo: types.Monorepo, filepath: path.Pathlike): types.MonorepoMember
 	local firstPart = path.parse(filepath).parts[1]

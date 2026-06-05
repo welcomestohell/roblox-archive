@@ -1,8 +1,8 @@
 local json = require "@std/json"
-local log = require "@libs/log"
+local log = require "@scripts/libs/log"
 local path = require "@std/path"
-local types = require "@libs/types"
-local useRepositoryConfig = require "@libs/useRepositoryConfig"
+local types = require "@scripts/libs/types"
+local useRepositoryConfig = require "@scripts/libs/monorepo/useRepositoryConfig"
 
 local function insertMapping(
 	tree: types.RojoNode,

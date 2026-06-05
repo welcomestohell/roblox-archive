@@ -19,7 +19,7 @@
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
         "**/*.lock": true,
-        ".output": true,
+        // ".output": true,
         "patches": true,
         "lune_packages": true,
         "luau_packages": true,

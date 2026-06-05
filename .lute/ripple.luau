@@ -1,8 +1,8 @@
 local cli = require "@batteries/cli"
-local log = require "@libs/log"
-local run = require "@libs/run"
+local log = require "@scripts/libs/log"
+local run = require "@scripts/libs/run"
 local task = require "@std/task"
-local useMonorepo = require "@libs/useMonorepo"
+local useMonorepo = require "@scripts/libs/monorepo/useMonorepo"
 
 local args = cli.parser { description = "Runs a command across all monorepo members" }
 args:parse { ... }
