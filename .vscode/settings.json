@@ -19,16 +19,19 @@
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
         "**/*.lock": true,
-        // ".output": true,
+        ".pesde": true,
+        "roblox_packages/.pesde": false,
+        ".output": true,
         "patches": true,
         "lune_packages": true,
         "luau_packages": true,
         "default.project.json": true,
-        "sourcemap.project.json": true
+        "sourcemap.project.json": true,
+        "asphalt.lock.toml": true,
     },
     "explorer.fileNesting.enabled": true,
     "explorer.fileNesting.patterns": {
-        "*.luau": "${capture}.story.luau"
+        "*.luau": "${capture}.story.luau, ${capture}.spec.luau"
     },
     "editor.formatOnSave": true,
     "[luau]": {

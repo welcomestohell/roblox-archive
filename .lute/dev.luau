@@ -59,6 +59,19 @@ local ctx: types.BuildContext = {
 print(divider "Initializing output...")
 initializeOutput(ctx)
 
+print(divider "Initializing assets...")
+run("asphalt", { "sync", "studio" })
+
+print(divider "Initializing .blink files...")
+for _, member in rojoMembers do
+	local blinkFilepath = path.join(member.dirPath, ".blink")
+	if fs.exists(blinkFilepath) then
+		print(richterm.dim(richterm.bold(`Compiling {blinkFilepath}`)))
+		run("blink", { blinkFilepath })
+		task.spawn(run, "blink", { blinkFilepath }, { quiet = true } :: run.Options)
+	end
+end
+
 print(divider "Initializing Rojo projects...")
 initializeRojo(ctx)
 

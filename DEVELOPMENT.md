@@ -20,7 +20,10 @@ lute dev --help
 lute dev title
 
 # when you're done with libs, core, game, or chapter, deploy all places
-lute deploy *
+lute deploy
+
+# one will do just fine
+lute deploy title
 
 # need to run something inside all folders?
 lute ripple blink --watch .blink
@@ -80,12 +83,12 @@ Starting with least dependencies:
   tower scripts.
 - `core`: Core providers, UI components, etc used everywhere in Welcome To Hell.
   To be consumed by the `towerkit` and `editor` alongside the `game`.
-- `game`: Game specific providers, UI components, etc used in the Welcome To
+- `universe`: Game specific providers, UI components, etc used in the Welcome To
   Hell places. Kept separate from `core` as to not expose anything into `kit`.
 - `chapter`: Chapter specific providers, UI components, etc used throughout all
   campaign chapters. Kept separate from `game` as to not expose anything into
   `title`.
-- `title`: The title screen of Welcome To Hell.
+- `title`: The title screen, or spawn game, of Welcome To Hell.
 - `chapter1`, `chapter2`, etc: Individual chapters of Welcome To Hell.
 
 Code is copied and transformed inside the `out` folder.

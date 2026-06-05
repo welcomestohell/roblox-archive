@@ -10,10 +10,3 @@ function loadMechanics {
     Data: (),
     Return: Instance
 }
-
-function syncAtoms {
-    from: Server,
-    type: Reliable,
-    call: SingleSync,
-    data: unknown,
-}
