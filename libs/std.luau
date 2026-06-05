@@ -1,16 +1,16 @@
-local Attribute = require "./Attribute"
-local Level = require "./Level"
-local LevelState = require "./LevelState"
+local Attribute = require "@libs/Attribute"
+local Level = require "@libs/core/Level"
+local LevelState = require "@libs/core/LevelState"
 local Life = require "@libs/memory/Life"
-local Mechanic = require "./Mechanic"
-local activation = require "./activation"
-local gt = require "./gt"
-local sounds = require "./sounds"
-local tweens = require "./tweens"
+local Mechanic = require "@libs/core/Mechanic"
+local activation = require "@libs/activation"
+local gt = require "@libs/gt"
+local sounds = require "@libs/sounds"
+local tweens = require "@libs/tweens"
 
+export type AnyMechanicImplementation = Mechanic.AnyMechanicImplementation
 export type Mechanic<Self = any, Mixin = {}> = Mechanic.Mechanic<Self, Mixin>
 export type MechanicImplementation = Mechanic.MechanicImplementation
-export type MechanicImplementationLike = Mechanic.MechanicImplementationLike
 export type MechanicImplementationMetadata = Mechanic.MechanicImplementationMetadata
 
 export type Level = Level.Level

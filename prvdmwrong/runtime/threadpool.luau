@@ -11,7 +11,7 @@ local function yielder()
 	end
 end
 
-local function spawn<T...>(f: (T...) -> (), ...: T...): any
+local function spawn<T...>(f: (T...) -> (), ...: T...): thread
 	local thread
 	if #freeThreads > 0 then
 		thread = freeThreads[#freeThreads]

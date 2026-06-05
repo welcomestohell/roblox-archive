@@ -1,5 +1,5 @@
 local Log = require "@libs/Log"
-local MechanicImplementation = require "@libs/core/MechanicImplementation"
+local Mechanic = require "@libs/core/Mechanic"
 local Promise = require "@roblox_packages/Promise"
 
 local log = Log.new(script)
@@ -22,7 +22,7 @@ export type ScriptCollector = setmetatable<{
 
         All mechanic implementations that has been collected.
     ]=]
-	mechanicImplementations: { MechanicImplementation.MechanicImplementation },
+	mechanicImplementations: { Mechanic.AnyMechanicImplementation },
 
 	--[=[
         @prop mechanicImplementationByTag { [string]: MechanicImplementation }
@@ -30,7 +30,7 @@ export type ScriptCollector = setmetatable<{
 
         All mechanic implementations that has been collected mapped by tags.
     ]=]
-	mechanicImplementationByTag: { [string]: MechanicImplementation.MechanicImplementation },
+	mechanicImplementationByTag: { [string]: Mechanic.AnyMechanicImplementation },
 
 	--[=[
         @prop mechanicTags { string }
@@ -47,7 +47,7 @@ export type ScriptCollector = setmetatable<{
 
     Constructs an empty ScriptCollector.
 ]=]
-function ScriptCollector.new()
+function ScriptCollector.new(): ScriptCollector
 	return setmetatable({
 		mechanicImplementations = {},
 		mechanicImplementationByTag = {},
@@ -89,8 +89,8 @@ function ScriptCollector.collectModuleScript(self: ScriptCollector, instance: Mo
 		log:error("Module", instance:GetFullName(), "failed to be required:", requiredOrError)
 	end
 
-	if MechanicImplementation.isMechanicImplementation(requiredOrError) then
-		local implementation = MechanicImplementation.downcast(requiredOrError)
+	if Mechanic.isMechanicImplementation(requiredOrError) then
+		local implementation = Mechanic.downcast(requiredOrError)
 		implementation.instanceTag = implementation.instanceTag or instance.Name
 
 		if self.mechanicImplementationByTag[implementation.instanceTag] then

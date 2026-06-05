@@ -39,18 +39,18 @@ export type AnyMechanicImplementation = {
 	onBindActivation: (self: any, mechanic: Mechanic<any>, level: any) -> ()?,
 }
 
-local MechanicImplementation = {}
-MechanicImplementation.__index = MechanicImplementation
+local Mechanic = {}
+Mechanic.__index = Mechanic
 
 -- Instance properties can't be defined on MechanicImplementation because it
 -- breaks metatable typing...
-MechanicImplementation._proxy = types.any :: {}
-MechanicImplementation._metadata = types.any :: MechanicImplementationMetadata
+Mechanic._proxy = types.any :: {}
+Mechanic._metadata = types.any :: MechanicImplementationMetadata
 
-export type MechanicImplementation<Self = {}> = setmetatable<Self, typeof(MechanicImplementation)>
+export type MechanicImplementation<Self = {}> = setmetatable<Self, typeof(Mechanic)>
 
-function MechanicImplementation.new<Self>(self: Self): MechanicImplementation<Self>
-	local implementation: any = setmetatable(self, MechanicImplementation)
+function Mechanic.new<Self>(self: Self): MechanicImplementation<Self>
+	local implementation: any = setmetatable(self, Mechanic)
 
 	local firstSection: AttributeSection = { attributes = {} }
 
@@ -81,32 +81,32 @@ function MechanicImplementation.new<Self>(self: Self): MechanicImplementation<Se
 	return implementation
 end
 
-function MechanicImplementation.isMechanicImplementation(x: any)
-	return typeof(x) == "table" and getmetatable(x) == MechanicImplementation
+function Mechanic.isMechanicImplementation(x: any)
+	return typeof(x) == "table" and getmetatable(x) == Mechanic
 end
 
-function MechanicImplementation.downcast(self: {}): MechanicImplementation<AnyMechanicImplementation>
+function Mechanic.downcast(self: {}): MechanicImplementation<AnyMechanicImplementation>
 	return self :: any
 end
 
-function MechanicImplementation.attributeSection(self: {}, title: string)
-	self = MechanicImplementation.downcast(self)
+function Mechanic.attributeSection(self: {}, title: string)
+	self = Mechanic.downcast(self)
 
 	local section: AttributeSection = { title = title, attributes = {} }
 	self._metadata.currentAttributeSection = section
 	table.insert(self._metadata.attributeSections, section)
 end
 
-function MechanicImplementation.attribute<T>(self: {}, name: string, type: T, default: T): Attribute.Attribute<T>
-	self = MechanicImplementation.downcast(self)
+function Mechanic.attribute<T>(self: {}, name: string, type: T, default: T): Attribute.Attribute<T>
+	self = Mechanic.downcast(self)
 
 	local attribute = Attribute.new(name, type, default)
 	table.insert(self._metadata.currentAttributeSection.attributes, attribute)
 	return attribute
 end
 
-function MechanicImplementation.__tostring(self: AnyMechanicImplementation)
+function Mechanic.__tostring(self: AnyMechanicImplementation)
 	return self.instanceTag
 end
 
-return table.freeze(MechanicImplementation)
+return table.freeze(Mechanic)
