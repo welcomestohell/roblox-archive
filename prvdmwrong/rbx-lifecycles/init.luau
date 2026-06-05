@@ -15,6 +15,11 @@ RbxLifecycles.preAnimation = prvd.lifecycle("onPreAnimation", fireConcurrent) ::
 RbxLifecycles.preRender = prvd.lifecycle("onPreRender", fireConcurrent) :: prvd.Lifecycle<number>
 RbxLifecycles.playerAdded = prvd.lifecycle("onPlayerAdded", fireConcurrent) :: prvd.Lifecycle<Player>
 RbxLifecycles.playerRemoving = prvd.lifecycle("onPlayerRemoving", fireConcurrent) :: prvd.Lifecycle<Player>
+RbxLifecycles.characterAdded = prvd.lifecycle("onCharacterAdded", fireConcurrent) :: prvd.Lifecycle<Model>
+RbxLifecycles.characterRemoving = prvd.lifecycle("onCharacterRemoving", fireConcurrent) :: prvd.Lifecycle<Model>
+RbxLifecycles.localCharacterAdded = prvd.lifecycle("onLocalCharacterAdded", fireConcurrent) :: prvd.Lifecycle<Model>
+RbxLifecycles.localCharacterRemoving =
+	prvd.lifecycle("onLocalCharacterRemoving", fireConcurrent) :: prvd.Lifecycle<Model>
 
 local function wrapLifecycle(lifecycle: prvd.Lifecycle<...unknown>)
 	return function(...: unknown)
@@ -35,8 +40,23 @@ function RbxLifecycles.constructor(self: RbxLifecycles)
 		self:_addConnections(RunService.PreRender:Connect(wrapLifecycle(RbxLifecycles.preRender :: any)))
 	end
 
+	local function onPlayerAdded(player: Player)
+		self.playerAdded:fire(player)
+
+		local character = player.Character or player.CharacterAdded:Wait()
+		self.characterAdded:fire(character)
+
+		if player == Players.LocalPlayer then
+			self.localCharacterAdded:fire(character)
+		end
+	end
+
+	for _, existingPlayer in Players:GetPlayers() do
+		task.spawn(onPlayerAdded, existingPlayer)
+	end
+
 	self:_addConnections(
-		Players.PlayerAdded:Connect(wrapLifecycle(RbxLifecycles.playerAdded :: any)),
+		Players.PlayerAdded:Connect(onPlayerAdded),
 		Players.PlayerRemoving:Connect(wrapLifecycle(RbxLifecycles.playerRemoving :: any))
 	)
 end

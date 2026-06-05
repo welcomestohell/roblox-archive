@@ -4,8 +4,7 @@ local Players = game:GetService "Players"
 local Fluid = require "@roblox_packages/Fluid"
 local LoadingScreen = require "@core/ui/components/screens/LoadingScreen"
 local assets = require "@core/assets"
-local collectAssets = require "@core/shared/assets/collectAssets"
-local flattenAssetIds = require "@core/shared/assets/flattenAssetIds"
+local flattenAssetModules = require "@core/shared/assets/flattenAssetModules"
 local net = require "@core/client/generated/net"
 local prvd = require "@prvdmwrong/prvdmwrong"
 local useDelay = require "@core/shared/fluid/useDelay"
@@ -15,28 +14,29 @@ export type PreloadProvider = typeof(PreloadProvider)
 
 function PreloadProvider.onStart(self: PreloadProvider)
 	Fluid.root(function()
-		local loadingMessage = Fluid.source "Awaiting server"
+		local loadingMessage = Fluid.source "Preparing"
 		local isLoading = Fluid.source(true)
 
 		Fluid.cleanup(task.spawn(function()
+			loadingMessage "Awaiting server"
 			local assetIds: { string }
 			repeat
 				assetIds = net.fetchAssetIds.invoke():expect() :: { string }
 			until assetIds
-
-			local assetModules = collectAssets()
-			for _, assets in assetModules do
-				local ids = flattenAssetIds(assets)
-				table.move(ids, 1, #ids, #assetIds + 1, assetIds)
-			end
+			flattenAssetModules(assetIds)
 
 			local assetsLoaded = 0
 			ContentProvider:PreloadAsync(assetIds, function(assetId, fetchStatus: Enum.AssetFetchStatus)
-				print(Enum.AssetFetchStatus.Success)
 				assetsLoaded += 1
 				loadingMessage(`{assetsLoaded}/{#assetIds} assets`)
 			end)
 
+			if not Players.LocalPlayer.Character then
+				loadingMessage "Awaiting character"
+				Players.LocalPlayer.CharacterAdded:Wait()
+			end
+
+			loadingMessage "Finishing up"
 			isLoading(false)
 		end))
 
