@@ -2,6 +2,7 @@ local Players = game:GetService "Players"
 
 local std = require "@libs/std"
 
+local assets = require "@core/assets"
 local character = require "@libs/character"
 local damage = require "@libs/damage"
 local gt = require "@roblox_packages/gt"
@@ -70,7 +71,7 @@ function Turret.onTouch(turret: TurretMechanic, hit: BasePart): boolean
 	end
 
 	local turretDamage, turretCooldown = turret:Damage(), turret:Cooldown()
-	local cooldowns = turret.cooldowns or {}
+	local cooldowns = turret.cooldowns
 
 	local now = os.clock()
 
@@ -88,8 +89,9 @@ function Turret.calculateSpreadAngle(turret: TurretMechanic, direction: Vector3)
 	local spreadAngle: NumberRange = turret:SpreadAngle()
 
 	local directionCFrame = CFrame.new(Vector3.zero, direction)
-	local spreadDirection = CFrame.fromOrientation(0, 0, math.random(0, math.pi * 2))
-	local spreadAngle = CFrame.fromOrientation(math.rad(math.random(spreadAngle.Min, spreadAngle.Max)), 0, 0)
+	local spreadDirection = CFrame.fromOrientation(0, 0, math.random() * math.pi * 2)
+	local spreadAngle =
+		CFrame.fromOrientation(math.rad(spreadAngle.Min + math.random() * (spreadAngle.Max - spreadAngle.Min)), 0, 0)
 
 	return (directionCFrame * spreadDirection * spreadAngle).LookVector
 end
@@ -103,7 +105,7 @@ function Turret.fireBullet(turret: TurretMechanic, bulletTemplate: Part)
 	end
 
 	if turret.FireSound.Play(turret) then
-		sounds.playInstance(turret.FireSound, instance, turret.instanceConfiguration, (sounds.sfx :: any).tick) -- an iq too high??
+		sounds.playInstance(turret.FireSound, instance, turret.instanceConfiguration, assets.sfx.tick)
 	end
 
 	for _, descendant in instance:GetDescendants() do
@@ -115,7 +117,7 @@ function Turret.fireBullet(turret: TurretMechanic, bulletTemplate: Part)
 	local bulletLife = turret.life:extend()
 	local bulletInstance = bulletLife:add(bulletTemplate:Clone())
 
-	bulletInstance.Anchored = true
+	bulletInstance.Massless = true
 
 	local function cleanup()
 		bulletLife:destroy()
@@ -141,6 +143,8 @@ function Turret.fireBullet(turret: TurretMechanic, bulletTemplate: Part)
 
 	linearVelocity.Attachment0 = mainAttachment
 	linearVelocity.VectorVelocity = finalCFrame.LookVector * turret:Speed()
+	linearVelocity.RelativeTo = Enum.ActuatorRelativeTo.World
+	linearVelocity.MaxForce = math.huge
 
 	local alignOrientation = bulletInstance:FindFirstChildOfClass "AlignOrientation"
 
