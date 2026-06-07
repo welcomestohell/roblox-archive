@@ -9,7 +9,7 @@ local threadpool = require "@libs/threadpool"
 ]=]
 local Hidden = std.Mechanic {}
 export type Hidden = std.Mechanic<typeof(Hidden)>
-Hidden.instanceTag = "Hidden"
+Hidden.mechanicName = "Hidden"
 Hidden.instanceType = std.isA.Instance()
 Hidden.debuggerEmoji = "👻"
 

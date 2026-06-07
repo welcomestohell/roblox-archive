@@ -4,7 +4,7 @@ local gt = require "@libs/gt"
 local SeamlessMeasurement = gt.build(gt.unionLiterals2("Relative", "World"))
 export type SeamlessMeasurement = typeof(SeamlessMeasurement:type())
 
-local function useSeamlessAttributes(implementation: Mechanic.AnyMechanicImplementation, basename: string?)
+local function useSeamlessAttributes(implementation: Mechanic.MechanicImplementation, basename: string?)
 	basename = basename or "Seamless"
 
 	local attributes = {}

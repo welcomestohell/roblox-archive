@@ -3,10 +3,11 @@ local std = require "@libs/std"
 
 local OneWay = std.Mechanic {}
 export type OneWayMechanic = std.Mechanic<typeof(OneWay)>
-OneWay.instanceTag = "OneWay"
+OneWay.mechanicName = "OneWay"
 OneWay.instanceType = std.isA.BasePart()
 OneWay.debuggerEmoji = "⛔"
 
+OneWay.Enabled = OneWay:attribute("Enabled", std.gt.boolean(), true)
 OneWay.Offset = OneWay:attribute("Offset", std.gt.CFrame(), CFrame.identity)
 
 function OneWay:onPreSimulation(deltaTime: number, level: std.Level)
@@ -16,24 +17,22 @@ function OneWay:onPreSimulation(deltaTime: number, level: std.Level)
 	end
 
 	local rootPivot = root:GetPivot()
-	for _, platform in level:getMechanics(OneWay) do
+	for _, platform: OneWayMechanic in level:getMechanics(OneWay) do
 		local instance: BasePart = platform.instance
 		local enabled: boolean = platform:Enabled()
 
 		if enabled then
-			local _offset: CFrame = platform:Offset()
+			local offset: CFrame = platform:Offset()
 
 			local partPivot = instance:GetPivot()
-			local _upVector = partPivot.UpVector
+			local upVector = partPivot.UpVector
 
-			instance.CanCollide = rootPivot.Position.Y > partPivot.Position.Y
-			-- this just breaks??? "invalid argument #2 (Vector3 expected, got nil)"
-			--  upVector:Dot(
-			-- 	CFrame.lookAt(
-			-- 		(partPivot * (CFrame.new(Vector3.yAxis * (instance.Size.Y * 0.5)) * offset)).Position, -- breaks around here
-			-- 		(rootPivot * CFrame.new(0, -math.sign(upVector:Dot(Vector3.yAxis)), 0)).Position
-			-- 	).LookVector
-			-- ) > 0
+			instance.CanCollide = upVector:Dot(
+				CFrame.lookAt(
+					(partPivot * (CFrame.new(Vector3.yAxis * (instance.Size.Y * 0.5)) * offset)).Position,
+					(rootPivot * CFrame.new(0, -math.sign(upVector:Dot(Vector3.yAxis)), 0)).Position
+				).LookVector
+			) > 0
 		else
 			instance.CanCollide = false
 		end

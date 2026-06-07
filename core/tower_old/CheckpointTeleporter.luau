@@ -9,7 +9,7 @@ local tweens = require "@libs/tweens"
 
 local CheckpointTeleporter = std.Mechanic {}
 export type CheckpointTeleporterMechanic = std.Mechanic<typeof(CheckpointTeleporter)>
-CheckpointTeleporter.instanceTag = "CheckpointTeleporter"
+CheckpointTeleporter.mechanicName = "CheckpointTeleporter"
 CheckpointTeleporter.instanceType = std.isA.BasePart()
 CheckpointTeleporter.debuggerEmoji = "⬅️"
 

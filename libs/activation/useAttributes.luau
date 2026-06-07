@@ -4,7 +4,7 @@ local touch = require "@libs/touch"
 local types = require "./types"
 
 local function useAttributes(
-	implementation: Mechanic.AnyMechanicImplementation,
+	implementation: Mechanic.MechanicImplementation,
 	basename: string?
 ): types.ActivationAttributes
 	basename = basename or "Activation"

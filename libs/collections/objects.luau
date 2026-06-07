@@ -1,4 +1,4 @@
-type function NonNilable(ty: type): type
+export type function NonNilable(ty: type): type
 	if not ty:is "union" then
 		return ty
 	end
@@ -11,7 +11,7 @@ type function NonNilable(ty: type): type
 	return union or ty
 end
 
-type function Partial(ty: type): type
+export type function Partial(ty: type): type
 	local result = types.copy(ty)
 	for key, property in ty:properties() do
 		if property.read then

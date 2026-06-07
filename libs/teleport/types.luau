@@ -13,7 +13,6 @@ export type TeleportContext = {
 
 	target: BasePart,
 	destination: BasePart,
-	destinationConfiguration: Instance,
 
 	attributes: TeleporterAttributes,
 	seamlessAttributes: SeamlessAttributes,

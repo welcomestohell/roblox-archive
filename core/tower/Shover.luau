@@ -3,10 +3,8 @@ local threadpool = require "@libs/threadpool"
 
 local Shover = std.Mechanic {}
 export type ShoverMechanic = std.Mechanic<typeof(Shover)>
-Shover.instanceTag = "Shover"
-Shover.instanceType = std.gt.instanceTree {
-	ShoverConstraint = std.isA.PrismaticConstraint(),
-}
+Shover.mechanicName = "Shover"
+Shover.instanceType = std.isA.PrismaticConstraint()
 Shover.debuggerEmoji = "🤜"
 
 type ShoverDirection = "In" | "Out"
@@ -15,7 +13,8 @@ type ShoverDirectionAttributes = {
 	power: std.Attribute<number>,
 }
 
-Shover.threads = std.LevelState({} :: { [ShoverMechanic]: thread })
+Shover.Enabled = Shover:attribute("Enabled", std.gt.boolean(), true)
+
 Shover.directions = {} :: { [ShoverDirection]: ShoverDirectionAttributes }
 
 Shover:attributeSection "In"
@@ -26,8 +25,8 @@ Shover.directions.In = {
 
 Shover:attributeSection "Out"
 Shover.directions.Out = {
-	delay = std.Attribute("OutDelay", std.gt.positiveNumber, 1),
-	power = std.Attribute("OutPower", std.gt.positiveNumber, 0),
+	delay = Shover:attribute("OutDelay", std.gt.positiveNumber, 1),
+	power = Shover:attribute("OutPower", std.gt.positiveNumber, 0),
 }
 
 function Shover.shove(shover: ShoverMechanic, direction: ShoverDirection)
@@ -37,25 +36,18 @@ function Shover.shove(shover: ShoverMechanic, direction: ShoverDirection)
 
 	if shover:Enabled() then
 		local power = attributes.power(shover)
-		local constraint = shover.instance.ShoverConstraint
+		local constraint = shover.instance
 		constraint.LinearResponsiveness = power
 		constraint.Speed = power
-		constraint.TargetPosition = if direction == "Out" then shover.UpperLimit else 0
+		constraint.TargetPosition = if direction == "Out" then shover.instance.UpperLimit else 0
 	end
 end
 
-function Shover:onPreSimulation(_, level: std.Level)
-	local threads = Shover.threads:get(level)
-	for _, shover: ShoverMechanic in level:getMechanics(Shover) do
-		if not threads[shover] then
-			threads[shover] = level.life:add(threadpool.spawn(function(shover: ShoverMechanic)
-				while shover:Enabled() do
-					shover:shove "In"
-					shover:shove "Out"
-				end
-			end, shover))
-		end
-	end
+function Shover:onStart(shover: ShoverMechanic, level: std.Level)
+	repeat
+		shover:shove "In"
+		shover:shove "Out"
+	until shover.life.destroyed
 end
 
 return Shover

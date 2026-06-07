@@ -25,12 +25,16 @@ export type ScriptCollector = setmetatable<{
 	mechanicImplementations: { Mechanic.AnyMechanicImplementation },
 
 	--[=[
-        @prop mechanicImplementationByTag { [string]: MechanicImplementation }
+        @prop mechanicImplementationByName { [string]: MechanicImplementation }
         @within ScriptCollector
 
-        All mechanic implementations that has been collected mapped by tags.
+        All mechanic implementations that has been collected mapped by it's
+        name.
+        
+        This is distinct from the matching CollectionService tag, which follows
+        `Mechanic: {mechanicName}`.
     ]=]
-	mechanicImplementationByTag: { [string]: Mechanic.AnyMechanicImplementation },
+	mechanicImplementationByName: { [string]: Mechanic.AnyMechanicImplementation },
 
 	--[=[
         @prop mechanicTags { string }
@@ -50,7 +54,7 @@ export type ScriptCollector = setmetatable<{
 function ScriptCollector.new(): ScriptCollector
 	return setmetatable({
 		mechanicImplementations = {},
-		mechanicImplementationByTag = {},
+		mechanicImplementationByName = {},
 		mechanicTags = {},
 	}, ScriptCollector)
 end
@@ -68,7 +72,7 @@ end
 function ScriptCollector.clone(self: ScriptCollector): ScriptCollector
 	return setmetatable({
 		mechanicImplementations = table.clone(self.mechanicImplementations),
-		mechanicImplementationByTag = table.clone(self.mechanicImplementationByTag),
+		mechanicImplementationByName = table.clone(self.mechanicImplementationByName),
 		mechanicTags = table.clone(self.mechanicTags),
 	}, ScriptCollector)
 end
@@ -91,21 +95,21 @@ function ScriptCollector.collectModuleScript(self: ScriptCollector, instance: Mo
 
 	if Mechanic.isMechanicImplementation(requiredOrError) then
 		local implementation = Mechanic.downcast(requiredOrError)
-		implementation.instanceTag = implementation.instanceTag or instance.Name
+		implementation.mechanicName = implementation.mechanicName or instance.Name
 
-		if self.mechanicImplementationByTag[implementation.instanceTag] then
+		if self.mechanicImplementationByName[implementation.mechanicName] then
 			return log:error(
 				"Cannot collect mechanic implementation",
 				instance:GetFullName(),
 				"as it's instance tag",
-				implementation.instanceTag,
+				implementation.mechanicName,
 				"is already registered; are you trying to `:override()` a mechanic?"
 			)
 		end
 
 		table.insert(self.mechanicImplementations, implementation)
-		self.mechanicImplementationByTag[implementation.instanceTag] = implementation
-		table.insert(self.mechanicTags, implementation.instanceTag)
+		self.mechanicImplementationByName[implementation.mechanicName] = implementation
+		table.insert(self.mechanicTags, implementation.mechanicName)
 		table.sort(self.mechanicTags)
 	end
 end

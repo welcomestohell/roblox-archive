@@ -309,6 +309,14 @@ function Attribute.onChange<T>(
 	return observeListener(self, instance, self._changeListeners, listener)
 end
 
+function Attribute.awaitChange<T>(self: Attribute<T>, instance: ResolvableInstance): T
+	local currentThread = coroutine.running()
+	observeListener(self, instance, self._changeListeners, function(value: T)
+		task.spawn(currentThread, value)
+	end)
+	return coroutine.yield()
+end
+
 function Attribute.onBind<T>(
 	self: Attribute<T>,
 	instance: ResolvableInstance,

@@ -1,6 +1,8 @@
 local Attribute = require "@libs/Attribute"
 local Life = require "@libs/memory/Life"
 local Log = require "@libs/Log"
+local objects = require "@libs/collections/objects"
+local tables = require "@libs/collections/tables"
 local types = require "@libs/types"
 
 export type AttributeSection = {
@@ -23,7 +25,7 @@ export type Mechanic<Implementation = any, Mixin = {}> = Implementation & Mixin 
 }
 
 export type AnyMechanicImplementation = {
-	instanceTag: string,
+	mechanicName: string,
 	instanceType: Instance,
 
 	debuggerEmoji: string,
@@ -73,7 +75,7 @@ function Mechanic.new<Self>(self: Self): MechanicImplementation<Self>
 	end
 
 	function proxy.__tostring(self: Mechanic<AnyMechanicImplementation>)
-		return `{self.implementation.instanceTag}({self.instance:GetFullName()})`
+		return `{self.implementation.mechanicName}({self.instance:GetFullName()})`
 	end
 
 	implementation._proxy = proxy
@@ -106,7 +108,7 @@ function Mechanic.attribute<T>(self: {}, name: string, type: T, default: T): Att
 end
 
 function Mechanic.__tostring(self: AnyMechanicImplementation)
-	return self.instanceTag
+	return self.mechanicName
 end
 
 return table.freeze(Mechanic)

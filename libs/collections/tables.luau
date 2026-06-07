@@ -58,14 +58,18 @@ export type function Merge(lhs: type, rhs: type)
 	local result = types.newtable()
 
 	for _, tbl in { lhs, rhs } do
-		for key, values in tbl:properties() do
-			if values.read then
-				result:setreadproperty(key, values.read)
-			end
+		if tbl.tag == "table" then
+			for key, values in tbl:properties() do
+				if values.read then
+					result:setreadproperty(key, values.read)
+				end
 
-			if values.write then
-				result:setwriteproperty(key, values.write)
+				if values.write then
+					result:setwriteproperty(key, values.write)
+				end
 			end
+		elseif tbl.tag == "any" then
+			result:setindexer(types.any, types.any)
 		end
 	end
 

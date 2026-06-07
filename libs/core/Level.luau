@@ -20,6 +20,8 @@ type AnyImplementation = Mechanic.AnyMechanicImplementation
 type MechanicImplementation = Mechanic.MechanicImplementation
 type Mechanic<Implementation = any, Mixin = {}> = Mechanic.Mechanic<Implementation, Mixin>
 
+const MECHANIC_TAG_PATTERN = "Mechanic:%s?([%w_%-]+)"
+
 local Level = {}
 Level.__index = Level
 Level.baseScripts = ScriptCollector.new()
@@ -42,9 +44,11 @@ export type Level = setmetatable<{
 
 	scripts: ScriptCollector.ScriptCollector,
 
+	instanceByGroups: { [string]: { Instance } },
+
 	mechanics: { Mechanic<any> },
-	mechanicsByImplementations: { [AnyImplementation]: { Mechanic<any> } },
-	mechanicsByInstance: { [Instance]: { Mechanic<any> } },
+	mechanicsByImplementations: { [AnyImplementation]: { Mechanic } },
+	mechanicsByInstance: { [Instance]: { Mechanic } },
 
 	implementationLifecycleListeners: { [prvd.Lifecycle]: { [AnyImplementation]: (...unknown) -> () } },
 	implementationLifecycles: { [string]: prvd.Lifecycle },
@@ -68,6 +72,8 @@ function Level.new(outerLife: Life.Life, name: string, instance: Instance)
 		startedTimestamp = os.clock(),
 
 		scripts = Level.baseScripts:clone(),
+
+		instanceByGroups = {},
 
 		mechanics = {},
 		mechanicsByImplementations = {},
@@ -126,7 +132,11 @@ function Level.getLifetime(self: Level)
 end
 
 function Level.getMechanics<Self>(self: Level, implementation: Self): { Mechanic<Self> }
-	return self.mechanicsByImplementations[implementation] or {}
+	return self.mechanicsByImplementations[implementation] :: any or {}
+end
+
+function Level.getGroupedInstances<Args...>(self: Level, group: string): { Instance }
+	return marrays.get(self.instanceByGroups, group)
 end
 
 function Level.getListenerForMechanic<Args...>(
@@ -173,19 +183,20 @@ function Level.registerLifecyclesForMechanic(self: Level, mechanic: Mechanic)
 end
 
 function Level.bindActivation(self: Level, mechanic: Mechanic)
+	local bindActivation = self:getListenerForMechanic<<(Level)>>(self.mechanicLifecycles.bindActivation, mechanic)
+	if bindActivation then
+		bindActivation(self)
+		return
+	end
+
 	-- stylua: ignore
 	local onActivate = self:getListenerForMechanic<<(Level, activation.ActivationEvent)>>(self.mechanicLifecycles.onActivate, mechanic)
 	if not onActivate then
 		return
 	end
 
-	local bindActivation = self:getListenerForMechanic<<(Level)>>(self.mechanicLifecycles.onActivate, mechanic)
-	if bindActivation then
-		bindActivation(self)
-		return
-	end
-
-	local getActivationInstance = self:getListenerForMechanic<<(Level)>>(self.mechanicLifecycles.onActivate, mechanic)
+	-- stylua: ignore
+	local getActivationInstance = self:getListenerForMechanic<<(Level)>>(self.mechanicLifecycles.getActivationInstance, mechanic)
 	local instance = getActivationInstance and getActivationInstance(self) or mechanic.instance
 
 	local implementation: any = mechanic.implementation
@@ -208,22 +219,38 @@ function Level.bindActivation(self: Level, mechanic: Mechanic)
 	}
 end
 
-function Level.loadMechanicsFromInstance(self: Level, instance: Instance)
+function Level.loadInstance(self: Level, instance: Instance): { Mechanic }
+	local mechanics = {}
 	for _, tag in instance:GetTags() do
-		local implementation = Mechanic.downcast(self.scripts.mechanicImplementationByTag[tag])
-		if implementation then
+		local mechanicName = string.match(tag, "Mechanic:%s?([%w_%-]+)")
+		if mechanicName then
+			local implementation = Mechanic.downcast(self.scripts.mechanicImplementationByName[mechanicName])
+			if not implementation then
+				continue
+			end
+
 			local mechanizeResult = mechanize(implementation, self.life, instance)
 			if mechanizeResult:isErr() then
 				continue
 			end
 
-			local mechanic = mechanizeResult:unwrap()
+			local mechanic: Mechanic = mechanizeResult:unwrap() :: any
 			table.insert(self.mechanics, mechanic)
+			table.insert(mechanics, mechanic)
 			marrays.push(self.mechanicsByImplementations, implementation, mechanic)
 			marrays.push(self.mechanicsByInstance, instance, mechanic)
 			self:registerLifecyclesForMechanic(mechanic)
 		end
+
+		local groupName = string.match(tag, "Group:%s?([%w_%-]+)")
+		if groupName then
+			marrays.push(self.instanceByGroups, groupName, instance)
+			self.life:add(instance.Destroying:Once(function()
+				marrays.remove(self.instanceByGroups, groupName, instance)
+			end))
+		end
 	end
+	return mechanics
 end
 
 function Level.start(self: Level)
@@ -237,7 +264,7 @@ function Level.start(self: Level)
 
 	local instancePromises: { Promise.Promise } = {}
 	for index, instance in self.instance.Mechanics:GetDescendants() do
-		instancePromises[index] = Promise.try(Level.loadMechanicsFromInstance, self, instance) :: Promise.Promise
+		instancePromises[index] = Promise.try(Level.loadInstance, self, instance) :: Promise.Promise
 	end
 	Promise.all(instancePromises):await()
 
@@ -265,6 +292,15 @@ function Level.start(self: Level)
 		end),
 		RunService.PreAnimation:Connect(function(dt)
 			self.implementationLifecycles.onPreSimulation:fire(dt, self)
+		end),
+		self.instance.DescendantAdded:Connect(function(instance)
+			for _, mechanic in self:loadInstance(instance) do
+				self.life:add(threadpool.spawn(Level.bindActivation, self, mechanic))
+				local onStart = self:getListenerForMechanic<<Level>>(self.mechanicLifecycles.onStart, mechanic)
+				if onStart then
+					threadpool.spawn(onStart, self)
+				end
+			end
 		end)
 	)
 

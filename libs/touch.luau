@@ -2,7 +2,7 @@ local Mechanic = require "@libs/core/Mechanic"
 local character = require "./character"
 local gt = require "./gt"
 
-local function useAttributes(implementation: Mechanic.AnyMechanicImplementation, basename: string?)
+local function useAttributes(implementation: Mechanic.MechanicImplementation, basename: string?)
 	basename = basename or "Touch"
 
 	return {

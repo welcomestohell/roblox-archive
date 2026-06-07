@@ -8,7 +8,7 @@ local character = require "@libs/character"
 
 local damage = {}
 
-function damage.useAttributes(mechanic: Mechanic.AnyMechanicImplementation): attribute.Attribute<number>
+function damage.useAttributes(mechanic: Mechanic.MechanicImplementation): attribute.Attribute<number>
 	return mechanic:attribute("Damage", gt.number(), 20)
 end
 
