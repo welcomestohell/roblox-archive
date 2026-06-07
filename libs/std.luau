@@ -7,6 +7,7 @@ local activation = require "@libs/activation"
 local gt = require "@libs/gt"
 local sounds = require "@libs/sounds"
 local teleport = require "@libs/teleport"
+local touch = require "@libs/touch"
 local tweens = require "@libs/tweens"
 
 export type AnyMechanicImplementation = Mechanic.AnyMechanicImplementation
@@ -30,8 +31,8 @@ export type Life = Life.Life
 	very verbose. But importing a lot of things that a script never uses isn’t
 	good either. A balance needs to be struck.
 
-	The standard library is kept as small as possible to focus on things
-	that are most frequently used for tower scripting.
+	The standard library is a minimal selection of APIs most frequently used in
+	tower scripting.
 ]=]
 return table.freeze {
 	Mechanic = Mechanic.new,
@@ -39,10 +40,11 @@ return table.freeze {
 	Life = Life.new,
 	LevelState = LevelState.new,
 
-	useTeleport = teleport.useAttributes,
-	useSeamlessTeleport = teleport.useSeamlessAttributes,
 	useActivation = activation.useAttributes,
+	useSeamlessTeleport = teleport.useSeamlessAttributes,
 	useSound = sounds.useAttributes,
+	useTeleport = teleport.useAttributes,
+	useTouch = touch.useAttributes,
 	useTween = tweens.useAttributes,
 
 	gt = gt,

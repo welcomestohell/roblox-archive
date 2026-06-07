@@ -29,7 +29,7 @@ local function resolveRequires(ctx: types.TransfomerContext)
 			end
 
 			local requirePath = ctx.build.sourcemapIndices[path.format(resolvedOrError)]
-			return if requirePath then `require({requirePath})` else nil
+			return if requirePath then `require {string.format("%q", requirePath)}` else nil
 		end)
 end
 

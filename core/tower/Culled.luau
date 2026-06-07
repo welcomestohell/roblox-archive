@@ -21,7 +21,7 @@ Culled.mechanicName = "Culled"
 Culled.instanceType = std.isA.BasePart()
 Culled.debuggerEmoji = "😶"
 
-Culled.Enabled = Culled:withEnabled()
+Culled.Enabled = Culled:attribute("Enabled", std.gt.boolean(), true)
 
 Culled:attributeSection "Distance"
 Culled.MinimumDistance = Culled:attribute("MinimumDistance", std.gt.number(), 100)

@@ -18,7 +18,7 @@ local function sourcemapIndices(sourcemapPath: path.Pathlike): types.SourcemapIn
 	local lenNodes = #nodes
 	for index = 1, lenNodes do
 		local service = nodes[index]
-		service.name = `game:GetService("{sanitizeQuotes(service.name)}")`
+		service.name = `@game/{service.name}`
 	end
 
 	local index = 0
@@ -42,7 +42,7 @@ local function sourcemapIndices(sourcemapPath: path.Pathlike): types.SourcemapIn
 			local children_count = #children
 			for children_index = 1, children_count do
 				local child = children[children_index]
-				child.name = `{nodeName}:WaitForChild("{sanitizeQuotes(child.name)}")`
+				child.name = `{nodeName}/{child.name}`
 			end
 			table.move(children, 1, children_count, lenNodes + 1, nodes)
 			lenNodes += children_count
