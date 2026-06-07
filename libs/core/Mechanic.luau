@@ -42,7 +42,7 @@ export type AnyMechanicImplementation = {
 local Mechanic = {}
 Mechanic.__index = Mechanic
 
--- Instance properties can't be defined on MechanicImplementation because it
+-- Instance properties can't be defined on Mechanic because it
 -- breaks metatable typing...
 Mechanic._proxy = types.any :: {}
 Mechanic._metadata = types.any :: MechanicImplementationMetadata

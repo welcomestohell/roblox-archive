@@ -23,16 +23,16 @@ Follower.instanceTag = "Follower"
 Follower.instanceType = std.isA.BasePart()
 Follower.debuggerEmoji = "👀"
 
-Follower.Enabled = Follower:withEnabled()
+Follower.Enabled = Follower:attribute("Enabled", std.gt.boolean(), true)
 
-Follower.FollowMode = Follower:attribute(
-	"FollowMode",
+Follower.Mode = Follower:attribute(
+	"Mode",
 	std.gt.unionLiterals5("LookAt", "RotationOf", "PositionOf", "PivotOf", "None"),
 	functions.literal "None"
 )
 
-Follower.FollowTarget = Follower:attribute(
-	"FollowTarget",
+Follower.Target = Follower:attribute(
+	"Target",
 	std.gt.unionLiterals5("Character", "Mouse", "Camera", "Pointer", "None"),
 	functions.literal "None"
 )
@@ -55,10 +55,10 @@ Follower:attributeSection "Smoothness"
 Follower.Smooth = Follower:attribute("Smooth", std.gt.boolean(), false)
 Follower.Responsiveness = Follower:attribute("Responsiveness", std.gt.positiveNumber, 1)
 
-export type FollowMode = typeof(Follower.FollowMode:type())
-export type FollowTarget = typeof(Follower.FollowTarget:type())
+export type Mode = typeof(Follower.Mode:type())
+export type Target = typeof(Follower.Target:type())
 
-function Follower.getTargetCFrame(target: FollowTarget): CFrame?
+function Follower.getTargetCFrame(target: Target): CFrame?
 	if target == "Camera" then
 		return Workspace.CurrentCamera.CFrame
 	elseif target == "Mouse" then
@@ -93,14 +93,14 @@ function Follower.onPreSimulation(self: typeof(Follower), deltaTime: number, lev
 			continue
 		end
 
-		local targetCFrame = self.getTargetCFrame(follower:FollowTarget())
+		local targetCFrame = self.getTargetCFrame(follower:Target())
 		if not targetCFrame then
 			continue
 		end
 
 		-- Dear basketball
 
-		local mode: FollowMode = follower:FollowMode()
+		local mode: Mode = follower:Mode()
 		local instance = follower.instance
 		if mode == "None" then
 			continue
