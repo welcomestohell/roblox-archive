@@ -128,7 +128,7 @@ end
 
 function Level.getLifetime(self: Level)
 	assert(self.started, "Level hasn't started yet")
-	return os.clock() - self.startTimestamp
+	return os.clock() - self.startedTimestamp
 end
 
 function Level.getMechanics<Self>(self: Level, implementation: Self): { Mechanic<Self> }
@@ -285,13 +285,13 @@ function Level.start(self: Level)
 			self.implementationLifecycles.onPreSimulation:fire(dt, self)
 		end),
 		RunService.PostSimulation:Connect(function(dt)
-			self.implementationLifecycles.onPreSimulation:fire(dt, self)
+			self.implementationLifecycles.onPostSimulation:fire(dt, self)
 		end),
 		RunService.PreRender:Connect(function(dt)
-			self.implementationLifecycles.onPreSimulation:fire(dt, self)
+			self.implementationLifecycles.onPreRender:fire(dt, self)
 		end),
 		RunService.PreAnimation:Connect(function(dt)
-			self.implementationLifecycles.onPreSimulation:fire(dt, self)
+			self.implementationLifecycles.onPreAnimation:fire(dt, self)
 		end),
 		self.instance.DescendantAdded:Connect(function(instance)
 			for _, mechanic in self:loadInstance(instance) do
