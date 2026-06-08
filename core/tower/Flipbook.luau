@@ -1,5 +1,4 @@
 local std = require "@libs/std"
-local tables = require "@libs/collections/tables"
 
 local Flipbook = std.Mechanic {}
 export type FlipbookMechanic = std.Mechanic<typeof(Flipbook)>
