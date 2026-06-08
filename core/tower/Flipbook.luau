@@ -21,6 +21,7 @@ Flipbook.Mode = Flipbook:attribute(
 	std.gt.enumOf<<Enum.ParticleFlipbookMode>>(Enum.ParticleFlipbookMode),
 	Enum.ParticleFlipbookMode.Loop
 )
+
 function Flipbook:onStart(flipbook: FlipbookMechanic)
 	flipbook.GridSize:onBind(flipbook, function(gridSize)
 		if flipbook.instance.ClassName == "ImageLabel" then
@@ -72,12 +73,10 @@ function Flipbook.onPreRender(self: typeof(Flipbook), deltaTime: number, level: 
 
         -- stylua: ignore
 		local position: Vector2 = 
-            if mode == Enum.ParticleFlipbookMode.Loop or mode == Enum.ParticleFlipbookMode.OneShot or mode == Enum.ParticleFlipbookMode.PingPong then
-                Vector2.new(newIndex % gridSize.X , math.floor(newIndex / gridSize.X))
-            elseif mode == Enum.ParticleFlipbookMode.Random then
+            if mode == Enum.ParticleFlipbookMode.Random then
                 Vector2.new(math.random(0, gridSize.X - 1), math.random(0, gridSize.Y - 1))
-            else
-                Vector2.zero
+			else
+                Vector2.new(newIndex % gridSize.X , math.floor(newIndex / gridSize.X))
 
 		if flipbook.instance.ClassName == "ImageLabel" then
 			flipbook.instance.Position = UDim2.fromScale(-position.X, -position.Y)
