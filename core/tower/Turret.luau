@@ -5,6 +5,7 @@ local std = require "@libs/std"
 local assets = require "@core/assets"
 local character = require "@libs/character"
 local damage = require "@libs/damage"
+local emission = require "@libs/emission"
 local gt = require "@roblox_packages/gt"
 local sounds = require "@libs/sounds"
 
@@ -12,16 +13,13 @@ local sounds = require "@libs/sounds"
 	@class Turret
 	@tag Mechanic
 
-	Turret makes the instance shoot bullets based on its current orientation.
-	
-	It can also, optionally, make a noise when shooting.
+	Turret continously shoot bullets based on its current orientation.
 ]=]
 local Turret = std.Mechanic {}
 export type TurretMechanic = std.Mechanic<typeof(Turret)>
 
 Turret.mechanicName = "Turret"
 Turret.instanceType = std.gt.instanceTree(std.isA.Model(), {
-	Base = std.isA.BasePart(),
 	Bullet = std.gt.instanceTree(std.isA.BasePart(), {
 		BulletAttachment = std.isA.Attachment(),
 		BulletAlignOrientation = std.isA.AlignOrientation(),
@@ -38,7 +36,6 @@ Turret.Speed = Turret:attribute("Speed", std.gt.positiveNumber, 25)
 Turret.Acceleration = Turret:attribute("Acceleration", std.gt.Vector3(), Vector3.zero)
 Turret.Lifetime = Turret:attribute("Lifetime", std.gt.positiveNumber, 2)
 Turret.DestroyOnTouch = Turret:attribute("DestroyOnTouch", std.gt.boolean(), true)
-Turret.IgnoreTag = Turret:attribute("IgnoreTag", std.gt.string(), "Ignore")
 
 Turret:attributeSection "Damage"
 Turret.Damage = damage.useAttributes(Turret)
@@ -54,8 +51,10 @@ Turret:attributeSection "Culling"
 Turret.Range = Turret:attribute("Range", std.gt.positiveNumber, 50)
 
 Turret:attributeSection "Tags"
-Turret.FireBasename = Turret:attribute("FireBasename", gt.string(), "TurretFire")
-Turret.ExpireBasename = Turret:attribute("ExpireBasename", gt.string(), "TurretExpire")
+Turret.IgnoreTag = Turret:attribute("IgnoreTag", std.gt.string(), "Turret: Ignore")
+Turret.EmitFireTag = Turret:attribute("EmitFireTag", gt.string(), "Turret: On Fire")
+Turret.EmitTouchTag = Turret:attribute("EmitTouchTag", gt.string(), "Turret: On Touch")
+Turret.EmitExpireTag = Turret:attribute("EmitExpireTag", gt.string(), "Turret: On Expire")
 
 Turret.cooldowns = {} :: { [Player]: number }
 
@@ -89,7 +88,7 @@ function Turret.calculateSpreadAngle(turret: TurretMechanic, direction: Vector3)
 	local spreadAngle: NumberRange = turret:SpreadAngle()
 
 	local directionCFrame = CFrame.new(Vector3.zero, direction)
-	local spreadDirection = CFrame.fromOrientation(0, 0, math.random() * math.pi * 2)
+	local spreadDirection = CFrame.fromOrientation(0, 0, math.random() * math.tau)
 	local spreadAngle =
 		CFrame.fromOrientation(math.rad(spreadAngle.Min + math.random() * (spreadAngle.Max - spreadAngle.Min)), 0, 0)
 
@@ -108,35 +107,31 @@ function Turret.fireBullet(turret: TurretMechanic, bulletTemplate: Part)
 		sounds.playInstance(turret.FireSound, instance, turret.instanceConfiguration, assets.sfx.tick)
 	end
 
-	for _, descendant in instance:GetDescendants() do
-		if descendant:HasTag "TurretFireParticle" and descendant:IsA "ParticleEmitter" then
-			descendant:Emit(descendant.Rate)
-		end
-	end
+	emission.emitTaggedDescendants(instance, turret:EmitFireTag())
 
 	local bulletLife = turret.life:extend()
 	local bulletInstance = bulletLife:add(bulletTemplate:Clone())
-
 	bulletInstance.Massless = true
 
-	local function cleanup()
+	local function cleanup(isTouch: boolean?)
+		emission.emitTaggedDescendants(
+			bulletInstance,
+			if isTouch then turret:EmitTouchTag() else turret:EmitExpireTag()
+		)
 		bulletLife:destroy()
 	end
 
 	local spawnCFrame: CFrame = primaryPart.CFrame
 	local spreadAngle = turret:calculateSpreadAngle(spawnCFrame.LookVector)
 
-	print(spreadAngle)
-
 	bulletInstance.CFrame = spawnCFrame
 
 	local mainAttachment = bulletInstance:FindFirstChildOfClass "Attachment"
 	local linearVelocity = bulletInstance:FindFirstChildOfClass "LinearVelocity"
+	local alignOrientation = bulletInstance:FindFirstChildOfClass "AlignOrientation"
 
-	if not mainAttachment or not linearVelocity then
-		cleanup()
-
-		return
+	if not mainAttachment or not linearVelocity or not alignOrientation then
+		return cleanup()
 	end
 
 	local finalCFrame = CFrame.lookAt(spawnCFrame.Position, spawnCFrame.Position + spreadAngle)
@@ -145,14 +140,6 @@ function Turret.fireBullet(turret: TurretMechanic, bulletTemplate: Part)
 	linearVelocity.VectorVelocity = finalCFrame.LookVector * turret:Speed()
 	linearVelocity.RelativeTo = Enum.ActuatorRelativeTo.World
 	linearVelocity.MaxForce = math.huge
-
-	local alignOrientation = bulletInstance:FindFirstChildOfClass "AlignOrientation"
-
-	if not alignOrientation then
-		cleanup()
-
-		return
-	end
 
 	alignOrientation.Attachment0 = mainAttachment
 	alignOrientation.CFrame = primaryPart.CFrame.Rotation
@@ -164,14 +151,12 @@ function Turret.fireBullet(turret: TurretMechanic, bulletTemplate: Part)
 		local destroyOnTouch = turret:DestroyOnTouch()
 		local validHit = turret:onTouch(hit)
 
-		if destroyOnTouch or validHit then
-			cleanup()
+		if destroyOnTouch and hit ~= turret.instance :: Instance or validHit then
+			-- cleanup(true)
 		end
 	end))
 
-	bulletLife:add(function()
-		task.delay(turret:Lifetime(), cleanup)
-	end)
+	bulletLife:delay(turret:Lifetime(), cleanup, nil)
 end
 
 function Turret.onStart(self: typeof(Turret), turret: TurretMechanic, level: std.Level)
@@ -184,8 +169,7 @@ function Turret.onStart(self: typeof(Turret), turret: TurretMechanic, level: std
 		return
 	end
 
-	local bulletTemplate = instance.Bullet
-
+	local bulletTemplate = turret.life:add(instance.Bullet)
 	bulletTemplate.Parent = nil
 
 	turret.life:spawn(function()

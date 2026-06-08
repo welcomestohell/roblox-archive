@@ -1,27 +1,26 @@
+local LogService = game:GetService "LogService"
 local ReplicatedStorage = game:GetService "ReplicatedStorage"
 local RunService = game:GetService "RunService"
 local ServerScriptService = game:GetService "ServerScriptService"
 
-local Log = require "@libs/Log"
 local prvd = require "@prvdmwrong/prvdmwrong"
 local rbxLifecycles = require "@prvdmwrong/rbx-lifecycles"
 
-local log = Log.new(script)
 prvd.hooks.onProviderUsed(function(_, provider)
-	log:debug("Used provider", tostring(provider))
+	LogService:Info(`Used provider {tostring(provider)}`)
 end)
 
 prvd.hooks.onLifecycleUsed(function(_, lifecycle)
-	log:debug("Used lifecycle", tostring(lifecycle))
+	LogService:Info(`Used lifecycle {tostring(lifecycle)}`)
 end)
 
 local root = prvd.root()
 	:useProvider(rbxLifecycles :: any)
 	:willStart(function()
-		log:debug "Starting up!"
+		LogService:Info("Starting up!", { source = script:GetFullName() })
 	end)
 	:willFinish(function()
-		log:debug "Finishing up!"
+		LogService:Info "Finishig up!"
 	end)
 
 local function useProvidersFromMembers(memberParent: Instance)

@@ -67,11 +67,11 @@ function Life.delay<A...>(self: Life, duration: number, fn: (A...) -> (), ...: A
 	if self.destroyed then
 		return nil
 	end
-	local thread = task.delay(duration, function(...)
+	local thread = task.delay(duration, function(fn, ...)
 		if self.destroyed == false then
 			fn(...)
 		end
-	end, ...)
+	end, fn, ...)
 	return self:add(thread)
 end
 
