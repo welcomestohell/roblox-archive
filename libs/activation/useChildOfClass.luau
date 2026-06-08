@@ -1,5 +1,5 @@
 local createChildOfClass = require "./createChildOfClass"
-local log = require "./log"
+local logger = require "@core/shared/logger"
 -- local roblox = require("@core/shared/generated/types/roblox")
 local types = require "./types"
 
@@ -16,7 +16,7 @@ local function useChildOfClass(context: types.ActivationContext, childName: stri
 			return child :: any
 		end
 
-		log:warn(`\
+		logger:Warn(`\
 			While binding activation, expected child "{childName}" of {context.instance:GetFullName()} to be a \
 			{childClass}, but got {child.Name}.\
 		`)

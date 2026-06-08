@@ -6,8 +6,8 @@ local TeleportService = game:GetService "TeleportService"
 local Workspace = game:GetService "Workspace"
 
 local Level = require "@libs/core/Level"
-local Log = require "@libs/Log"
 local PlayerInstanceLoader = require "@core/server/PlayerInstanceLoader"
+local logger = require "@core/shared/logger"
 local net = require "@kit/server/generated/net"
 local prvd = require "@prvdmwrong/prvdmwrong"
 
@@ -23,7 +23,6 @@ local DEFAULTS: { [Instance]: { [string]: unknown } } = {
 
 local KitServerProvider = {}
 export type KitServerProvider = typeof(KitServerProvider)
-KitServerProvider.log = Log.new(KitServerProvider)
 KitServerProvider.decorationsLoader = PlayerInstanceLoader.new(15)
 KitServerProvider.mechanicLoader = PlayerInstanceLoader.new(15)
 
@@ -66,7 +65,7 @@ function KitServerProvider.onStart(self: KitServerProvider)
 		for property, expectedValue in defaults do
 			local realValue = (instance :: any)[property]
 			if realValue ~= expectedValue then
-				self.log:warn(`To align with Welcome To Hell, {instance}.{property} has been set to {realValue}.`);
+				logger:Warn(`To align with Welcome To Hell, {instance}.{property} has been set to {realValue}.`);
 				(instance :: any)[property] = expectedValue
 			end
 		end
@@ -82,12 +81,11 @@ function KitServerProvider.onStart(self: KitServerProvider)
 			return
 		end
 
-		print(invalidCause)
-		self.log:error("Got invalid tower", tower:GetFullName(), "because:", invalidCause:formatErr())
+		logger:Error("Got invalid tower", tower:GetFullName(), "because:", invalidCause:formatErr())
 		return
 	end
 
-	self.log:error(NO_TOWER_ERROR)
+	logger:Error(NO_TOWER_ERROR)
 end
 
 return prvd(KitServerProvider)

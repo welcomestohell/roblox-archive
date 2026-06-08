@@ -2,8 +2,8 @@ local ReplicatedStorage = game:GetService "ReplicatedStorage"
 
 local Level = require "@libs/core/Level"
 local Life = require "@libs/memory/Life"
-local Log = require "@libs/Log"
 local Promise = require "@roblox_packages/Promise"
+local logger = require "@core/shared/logger"
 -- local audios = require "@core"
 local character = require "@libs/character"
 local net = require "@kit/client/generated/net"
@@ -12,7 +12,6 @@ local sounds = require "@libs/sounds"
 
 local KitClientProvider = {}
 export type KitClientProvider = typeof(KitClientProvider)
-KitClientProvider.log = Log.new(KitClientProvider)
 
 function KitClientProvider.constructor(self: KitClientProvider)
 	self.life = Life.new()
@@ -24,19 +23,19 @@ end
 
 function KitClientProvider.onStart(self: KitClientProvider)
 	if not game:IsLoaded() then
-		self.log:trace "Waiting for game to finish loading"
+		logger:Debug "Waiting for game to finish loading"
 		game.Loaded:Wait()
 	end
 
 	-- sounds.useAssets(audios :: any)
-	self.log:trace("Loaded audios from assets:", sounds.assetPaths)
+	logger:Debug("Loaded audios from assets:", sounds.assetPaths)
 	task.spawn(sounds.preloadAssets)
 
 	local tower = net.getTower.invoke():expect()
 
 	local existingMechanics = tower:FindFirstChild "Mechanic"
 	if existingMechanics then
-		self.log:trace "Removing existing mechanics"
+		logger:Debug "Removing existing mechanics"
 		existingMechanics:Destroy()
 	end
 
@@ -47,23 +46,22 @@ function KitClientProvider.onStart(self: KitClientProvider)
 	local levelResult = Level.new(self.life, tower.Name, tower)
 	levelResult:match({
 		Ok = function(level: Level.Level)
-			self.log:trace "Starting kit..."
+			logger:Debug "Starting kit..."
 			character.getCharacter():PivotTo(level.instance.Spawn.CFrame)
 			level:start()
-			self.log:info "Kit has started!"
-			self.log:debug("LEVEL DUMP:", level.mechanicLifecycles)
+			logger:Info "Kit has started!"
 		end,
 		Err = function(e)
 			if e.id == "invalidInstance" then
-				self.log:error("Invalid kit instance client-side:", e.cause:formatErr())
+				logger:Error("Invalid kit instance client-side:", e.cause:formatErr())
+			else
+				logger:Error("Unknown error while initializing kit:", e)
 			end
-			self.log:error("Unknown error while initializing kit:", e)
 		end,
 	} :: any)
 end
 
 function KitClientProvider.onFinish(self: KitClientProvider)
-	self.log:trace "Cleaning up!"
 	self.life:destroy()
 end
 

@@ -1,4 +1,4 @@
-local Log = require "@libs/Log"
+local logger = require "@core/shared/logger"
 
 export type DestroyableClass = {
 	[any]: any,
@@ -18,8 +18,6 @@ local DESTRUCTORS = {
 	"disconnect",
 }
 
-local log = Log.new(script)
-
 local function destroy(x: any)
 	if typeof(x) == "Instance" then
 		x:Destroy()
@@ -33,7 +31,7 @@ local function destroy(x: any)
 		if coroutine.status(co) ~= "dead" then
 			local source, line, name = debug.info(x :: () -> (), "sln")
 			name = name == "" or name == nil and "Anonymous function" or "Function " .. name :: string
-			log:error(name, "from line", line, "of", source, "attempted to yield during cleanup")
+			logger:Error(name, "from line", line, "of", source, "attempted to yield during cleanup")
 		end
 	elseif type(x) == "table" then
 		for _, method in DESTRUCTORS do

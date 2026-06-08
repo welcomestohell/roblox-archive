@@ -1,5 +1,5 @@
-local Log = require "@libs/Log"
 local gt = require "@roblox_packages/gt"
+local logger = require "@core/shared/logger"
 local tables = require "@libs/collections/tables"
 local threadpool = require "@libs/threadpool"
 
@@ -23,8 +23,6 @@ export type AttributeValue =
 -- LUAU FIXME: Can't require the Mechanic class due to cyclic dependencies, so
 -- we specify a proxy type.
 export type ResolvableInstance = unknown
-
-local log = Log.new "Attribute"
 
 local Attribute = {}
 Attribute.__index = Attribute
@@ -105,9 +103,8 @@ local function fetchAttribute(self: Attribute<unknown>, instance: Instance)
 
 		if not isValid then
 			if value ~= nil then
-				log:warn(
-					"Instance",
-					instance,
+				logger:Warn(
+					instance:GetFullName(),
 					"has invalid value set for attribute named",
 					string.format("%q", self.attribute) .. ": ",
 					invalidCause

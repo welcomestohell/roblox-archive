@@ -7,6 +7,7 @@ local character = require "@libs/character"
 local damage = require "@libs/damage"
 local emission = require "@libs/emission"
 local gt = require "@roblox_packages/gt"
+local logger = require "@core/shared/logger"
 local sounds = require "@libs/sounds"
 
 --[=[
@@ -164,8 +165,7 @@ function Turret.onStart(self: typeof(Turret), turret: TurretMechanic, level: std
 	local primaryPart = instance.PrimaryPart
 
 	if not primaryPart then
-		turret.log:error("Turret", instance:GetFullName(), "is missing the PrimaryPart.")
-
+		logger:Error("Turret", instance:GetFullName(), "is missing the PrimaryPart.")
 		return
 	end
 

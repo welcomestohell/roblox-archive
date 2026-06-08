@@ -1,5 +1,6 @@
 local assets = require "@core/assets"
 local character = require "@libs/character"
+local logger = require "@core/shared/logger"
 local sounds = require "@libs/sounds"
 local std = require "@libs/std"
 local teleport = require "@libs/teleport"
@@ -65,11 +66,8 @@ function Teleporter.onActivate(self: typeof(Teleporter), teleporter: TeleporterM
 	math.randomseed(os.clock())
 	local targetDestination = groupInstances[if len == 1 then 1 else math.random(1, len)]
 	if not targetDestination:IsA "BasePart" then
-		return teleporter.log:warn(
-			"Expected teleporter destination",
-			targetDestination:GetFullName(),
-			"to be a BasePart"
-		)
+		logger:Warn("Expected teleporter destination", targetDestination:GetFullName(), "to be a BasePart")
+		return
 	end
 
 	if self.Sound.Play(teleporter) then

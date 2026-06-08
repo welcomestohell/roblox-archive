@@ -1,7 +1,6 @@
 local HttpService = game:GetService "HttpService"
 
 local Life = require "@libs/memory/Life"
-local Log = require "@libs/Log"
 local Mechanic = require "@libs/core/Mechanic"
 local Result = require "@libs/Result"
 local gt = require "@libs/gt"
@@ -49,7 +48,6 @@ local function mechanize<Self>(
 		instance = instance,
 		instanceConfiguration = instanceConfiguration,
 	}, implementation._proxy)
-	mechanic.log = Log.new(mechanic)
 
 	return Result.Ok(mechanic)
 end

@@ -4,8 +4,8 @@ local StarterPlayer = game:GetService "StarterPlayer"
 local Workspace = game:GetService "Workspace"
 
 local Level = require "@libs/core/Level"
-local Log = require "@libs/Log"
 local PlayerInstanceLoader = require "@core/server/PlayerInstanceLoader"
+local logger = require "@core/shared/logger"
 local net = require "@chapter/server/generated/net"
 local prvd = require "@prvdmwrong/prvdmwrong"
 
@@ -16,7 +16,6 @@ local DEFAULTS: { [Instance]: { [string]: unknown } } = {
 
 local LevelProvider = {}
 export type KitServerProvider = typeof(LevelProvider)
-LevelProvider.log = Log.new(LevelProvider)
 LevelProvider.decorationsLoader = PlayerInstanceLoader.new(15)
 LevelProvider.mechanicLoader = PlayerInstanceLoader.new(15)
 
@@ -40,7 +39,7 @@ function LevelProvider.onStart(self: KitServerProvider)
 	local isValid, invalidCause = Level.LevelInstance:matches(Workspace)
 
 	if not isValid then
-		self.log:error("Invalid chapter workspace:", invalidCause:formatErr())
+		logger:Error("Invalid chapter workspace:", invalidCause:formatErr())
 	end
 
 	local mechanics, _decorations = storeOrDefault(Workspace, "Mechanics"), storeOrDefault(Workspace, "Decorations")

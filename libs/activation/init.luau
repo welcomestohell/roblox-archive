@@ -2,7 +2,7 @@ local Result = require "@libs/Result"
 local createChildOfClass = require "@self/createChildOfClass"
 local functions = require "@libs/functions"
 local gt = require "@libs/gt"
-local log = require "@self/log"
+local logger = require "@core/shared/logger"
 local types = require "@self/types"
 local useAttributes = require "@self/useAttributes"
 local useChildOfClass = require "@self/useChildOfClass"
@@ -89,7 +89,7 @@ local function bindActivation(bindContext: BindContext)
 		if context.attributes.Enabled(context.instanceConfiguration) then
 			local result = activate(context)
 			if result:isErr() then
-				log:warn(
+				logger:Warn(
 					"Failed to bind activation for",
 					context.instance:GetFullName(),
 					"because:",

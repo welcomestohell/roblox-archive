@@ -1,8 +1,5 @@
 local Attribute = require "@libs/Attribute"
 local Life = require "@libs/memory/Life"
-local Log = require "@libs/Log"
-local objects = require "@libs/collections/objects"
-local tables = require "@libs/collections/tables"
 local types = require "@libs/types"
 
 export type AttributeSection = {
@@ -17,7 +14,6 @@ export type MechanicImplementationMetadata = {
 
 export type Mechanic<Implementation = any, Mixin = {}> = Implementation & Mixin & {
 	life: Life.Life,
-	log: Log.Log,
 	id: string,
 	implementation: Implementation,
 	instance: index<Implementation, "instanceType">,

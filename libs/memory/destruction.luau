@@ -1,10 +1,10 @@
 local Log = require "@libs/Log"
 local functions = require "@libs/functions"
+local logger = require "@core/shared/logger"
 
 -- LUAU: Destroyable is set to any so types using Destroyable are readable
 export type Destroyable = any
 
-local log = Log.new(script)
 local destructorMethods = {
 	"Destroy",
 	"destroy",
@@ -27,7 +27,7 @@ local typeDestructors: { [string]: (any) -> () } = {
 		if coroutine.status(co) ~= "dead" then
 			local source, line, name = debug.info(fn, "sln")
 			name = name == "" or name == nil and "Anonymous function" or "Function " .. name :: string
-			log:error(name, "from line", line, "of", source, "attempted to yield during cleanup")
+			logger:Error(name, "from line", line, "of", source, "attempted to yield during cleanup")
 		end
 	end,
 

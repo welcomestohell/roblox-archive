@@ -40,7 +40,7 @@ Sift = { wally = "csqrl/sift", version = "^0.0.11" }
 Lyra = { wally = "paradoxum-games/lyra", version = "^0.6.0" }
 CharmSync = { wally = "littensy/charm-sync", version = "^0.4.0-rc.7" }
 typeforge = { wally = "cameronpcampbell/typeforge", version = "^3.0.4" }
-Log = { name = "realthx1/luaulog", version = "^0.3.0" }
+Log = { name = "realthx1/luaulog", version = "^0.3.0", wally = "realthx1/luaulog" }
 Fluid = { wally = "godmothersfire/fluid", version = "^0.6.41" }
 Ripple = { wally = "littensy/ripple", version = "^0.10.2" }
 

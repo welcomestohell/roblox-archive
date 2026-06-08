@@ -1,5 +1,4 @@
 local AccountStore = require "./AccountStore"
-local Log = require "@libs/Log"
 local PlayerStore = require "./PlayerStore"
 local objects = require "@libs/collections/objects"
 local prvd = require "@prvdmwrong/prvdmwrong"
@@ -8,7 +7,6 @@ type Account = AccountStore.Account
 
 local AccountProvider = {}
 export type AccountProvider = typeof(AccountProvider)
-AccountProvider.log = Log.new(AccountProvider)
 
 function AccountProvider.setGold(self: AccountProvider, player: Player, operator: "add" | "subtract", amount: number)
 	return PlayerStore:updateImmutable(player, function(account: Account)

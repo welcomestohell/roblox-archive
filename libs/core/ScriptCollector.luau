@@ -1,8 +1,6 @@
-local Log = require "@libs/Log"
 local Mechanic = require "@libs/core/Mechanic"
 local Promise = require "@roblox_packages/Promise"
-
-local log = Log.new(script)
+local logger = require "@core/shared/logger"
 
 --[=[
     @class ScriptCollector
@@ -90,7 +88,7 @@ end
 function ScriptCollector.collectModuleScript(self: ScriptCollector, instance: ModuleScript)
 	local requireSucess, requiredOrError = pcall(require, instance)
 	if not requireSucess then
-		log:error("Module", instance:GetFullName(), "failed to be required:", requiredOrError)
+		logger:Error("Module", instance:GetFullName(), "failed to be required:", requiredOrError)
 	end
 
 	if Mechanic.isMechanicImplementation(requiredOrError) then
@@ -98,13 +96,14 @@ function ScriptCollector.collectModuleScript(self: ScriptCollector, instance: Mo
 		implementation.mechanicName = implementation.mechanicName or instance.Name
 
 		if self.mechanicImplementationByName[implementation.mechanicName] then
-			return log:error(
+			logger:Error(
 				"Cannot collect mechanic implementation",
 				instance:GetFullName(),
 				"as it's instance tag",
 				implementation.mechanicName,
 				"is already registered; are you trying to `:override()` a mechanic?"
 			)
+			return
 		end
 
 		table.insert(self.mechanicImplementations, implementation)
