@@ -6,11 +6,12 @@ Conveyor.mechanicName = "Conveyor"
 Conveyor.instanceType = std.isA.BasePart()
 Conveyor.debuggerEmoji = "🛣️"
 
+Conveyor.Enabled = Conveyor:attribute("Enabled", std.gt.boolean(), true)
 Conveyor.Speed = Conveyor:attribute("Speed", std.gt.positiveNumber, 0)
 Conveyor.SynchronizeBeams = Conveyor:attribute("SynchronizeBeams", std.gt.boolean(), false)
 
 function Conveyor:onPreSimulation(deltaTime: number, level: std.Level)
-	for _, conveyor in level:getMechanics(Conveyor) do
+	for _, conveyor: ConveyorMechanic in level:getMechanics(Conveyor) do
 		local speed: number = conveyor:Enabled() and conveyor:Speed() or 0
 		conveyor.instance.AssemblyLinearVelocity = conveyor.instance.CFrame.LookVector * speed
 
