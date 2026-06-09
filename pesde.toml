@@ -43,6 +43,7 @@ typeforge = { wally = "cameronpcampbell/typeforge", version = "^3.0.4" }
 Log = { name = "realthx1/luaulog", version = "^0.3.0", wally = "realthx1/luaulog" }
 Fluid = { wally = "godmothersfire/fluid", version = "^0.6.41" }
 Ripple = { wally = "littensy/ripple", version = "^0.10.2" }
+CullThrottle = { repo = "welcomestohell/cull-throttle", rev = "08587e8cdda407c0979bfbcca45564c876802dd7" }
 
 [patches]
 "corecii/greentea" = { "0.4.11 roblox" = "patches/corecii+greentea-0.4.11+roblox.patch" }

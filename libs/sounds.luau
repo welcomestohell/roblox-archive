@@ -2,7 +2,6 @@ local ContentProvider = game:GetService "ContentProvider"
 local Debris = game:GetService "Debris"
 local SoundService = game:GetService "SoundService"
 
-local Attribute = require "@libs/attributes/Attribute"
 local Mechanic = require "@libs/core/Mechanic"
 const resolveInstance = require "@libs/core/resolveInstance"
 local audios = { sfx = {} } --require("@core/shared/generated/audios")
@@ -117,7 +116,9 @@ local function playInstance(
 	return sound
 end
 
-local function playMechanic(attributes: SoundAttributes, mechanic: Mechanic.Mechanic<any>, fallbackId: string?)
+-- FIXME: Mechanic<any> type doesn't work in practice ???
+-- local function playMechanic(attributes: SoundAttributes, mechanic: Mechanic.Mechanic, fallbackId: string?)
+local function playMechanic(attributes: SoundAttributes, mechanic: any, fallbackId: string?)
 	return playInstance(attributes, mechanic.instance, mechanic.instanceConfiguration or mechanic.instance, fallbackId)
 end
 

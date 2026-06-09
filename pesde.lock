@@ -163,6 +163,19 @@ luau_lsp = [{ name = "pesde/luau_lsp", version = "^1.55.0", index = "https://git
 selene = [{ name = "pesde/selene", version = "^0.29.0", index = "https://github.com/pesde-pkg/index", target = "lune" }, "dev"]
 stylua = [{ name = "pesde/stylua", version = "^2.3.0", index = "https://github.com/pesde-pkg/index", target = "lune" }, "dev"]
 
+[graph."welcomestohell/cull_throttle@0.0.0-1bf46e124a3b66b1ad0d5489b85e969f0656a7ea roblox"]
+direct = ["CullThrottle", { repo = "https://github.com/welcomestohell/cull-throttle", rev = "08587e8cdda407c0979bfbcca45564c876802dd7" }, "standard"]
+
+[graph."welcomestohell/cull_throttle@0.0.0-1bf46e124a3b66b1ad0d5489b85e969f0656a7ea roblox".pkg_ref]
+ref_ty = "git"
+repo = "https://github.com/welcomestohell/cull-throttle"
+tree_id = "1bf46e124a3b66b1ad0d5489b85e969f0656a7ea"
+new_structure = true
+
+[graph."welcomestohell/cull_throttle@0.0.0-1bf46e124a3b66b1ad0d5489b85e969f0656a7ea roblox".pkg_ref.dependencies]
+rojo = [{ name = "pesde/rojo", version = "^7.5.1", index = "https://github.com/pesde-pkg/index", target = "lune" }, "dev"]
+scripts = [{ name = "pesde/scripts_rojo", version = "^0.2.0", index = "https://github.com/pesde-pkg/index", target = "lune" }, "dev"]
+
 [graph."wally#cameronpcampbell/typeforge@3.0.4 roblox"]
 direct = ["typeforge", { wally = "wally#cameronpcampbell/typeforge", version = "^3.0.4", index = "default" }, "standard"]
 

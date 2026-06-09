@@ -56,7 +56,6 @@ local gt = {
 	typeof = GreenTea.typeof,
 	UDim = GreenTea.UDim,
 	UDim2 = GreenTea.UDim2,
-	union = GreenTea.union,
 	unknown = GreenTea.unknown,
 	userdata = GreenTea.userdata,
 	vararg = GreenTea.vararg,
@@ -73,6 +72,19 @@ local gt = {
 	union3 = GreenTea.union :: <T1, T2, T3>(T1, T2, T3) -> T1 | T2 | T3,
 	union4 = GreenTea.union :: <T1, T2, T3, T4>(T1, T2, T3, T4) -> T1 | T2 | T3 | T4,
 	union5 = GreenTea.union :: <T1, T2, T3, T4, T5>(T1, T2, T3, T4, T5) -> T1 | T2 | T3 | T4 | T5,
+	union6 = GreenTea.union :: <T1, T2, T3, T4, T5, T6>(T1, T2, T3, T4, T5, T6) -> T1 | T2 | T3 | T4 | T5 | T6,
+	union7 = GreenTea.union :: <T1, T2, T3, T4, T5, T6, T7>(T1, T2, T3, T4, T5, T6, T7) -> T1 | T2 | T3 | T4 | T5 | T6 | T7,
+
+	-- stylua: ignore
+	union = GreenTea.union ::
+		& (<T1, T2>(T1, T2) -> T1 | T2)
+		& (<T1, T2, T3>(T1, T2, T3) -> T1 | T2 | T3)
+		& (<T1, T2, T3, T4>(T1, T2, T3, T4) -> T1 | T2 | T3 | T4)
+		& (<T1, T2, T3, T4, T5>(T1, T2, T3, T4, T5) -> T1 | T2 | T3 | T4 | T5)
+		& (<T1, T2, T3, T4, T5, T6>(T1, T2, T3, T4, T5, T6) -> T1 | T2 | T3 | T4 | T5 | T6)
+		& (<T1, T2, T3, T4, T5, T6, T7>(T1, T2, T3, T4, T5, T6, T7) -> T1 | T2 | T3 | T4 | T5 | T6 | T7)
+		& (<T1, T2, T3, T4, T5, T6, T7, T8>(T1, T2, T3, T4, T5, T6, T7, T8) -> T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8)
+,
 }
 
 local function instanceTree(treeOrParent: any, tree: any): GreenTea.Type
@@ -121,7 +133,7 @@ function gt.unionLiterals(...: any): any
 	for index = 1, len do
 		components[index] = gt.literal(select(index, ...))
 	end
-	return gt.union(table.unpack(components, 1, len))
+	return (gt.union :: any)(table.unpack(components, 1, len))
 end
 
 gt.positiveNumber = gt.constrainNumberExclusive(0)

@@ -1,52 +1,82 @@
--- local gt = require "@libs/gt"
--- local tables = require "@libs/collections/tables"
+const Attribute = require "@libs/attributes/Attribute"
+const resolveInstance = require "@libs/core/resolveInstance"
 
--- local AttributeMap = {}
--- AttributeMap.__index = AttributeMap
+local AttributeMap = {}
+AttributeMap.__index = AttributeMap
 
--- export type AttributeMap<T> = setmetatable<{
--- 	pattern: string,
--- 	expectedType: T,
--- 	_instances: { [Instance]: { [string]: T } },
+export type AttributeMap<T> = setmetatable<{
+	prefix: string,
+	attributes: { [string]: Attribute.Attribute<any> },
+}, typeof(AttributeMap)>
 
--- 	_fetchListeners: { [(key: string, value: T, map: AttributeMap<T>) -> ()]: true },
--- 	_changeListeners: { [(key: string, value: T, map: AttributeMap<T>) -> ()]: true },
--- }, typeof(AttributeMap)>
+local function getAttribute(self: AttributeMap<any>, key: string): Attribute.Attribute<any>
+	local attr = self.attributes[key]
 
--- function AttributeMap.new<T>(pattern: string, expectedType: T): AttributeMap<T>
--- 	return setmetatable({
--- 		pattern = pattern,
--- 		expectedType = gt.build(expectedType),
--- 		_instances = tables.weak "k",
--- 	}, AttributeMap)
--- end
+	if not attr then
+		attr = Attribute.new(self.prefix .. key, nil, nil)
 
--- function AttributeMap.fromPrefix(prefix: string, expectedType: gt.Type)
--- 	return AttributeMap.new(`^{prefix}_(%w+)`, expectedType)
--- end
+		self.attributes[key] = attr
+	end
 
--- function AttributeMap.peek<T>(self: AttributeMap<T>, instance: Instance) end
+	return attr
+end
 
--- function AttributeMap.fetch<T>(self: AttributeMap<T>, instance: Instance) end
+function AttributeMap.new<T>(prefix: string): AttributeMap<T>
+	return setmetatable({
+		prefix = prefix,
+		attributes = {},
+	}, AttributeMap)
+end
 
--- function AttributeMap.get<T>(self: AttributeMap<T>, instance: Instance): { [string]: T }
--- 	return {}
--- end
+function AttributeMap.type<T>(_: AttributeMap<T>): T
+	error "This function is undefined, and should only be used in type definitions: `typeof(attributeMap:type())`"
+end
 
--- function AttributeMap.index<T>(self: AttributeMap<T>, instance: Instance, key: string) end
+function AttributeMap.isAttributeMap(x: any)
+	return type(x) == "table" and getmetatable(x) == AttributeMap
+end
 
--- function AttributeMap.getOrSet<T>(self: AttributeMap<T>, instance: Instance, key: string) end
+function AttributeMap.get<T>(self: AttributeMap<T>, instance: resolveInstance.InstanceLike, key: string): T
+	local attribute = getAttribute(self, key)
 
--- function AttributeMap.clear<T>(self: AttributeMap<T>, instance: Instance) end
+	return attribute:get(instance)
+end
 
--- function AttributeMap.set<T>(self: AttributeMap<T>, key: string) end
+function AttributeMap.getAll<T>(self: AttributeMap<T>, instance: resolveInstance.InstanceLike): T
+	local resolved = resolveInstance(instance)
+	local prefixLen = #self.prefix
+	local result = {}
 
--- function AttributeMap.onFetch<T>(self: AttributeMap<T>, listener: (key: string, map: { [string]: T }) -> ()) end
+	for attrName, value in resolved:GetAttributes() do
+		if string.sub(attrName, 1, prefixLen) == self.prefix then
+			local key = string.sub(attrName, prefixLen + 1)
 
--- function AttributeMap.onChange<T>(self: AttributeMap<T>, listener: (key: string, map: { [string]: T }) -> ()) end
+			result[key] = value
+		end
+	end
 
--- function AttributeMap.onBind<T>(self: AttributeMap<T>, listener: (key: string, map: { [string]: T }) -> ()) end
+	return result :: any
+end
 
--- AttributeMap.__call = AttributeMap.get
+function AttributeMap.set<T>(self: AttributeMap<T>, instance: resolveInstance.InstanceLike, key: string, value: any)
+	local attribute = getAttribute(self, key)
 
--- return AttributeMap
+	attribute:set(instance, value)
+end
+
+function AttributeMap.onChange<T>(
+	self: AttributeMap<T>,
+	instance: resolveInstance.InstanceLike,
+	key: string,
+	listener: (value: any) -> ()
+): () -> ()
+	local attr = getAttribute(self, key)
+
+	return attr:onChange(instance, listener)
+end
+
+function AttributeMap.__tostring<T>(self: AttributeMap<T>)
+	return `AttributeMap("{self.prefix}")`
+end
+
+return AttributeMap

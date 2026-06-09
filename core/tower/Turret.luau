@@ -1,14 +1,11 @@
-local Players = game:GetService "Players"
-
-local std = require "@libs/std"
-
 local assets = require "@core/assets"
-local character = require "@libs/character"
 local damage = require "@libs/damage"
 local emission = require "@libs/emission"
-local gt = require "@roblox_packages/gt"
 local logger = require "@core/shared/logger"
+const Level = require "@libs/core/Level"
 local sounds = require "@libs/sounds"
+local std = require "@libs/std"
+const touch = require "@libs/touch"
 
 --[=[
 	@class Turret
@@ -38,9 +35,10 @@ Turret.Acceleration = Turret:attribute("Acceleration", std.gt.Vector3(), Vector3
 Turret.Lifetime = Turret:attribute("Lifetime", std.gt.positiveNumber, 2)
 Turret.DestroyOnTouch = Turret:attribute("DestroyOnTouch", std.gt.boolean(), true)
 
+-- TODO: implement damage
 Turret:attributeSection "Damage"
 Turret.Damage = damage.useAttributes(Turret)
-Turret.Cooldown = Turret:attribute("Cooldown", std.gt.positiveNumber, 0.5)
+Turret.DamageCooldown = Turret:attribute("DamageCooldown", std.gt.positiveNumber, 0.5)
 
 Turret:attributeSection "Spread Angle"
 Turret.SpreadAngle = Turret:attribute("SpreadAngle", std.gt.NumberRange, NumberRange.new(0, 0))
@@ -48,42 +46,14 @@ Turret.SpreadAngle = Turret:attribute("SpreadAngle", std.gt.NumberRange, NumberR
 Turret:attributeSection "Sound"
 Turret.FireSound = sounds.useAttributes(Turret, "FireSound")
 
-Turret:attributeSection "Culling"
-Turret.Range = Turret:attribute("Range", std.gt.positiveNumber, 50)
+Turret:attributeSection "Touch"
+Turret.Touch = std.useTouch(Turret)
 
 Turret:attributeSection "Tags"
 Turret.IgnoreTag = Turret:attribute("IgnoreTag", std.gt.string(), "Turret: Ignore")
-Turret.EmitFireTag = Turret:attribute("EmitFireTag", gt.string(), "Turret: On Fire")
-Turret.EmitTouchTag = Turret:attribute("EmitTouchTag", gt.string(), "Turret: On Touch")
-Turret.EmitExpireTag = Turret:attribute("EmitExpireTag", gt.string(), "Turret: On Expire")
-
-Turret.cooldowns = {} :: { [Player]: number }
-
-function Turret.onTouch(turret: TurretMechanic, hit: BasePart): boolean
-	if not hit or not hit.Parent or not character.isFromMaybeCharacter(hit) then
-		return false
-	end
-
-	local player = character.getPlayerFromHit(hit)
-
-	if not player then
-		return false
-	end
-
-	local turretDamage, turretCooldown = turret:Damage(), turret:Cooldown()
-	local cooldowns = turret.cooldowns
-
-	local now = os.clock()
-
-	if cooldowns[player] and cooldowns[player] > now then
-		return false
-	end
-
-	cooldowns[player] = now + turretCooldown
-	damage.damagePlayer(player, turretDamage)
-
-	return true
-end
+Turret.EmitFireTag = Turret:attribute("EmitFireTag", std.gt.string(), "Turret: On Fire")
+Turret.EmitTouchTag = Turret:attribute("EmitTouchTag", std.gt.string(), "Turret: On Touch")
+Turret.EmitExpireTag = Turret:attribute("EmitExpireTag", std.gt.string(), "Turret: On Expire")
 
 function Turret.calculateSpreadAngle(turret: TurretMechanic, direction: Vector3): Vector3
 	local spreadAngle: NumberRange = turret:SpreadAngle()
@@ -96,7 +66,7 @@ function Turret.calculateSpreadAngle(turret: TurretMechanic, direction: Vector3)
 	return (directionCFrame * spreadDirection * spreadAngle).LookVector
 end
 
-function Turret.fireBullet(turret: TurretMechanic, bulletTemplate: Part)
+function Turret.fireBullet(turret: TurretMechanic, bulletTemplate: BasePart)
 	local instance = turret.instance
 	local primaryPart = instance.PrimaryPart
 
@@ -112,7 +82,6 @@ function Turret.fireBullet(turret: TurretMechanic, bulletTemplate: Part)
 
 	local bulletLife = turret.life:extend()
 	local bulletInstance = bulletLife:add(bulletTemplate:Clone())
-	bulletInstance.Massless = true
 
 	local function cleanup(isTouch: boolean?)
 		emission.emitTaggedDescendants(
@@ -125,7 +94,8 @@ function Turret.fireBullet(turret: TurretMechanic, bulletTemplate: Part)
 	local spawnCFrame: CFrame = primaryPart.CFrame
 	local spreadAngle = turret:calculateSpreadAngle(spawnCFrame.LookVector)
 
-	bulletInstance.CFrame = spawnCFrame
+	bulletInstance.Massless = true
+	bulletInstance:PivotTo(spawnCFrame)
 
 	local mainAttachment = bulletInstance:FindFirstChildOfClass "Attachment"
 	local linearVelocity = bulletInstance:FindFirstChildOfClass "LinearVelocity"
@@ -148,12 +118,18 @@ function Turret.fireBullet(turret: TurretMechanic, bulletTemplate: Part)
 	bulletInstance.Anchored = false
 	bulletInstance.Parent = instance
 
-	bulletLife:add(bulletInstance.Touched:Connect(function(hit)
+	bulletLife:add(bulletInstance.Touched:Connect(function(toucher)
 		local destroyOnTouch = turret:DestroyOnTouch()
-		local validHit = turret:onTouch(hit)
+		local isTouched = destroyOnTouch
+			and not toucher:IsDescendantOf(turret.instance)
+			and not toucher:HasTag(turret:IgnoreTag())
+			and (
+				toucher.CanCollide
+				or touch.isToucherValid(turret.Touch, turret.instance, turret.instanceConfiguration, toucher)
+			)
 
-		if destroyOnTouch and hit ~= turret.instance :: Instance or validHit then
-			-- cleanup(true)
+		if isTouched then
+			cleanup(true)
 		end
 	end))
 
@@ -169,24 +145,19 @@ function Turret.onStart(self: typeof(Turret), turret: TurretMechanic, level: std
 		return
 	end
 
+	-- Turret is already loaded by the time this is called. We add the tag here
+	-- so spawned bullets don't automatically load until we're done intializing
+	-- them.
+	turret.instance:AddTag(Level.DO_NOT_LOAD_TAG)
+
 	local bulletTemplate = turret.life:add(instance.Bullet)
 	bulletTemplate.Parent = nil
+	bulletTemplate:AddTag "Bullet"
 
 	turret.life:spawn(function()
-		while turret.life.destroyed == false do
-			local firerate = turret:Firerate()
-			local enabled = turret:Enabled()
-
-			task.wait(1 / firerate)
-
-			if not enabled then
-				continue
-			end
-
-			local distance = Players.LocalPlayer:DistanceFromCharacter(primaryPart.Position)
-			local range = turret:Range()
-
-			if distance <= range then
+		while not turret.life.destroyed do
+			task.wait(1 / turret:Firerate())
+			if turret:Enabled() then
 				turret:fireBullet(bulletTemplate)
 			end
 		end

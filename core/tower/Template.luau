@@ -6,8 +6,6 @@ Template.mechanicName = "Template"
 Template.instanceType = std.isA.BasePart()
 Template.debuggerEmoji = "💠"
 
-function Template.onStart(self: typeof(Template), mechanic: TemplateMechanic, level: std.Level)
-	print("IT WORKS", mechanic)
-end
+function Template.onStart(self: typeof(Template), mechanic: TemplateMechanic, level: std.Level) end
 
 return Template

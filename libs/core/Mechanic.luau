@@ -12,7 +12,7 @@ export type MechanicImplementationMetadata = {
 	attributeSections: { AttributeSection },
 }
 
-export type Mechanic<Implementation = any, Mixin = {}> = Implementation & Mixin & {
+export type Mechanic<Implementation = { [any]: any }, Mixin = {}> = Implementation & Mixin & {
 	life: Life.Life,
 	id: string,
 	implementation: Implementation,

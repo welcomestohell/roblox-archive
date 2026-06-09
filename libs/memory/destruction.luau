@@ -1,4 +1,3 @@
-local Log = require "@libs/Log"
 local functions = require "@libs/functions"
 local logger = require "@core/shared/logger"
 
@@ -13,8 +12,8 @@ local destructorMethods = {
 }
 
 local connection = game.Close:Connect(functions.noop)
-connection:Disconnect()
 local disconnect = connection.Disconnect
+connection:Disconnect()
 
 local destroy
 local typeDestructors: { [string]: (any) -> () } = {

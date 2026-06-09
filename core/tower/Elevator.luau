@@ -63,10 +63,16 @@ function Elevator.spawnPart(elevator: ElevatorMechanic, part: BasePart, overlap:
 
 	local faceVector = elevator:faceVector()
 
-	local velocityAttachment = elevator.life:add(Instance.new "Attachment")
+	local spawnLife = elevator.life:extend()
+	spawnLife:destroyOn(part.Destroying)
+	spawnLife:add(function()
+		elevator.touching[part] = nil
+	end)
+
+	local velocityAttachment = spawnLife:add(Instance.new "Attachment")
 	velocityAttachment.Parent = part
 
-	local velocity = elevator.life:add(Instance.new "LinearVelocity")
+	local velocity = spawnLife:add(Instance.new "LinearVelocity")
 	velocity.Name = "ElevatorVelocity"
 	velocity.RelativeTo = Enum.ActuatorRelativeTo.World
 	velocity.ForceLimitMode = Enum.ForceLimitMode.PerAxis
@@ -77,7 +83,7 @@ function Elevator.spawnPart(elevator: ElevatorMechanic, part: BasePart, overlap:
 	velocity.Parent = part
 
 	elevator.touching[part] = true
-	while elevator:isActive(overlap) do
+	while elevator:isActive(overlap) and not spawnLife.destroyed do
 		if elevator:ContinuousUpdates() then
 			faceVector = elevator:faceVector()
 			velocity.MaxAxesForce = elevator:maxForce(faceVector)
@@ -86,9 +92,7 @@ function Elevator.spawnPart(elevator: ElevatorMechanic, part: BasePart, overlap:
 		RunService.PreSimulation:Wait()
 	end
 
-	elevator.touching[part] = nil
-	velocity:Destroy()
-	velocityAttachment:Destroy()
+	spawnLife:destroy()
 end
 
 function Elevator:onStart(elevator: ElevatorMechanic)

@@ -9,6 +9,7 @@ local function useAttributes(implementation: Mechanic.MechanicImplementation, ba
 		CollisionGroup = implementation:attribute(basename .. "CollisionGroup", gt.optional(gt.string()), nil),
 		SupportsCharacter = implementation:attribute(basename .. "SupportsCharacter", gt.boolean(), false),
 		SupportsBullets = implementation:attribute(basename .. "SupportsBullets", gt.boolean(), false),
+		SupportsBoxes = implementation:attribute(basename .. "SupportsBoxes", gt.boolean(), false),
 	}
 end
 
@@ -35,6 +36,7 @@ local function isToucherValid(
     -- stylua: ignore
 	return (attributes.SupportsCharacter(instanceConfiguration) and character.isFromMaybeCharacter(toucher))
 		or (attributes.SupportsBullets(instanceConfiguration) and (toucher:HasTag("Bullet") or toucher:FindFirstAncestor("Bullet") ~= nil))
+		or (attributes.SupportsBoxes(instanceConfiguration) and (toucher:HasTag("Boxes") or toucher:FindFirstAncestor("Box") ~= nil))
 end
 
 return table.freeze {

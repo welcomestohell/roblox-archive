@@ -23,6 +23,7 @@ type Mechanic<Implementation = any, Mixin = {}> = Mechanic.Mechanic<Implementati
 
 local Level = {}
 Level.__index = Level
+Level.DO_NOT_LOAD_TAG = "Level: Do Not Load"
 Level.baseScripts = ScriptCollector.new()
 Level.activeLevels = {} :: { Level }
 Level.LevelInstance = gt.build(gt.instanceTree {
@@ -236,7 +237,8 @@ function Level.loadInstance(self: Level, instance: Instance): { Mechanic }
 			table.insert(self.mechanics, mechanic)
 			table.insert(mechanics, mechanic)
 			marrays.push(self.mechanicsByImplementations, implementation, mechanic)
-			marrays.push(self.mechanicsByInstance, instance, mechanic)
+			marrays.push(self.mechanicsByInstance, mechanic.instance :: Instance, mechanic)
+			marrays.push(self.mechanicsByInstance, mechanic.instanceConfiguration, mechanic)
 			self:registerLifecyclesForMechanic(mechanic)
 		end
 
@@ -251,26 +253,41 @@ function Level.loadInstance(self: Level, instance: Instance): { Mechanic }
 	return mechanics
 end
 
+Level.loadInstanceAsync = Promise.promisify(Level.loadInstance)
+
+function Level.loadDescendantInstancesAsync(self: Level, root: Instance, skipRoot: boolean?)
+	local instancePromises: { Promise.Promise } = {}
+	local loadPromises: { Promise.Promise } = if skipRoot then {} else { self:loadInstanceAsync(root) }
+
+	for _, descendant in root:GetChildren() do
+		if descendant:HasTag(Level.DO_NOT_LOAD_TAG) then
+			continue
+		end
+		table.insert(loadPromises, self:loadInstanceAsync(descendant) :: Promise.Promise)
+		local descendantPromises = self:loadDescendantInstancesAsync(descendant, true)
+		table.move(descendantPromises, 1, #descendantPromises, #instancePromises + 1, instancePromises)
+	end
+	return instancePromises, loadPromises
+end
+
 function Level.start(self: Level)
 	local self = self
 	assert(not self.started, `Level {self.name} has already started`)
 	self.started = true
 	self.startedTimestamp = os.clock()
 
-	self.life:add(self.instance)
-	self.life:destroyOn(self.instance.Destroying)
-
-	local instancePromises: { Promise.Promise } = {}
-	for index, instance in self.instance.Mechanics:GetDescendants() do
-		instancePromises[index] = Promise.try(Level.loadInstance, self, instance) :: Promise.Promise
-	end
+	local instancePromises, loadPromises = self:loadDescendantInstancesAsync(self.instance.Mechanics)
 	Promise.all(instancePromises):await()
+	Promise.all(loadPromises):await()
 
 	for _, implementation in self.scripts.mechanicImplementations do
 		self:registerLifecyclesForImplementation(implementation)
 	end
 
 	self.implementationLifecycles.onInit:fire(self)
+
+	self.life:add(self.instance)
+	self.life:destroyOn(self.instance.Destroying)
 
 	for _, mechanic in self.mechanics do
 		self.life:add(threadpool.spawn(Level.bindActivation, self, mechanic))
@@ -291,6 +308,7 @@ function Level.start(self: Level)
 		RunService.PreAnimation:Connect(function(dt)
 			self.implementationLifecycles.onPreAnimation:fire(dt, self)
 		end),
+		-- TODO: Should we keep this, now that we have 'Level: Do Not Load' tag?
 		self.instance.DescendantAdded:Connect(function(instance)
 			for _, mechanic in self:loadInstance(instance) do
 				self.life:add(threadpool.spawn(Level.bindActivation, self, mechanic))

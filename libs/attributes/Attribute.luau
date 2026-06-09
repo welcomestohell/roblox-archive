@@ -110,7 +110,7 @@ local function observeListener<T>(
 		instanceListeners = tables.weak "k"
 		listenerMap[resolved] = instanceListeners
 	end
-	instanceListeners[listener] = true
+	table.insert(instanceListeners :: { (value: T, attribute: Attribute<T>) -> () }, listener)
 
 	observeInstance(self, resolved)
 
@@ -123,7 +123,6 @@ local function observeListener<T>(
 		disconnected = true
 
 		local listeners = listenerMap[resolved]
-
 		if not listeners then
 			return
 		end
