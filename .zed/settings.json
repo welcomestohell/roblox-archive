@@ -15,7 +15,7 @@
 		// Welcome To Hell
 		"./.output",
 		"./.pesde",
-		// "./.vscode",
+		"./.vscode",
 		"./luau_packages",
 		"./lune_packages",
 		"./patches",
