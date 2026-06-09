@@ -1,6 +1,6 @@
 local LevelState = require "@libs/core/LevelState"
 local Mechanic = require "@libs/core/Mechanic"
-local gt = require "./gt"
+local gt = require "@libs/gt"
 local std = require "./std"
 local tables = require "./collections/tables"
 

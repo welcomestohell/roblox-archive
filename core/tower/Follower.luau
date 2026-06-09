@@ -88,7 +88,7 @@ function Follower.onPreSimulation(self: typeof(Follower), deltaTime: number, lev
 	local bulkInstances: { BasePart } = tables.create(countFollowers)
 	local bulkCFrames: { CFrame } = tables.create(countFollowers)
 
-	for _, follower in followers do
+	for _, follower: FollowerMechanic in followers do
 		if not follower:Enabled() then
 			continue
 		end

@@ -1,4 +1,5 @@
--- LUAU: this file seemingly lost all typechecking??
+-- LUAU FIXME: this file seemingly lost all typechecking??
+-- NOTE: Wtf, this file typechecks on Zed???
 
 local RunService = game:GetService "RunService"
 
@@ -20,8 +21,6 @@ type AnyImplementation = Mechanic.AnyMechanicImplementation
 type MechanicImplementation = Mechanic.MechanicImplementation
 type Mechanic<Implementation = any, Mixin = {}> = Mechanic.Mechanic<Implementation, Mixin>
 
-const MECHANIC_TAG_PATTERN = "Mechanic:%s?([%w_%-]+)"
-
 local Level = {}
 Level.__index = Level
 Level.baseScripts = ScriptCollector.new()
@@ -37,7 +36,6 @@ export type Level = setmetatable<{
 	life: Life.Life,
 	name: string,
 	instance: LevelInstance,
-	createdTimestamp: number,
 
 	started: boolean,
 	startedTimestamp: number,
@@ -144,7 +142,7 @@ function Level.getListenerForMechanic<Args...>(
 	lifecycle: prvd.Lifecycle<Args...>,
 	mechanic: Mechanic
 ): ((Args...) -> ())?
-	return mmaps.get(self.mechanicLifecycleListeners, lifecycle)[mechanic]
+	return mmaps.get<<prvd.Lifecycle>>(self.mechanicLifecycleListeners, lifecycle)[mechanic]
 end
 
 function Level.getListenerForImplementation<Args...>(
@@ -152,7 +150,7 @@ function Level.getListenerForImplementation<Args...>(
 	lifecycle: prvd.Lifecycle<Args...>,
 	implementation: AnyImplementation
 ): ((Args...) -> ())?
-	return mmaps.get(self.implementationLifecycleListeners, lifecycle)[implementation]
+	return mmaps.get<<prvd.Lifecycle>>(self.implementationLifecycleListeners, lifecycle)[implementation]
 end
 
 function Level.registerLifecyclesForImplementation(self: Level, implementation: AnyImplementation)
@@ -304,14 +302,15 @@ function Level.start(self: Level)
 		end)
 	)
 
-	table.insert(Level.activeLevels, self)
+	-- LUAU FIXME: this should typecheck fine?
+	table.insert(Level.activeLevels :: { any }, self)
 	self.life:add(function()
-		tables.findAndRemove(Level.activeLevels, self)
+		tables.findAndRemove<<Level>>(Level.activeLevels, self)
 	end)
 end
 
--- function Level.__tostring(self: Level)
--- 	return `Level({self.name})`
--- end
+function Level.__tostring(self: Level)
+	return `Level({self.name})`
+end
 
 return table.freeze(Level)

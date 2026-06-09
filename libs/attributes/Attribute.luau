@@ -1,100 +1,61 @@
-local gt = require "@roblox_packages/gt"
-local logger = require "@core/shared/logger"
-local tables = require "@libs/collections/tables"
-local threadpool = require "@libs/threadpool"
+const logger = require "@core/shared/logger"
+const observeAttributes = require "@libs/attributes/observeAttributes"
+const tables = require "@libs/collections/tables"
+const resolveInstance = require "@libs/core/resolveInstance"
+const gt = require "@libs/gt"
+const threadpool = require "@libs/threadpool"
 
-export type AttributeValue =
-	| string
-	| boolean
-	| number
-	| UDim
-	| UDim2
-	| BrickColor
-	| Color3
-	| Vector2
-	| Vector3
-	| CFrame
-	| NumberSequence
-	| ColorSequence
-	| NumberRange
-	| Rect
-	| Font
-
--- LUAU FIXME: Can't require the Mechanic class due to cyclic dependencies, so
--- we specify a proxy type.
-export type ResolvableInstance = unknown
-
-local Attribute = {}
+const Attribute = {}
 Attribute.__index = Attribute
 
 export type Attribute<T> = setmetatable<{
 	attribute: string,
-	check: gt.Type?,
+	check: gt.Type,
 	defaultValue: T,
+
+	_observerCallbacks: { [Instance]: (string) -> () },
+	_observerDisconnectors: { [Instance]: () -> () },
 	_cache: { [Instance]: T },
-	_signals: { [Instance]: RBXScriptSignal },
 	_updated: { [Instance]: true },
-	_observers: { [Instance]: RBXScriptConnection? },
-	_observerCallbacks: { [Instance]: () -> ()? },
-	_changeListeners: { [Instance]: { [(value: T, attribute: any) -> ()]: true } },
-	_fetchListeners: { [Instance]: { [(value: T, attribute: any) -> ()]: true } },
+	_changeListeners: { [Instance]: { (value: T, attribute: Attribute<T>) -> () } },
+	_fetchListeners: { [Instance]: { (value: T, attribute: Attribute<T>) -> () } },
 }, typeof(Attribute)>
 
-local function resolveInstance(self: Attribute<any>, resolvable: any): Instance
-	local type = typeof(resolvable)
-	if type == "Instance" then
-		return resolvable
-	elseif type == "table" then
-		if not resolvable.instanceConfiguration and not resolvable.instance then
-			print(resolvable)
-		end
-		return resolvable.instanceConfiguration or resolvable.instance
-	else
-		error(
-			`Expected an instance or a mechanic to resolve {self.attribute}, got {resolvable} of type {typeof(
-				resolvable
-			)}`
-		)
+local function observeInstance(self: Attribute<unknown>, instance: Instance)
+	if self._observerDisconnectors[instance] then
+		return
 	end
-end
 
-local function observeChanges(self: Attribute<unknown>, attribute: string, instance: Instance)
-	if not self._observers[instance] then
-		local signal = self._signals[instance]
-		if not signal then
-			signal = instance:GetAttributeChangedSignal(attribute)
-			self._signals[instance] = signal
-		end
-
-		local observe = self._observerCallbacks[instance]
-		if not observe then
-			function observe()
-				local listeners = self._changeListeners[instance]
-				if listeners and next(listeners) ~= nil then
-					local value = instance:GetAttribute(self.attribute)
-					for l in listeners do
-						threadpool.spawn(l, value, self)
-					end
-				else
-					local connection = self._observers[instance]
-					if connection and connection.Connected then
-						connection:Disconnect()
-					end
-					self._observers[instance] = nil
-				end
-				self._updated[instance] = nil
+	if not self._observerCallbacks[instance] then
+		local function onAttributesChanged(attribute)
+			if attribute ~= self.attribute then
+				return
 			end
 
-			self._observerCallbacks[instance] = observe
+			local changeListeners = self._changeListeners[instance]
+			if changeListeners and next(changeListeners) ~= nil then
+				local value = instance:GetAttribute(self.attribute)
+				threadpool.spawnCallbacks(changeListeners, value, self)
+			else
+				local disconnect: () -> () = self._observerDisconnectors[instance]
+				if disconnect then
+					disconnect()
+				end
+				self._observerDisconnectors[instance] = nil
+			end
+
+			self._updated[instance] = nil
 		end
 
-		self._observers[instance] = (signal :: RBXScriptSignal):Connect(observe :: () -> ())
+		self._observerCallbacks[instance] = onAttributesChanged
 	end
+
+	self._observerDisconnectors[instance] = observeAttributes(instance, self._observerCallbacks[instance])
 end
 
-local function fetchAttribute(self: Attribute<unknown>, instance: Instance)
+local function fetchInstance(self: Attribute<unknown>, instance: Instance)
 	local attribute = self.attribute
-	local value: any = instance:GetAttribute(attribute)
+	local value = instance:GetAttribute(attribute)
 
 	local isMissing = value == nil
 
@@ -104,7 +65,8 @@ local function fetchAttribute(self: Attribute<unknown>, instance: Instance)
 		if not isValid then
 			if value ~= nil then
 				logger:Warn(
-					instance:GetFullName(),
+					"Instance",
+					instance,
 					"has invalid value set for attribute named",
 					string.format("%q", self.attribute) .. ": ",
 					invalidCause
@@ -123,7 +85,7 @@ local function fetchAttribute(self: Attribute<unknown>, instance: Instance)
 	self._cache[instance] = value
 	self._updated[instance] = true
 
-	observeChanges(self, attribute, instance)
+	observeInstance(self, instance)
 
 	local listeners = self._fetchListeners[instance]
 	if listeners and next(listeners) ~= nil then
@@ -136,21 +98,21 @@ local function fetchAttribute(self: Attribute<unknown>, instance: Instance)
 end
 
 local function observeListener<T>(
-	attribute: Attribute<T>,
-	instance: ResolvableInstance,
-	listenerMap: { [Instance]: { [(value: T, attribute: Attribute<T>) -> ()]: true } },
+	self: Attribute<T>,
+	instance: unknown,
+	listenerMap: { [Instance]: { (value: T, attribute: Attribute<T>) -> () } },
 	listener: (value: T, attribute: Attribute<T>) -> ()
 ): () -> ()
-	local resolved = resolveInstance(attribute, instance)
+	local resolved = resolveInstance(instance)
 
 	local instanceListeners = listenerMap[resolved]
 	if not instanceListeners then
-		instanceListeners = tables.weak "k" :: any
+		instanceListeners = tables.weak "k"
 		listenerMap[resolved] = instanceListeners
 	end
 	instanceListeners[listener] = true
 
-	observeChanges(attribute, attribute.attribute, resolved)
+	observeInstance(self, resolved)
 
 	local disconnected = false
 	local function disconnect()
@@ -166,7 +128,7 @@ local function observeListener<T>(
 			return
 		end
 
-		listeners[listener] = nil
+		tables.findAndRemove(listeners, listener)
 
 		if next(listeners) == nil then
 			listenerMap[resolved] = nil
@@ -176,36 +138,31 @@ local function observeListener<T>(
 	return disconnect
 end
 
-local function new(attribute: any, check: any, defaultValue: any): Attribute<any>
+function Attribute.new<T>(attribute: string, check: T, defaultValue: T): Attribute<T>
 	return setmetatable({
 		attribute = attribute,
-		check = check,
+		check = gt.build(check) :: T,
 		defaultValue = defaultValue,
-		_cache = tables.weak "k",
-		_signals = tables.weak "k",
-		_updated = tables.weak "k",
-		_observers = tables.weak "k",
+
 		_observerCallbacks = tables.weak "k",
+		_observerDisconnectors = tables.weak "k",
+		_cache = tables.weak "k",
+		_updated = tables.weak "k",
 		_changeListeners = tables.weak "k",
 		_fetchListeners = tables.weak "k",
-	}, Attribute) :: any
+	}, Attribute)
 end
 
-Attribute.new = new :: (
-	& (<T>(attribute: string, check: T, defaultValue: T) -> Attribute<T>)
-	& (<T>(attribute: string, check: T) -> Attribute<T?>)
-)
-
 function Attribute.type<T>(_: Attribute<T>): T
-	error "This function can only be used for type definitions, ie. `typeof(attribute:type())`"
+	error "This function is undefined, and should only be used in type definitions: `typeof(attribute:type())`"
 end
 
 function Attribute.isAttribute(x: any)
 	return type(x) == "table" and getmetatable(x) == Attribute
 end
 
-function Attribute.peek<T>(self: Attribute<T>, instance: ResolvableInstance): T
-	local value = self._cache[resolveInstance(self, instance)] :: any
+function Attribute.peek<T>(self: Attribute<T>, instance: resolveInstance.InstanceLike): T
+	local value = self._cache[resolveInstance(instance)] :: any
 
 	if value == nil then
 		value = self.defaultValue
@@ -214,8 +171,8 @@ function Attribute.peek<T>(self: Attribute<T>, instance: ResolvableInstance): T
 	return value
 end
 
-function Attribute.fetch<T>(self: Attribute<T>, instance: ResolvableInstance): T
-	local fetched = fetchAttribute(self, resolveInstance(self, instance))
+function Attribute.fetch<T>(self: Attribute<T>, instance: resolveInstance.InstanceLike): T
+	local fetched = fetchInstance(self, resolveInstance(instance))
 
 	if fetched == nil then
 		fetched = self.defaultValue
@@ -224,11 +181,11 @@ function Attribute.fetch<T>(self: Attribute<T>, instance: ResolvableInstance): T
 	return fetched
 end
 
-function Attribute.get<T>(self: Attribute<T>, instance: ResolvableInstance): T
-	local resolved = resolveInstance(self, instance)
+function Attribute.get<T>(self: Attribute<T>, instance: resolveInstance.InstanceLike): T
+	local resolved = resolveInstance(instance)
 
 	if not self._updated[resolved] then
-		return fetchAttribute(self, resolved)
+		return fetchInstance(self, resolved)
 	end
 
 	local cached = self._cache[resolved]
@@ -240,7 +197,7 @@ function Attribute.get<T>(self: Attribute<T>, instance: ResolvableInstance): T
 	return cached
 end
 
-function Attribute.getOrSet<T>(self: Attribute<T>, instance: ResolvableInstance, default: T): T
+function Attribute.getOrSet<T>(self: Attribute<T>, instance: resolveInstance.InstanceLike, default: T): T
 	local value = self:get(instance)
 
 	if default == nil then
@@ -254,7 +211,7 @@ function Attribute.getOrSet<T>(self: Attribute<T>, instance: ResolvableInstance,
 	return value
 end
 
-function Attribute.getOrSetWith<T>(self: Attribute<T>, instance: ResolvableInstance, derive: () -> T): T
+function Attribute.getOrSetWith<T>(self: Attribute<T>, instance: resolveInstance.InstanceLike, derive: () -> T): T
 	local value = self:get(instance)
 
 	if value == nil then
@@ -264,12 +221,12 @@ function Attribute.getOrSetWith<T>(self: Attribute<T>, instance: ResolvableInsta
 	return value
 end
 
-function Attribute.set<T>(self: Attribute<T>, instance: ResolvableInstance, value: T): T
+function Attribute.set<T>(self: Attribute<T>, instance: resolveInstance.InstanceLike, value: T): T
 	if value == nil then
 		value = self.defaultValue
 	end
 
-	local resolved = resolveInstance(self, instance)
+	local resolved = resolveInstance(instance)
 
 	resolved:SetAttribute(self.attribute, value)
 
@@ -279,11 +236,11 @@ function Attribute.set<T>(self: Attribute<T>, instance: ResolvableInstance, valu
 	return value
 end
 
-function Attribute.assert<T>(self: Attribute<T?>, instance: ResolvableInstance, message: string?): T
+function Attribute.assert<T>(self: Attribute<T?>, instance: resolveInstance.InstanceLike, message: string?): T
 	local value = Attribute.get(self :: any, instance)
 	assert(
 		value ~= nil,
-		message or `Instance {resolveInstance(self, instance):GetFullName()} is missing attribute {self.attribute}!`
+		message or `Instance {resolveInstance(instance):GetFullName()} is missing attribute {self.attribute}!`
 	)
 	return value
 end
@@ -291,7 +248,7 @@ end
 -- (lazily evaluated)
 function Attribute.onFetch<T>(
 	self: Attribute<T>,
-	instance: ResolvableInstance,
+	instance: resolveInstance.InstanceLike,
 	listener: (value: T, attribute: Attribute<T>) -> ()
 ): () -> ()
 	return observeListener(self, instance, self._fetchListeners, listener)
@@ -300,29 +257,35 @@ end
 -- (eagerly evaluated)
 function Attribute.onChange<T>(
 	self: Attribute<T>,
-	instance: ResolvableInstance,
+	instance: resolveInstance.InstanceLike,
 	listener: (value: T, attribute: Attribute<T>) -> ()
 ): () -> ()
 	return observeListener(self, instance, self._changeListeners, listener)
 end
 
+function Attribute.awaitChange<T>(self: Attribute<T>, instance: resolveInstance.InstanceLike): T
+	local currentThread = coroutine.running()
+	observeListener(self, instance, self._changeListeners, function(value: T)
+		task.spawn(currentThread, value)
+	end)
+	return coroutine.yield()
+end
+
 function Attribute.onBind<T>(
 	self: Attribute<T>,
-	instance: ResolvableInstance,
+	instance: resolveInstance.InstanceLike,
 	listener: (value: T, attribute: Attribute<T>) -> ()
 ): () -> ()
 	threadpool.spawn(listener, Attribute.get(self :: any, instance), self)
 	return Attribute.onChange(self :: any, instance, listener)
 end
 
-function Attribute.__call<T>(self: Attribute<T>, instance: ResolvableInstance, ...: T): T
+function Attribute.__call<T>(self: Attribute<T>, instance: resolveInstance.InstanceLike, ...: T): T
 	return if select("#", ...) == 0 then self:get(instance) else self:set(instance, ...)
 end
 
 function Attribute.__tostring<T>(self: Attribute<T>)
-	return if self.check
-		then `Attribute<{self.check:format()}>("{self.attribute}")`
-		else `Attribute("{self.attribute}")`
+	return `Attribute<{self.check:format()}>("{self.attribute}")`
 end
 
 return Attribute

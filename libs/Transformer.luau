@@ -1,6 +1,6 @@
 -- local CollectionService = game:GetService("CollectionService")
 
--- local Attribute = require("./Attribute")
+-- local Attribute = require("@libs/attributes/Attribute")
 -- local Level = require("./Level")
 -- local activation = require("./activation")
 -- local character = require("./character")

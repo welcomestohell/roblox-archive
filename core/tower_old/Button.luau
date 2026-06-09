@@ -1,4 +1,4 @@
-local Attribute = require "@libs/Attribute"
+local Attribute = require "@libs/attributes/Attribute"
 local ButtonEnabled = require "./ButtonEnabled"
 local Life = require "@libs/memory/Life"
 local Signal = require "@roblox_packages/Signal"

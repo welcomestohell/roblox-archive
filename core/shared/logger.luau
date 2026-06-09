@@ -26,7 +26,10 @@ local logger = Log.Logger.new({
 		end
 
 		local fullRender: string = prefix and prefix .. " " or ""
-		for _, arg: unknown in event.Args do
+		for index, arg: unknown in event.Args do
+			if index ~= 1 then
+				fullRender ..= " "
+			end
 			fullRender ..= if typeof(arg) == "string" then arg else repr(arg)
 		end
 

@@ -2,10 +2,11 @@ local ContentProvider = game:GetService "ContentProvider"
 local Debris = game:GetService "Debris"
 local SoundService = game:GetService "SoundService"
 
-local Attribute = require "./Attribute"
+local Attribute = require "@libs/attributes/Attribute"
 local Mechanic = require "@libs/core/Mechanic"
+const resolveInstance = require "@libs/core/resolveInstance"
 local audios = { sfx = {} } --require("@core/shared/generated/audios")
-local gt = require "./gt"
+local gt = require "@libs/gt"
 
 export type SoundConfiguration = {
 	id: string?,
@@ -58,7 +59,7 @@ export type SoundAttributes = typeof(useAttributes(nil :: any))
 
 local function configurationFromAttributes(
 	attributes: SoundAttributes,
-	instance: Attribute.ResolvableInstance
+	instance: resolveInstance.InstanceLike
 ): SoundConfiguration
 	return {
 		id = attributes.Id(instance),

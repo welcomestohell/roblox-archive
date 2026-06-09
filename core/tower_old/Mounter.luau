@@ -1,4 +1,4 @@
-local Attribute = require "@libs/Attribute"
+local Attribute = require "@libs/attributes/Attribute"
 local activation = require "@libs/activation"
 local character = require "@libs/character"
 local constraints = require "@libs/constraints"
@@ -19,7 +19,7 @@ local LIMB_MAP: { [Enum.Limb]: string } = {
     @tag Mechanic
 
     Welds the mounter's model onto the player's HumanoidRootPart. Unlike
-    Followers, mounted models are physically attached to the player. Therefore, 
+    Followers, mounted models are physically attached to the player. Therefore,
     collisions on the mounted model also affects the player.
 ]=]
 local Mounter = std.Mechanic {}

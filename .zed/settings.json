@@ -15,7 +15,7 @@
 		// Welcome To Hell
 		"./.output",
 		"./.pesde",
-		"./.vscode",
+		// "./.vscode",
 		"./luau_packages",
 		"./lune_packages",
 		"./patches",
@@ -77,7 +77,8 @@
 							"enabled": true,
 							"suggestServices": true,
 							"suggestRequires": true,
-							"requireStyle": "AlwaysAbsolute",
+							"separateGroupsWithLine": true,
+							"requireStyle": "alwaysAbsolute",
 							"stringRequires": {
 								"enabled": true,
 							},

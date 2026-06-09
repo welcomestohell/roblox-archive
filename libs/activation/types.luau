@@ -1,4 +1,4 @@
-local Attribute = require "@libs/Attribute"
+local Attribute = require "@libs/attributes/Attribute"
 local Life = require "@libs/memory/Life"
 local Result = require "@libs/Result"
 local gt = require "@libs/gt"

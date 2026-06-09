@@ -1,4 +1,4 @@
-local Attribute = require "@libs/Attribute"
+local Attribute = require "@libs/attributes/Attribute"
 local Life = require "@libs/memory/Life"
 local types = require "@libs/types"
 
@@ -39,6 +39,7 @@ export type AnyMechanicImplementation = {
 
 local Mechanic = {}
 Mechanic.__index = Mechanic
+Mechanic.type = "Mechanic"
 
 -- Instance properties can't be defined on Mechanic because it
 -- breaks metatable typing...
@@ -101,10 +102,6 @@ function Mechanic.attribute<T>(self: {}, name: string, type: T, default: T): Att
 	local attribute = Attribute.new(name, type, default)
 	table.insert(self._metadata.currentAttributeSection.attributes, attribute)
 	return attribute
-end
-
-function Mechanic.__tostring(self: AnyMechanicImplementation)
-	return self.mechanicName
 end
 
 return table.freeze(Mechanic)
