@@ -73,7 +73,7 @@ function Culled.onStart(self: typeof(Culled), culled: CulledMechanic, level: std
 
 	self.Mode:onBind(culled, function(mode)
 		if mode == "Distance" then
-			if culled.instance:IsA "BasePart" then
+			if culled.instance:IsA "PVInstance" then
 				tables.findAndRemove(culledMechanics, culled)
 				table.insert(distanceMechanics, culled)
 				if culler._objects[culled.instance] then
@@ -135,10 +135,10 @@ end
 function Culled.onPreRender(self: typeof(Culled), deltaTime: number, level: std.Level)
 	-- Distance culling
 	for _, culled: CulledMechanic in self.distanceMechanics:get(level) do
-		local instance = culled.instance :: BasePart
+		local instance = culled.instance :: PVInstance
 
 		local distance: NumberRange = culled:Distance()
-		local distanceFromCharacter = Players.LocalPlayer:DistanceFromCharacter(instance.Position)
+		local distanceFromCharacter = Players.LocalPlayer:DistanceFromCharacter(instance:GetPivot().Position)
 		culled:updateVisible(level, distanceFromCharacter >= distance.Min and distanceFromCharacter <= distance.Max)
 	end
 

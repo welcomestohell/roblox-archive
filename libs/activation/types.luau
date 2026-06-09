@@ -24,6 +24,8 @@ export type ActivationEvent =
 	| { kind: "HumanoidStateChanged", old: Enum.HumanoidStateType, new: Enum.HumanoidStateType }
 	| { kind: "Prompt", prompt: ProximityPrompt }
 	| { kind: "Touch", toucher: BasePart }
+	| { kind: "Activator" }
+	| { kind: "Contraption" }
 	| { kind: string, [unknown]: unknown }
 
 export type PredicateContext = {

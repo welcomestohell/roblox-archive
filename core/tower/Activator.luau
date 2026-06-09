@@ -1,5 +1,3 @@
-local CollectionService = game:GetService "CollectionService"
-
 local activation = require "@libs/activation"
 local std = require "@libs/std"
 
@@ -7,7 +5,8 @@ local std = require "@libs/std"
 	@class Activator
 	@tag Mechanic
 
-	Activates the targeted instances when the mechanic itself is activated.
+	Activates the group when the Activator mechanic is activated. It's most
+	useful in Contraptions.
 ]=]
 local Activator = std.Mechanic {}
 export type ActivatorMechanic = std.Mechanic<typeof(Activator)>
@@ -17,9 +16,9 @@ Activator.instanceType = std.gt.instanceTree {
 }
 Activator.debuggerEmoji = "👆"
 
-Activator.Enabled = Activator:withEnabled()
+Activator.Enabled = Activator:attribute("Enabled", std.gt.boolean(), true)
 Activator.Cooldown = Activator:attribute("Cooldown", std.gt.positiveNumber, 0)
-Activator.TargetTag = Activator:attribute("TargetTag", std.gt.string(), "")
+Activator.Group = Activator:attribute("Group", std.gt.string(), "")
 
 Activator:attributeSection "Activation"
 Activator.Activation = activation.useAttributes(Activator)
@@ -27,9 +26,9 @@ Activator.Activation = activation.useAttributes(Activator)
 function Activator.tryActivate(instance: Instance, level: std.Level)
 	local mechanics = level.mechanicsByInstance[instance]
 	if mechanics then
-		for _, mechanic in mechanics :: { std.MechanicImplementation } do
+		for _, mechanic in mechanics :: { std.Mechanic<std.AnyMechanicImplementation> } do
 			if type(mechanic.onActivate) == "function" then
-				mechanic.onActivate(mechanic.implementation, mechanic :: any, level)
+				mechanic.onActivate(mechanic.implementation, mechanic :: any, level, { type = "Activator" })
 			end
 		end
 	end
@@ -47,11 +46,8 @@ function Activator.onActivate(self: typeof(Activator), activator: ActivatorMecha
 		self.tryActivate(targetInstance, level)
 	end
 
-	local targetTag = self:TargetTag()
-	if targetTag then
-		for _, tagged in CollectionService:GetTagged(targetTag) do
-			self.tryActivate(tagged, level)
-		end
+	for _, grouped in level:getGroupedInstances(self:Group()) do
+		self.tryActivate(grouped, level)
 	end
 
 	task.wait(activator:Cooldown())

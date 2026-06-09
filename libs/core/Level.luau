@@ -130,10 +130,12 @@ function Level.getLifetime(self: Level)
 	return os.clock() - self.startedTimestamp
 end
 
+-- TODO: onMechanicAdded, onMechanicRemoved
 function Level.getMechanics<Self>(self: Level, implementation: Self): { Mechanic<Self> }
 	return self.mechanicsByImplementations[implementation] :: any or {}
 end
 
+-- TODO: onGroupedInstanceAdded, onGroupedInstanceRemoved
 function Level.getGroupedInstances<Args...>(self: Level, group: string): { Instance }
 	return marrays.get(self.instanceByGroups, group)
 end
