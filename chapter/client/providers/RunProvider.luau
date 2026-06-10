@@ -1,4 +1,4 @@
-local prvd = require "@prvdmwrong/prvdmwrong"
+local prvd = require "@roblox_packages/prvd"
 
 local RunProvider = {}
 export type RunProvider = typeof(RunProvider)

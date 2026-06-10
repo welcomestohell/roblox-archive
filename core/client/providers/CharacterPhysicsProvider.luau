@@ -2,7 +2,7 @@ local RunService = game:GetService "RunService"
 
 local Life = require "@libs/memory/Life"
 local character = require "@libs/character"
-local prvd = require "@prvdmwrong/prvdmwrong"
+local prvd = require "@roblox_packages/prvd"
 
 const DEFAULT_FPS = 1 / 60
 const TRIGGER_FPS = 1 / 75

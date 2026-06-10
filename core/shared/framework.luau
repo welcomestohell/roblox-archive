@@ -3,17 +3,16 @@ local RunService = game:GetService "RunService"
 local ServerScriptService = game:GetService "ServerScriptService"
 
 local logger = require "@core/shared/logger"
-local prvd = require "@prvdmwrong/prvdmwrong"
-local rbxLifecycles = require "@prvdmwrong/rbx-lifecycles"
+local prvd = require "@roblox_packages/prvd"
 
-prvd.hooks.onProviderUsed(function(_, provider) logger:Debug("Used provider", tostring(provider)) end)
+prvd.onProviderUsed(function(_, provider) logger:Debug("Used provider", tostring(provider)) end)
 
-prvd.hooks.onLifecycleUsed(function(_, lifecycle) logger:Debug("Used lifecycle", tostring(lifecycle)) end)
+prvd.onLifecycleUsed(function(_, lifecycle) logger:Debug("Used lifecycle", tostring(lifecycle)) end)
 
 local root = prvd.root()
-	:useProvider(rbxLifecycles :: any)
-	:willStart(function() logger:Info "Starting up" end)
-	:willFinish(function() logger:Info "Finishing up" end)
+root.onInit:register(function() logger:Debug "Initializing" end)
+root.onStart:register(function() logger:Debug "Starting" end)
+root.onStop:register(function() logger:Debug "Stopping" end)
 
 local function useProvidersFromMembers(memberParent: Instance)
 	for _, member in memberParent:GetChildren() do
@@ -30,7 +29,7 @@ local function bootstrapClient()
 	useProvidersFromMembers(internal:WaitForChild "Shared")
 
 	local startedRoot = root:start()
-	game.Close:Once(function() startedRoot:finish() end)
+	game.Close:Once(function() startedRoot:stop() end)
 end
 
 local function bootstrapServer()
@@ -40,7 +39,7 @@ local function bootstrapServer()
 	useProvidersFromMembers(ServerScriptService:WaitForChild("Internal"):WaitForChild "Server")
 
 	local startedRoot = root:start()
-	game:BindToClose(function() startedRoot:finish() end)
+	game:BindToClose(function() startedRoot:stop() end)
 end
 
 return table.freeze {

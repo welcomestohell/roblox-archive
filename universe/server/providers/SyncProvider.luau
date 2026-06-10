@@ -1,7 +1,7 @@
 local AccountStore = require "@universe/server/providers/accounts/AccountStore"
 local Charm = require "@roblox_packages/Charm"
 local CharmSync = require "@roblox_packages/CharmSync"
-local prvd = require "@prvdmwrong/prvdmwrong"
+local prvd = require "@roblox_packages/prvd"
 
 local SyncProvider = {}
 export type SyncProvider = typeof(SyncProvider)

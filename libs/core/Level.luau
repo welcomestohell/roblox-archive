@@ -13,7 +13,7 @@ local gt = require "@libs/gt"
 local marrays = require "@libs/collections/marrays"
 local mechanize = require "@libs/core/mechanize"
 local mmaps = require "@libs/collections/mmaps"
-local prvd = require "@prvdmwrong/prvdmwrong"
+local prvd = require "@roblox_packages/prvd"
 local tables = require "@libs/collections/tables"
 local threadpool = require "@libs/threadpool"
 
@@ -49,10 +49,10 @@ export type Level = setmetatable<{
 	mechanicsByImplementations: { [AnyImplementation]: { Mechanic } },
 	mechanicsByInstance: { [Instance]: { Mechanic } },
 
-	implementationLifecycleListeners: { [prvd.Lifecycle]: { [AnyImplementation]: (...unknown) -> () } },
-	implementationLifecycles: { [string]: prvd.Lifecycle },
-	mechanicLifecycleListeners: { [prvd.Lifecycle]: { [Mechanic]: (...unknown) -> () } },
-	mechanicLifecycles: { [string]: prvd.Lifecycle },
+	implementationLifecycleListeners: { [prvd.Lifecycle<...any>]: { [AnyImplementation]: (...unknown) -> () } },
+	implementationLifecycles: { [string]: prvd.Lifecycle<...any> },
+	mechanicLifecycleListeners: { [prvd.Lifecycle<...any>]: { [Mechanic]: (...unknown) -> () } },
+	mechanicLifecycles: { [string]: prvd.Lifecycle<...any> },
 }, typeof(Level)>
 
 function Level.new(outerLife: Life.Life, name: string, instance: Instance)
@@ -142,7 +142,7 @@ function Level.getListenerForMechanic<Args...>(
 	lifecycle: prvd.Lifecycle<Args...>,
 	mechanic: Mechanic
 ): ((Args...) -> ())?
-	return mmaps.get<<prvd.Lifecycle>>(self.mechanicLifecycleListeners, lifecycle)[mechanic]
+	return mmaps.get<<prvd.Lifecycle<...any>>>(self.mechanicLifecycleListeners, lifecycle)[mechanic]
 end
 
 function Level.getListenerForImplementation<Args...>(
@@ -150,7 +150,7 @@ function Level.getListenerForImplementation<Args...>(
 	lifecycle: prvd.Lifecycle<Args...>,
 	implementation: AnyImplementation
 ): ((Args...) -> ())?
-	return mmaps.get<<prvd.Lifecycle>>(self.implementationLifecycleListeners, lifecycle)[implementation]
+	return mmaps.get<<prvd.Lifecycle<...any>>>(self.implementationLifecycleListeners, lifecycle)[implementation]
 end
 
 function Level.registerLifecyclesForImplementation(self: Level, implementation: AnyImplementation)

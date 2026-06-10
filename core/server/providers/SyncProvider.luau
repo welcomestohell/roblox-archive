@@ -2,7 +2,7 @@
 
 local CharmSync = require "@roblox_packages/CharmSync"
 local net = require "@core/server/generated/net"
-local prvd = require "@prvdmwrong/prvdmwrong"
+local prvd = require "@roblox_packages/prvd"
 
 local SyncProvider = {}
 export type SyncProvider = typeof(SyncProvider)

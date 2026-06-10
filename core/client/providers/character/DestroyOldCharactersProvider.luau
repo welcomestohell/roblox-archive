@@ -1,6 +1,6 @@
 local Charm = require "@roblox_packages/Charm"
 local character = require "@libs/character"
-local prvd = require "@prvdmwrong/prvdmwrong"
+local prvd = require "@roblox_packages/prvd"
 
 local DestroyOldCharactersProvider = {}
 export type DestroyOldCharactersProvider = typeof(DestroyOldCharactersProvider)

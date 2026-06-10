@@ -1,7 +1,7 @@
 local Workspace = game:GetService "Workspace"
 
 local net = require "@core/server/generated/net"
-local prvd = require "@prvdmwrong/prvdmwrong"
+local prvd = require "@roblox_packages/prvd"
 
 local PreloadProvider = {}
 export type PreloadProvider = typeof(PreloadProvider)
@@ -15,7 +15,7 @@ function PreloadProvider.castMeshId(self: PreloadProvider, instance: Instance)
 		else nil
 end
 
-function PreloadProvider.constructor(self: PreloadProvider)
+function PreloadProvider.onInit(self: PreloadProvider)
 	local assetIds = {}
 	for _, descendant in Workspace:GetDescendants() do
 		local meshId = self:castMeshId(descendant)

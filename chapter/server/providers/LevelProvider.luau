@@ -7,7 +7,7 @@ local Level = require "@libs/core/Level"
 local PlayerInstanceLoader = require "@core/server/PlayerInstanceLoader"
 local logger = require "@core/shared/logger"
 local net = require "@chapter/server/generated/net"
-local prvd = require "@prvdmwrong/prvdmwrong"
+local prvd = require "@roblox_packages/prvd"
 
 local DEFAULTS: { [Instance]: { [string]: unknown } } = {
 	[StarterGui] = { ScreenOrientation = Enum.ScreenOrientation.LandscapeSensor },

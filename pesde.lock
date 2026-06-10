@@ -150,6 +150,13 @@ pathfs = [{ name = "jiwonz/pathfs", version = "^0.6.0", index = "https://github.
 result = [{ name = "lukadev_0/result", version = "^1.2.1", index = "https://github.com/pesde-pkg/index" }, "peer"]
 unzip = [{ name = "0x5eal/unzip", version = "^0.2.0", index = "https://github.com/pesde-pkg/index", target = "luau" }, "standard"]
 
+[graph."prvdmwrong/core@0.2.0-rewrite.2 roblox"]
+direct = ["prvd", { name = "prvdmwrong/core", version = "^0.2.0-rewrite.2", index = "default" }, "standard"]
+
+[graph."prvdmwrong/core@0.2.0-rewrite.2 roblox".pkg_ref]
+ref_ty = "pesde"
+index_url = "https://github.com/pesde-pkg/index"
+
 [graph."realthx1/luaulog@0.3.0 roblox"]
 direct = ["Log", { name = "realthx1/luaulog", version = "^0.3.0", index = "default" }, "standard"]
 

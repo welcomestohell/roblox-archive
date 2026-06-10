@@ -1,7 +1,7 @@
 local CollectionService = game:GetService "CollectionService"
 local RunService = game:GetService "RunService"
 
-local prvd = require "@prvdmwrong/prvdmwrong"
+local prvd = require "@roblox_packages/prvd"
 
 local TagProvider = {}
 export type TagProvider = typeof(TagProvider)

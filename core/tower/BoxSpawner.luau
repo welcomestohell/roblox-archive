@@ -1,7 +1,6 @@
 const Level = require "@libs/core/Level"
-const sounds = require "@libs/sounds"
 const std = require "@libs/std"
-const assets = require "@core/assets"
+const press = require "@libs/press"
 const Promise = require "@roblox_packages/Promise"
 
 local BoxSpawner = std.Mechanic {}
@@ -23,8 +22,8 @@ BoxSpawner.AnchoredTag = BoxSpawner:attribute("AnchoredTag", std.gt.string(), "B
 BoxSpawner:attributeSection "Activation"
 BoxSpawner.Activation = std.useActivation(BoxSpawner)
 
-BoxSpawner:attributeSection "Sound"
-BoxSpawner.Sound = std.useSound(BoxSpawner)
+BoxSpawner:attributeSection "Press"
+BoxSpawner.Press = std.usePress(BoxSpawner)
 
 function BoxSpawner.spawn(spawner: BoxSpawnerMechanic, level: std.Level)
 	if spawner.boxLife then spawner.boxLife:destroy() end
@@ -58,13 +57,19 @@ function BoxSpawner.onActivate(self: typeof(BoxSpawner), spawner: BoxSpawnerMech
 	spawner:Debounced(true)
 	spawner.Activation.Enabled(spawner, false)
 
-	spawner:spawn(level)
-	sounds.playMechanic(self.Sound, spawner :: any, assets.sfx.button)
-
 	spawner.life:delay(spawner:Cooldown(), function(spawner: BoxSpawnerMechanic)
 		spawner:Debounced(false)
 		spawner.Activation.Enabled(spawner, true)
 	end, spawner)
+
+	spawner.life:add(press.usePress {
+		instance = spawner.instance.Button,
+		instanceConfiguration = spawner.instanceConfiguration,
+		attributes = self.Press,
+		flash = true,
+	})
+
+	spawner:spawn(level)
 end
 
 function BoxSpawner:onStart(spawner: BoxSpawnerMechanic, level: std.Level)

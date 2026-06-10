@@ -9,7 +9,7 @@ local Level = require "@libs/core/Level"
 local PlayerInstanceLoader = require "@core/server/PlayerInstanceLoader"
 local logger = require "@core/shared/logger"
 local net = require "@kit/server/generated/net"
-local prvd = require "@prvdmwrong/prvdmwrong"
+local prvd = require "@roblox_packages/prvd"
 
 local TOWER_FALLBACK_TAG = "Welcome To Hell Kit Tower"
 

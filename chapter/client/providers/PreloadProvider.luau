@@ -6,7 +6,7 @@ local LoadingScreen = require "@core/ui/components/screens/LoadingScreen"
 local assets = require "@core/assets"
 local flattenAssetModules = require "@core/shared/assets/flattenAssetModules"
 local net = require "@core/client/generated/net"
-local prvd = require "@prvdmwrong/prvdmwrong"
+local prvd = require "@roblox_packages/prvd"
 local useDelay = require "@core/shared/fluid/useDelay"
 
 local PreloadProvider = {}

@@ -1,7 +1,7 @@
 local AccountStore = require "./AccountStore"
 local PlayerStore = require "./PlayerStore"
 local objects = require "@libs/collections/objects"
-local prvd = require "@prvdmwrong/prvdmwrong"
+local prvd = require "@roblox_packages/prvd"
 
 type Account = AccountStore.Account
 
