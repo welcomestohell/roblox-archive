@@ -8,14 +8,10 @@ local SyncProvider = {}
 export type SyncProvider = typeof(SyncProvider)
 SyncProvider.priority = -1
 
-function SyncProvider.onPlayerRemoving(self: SyncProvider, player: Player)
-	CharmSync.server.removeClient(player)
-end
+function SyncProvider.onPlayerRemoving(self: SyncProvider, player: Player) CharmSync.server.removeClient(player) end
 
 function SyncProvider.onStart(self: SyncProvider)
-	CharmSync.server.connect(function(player, patches)
-		net.patch.fire(player, patches)
-	end)
+	CharmSync.server.connect(function(player, patches) net.patch.fire(player, patches) end)
 end
 
 return prvd(SyncProvider)

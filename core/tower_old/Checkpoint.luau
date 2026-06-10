@@ -25,9 +25,7 @@ Checkpoint.debounce = std.LevelState(false)
 
 function Checkpoint.onActivate(self: typeof(Checkpoint), checkpoint: CheckpointMechanic, level: std.Level)
 	local currentCheckpoint = self.currentCheckpoint:get(level)
-	if currentCheckpoint == checkpoint then
-		return
-	end
+	if currentCheckpoint == checkpoint then return end
 
 	self.currentCheckpoint:set(level, checkpoint)
 	self.onUpdated:Fire(level, checkpoint)
@@ -36,9 +34,12 @@ function Checkpoint.onActivate(self: typeof(Checkpoint), checkpoint: CheckpointM
 	end
 
 	self.Activation.Enabled(checkpoint, false)
-	checkpoint.life:delay(checkpoint:Cooldown(), function(self: typeof(self), checkpoint: typeof(checkpoint))
-		self.Activation.Enabled(checkpoint, true)
-	end, self, checkpoint)
+	checkpoint.life:delay(
+		checkpoint:Cooldown(),
+		function(self: typeof(self), checkpoint: typeof(checkpoint)) self.Activation.Enabled(checkpoint, true) end,
+		self,
+		checkpoint
+	)
 end
 
 return Checkpoint

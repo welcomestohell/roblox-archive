@@ -31,9 +31,7 @@ Vine.GrabSound = sounds.useAttributes(Vine, "GrabSound")
 Vine.JumpSound = sounds.useAttributes(Vine, "JumpSound")
 
 function Vine.useTemplateConstraint(vine: VineMechanic): Constraint
-	if vine.instance.Constraint then
-		return vine.instance.Constraint
-	end
+	if vine.instance.Constraint then return vine.instance.Constraint end
 
 	local rope: RopeConstraint = vine.life:add(Instance.new "RopeConstraint")
 	rope.Name = "Constraint"
@@ -44,9 +42,7 @@ function Vine.useTemplateConstraint(vine: VineMechanic): Constraint
 end
 
 function Vine.useTemplateHandle(vine: VineMechanic): BasePart
-	if vine.templateHandle then
-		return vine.templateHandle
-	end
+	if vine.templateHandle then return vine.templateHandle end
 
 	local handle: Part = vine.life:add(Instance.new "Part")
 	handle.Name = "Handle"
@@ -59,14 +55,10 @@ function Vine.useTemplateHandle(vine: VineMechanic): BasePart
 end
 
 function Vine.onActivate(self: typeof(Vine), vine: VineMechanic, level: std.Level)
-	if not vine:Enabled() or vine:Debounced() then
-		return
-	end
+	if not vine:Enabled() or vine:Debounced() then return end
 
 	local root = character.getMaybeHumanoidRootPart()
-	if not root then
-		return
-	end
+	if not root then return end
 
 	vine:Debounced(true)
 	self.Activation.Enabled(vine, false)

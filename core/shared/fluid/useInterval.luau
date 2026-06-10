@@ -13,13 +13,9 @@ local function useInterval(seconds: Fluid.UsedAs<number>, callback: () -> (), im
 		end
 	end)
 
-	local function cleanup()
-		connection:Disconnect()
-	end
+	local function cleanup() connection:Disconnect() end
 
-	if immediate then
-		Fluid.cleanup(task.spawn(callback))
-	end
+	if immediate then Fluid.cleanup(task.spawn(callback)) end
 
 	return cleanup
 end

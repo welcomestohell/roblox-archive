@@ -95,13 +95,9 @@ local function playInstance(
 
 	local pointer = instanceConfiguration:FindFirstChild(attributes.Basename(instanceConfiguration))
 	if pointer then
-		if pointer:IsA "ObjectValue" then
-			pointer = pointer.Value or pointer
-		end
+		if pointer:IsA "ObjectValue" then pointer = pointer.Value or pointer end
 
-		if pointer:IsA "Sound" then
-			sound = sound
-		end
+		if pointer:IsA "Sound" then sound = sound end
 	end
 
 	local configuration = configurationFromAttributes(attributes, instanceConfiguration)

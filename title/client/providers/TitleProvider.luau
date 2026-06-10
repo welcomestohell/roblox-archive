@@ -39,9 +39,7 @@ function TitleProvider.onStart(self: TitleProvider)
 		local disabledTypes = {}
 		while numDisabled ~= #DISABLED_CORE_GUIS do
 			for _, type in DISABLED_CORE_GUIS do
-				if disabledTypes[type] then
-					continue
-				end
+				if disabledTypes[type] then continue end
 
 				if pcall(StarterGui.SetCoreGuiEnabled, StarterGui, type, false) then
 					disabledTypes[type] = true
@@ -104,15 +102,11 @@ function TitleProvider.onStart(self: TitleProvider)
 
 			Parent = Players.LocalPlayer.PlayerGui,
 
-			Fluid.show(isMenuVisible, function(): any
-				return TitleScreen()
-			end, function()
+			Fluid.show(isMenuVisible, function(): any return TitleScreen() end, function()
 				return {
 					LoadingScreen {
 						label = "Loading",
-						title = function()
-							return `{assetsLoaded()}/{#assetIds} Assets`
-						end,
+						title = function() return `{assetsLoaded()}/{#assetIds} Assets` end,
 						visible = isAssetsLoading,
 						layoutOrder = nextOrder(),
 					},

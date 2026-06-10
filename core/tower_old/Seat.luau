@@ -26,9 +26,7 @@ Seat.activation = activation.useAttributes(Seat)
 function Seat.onActivate(self: typeof(Seat), seat: SeatMechanic)
 	local isSeatable = seat:Enabled() and not self.seated and not self.debounced[seat] and character.isCharacterAlive()
 
-	if not isSeatable then
-		return
-	end
+	if not isSeatable then return end
 
 	self.debounced[seat] = true
 	self.seated = true
@@ -58,16 +56,12 @@ function Seat.onActivate(self: typeof(Seat), seat: SeatMechanic)
 	local function dismount()
 		self.seated = false
 		local humanoid = character.getMaybeHumanoid()
-		if seat:JumpOnDismount() and humanoid then
-			humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-		end
+		if seat:JumpOnDismount() and humanoid then humanoid:ChangeState(Enum.HumanoidStateType.Jumping) end
 		seat.activation.Enabled(seat, true)
 	end
 
 	weldLife:add(dismount)
-	task.delay(seat:Cooldown(), function()
-		self.debounced[seat] = nil
-	end)
+	task.delay(seat:Cooldown(), function() self.debounced[seat] = nil end)
 end
 
 return Seat

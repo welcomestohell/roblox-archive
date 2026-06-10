@@ -22,15 +22,11 @@ export type Attribute<T> = setmetatable<{
 }, typeof(Attribute)>
 
 local function observeInstance(self: Attribute<unknown>, instance: Instance)
-	if self._observerDisconnectors[instance] then
-		return
-	end
+	if self._observerDisconnectors[instance] then return end
 
 	if not self._observerCallbacks[instance] then
 		local function onAttributesChanged(attribute)
-			if attribute ~= self.attribute then
-				return
-			end
+			if attribute ~= self.attribute then return end
 
 			local changeListeners = self._changeListeners[instance]
 			if changeListeners and next(changeListeners) ~= nil then
@@ -38,9 +34,7 @@ local function observeInstance(self: Attribute<unknown>, instance: Instance)
 				threadpool.spawnCallbacks(changeListeners, value, self)
 			else
 				local disconnect: () -> () = self._observerDisconnectors[instance]
-				if disconnect then
-					disconnect()
-				end
+				if disconnect then disconnect() end
 				self._observerDisconnectors[instance] = nil
 			end
 
@@ -78,9 +72,7 @@ local function fetchInstance(self: Attribute<unknown>, instance: Instance)
 		end
 	end
 
-	if isMissing and value ~= nil then
-		instance:SetAttribute(attribute, value)
-	end
+	if isMissing and value ~= nil then instance:SetAttribute(attribute, value) end
 
 	self._cache[instance] = value
 	self._updated[instance] = true
@@ -116,22 +108,16 @@ local function observeListener<T>(
 
 	local disconnected = false
 	local function disconnect()
-		if disconnected then
-			return
-		end
+		if disconnected then return end
 
 		disconnected = true
 
 		local listeners = listenerMap[resolved]
-		if not listeners then
-			return
-		end
+		if not listeners then return end
 
 		tables.findAndRemove(listeners, listener)
 
-		if next(listeners) == nil then
-			listenerMap[resolved] = nil
-		end
+		if next(listeners) == nil then listenerMap[resolved] = nil end
 	end
 
 	return disconnect
@@ -156,16 +142,12 @@ function Attribute.type<T>(_: Attribute<T>): T
 	error "This function is undefined, and should only be used in type definitions: `typeof(attribute:type())`"
 end
 
-function Attribute.isAttribute(x: any)
-	return type(x) == "table" and getmetatable(x) == Attribute
-end
+function Attribute.isAttribute(x: any) return type(x) == "table" and getmetatable(x) == Attribute end
 
 function Attribute.peek<T>(self: Attribute<T>, instance: resolveInstance.InstanceLike): T
 	local value = self._cache[resolveInstance(instance)] :: any
 
-	if value == nil then
-		value = self.defaultValue
-	end
+	if value == nil then value = self.defaultValue end
 
 	return value
 end
@@ -173,9 +155,7 @@ end
 function Attribute.fetch<T>(self: Attribute<T>, instance: resolveInstance.InstanceLike): T
 	local fetched = fetchInstance(self, resolveInstance(instance))
 
-	if fetched == nil then
-		fetched = self.defaultValue
-	end
+	if fetched == nil then fetched = self.defaultValue end
 
 	return fetched
 end
@@ -183,15 +163,11 @@ end
 function Attribute.get<T>(self: Attribute<T>, instance: resolveInstance.InstanceLike): T
 	local resolved = resolveInstance(instance)
 
-	if not self._updated[resolved] then
-		return fetchInstance(self, resolved)
-	end
+	if not self._updated[resolved] then return fetchInstance(self, resolved) end
 
 	local cached = self._cache[resolved]
 
-	if cached == nil then
-		return self.defaultValue
-	end
+	if cached == nil then return self.defaultValue end
 
 	return cached
 end
@@ -199,13 +175,9 @@ end
 function Attribute.getOrSet<T>(self: Attribute<T>, instance: resolveInstance.InstanceLike, default: T): T
 	local value = self:get(instance)
 
-	if default == nil then
-		default = self.defaultValue
-	end
+	if default == nil then default = self.defaultValue end
 
-	if value == nil then
-		value = self:set(instance, default)
-	end
+	if value == nil then value = self:set(instance, default) end
 
 	return value
 end
@@ -213,17 +185,13 @@ end
 function Attribute.getOrSetWith<T>(self: Attribute<T>, instance: resolveInstance.InstanceLike, derive: () -> T): T
 	local value = self:get(instance)
 
-	if value == nil then
-		value = self:set(instance, derive())
-	end
+	if value == nil then value = self:set(instance, derive()) end
 
 	return value
 end
 
 function Attribute.set<T>(self: Attribute<T>, instance: resolveInstance.InstanceLike, value: T): T
-	if value == nil then
-		value = self.defaultValue
-	end
+	if value == nil then value = self.defaultValue end
 
 	local resolved = resolveInstance(instance)
 
@@ -264,9 +232,7 @@ end
 
 function Attribute.awaitChange<T>(self: Attribute<T>, instance: resolveInstance.InstanceLike): T
 	local currentThread = coroutine.running()
-	observeListener(self, instance, self._changeListeners, function(value: T)
-		task.spawn(currentThread, value)
-	end)
+	observeListener(self, instance, self._changeListeners, function(value: T) task.spawn(currentThread, value) end)
 	return coroutine.yield()
 end
 
@@ -283,8 +249,6 @@ function Attribute.__call<T>(self: Attribute<T>, instance: resolveInstance.Insta
 	return if select("#", ...) == 0 then self:get(instance) else self:set(instance, ...)
 end
 
-function Attribute.__tostring<T>(self: Attribute<T>)
-	return `Attribute<{self.check:format()}>("{self.attribute}")`
-end
+function Attribute.__tostring<T>(self: Attribute<T>) return `Attribute<{self.check:format()}>("{self.attribute}")` end
 
 return Attribute

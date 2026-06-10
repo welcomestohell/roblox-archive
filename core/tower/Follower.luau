@@ -65,9 +65,7 @@ function Follower.getTargetCFrame(target: Target): CFrame?
 		return mouse.Hit
 	elseif target == "Character" then
 		local root = character.getMaybeHumanoidRootPart()
-		if root then
-			return root.CFrame
-		end
+		if root then return root.CFrame end
 	end
 	return nil
 end
@@ -80,23 +78,17 @@ function Follower.onPreSimulation(self: typeof(Follower), deltaTime: number, lev
 	local followers = level:getMechanics(self)
 	local countFollowers = #followers
 
-	if countFollowers == 0 then
-		return
-	end
+	if countFollowers == 0 then return end
 
 	local shouldBulkMove = false
 	local bulkInstances: { BasePart } = tables.create(countFollowers)
 	local bulkCFrames: { CFrame } = tables.create(countFollowers)
 
 	for _, follower: FollowerMechanic in followers do
-		if not follower:Enabled() then
-			continue
-		end
+		if not follower:Enabled() then continue end
 
 		local targetCFrame = self.getTargetCFrame(follower:Target())
-		if not targetCFrame then
-			continue
-		end
+		if not targetCFrame then continue end
 
 		-- Dear basketball
 
@@ -128,29 +120,17 @@ function Follower.onPreSimulation(self: typeof(Follower), deltaTime: number, lev
 
 		-- FIXME: ts is misbehaving ??????????
 
-		if not follower:UseXPosition() then
-			tx = cx
-		end
+		if not follower:UseXPosition() then tx = cx end
 
-		if not follower:UseYPosition() then
-			ty = cy
-		end
+		if not follower:UseYPosition() then ty = cy end
 
-		if not follower:UseZPosition() then
-			tz = cz
-		end
+		if not follower:UseZPosition() then tz = cz end
 
-		if not follower:UseXRotation() then
-			trx = rx
-		end
+		if not follower:UseXRotation() then trx = rx end
 
-		if not follower:UseYRotation() then
-			try = ry
-		end
+		if not follower:UseYRotation() then try = ry end
 
-		if not follower:UseZRotation() then
-			trz = rz
-		end
+		if not follower:UseZRotation() then trz = rz end
 
 		targetCFrame = CFrame.new(tx, ty, tz) * CFrame.fromEulerAnglesXYZ(trx, try, trz)
 
@@ -166,9 +146,7 @@ function Follower.onPreSimulation(self: typeof(Follower), deltaTime: number, lev
 		shouldBulkMove = true
 	end
 
-	if shouldBulkMove then
-		Workspace:BulkMoveTo(bulkInstances, bulkCFrames)
-	end
+	if shouldBulkMove then Workspace:BulkMoveTo(bulkInstances, bulkCFrames) end
 end
 
 return Follower

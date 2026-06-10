@@ -11,9 +11,7 @@ function DestroyOldCharactersProvider.onLocalCharacterAdded(
 	character: character.Character
 )
 	local currentCharacter = self.currentCharacter()
-	if currentCharacter ~= nil then
-		task.defer(game.Destroy, currentCharacter)
-	end
+	if currentCharacter ~= nil then task.defer(game.Destroy, currentCharacter) end
 	self.currentCharacter(character)
 end
 

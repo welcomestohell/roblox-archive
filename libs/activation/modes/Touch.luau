@@ -5,9 +5,7 @@ local types = require "../types"
 local Touch = {} :: types.ActivationMode
 
 function Touch.predicate(context: types.PredicateContext): Result.Result<nil, string>
-	if context.instance:IsA "BasePart" then
-		return Result.Ok(nil)
-	end
+	if context.instance:IsA "BasePart" then return Result.Ok(nil) end
 	return Result.Err(`Expected a BasePart, got {context.instance.ClassName}`)
 end
 

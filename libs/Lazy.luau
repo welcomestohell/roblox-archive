@@ -10,14 +10,10 @@ function Lazy.new<T>(loadCallback: () -> T): Lazy<T>
 	return setmetatable({ loaded = false, loadCallback = loadCallback, value = nil }, Lazy)
 end
 
-function Lazy.isLazy(x: any)
-	return typeof(x) == "table" and getmetatable(x) == Lazy
-end
+function Lazy.isLazy(x: any) return typeof(x) == "table" and getmetatable(x) == Lazy end
 
 function Lazy.get<T>(self: Lazy<T>): T
-	if self.loaded then
-		return self.value :: T
-	end
+	if self.loaded then return self.value :: T end
 
 	local value = self.loadCallback()
 	self.value = value

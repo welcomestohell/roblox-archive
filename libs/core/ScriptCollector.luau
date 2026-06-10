@@ -124,9 +124,7 @@ end
     @param instance Instance -- The Instance to collect.
 ]=]
 function ScriptCollector.collectInstance(self: ScriptCollector, instance: Instance)
-	if instance:IsA "ModuleScript" then
-		self:collectModuleScript(instance)
-	end
+	if instance:IsA "ModuleScript" then self:collectModuleScript(instance) end
 end
 
 --[=[

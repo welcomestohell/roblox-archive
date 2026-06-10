@@ -18,9 +18,7 @@ function PlayerInstanceLoader.new(timeout: number, onTimeout: (Instance) -> ()?)
 end
 
 function PlayerInstanceLoader.sendToPlayer(self: PlayerInstanceLoader, player: Player, instance: Instance)
-	if self._threads[player] then
-		return self._instances[player]
-	end
+	if self._threads[player] then return self._instances[player] end
 
 	instance.Parent = player.PlayerGui
 	self._instances[player] = instance

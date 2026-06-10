@@ -58,14 +58,10 @@ end
 local localPlayer = Players.LocalPlayer
 function Elevator.Run(scope: _T.Scope, utility: _T.Utility)
 	local elevatorConfig = scope.instance
-	if not elevatorConfig then
-		return
-	end
+	if not elevatorConfig then return end
 
 	local elevator = elevatorConfig.Parent
-	if not elevator or not elevator:IsA "BasePart" then
-		return
-	end
+	if not elevator or not elevator:IsA "BasePart" then return end
 
 	--> Get Config
 	local Config = utility.Config
@@ -77,16 +73,12 @@ function Elevator.Run(scope: _T.Scope, utility: _T.Utility)
 	--> Main Functionality
 	local touchingParts = {}
 	local function activateElevator(part: BasePart, params: OverlapParams)
-		if elevator:GetAttribute "Activated" == false or not part or touchingParts[part] then
-			return
-		end
+		if elevator:GetAttribute "Activated" == false or not part or touchingParts[part] then return end
 
 		local component = configuration.Vector or ALLOWED_CFRAME_COMPONENTS[1]
 		local faceVector: Vector3 = WORLD_CFRAME_COMPONENTS[component]
 			or utility.Property.getPropertySafe(elevator.CFrame, component)
-		if not faceVector then
-			return
-		end
+		if not faceVector then return end
 
 		-- Pro Tip : don't do Vector3.yAxis * math.huge
 		local currentMaxForce = Vector3.new(0, configuration.MaxForce, 0)
@@ -116,9 +108,7 @@ function Elevator.Run(scope: _T.Scope, utility: _T.Utility)
 				break
 			end
 			local zoneParts = Workspace:GetPartsInPart(elevator, params)
-			if #zoneParts <= 0 then
-				break
-			end
+			if #zoneParts <= 0 then break end
 
 			if configuration.ContinuousUpdates then
 				faceVector = utility.Property.getPropertySafe(elevator.CFrame, component)
@@ -136,9 +126,7 @@ function Elevator.Run(scope: _T.Scope, utility: _T.Utility)
 	--> Main Functionality
 	scope:attach(elevator)
 	scope:add(elevator.Touched:Connect(function(touchingPart: BasePart)
-		if not utility.ClientObjects.evaluateToucher(elevator, touchingPart, touchConfiguration) then
-			return
-		end
+		if not utility.ClientObjects.evaluateToucher(elevator, touchingPart, touchConfiguration) then return end
 
 		local part: BasePart
 		local params = OverlapParams.new()
@@ -148,15 +136,11 @@ function Elevator.Run(scope: _T.Scope, utility: _T.Utility)
 		local character = localPlayer.Character
 		if character and touchingPart:IsDescendantOf(character) then
 			local rootPart = character:FindFirstChild "HumanoidRootPart"
-			if not (rootPart and rootPart:IsA "BasePart") then
-				return
-			end
+			if not (rootPart and rootPart:IsA "BasePart") then return end
 
 			part = rootPart
 			local hitbox = utility.Character.getHitbox(touchConfiguration.playerHitboxMode or "StaticWholeBody", params)
-			if not table.find(hitbox, touchingPart) then
-				return
-			end
+			if not table.find(hitbox, touchingPart) then return end
 		elseif utility.ClientObjects.isPushbox(touchingPart) then
 			part = touchingPart
 			params:AddToFilter(touchingPart)

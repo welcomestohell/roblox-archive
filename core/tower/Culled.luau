@@ -43,10 +43,12 @@ Culled.debuggerEmoji = "👻"
 Culled.Mode = Culled:attribute("Mode", std.gt.unionLiterals2("Distance", "Camera"), "Distance")
 Culled.Distance = Culled:attribute("Distance", std.gt.NumberRange, NumberRange.new(0, math.huge))
 
+-- Investigate: FindFirstAncestorOfClass to replace all this?
 Culled.UpdateAncestor = Culled:attribute("UpdateAncestor", std.gt.optional(std.gt.string()), nil)
 Culled.UpdateDescendant = Culled:attribute("UpdateDescendant", std.gt.optional(std.gt.string()), nil)
 
 -- Investigate: AttributeMap for properties? Or a PropertyToggler mechanic?
+-- Maybe even QueryDescendants?
 Culled.SetAnchored = Culled:attribute("SetAnchored", std.gt.boolean(), false)
 Culled.SetEnabled = Culled:attribute("SetEnabled", std.gt.boolean(), false)
 Culled.SetVisible = Culled:attribute("SetVisible", std.gt.boolean(), false)
@@ -105,28 +107,18 @@ function Culled.updateVisible(culled: CulledMechanic, level: std.Level, isVisibl
 		or culled:UpdateDescendant() and culled.instance:FindFirstChild(culled:UpdateDescendant(), true)
 		or culled.instance
 
-	if culled:SetAnchored() then
-		pcall(properties.setUnsafe, target, "Anchored", isVisible)
-	end
+	if culled:SetAnchored() then pcall(properties.setUnsafe, target, "Anchored", isVisible) end
 
-	if culled:SetEnabled() then
-		pcall(properties.setUnsafe, target, "Enabled", isVisible)
-	end
+	if culled:SetEnabled() then pcall(properties.setUnsafe, target, "Enabled", isVisible) end
 
-	if culled:SetVisible() then
-		pcall(properties.setUnsafe, target, "Visible", isVisible)
-	end
+	if culled:SetVisible() then pcall(properties.setUnsafe, target, "Visible", isVisible) end
 
 	if culled:SetMechanicsEnabled() and level.mechanicsByInstance[target] then
 		for _, mechanic in level.mechanicsByInstance[target] do
-			if mechanic == culled then
-				continue
-			end
+			if mechanic == culled then continue end
 
 			local enabled: std.Attribute<boolean>? = (mechanic :: any).Enabled
-			if enabled and Attribute.isAttribute(enabled) then
-				enabled(mechanic, isVisible)
-			end
+			if enabled and Attribute.isAttribute(enabled) then enabled(mechanic, isVisible) end
 		end
 	end
 end

@@ -37,9 +37,7 @@ CheckpointTeleporter.Transition = tweens.useAttributes(CheckpointTeleporter)
 
 function CheckpointTeleporter:onActivate(teleporter: CheckpointTeleporterMechanic, level: std.Level)
 	local root = character.getMaybeHumanoidRootPart()
-	if not root then
-		return
-	end
+	if not root then return end
 
 	local currentCheckpoint = Checkpoint.currentCheckpoint:get(level)
 	local destination: BasePart, destinationConfiguration: Instance
@@ -58,9 +56,12 @@ function CheckpointTeleporter:onActivate(teleporter: CheckpointTeleporterMechani
 	end
 
 	self.Activation.Enabled(teleporter, false)
-	teleporter.life:delay(teleporter:Cooldown(), function(self: typeof(self), teleporter: typeof(teleporter))
-		self.Activation.Enabled(teleporter, true)
-	end, self, teleporter)
+	teleporter.life:delay(
+		teleporter:Cooldown(),
+		function(self: typeof(self), teleporter: typeof(teleporter)) self.Activation.Enabled(teleporter, true) end,
+		self,
+		teleporter
+	)
 
 	if self.Sound.Play(teleporter) then
 		sounds.playInstance(self.Sound, teleporter.instance, teleporter.instanceConfiguration, sounds.sfx.teleport)

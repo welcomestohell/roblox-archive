@@ -57,17 +57,13 @@ function Elevator.maxForce(elevator: ElevatorMechanic, faceVector: Vector3)
 end
 
 function Elevator.spawnPart(elevator: ElevatorMechanic, part: BasePart, overlap: OverlapParams)
-	if elevator.touching[part] or not elevator:Enabled() then
-		return
-	end
+	if elevator.touching[part] or not elevator:Enabled() then return end
 
 	local faceVector = elevator:faceVector()
 
 	local spawnLife = elevator.life:extend()
 	spawnLife:destroyOn(part.Destroying)
-	spawnLife:add(function()
-		elevator.touching[part] = nil
-	end)
+	spawnLife:add(function() elevator.touching[part] = nil end)
 
 	local velocityAttachment = spawnLife:add(Instance.new "Attachment")
 	velocityAttachment.Parent = part

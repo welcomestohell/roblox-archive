@@ -9,9 +9,7 @@ SyncProvider.priority = math.huge - 1
 
 function SyncProvider.onPlayerAdded(self: SyncProvider, player: Player)
 	CharmSync.server.addSignalsToClient(player, {
-		[`account-{player.Name}`] = Charm.computed(function()
-			return AccountStore.getAccount(player.Name)
-		end),
+		[`account-{player.Name}`] = Charm.computed(function() return AccountStore.getAccount(player.Name) end),
 	})
 end
 

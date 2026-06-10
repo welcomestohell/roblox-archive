@@ -50,9 +50,7 @@ local function teleport(context: types.TeleportContext)
 	local transitionKey = context.attributes.Transition(context.teleporterConfiguration)
 
 	local tweenDuration = context.tweenAttributes.Duration(context.teleporterConfiguration)
-	if tweenDuration == 0 then
-		transitionKey = "Instant"
-	end
+	if tweenDuration == 0 then transitionKey = "Instant" end
 
 	local transition = transitions[transitionKey]
 	if transition then

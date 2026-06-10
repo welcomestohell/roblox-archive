@@ -58,9 +58,7 @@ export type Level = setmetatable<{
 function Level.new(outerLife: Life.Life, name: string, instance: Instance)
 	local isInstanceValid, instanceCause = Level.LevelInstance:matches(instance)
 
-	if not isInstanceValid then
-		return Result.Err(`Invalid instance: {instanceCause:formatErr()}`)
-	end
+	if not isInstanceValid then return Result.Err(`Invalid instance: {instanceCause:formatErr()}`) end
 
 	local self: Level = setmetatable({
 		life = outerLife:extend(),
@@ -85,9 +83,8 @@ function Level.new(outerLife: Life.Life, name: string, instance: Instance)
 			onInit = prvd.lifecycle("onInit", function(lifecycle: prvd.Lifecycle<Level>, level: any)
 				local promises: { Promise.Promise } = {}
 				for index, listener in lifecycle.callbacks do
-					promises[index] = Promise.try(listener, level):catch(function(e)
-						warn(`Failed to initialize mechanic implementation: {e}`)
-					end)
+					promises[index] = Promise.try(listener, level)
+						:catch(function(e) warn(`Failed to initialize mechanic implementation: {e}`) end)
 				end
 				Promise.all(promises):await()
 			end),
@@ -160,9 +157,7 @@ function Level.registerLifecyclesForImplementation(self: Level, implementation: 
 	for _, lifecycle in self.implementationLifecycles do
 		local method: (AnyImplementation, ...any) -> () = (implementation :: any)[lifecycle.method]
 		if type(method) == "function" then
-			local function listener(...)
-				return method(implementation, ...)
-			end
+			local function listener(...) return method(implementation, ...) end
 			mmaps.set(self.implementationLifecycleListeners, lifecycle, implementation, listener)
 			lifecycle:register(listener)
 		end
@@ -174,9 +169,7 @@ function Level.registerLifecyclesForMechanic(self: Level, mechanic: Mechanic)
 		local implementation = mechanic.implementation
 		local method: (AnyImplementation, Mechanic, ...any) -> () = (implementation :: any)[lifecycle.method]
 		if type(method) == "function" then
-			local function listener(...)
-				return method(implementation, mechanic, ...)
-			end
+			local function listener(...) return method(implementation, mechanic, ...) end
 			mmaps.set(self.mechanicLifecycleListeners, lifecycle, mechanic, listener)
 			lifecycle:register(listener)
 		end
@@ -192,9 +185,7 @@ function Level.bindActivation(self: Level, mechanic: Mechanic)
 
 	-- stylua: ignore
 	local onActivate = self:getListenerForMechanic<<(Level, activation.ActivationEvent)>>(self.mechanicLifecycles.onActivate, mechanic)
-	if not onActivate then
-		return
-	end
+	if not onActivate then return end
 
 	-- stylua: ignore
 	local getActivationInstance = self:getListenerForMechanic<<(Level)>>(self.mechanicLifecycles.getActivationInstance, mechanic)
@@ -226,14 +217,10 @@ function Level.loadInstance(self: Level, instance: Instance): { Mechanic }
 		local mechanicName = string.match(tag, "Mechanic:%s?([%w_%-]+)")
 		if mechanicName then
 			local implementation = Mechanic.downcast(self.scripts.mechanicImplementationByName[mechanicName])
-			if not implementation then
-				continue
-			end
+			if not implementation then continue end
 
 			local mechanizeResult = mechanize(implementation, self.life, instance)
-			if mechanizeResult:isErr() then
-				continue
-			end
+			if mechanizeResult:isErr() then continue end
 
 			local mechanic: Mechanic = mechanizeResult:unwrap() :: any
 			table.insert(self.mechanics, mechanic)
@@ -247,9 +234,9 @@ function Level.loadInstance(self: Level, instance: Instance): { Mechanic }
 		local groupName = string.match(tag, "Group:%s?([%w_%-]+)")
 		if groupName then
 			marrays.push(self.instanceByGroups, groupName, instance)
-			self.life:add(instance.Destroying:Once(function()
-				marrays.remove(self.instanceByGroups, groupName, instance)
-			end))
+			self.life:add(
+				instance.Destroying:Once(function() marrays.remove(self.instanceByGroups, groupName, instance) end)
+			)
 		end
 	end
 	return mechanics
@@ -262,9 +249,7 @@ function Level.loadDescendantInstancesAsync(self: Level, root: Instance, skipRoo
 	local loadPromises: { Promise.Promise } = if skipRoot then {} else { self:loadInstanceAsync(root) }
 
 	for _, descendant in root:GetChildren() do
-		if descendant:HasTag(Level.DO_NOT_LOAD_TAG) then
-			continue
-		end
+		if descendant:HasTag(Level.DO_NOT_LOAD_TAG) then continue end
 		table.insert(loadPromises, self:loadInstanceAsync(descendant) :: Promise.Promise)
 		local descendantPromises = self:loadDescendantInstancesAsync(descendant, true)
 		table.move(descendantPromises, 1, #descendantPromises, #instancePromises + 1, instancePromises)
@@ -298,39 +283,27 @@ function Level.start(self: Level)
 	self.mechanicLifecycles.onStart:fire(self)
 
 	self.life:addMany(
-		RunService.PreSimulation:Connect(function(dt)
-			self.implementationLifecycles.onPreSimulation:fire(dt, self)
-		end),
-		RunService.PostSimulation:Connect(function(dt)
-			self.implementationLifecycles.onPostSimulation:fire(dt, self)
-		end),
-		RunService.PreRender:Connect(function(dt)
-			self.implementationLifecycles.onPreRender:fire(dt, self)
-		end),
-		RunService.PreAnimation:Connect(function(dt)
-			self.implementationLifecycles.onPreAnimation:fire(dt, self)
-		end),
+		RunService.PreSimulation:Connect(function(dt) self.implementationLifecycles.onPreSimulation:fire(dt, self) end),
+		RunService.PostSimulation:Connect(
+			function(dt) self.implementationLifecycles.onPostSimulation:fire(dt, self) end
+		),
+		RunService.PreRender:Connect(function(dt) self.implementationLifecycles.onPreRender:fire(dt, self) end),
+		RunService.PreAnimation:Connect(function(dt) self.implementationLifecycles.onPreAnimation:fire(dt, self) end),
 		-- TODO: Should we keep this, now that we have 'Level: Do Not Load' tag?
 		self.instance.DescendantAdded:Connect(function(instance)
 			for _, mechanic in self:loadInstance(instance) do
 				self.life:add(threadpool.spawn(Level.bindActivation, self, mechanic))
 				local onStart = self:getListenerForMechanic<<Level>>(self.mechanicLifecycles.onStart, mechanic)
-				if onStart then
-					threadpool.spawn(onStart, self)
-				end
+				if onStart then threadpool.spawn(onStart, self) end
 			end
 		end)
 	)
 
 	-- LUAU FIXME: this should typecheck fine?
 	table.insert(Level.activeLevels :: { any }, self)
-	self.life:add(function()
-		tables.findAndRemove<<Level>>(Level.activeLevels, self)
-	end)
+	self.life:add(function() tables.findAndRemove<<Level>>(Level.activeLevels, self) end)
 end
 
-function Level.__tostring(self: Level)
-	return `Level({self.name})`
-end
+function Level.__tostring(self: Level) return `Level({self.name})` end
 
 return table.freeze(Level)

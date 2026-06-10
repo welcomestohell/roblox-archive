@@ -9,9 +9,7 @@ function Prompt.implement(context: types.ActivationContext)
 	local prompt = useChildOfClass(context, "ActivationProximityPrompt", "ProximityPrompt")
 	context.activationLife:add(prompt.Triggered:Connect(function(player: Player)
 		-- TODO: is this check needed?
-		if player == Players.LocalPlayer then
-			context:onActivate { kind = "Prompt", prompt = prompt }
-		end
+		if player == Players.LocalPlayer then context:onActivate { kind = "Prompt", prompt = prompt } end
 	end))
 end
 

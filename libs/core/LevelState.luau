@@ -12,9 +12,7 @@ export type LevelState<T> = setmetatable<{
 }, typeof(LevelState)>
 
 local function initializeLevel(state: LevelState<any>, level: Level.Level)
-	if state._cleanup[level] then
-		return
-	end
+	if state._cleanup[level] then return end
 
 	state._cleanup[level] = level.life:add(function()
 		state._cleanup[level] = nil
@@ -58,9 +56,7 @@ end
 function LevelState.take<T>(self: LevelState<T>, level: Level.Level): T
 	local old = self._values[level]
 	local cleanup = self._cleanup[level]
-	if cleanup then
-		cleanup()
-	end
+	if cleanup then cleanup() end
 	return old
 end
 

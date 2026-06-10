@@ -20,13 +20,11 @@ end
 const function observeAttributes(instance: Instance, listener: (attribute: string) -> ())
 	if not LISTENERS[instance] then
 		LISTENERS[instance] = {}
-		CONNECTIONS[instance] = instance.AttributeChanged:Connect(function(attribute)
-			threadpool.spawnCallbacks(LISTENERS[instance], attribute)
-		end)
+		CONNECTIONS[instance] = instance.AttributeChanged:Connect(
+			function(attribute) threadpool.spawnCallbacks(LISTENERS[instance], attribute) end
+		)
 
-		instance.Destroying:Once(function()
-			cleanupObserver(instance)
-		end)
+		instance.Destroying:Once(function() cleanupObserver(instance) end)
 	end
 
 	table.insert(LISTENERS[instance], listener)
@@ -34,9 +32,7 @@ const function observeAttributes(instance: Instance, listener: (attribute: strin
 	return function()
 		if LISTENERS[instance] then
 			tables.findAndRemove(LISTENERS[instance], listener)
-			if next(LISTENERS[instance]) == nil then
-				cleanupObserver(instance)
-			end
+			if next(LISTENERS[instance]) == nil then cleanupObserver(instance) end
 		end
 	end
 end

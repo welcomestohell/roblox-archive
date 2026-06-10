@@ -11,9 +11,7 @@ local function useModule(root: types.Self, module: ModuleScript)
 
 	if providerClasses[moduleExport] then
 		root._rootProviders[moduleExport] = true
-		if typeof(moduleExport.name) ~= "string" then
-			moduleExport.name = module.Name
-		end
+		if typeof(moduleExport.name) ~= "string" then moduleExport.name = module.Name end
 		threadpool.spawnCallbacks(providerUsed, root, moduleExport)
 	end
 

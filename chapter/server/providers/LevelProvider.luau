@@ -38,15 +38,13 @@ function LevelProvider.onStart(self: KitServerProvider)
 
 	local isValid, invalidCause = Level.LevelInstance:matches(Workspace)
 
-	if not isValid then
-		logger:Error("Invalid chapter workspace:", invalidCause:formatErr())
-	end
+	if not isValid then logger:Error("Invalid chapter workspace:", invalidCause:formatErr()) end
 
 	local mechanics, _decorations = storeOrDefault(Workspace, "Mechanics"), storeOrDefault(Workspace, "Decorations")
 
-	net.loadMechanics.on(function(player: Player): Instance
-		return self.mechanicLoader:cloneToPlayer(player, mechanics)
-	end)
+	net.loadMechanics.on(
+		function(player: Player): Instance return self.mechanicLoader:cloneToPlayer(player, mechanics) end
+	)
 end
 
 return prvd(LevelProvider)

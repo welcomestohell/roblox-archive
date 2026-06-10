@@ -17,9 +17,7 @@ local accountTemplate: Account = {
 
 local function onAccountChanged(key: string, account: Account)
 	local player = Players:GetPlayerByUserId(tonumber(key) :: number)
-	if player then
-		AccountStore.setAccount(player.Name, account)
-	end
+	if player then AccountStore.setAccount(player.Name, account) end
 end
 
 return Lyra.createPlayerStore {

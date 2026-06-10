@@ -62,9 +62,7 @@ local function play(instance: Instance, propertyTable: { [string]: unknown }, co
 
 	if tweenInfo.Time > 0 then
 		local tween = TweenService:Create(instance, tweenInfo, propertyTable)
-		tween.Completed:Once(function()
-			tween:Destroy()
-		end)
+		tween.Completed:Once(function() tween:Destroy() end)
 
 		tween:Play()
 	else
@@ -78,15 +76,17 @@ local function playAlways(instance: Instance, propertyTable: { [string]: unknown
 	local tweenInfo = tweenInfoFromConfiguration(configuration or {})
 
 	local tween = TweenService:Create(instance, tweenInfo, propertyTable)
-	tween.Completed:Once(function()
-		tween:Destroy()
-	end)
+	tween.Completed:Once(function() tween:Destroy() end)
 
 	tween:Play()
 	return tween
 end
 
-local function playFromAttributes(instance: Instance, propertyTable: { [string]: unknown }, attributes: TweenAttributes)
+local function playFromAttributes(
+	instance: Instance,
+	propertyTable: { [string]: unknown },
+	attributes: TweenAttributes
+)
 	play(instance, propertyTable, configurationFromAttributes(attributes, instance))
 end
 

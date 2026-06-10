@@ -5,9 +5,12 @@ local function useDelay<T>(delaySeconds: Fluid.UsedAs<number>, observed: Fluid.U
 	Fluid.effect(function()
 		local newObserved = Fluid.read(observed)
 		Fluid.cleanup(
-			task.delay(Fluid.read(delaySeconds), function(delayed: typeof(delayed), newObserved: typeof(newObserved))
-				delayed(newObserved)
-			end, delayed, newObserved)
+			task.delay(
+				Fluid.read(delaySeconds),
+				function(delayed: typeof(delayed), newObserved: typeof(newObserved)) delayed(newObserved) end,
+				delayed,
+				newObserved
+			)
 		)
 	end)
 	return delayed

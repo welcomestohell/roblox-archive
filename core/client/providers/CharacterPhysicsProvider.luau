@@ -37,23 +37,17 @@ function CharacterPhysicsProvider.onLocalCharacterAdded(self: CharacterPhysicsPr
 
 	-- Head collisions
 	head.CanCollide = true
-	life:add(character.Head:GetPropertyChangedSignal("CanCollide"):Connect(function()
-		head.CanCollide = true
-	end))
+	life:add(character.Head:GetPropertyChangedSignal("CanCollide"):Connect(function() head.CanCollide = true end))
 
 	-- Trusses
 	local function onStateChanged(oldState: Enum.HumanoidStateType, newState: Enum.HumanoidStateType)
 		if newState ~= oldState and STATES[newState] then
 			for state, allowed in STATES do
-				if allowed and state ~= newState then
-					humanoid:SetStateEnabled(state, false)
-				end
+				if allowed and state ~= newState then humanoid:SetStateEnabled(state, false) end
 			end
 			task.wait(DEFAULT_FPS - fps)
 			for state, allowed in STATES do
-				if allowed and state ~= newState then
-					humanoid:SetStateEnabled(state, true)
-				end
+				if allowed and state ~= newState then humanoid:SetStateEnabled(state, true) end
 			end
 		end
 	end
@@ -64,9 +58,7 @@ function CharacterPhysicsProvider.onLocalCharacterAdded(self: CharacterPhysicsPr
 
 		if delta < TRIGGER_FPS then
 			fps = delta
-			if stateConnection == nil then
-				stateConnection = life:add(humanoid.StateChanged:Connect(onStateChanged))
-			end
+			if stateConnection == nil then stateConnection = life:add(humanoid.StateChanged:Connect(onStateChanged)) end
 		elseif delta > TRIGGER_FPS and stateConnection ~= nil then
 			stateConnection:Disconnect()
 			life:remove(stateConnection)

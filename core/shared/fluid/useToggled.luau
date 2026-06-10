@@ -6,9 +6,7 @@ local function useToggled<T>(
 	truthy: Fluid.UsedAs<T>,
 	falsy: Fluid.UsedAs<T>
 ): Fluid.UsedAs<T>
-	return useDissolved(function(read)
-		return if read(condition) then read(truthy) else read(falsy)
-	end)
+	return useDissolved(function(read) return if read(condition) then read(truthy) else read(falsy) end)
 end
 
 return useToggled

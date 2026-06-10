@@ -9,9 +9,7 @@ local function onLifecycleRegistered<Args...>(
 	) -> ()
 ): () -> ()
 	table.insert(callbacks, listener :: any)
-	return function()
-		table.remove(callbacks, table.find(callbacks, listener :: any))
-	end
+	return function() table.remove(callbacks, table.find(callbacks, listener :: any)) end
 end
 
 return table.freeze {

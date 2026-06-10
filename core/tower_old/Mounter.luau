@@ -50,18 +50,14 @@ function Mounter:onStart(mounter: MounterMechanic)
 end
 
 function Mounter:onActivate(mounter: MounterMechanic)
-	if not mounter:Enabled() then
-		return
-	end
+	if not mounter:Enabled() then return end
 
 	mounter.Activation.Enabled(mounter, false)
 
 	local mountLife = mounter.life:extend()
 
 	local cleanupLife = mountLife:extend()
-	cleanupLife:add(function()
-		task.delay(mounter:CleanupDelay(), destroy, mountLife)
-	end)
+	cleanupLife:add(function() task.delay(mounter:CleanupDelay(), destroy, mountLife) end)
 
 	local model = mountLife:add(mounter.model:Clone())
 	mountLife:destroyOn(model.Destroying)
@@ -96,23 +92,17 @@ function Mounter:onActivate(mounter: MounterMechanic)
 	}
 
 	cleanupLife:add(mounter.Enabled:onChange(mounter, function(isEnabled)
-		if not isEnabled then
-			cleanupLife:destroy()
-		end
+		if not isEnabled then cleanupLife:destroy() end
 	end))
 
 	cleanupLife:add(model.AncestryChanged:Connect(function(_, parent)
-		if not parent then
-			cleanupLife:destroy()
-		end
+		if not parent then cleanupLife:destroy() end
 	end))
 
 	local humanoid = character.getHumanoid()
 	cleanupLife:destroyOn(humanoid.Died)
 	cleanupLife:add(humanoid.StateChanged:Connect(function(_, new: Enum.HumanoidStateType)
-		if new == Enum.HumanoidStateType.Dead then
-			cleanupLife:destroy()
-		end
+		if new == Enum.HumanoidStateType.Dead then cleanupLife:destroy() end
 	end))
 end
 

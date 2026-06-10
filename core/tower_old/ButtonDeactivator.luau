@@ -15,14 +15,10 @@ ButtonDeactivator.Activation = std.useActivation(ButtonDeactivator)
 
 function ButtonDeactivator:onActivate(deactivator: ButtonDeactivatorMechanic, level: std.Level)
 	local id = deactivator:Id()
-	if not id then
-		return
-	end
+	if not id then return end
 
 	local enabledButtons = Button.enabledButtonsById:get(level)[id]
-	if not enabledButtons then
-		return
-	end
+	if not enabledButtons then return end
 
 	for button in enabledButtons do
 		button:Active(false)

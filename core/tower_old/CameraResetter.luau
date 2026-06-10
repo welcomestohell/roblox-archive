@@ -12,8 +12,6 @@ CameraResetter.debuggerEmoji = "🔄"
 CameraResetter:attributeSection "Activation"
 CameraResetter.Activation = activation.useAttributes(CameraResetter)
 
-function CameraResetter:onActivate()
-	Workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
-end
+function CameraResetter:onActivate() Workspace.CurrentCamera.CameraType = Enum.CameraType.Custom end
 
 return CameraResetter

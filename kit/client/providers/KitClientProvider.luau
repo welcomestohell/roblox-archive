@@ -61,8 +61,6 @@ function KitClientProvider.onStart(self: KitClientProvider)
 	} :: any)
 end
 
-function KitClientProvider.onFinish(self: KitClientProvider)
-	self.life:destroy()
-end
+function KitClientProvider.onFinish(self: KitClientProvider) self.life:destroy() end
 
 return prvd(KitClientProvider)

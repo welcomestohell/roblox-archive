@@ -107,9 +107,7 @@ local function instanceTree(treeOrParent: any, tree: any): GreenTea.Type
 	end, parent:format())
 end
 
-function gt.constrainNumber(min: number?, max: number?)
-	return gt.number { options = { min = min, max = max } }
-end
+function gt.constrainNumber(min: number?, max: number?) return gt.number { options = { min = min, max = max } } end
 
 function gt.constrainNumberExclusive(min: number?, max: number?)
 	return gt.number { options = { minExclusive = min, maxExclusive = max } }
@@ -117,12 +115,8 @@ end
 
 function gt.enumOf<T>(enum: Enum): any
 	return GreenTea.custom(function(thing)
-		if typeof(thing) ~= "EnumItem" then
-			return false, "expected an enum item"
-		end
-		if thing.EnumType ~= enum then
-			return false, "expected an enum item of type " .. tostring(enum)
-		end
+		if typeof(thing) ~= "EnumItem" then return false, "expected an enum item" end
+		if thing.EnumType ~= enum then return false, "expected an enum item of type " .. tostring(enum) end
 		return true
 	end, `{enum}`)
 end

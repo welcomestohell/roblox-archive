@@ -1,12 +1,8 @@
 export type function NonNilable(ty: type): type
-	if not ty:is "union" then
-		return ty
-	end
+	if not ty:is "union" then return ty end
 	local union = nil
 	for _, member in ty:components() do
-		if not member:is "nil" then
-			union = if union then types.unionof(union, member) else member
-		end
+		if not member:is "nil" then union = if union then types.unionof(union, member) else member end
 	end
 	return union or ty
 end
@@ -14,12 +10,8 @@ end
 export type function Partial(ty: type): type
 	local result = types.copy(ty)
 	for key, property in ty:properties() do
-		if property.read then
-			result:setreadproperty(key, types.unionof(property.read, types.singleton(nil)))
-		end
-		if property.write then
-			result:setwriteproperty(key, types.unionof(property.write, types.singleton(nil)))
-		end
+		if property.read then result:setreadproperty(key, types.unionof(property.read, types.singleton(nil))) end
+		if property.write then result:setwriteproperty(key, types.unionof(property.write, types.singleton(nil))) end
 	end
 	return result
 end
@@ -35,9 +27,7 @@ end
 local function filter<K, V>(object: { [K]: V }, predicate: (NonNilable<V>, K) -> boolean): { [K]: V }
 	local result: { [K]: V } = {}
 	for key, value in object do
-		if predicate(value, key) then
-			result[key] = value
-		end
+		if predicate(value, key) then result[key] = value end
 	end
 	return result
 end
@@ -79,15 +69,11 @@ local function update<T, K>(object: T & {}, key: K & keyof<T>, fn: (NonNilable<i
 end
 
 local function join<T>(object: T & {}, source: Partial<T>?): T
-	if source == nil then
-		return object
-	end
+	if source == nil then return object end
 	local result = object
 	for key, value in source :: { [any]: any } do
 		if result[key] ~= value then
-			if result == object then
-				result = table.clone(object) :: never
-			end
+			if result == object then result = table.clone(object) :: never end
 			result[key] = value
 		end
 	end

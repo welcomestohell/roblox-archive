@@ -84,16 +84,12 @@ function Button.glowButton(props: {
 	if props.flash then
 		tweenConfiguration.isReversed = true
 		tweens.play(adornment, { Transparency = 0 }, tweenConfiguration)
-		task.delay(tweenConfiguration.duration * 2 :: any, function(adornment)
-			adornment:Destroy()
-		end, adornment)
+		task.delay(tweenConfiguration.duration * 2 :: any, function(adornment) adornment:Destroy() end, adornment)
 	else
 		tweens.play(adornment, { Transparency = 0 }, tweenConfiguration)
 		life:add(function()
 			tweens.play(adornment, { Transparency = 1 }, tweenConfiguration)
-			task.delay(tweenConfiguration.duration, function(adornment)
-				adornment:Destroy()
-			end, adornment)
+			task.delay(tweenConfiguration.duration, function(adornment) adornment:Destroy() end, adornment)
 		end)
 	end
 end
@@ -108,14 +104,10 @@ function Button.toggleId(self: typeof(Button), level: std.Level, id: string)
 end
 
 function Button.onActivate(self: typeof(Button), button: ButtonMechanic, level: std.Level)
-	if not button:Enabled() or button:Active() then
-		return
-	end
+	if not button:Enabled() or button:Active() then return end
 
 	local id = button:Id()
-	if id == nil then
-		return
-	end
+	if id == nil then return end
 
 	local enabledButtonsById = msets.get(self.enabledButtonsById:get(level), id)
 
@@ -140,9 +132,7 @@ function Button.onActivate(self: typeof(Button), button: ButtonMechanic, level: 
 
 	emission.emitTaggedDescendants(button.instance, button:ActivatedEmissionTag())
 
-	if self.Sound.Play(button) then
-		sounds.playMechanic(self.Sound, button :: any, sounds.sfx.button)
-	end
+	if self.Sound.Play(button) then sounds.playMechanic(self.Sound, button :: any, sounds.sfx.button) end
 
 	if button.instance.Anchored then
 		local originalTransform = button.instance.CFrame
@@ -160,14 +150,10 @@ function Button.onActivate(self: typeof(Button), button: ButtonMechanic, level: 
 	end
 
 	local duration = button:Duration()
-	if duration > 0 then
-		deactivationLife:delay(duration, Life.destroy, deactivationLife)
-	end
+	if duration > 0 then deactivationLife:delay(duration, Life.destroy, deactivationLife) end
 
 	local function onDisabled(isEnabled: boolean)
-		if not isEnabled then
-			deactivationLife:destroy()
-		end
+		if not isEnabled then deactivationLife:destroy() end
 	end
 
 	deactivationLife:add(self.Enabled:onChange(button, onDisabled))
@@ -177,9 +163,7 @@ end
 function Button.onStart(self: typeof(Button), button: ButtonMechanic, level: std.Level)
 	button.life:add(self.Active:onChange(button, function(active)
 		local id = button:Id()
-		if id then
-			self:toggleId(level, id)
-		end
+		if id then self:toggleId(level, id) end
 	end))
 
 	button.life:add(self.Id:onChange(button, function(_id)

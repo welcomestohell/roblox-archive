@@ -12,9 +12,7 @@ OneWay.Offset = OneWay:attribute("Offset", std.gt.CFrame(), CFrame.identity)
 
 function OneWay:onPreSimulation(deltaTime: number, level: std.Level)
 	local root = character.getMaybeHumanoidRootPart()
-	if not root then
-		return
-	end
+	if not root then return end
 
 	local rootPivot = root:GetPivot()
 	for _, platform: OneWayMechanic in level:getMechanics(OneWay) do

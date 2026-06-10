@@ -59,24 +59,18 @@ Turret.ExpireBasename = Turret:attribute("ExpireBasename", gt.string(), "TurretE
 Turret.cooldowns = {} :: { [Player]: number }
 
 function Turret.onTouch(turret: TurretMechanic, hit: BasePart): boolean
-	if not hit or not hit.Parent or not character.isFromMaybeCharacter(hit) then
-		return false
-	end
+	if not hit or not hit.Parent or not character.isFromMaybeCharacter(hit) then return false end
 
 	local player = character.getPlayerFromHit(hit)
 
-	if not player then
-		return false
-	end
+	if not player then return false end
 
 	local turretDamage, turretCooldown = turret:Damage(), turret:Cooldown()
 	local cooldowns = turret.cooldowns or {}
 
 	local now = os.clock()
 
-	if cooldowns[player] and cooldowns[player] > now then
-		return false
-	end
+	if cooldowns[player] and cooldowns[player] > now then return false end
 
 	cooldowns[player] = now + turretCooldown
 	damage.damagePlayer(player, turretDamage)
@@ -98,9 +92,7 @@ function Turret.fireBullet(turret: TurretMechanic, bulletTemplate: Part)
 	local instance = turret.instance
 	local primaryPart = instance.PrimaryPart
 
-	if not primaryPart then
-		return
-	end
+	if not primaryPart then return end
 
 	if turret.FireSound.Play(turret) then
 		sounds.playInstance(turret.FireSound, instance, turret.instanceConfiguration, sounds.sfx.tick)
@@ -115,9 +107,7 @@ function Turret.fireBullet(turret: TurretMechanic, bulletTemplate: Part)
 	local bulletLife = turret.life:extend()
 	local bulletInstance = bulletLife:add(bulletTemplate:Clone())
 
-	local function cleanup()
-		bulletLife:destroy()
-	end
+	local function cleanup() bulletLife:destroy() end
 
 	local spawnCFrame: CFrame = primaryPart.CFrame
 	local spreadAngle = turret:calculateSpreadAngle(spawnCFrame.LookVector)
@@ -156,14 +146,10 @@ function Turret.fireBullet(turret: TurretMechanic, bulletTemplate: Part)
 		local destroyOnTouch = turret:DestroyOnTouch()
 		local validHit = turret:onTouch(hit)
 
-		if destroyOnTouch or validHit then
-			cleanup()
-		end
+		if destroyOnTouch or validHit then cleanup() end
 	end))
 
-	bulletLife:add(function()
-		task.delay(turret:Lifetime(), cleanup)
-	end)
+	bulletLife:add(function() task.delay(turret:Lifetime(), cleanup) end)
 end
 
 function Turret.onStart(self: typeof(Turret), turret: TurretMechanic, level: std.Level)
@@ -187,16 +173,12 @@ function Turret.onStart(self: typeof(Turret), turret: TurretMechanic, level: std
 
 			task.wait(1 / firerate)
 
-			if not enabled then
-				continue
-			end
+			if not enabled then continue end
 
 			local distance = Players.LocalPlayer:DistanceFromCharacter(primaryPart.Position)
 			local range = turret:Range()
 
-			if distance <= range then
-				turret:fireBullet(bulletTemplate)
-			end
+			if distance <= range then turret:fireBullet(bulletTemplate) end
 		end
 	end)
 end

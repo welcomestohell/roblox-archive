@@ -55,33 +55,21 @@ local keywords = {
 }
 
 local function isLuaIdentifier(str)
-	if type(str) ~= "string" then
-		return false
-	end
+	if type(str) ~= "string" then return false end
 	-- must be nonempty
-	if str:len() == 0 then
-		return false
-	end
+	if str:len() == 0 then return false end
 	-- can only contain a-z, A-Z, 0-9 and underscore
-	if str:find "[^%d%a_]" then
-		return false
-	end
+	if str:find "[^%d%a_]" then return false end
 	-- cannot begin with digit
-	if tonumber(str:sub(1, 1)) then
-		return false
-	end
+	if tonumber(str:sub(1, 1)) then return false end
 	-- cannot be keyword
-	if keywords[str] then
-		return false
-	end
+	if keywords[str] then return false end
 	return true
 end
 
 -- works like Instance:GetFullName(), but invalid Lua identifiers are fixed (e.g. workspace["The Dude"].Humanoid)
 local function properFullName(object, usePeriod)
-	if object == nil or object == game then
-		return ""
-	end
+	if object == nil or object == game then return "" end
 
 	local s = object.Name
 	local usePeriod = true
@@ -105,25 +93,17 @@ local reprSettings
 local function repr(value: any, reprSettings: any?)
 	reprSettings = reprSettings or defaultSettings
 	INDENT = (" "):rep(reprSettings.spaces or defaultSettings.spaces)
-	if reprSettings.tabs then
-		INDENT = "\t"
-	end
+	if reprSettings.tabs then INDENT = "\t" end
 
 	local v = value --args[1]
 	local tabs = INDENT:rep(depth)
 
-	if depth == 0 then
-		shown = {}
-	end
+	if depth == 0 then shown = {} end
 	if type(v) == "string" then
 		return ("%q"):format(v)
 	elseif type(v) == "number" then
-		if v == math.huge then
-			return "math.huge"
-		end
-		if v == -math.huge then
-			return "-math.huge"
-		end
+		if v == math.huge then return "math.huge" end
+		if v == -math.huge then return "-math.huge" end
 		return tonumber(v)
 	elseif type(v) == "boolean" then
 		return tostring(v)
@@ -134,9 +114,7 @@ local function repr(value: any, reprSettings: any?)
 	elseif type(v) == "table" and getmetatable(v) and type(getmetatable(v).__tostring) == "function" then
 		return tostring(getmetatable(v).__tostring(v))
 	elseif type(v) == "table" then
-		if shown[v] then
-			return "{CYCLIC}"
-		end
+		if shown[v] then return "{CYCLIC}" end
 		shown[v] = true
 		local str = "{" .. (reprSettings.pretty and ("\n" .. INDENT .. tabs) or "")
 		local isArray = true
@@ -172,9 +150,7 @@ local function repr(value: any, reprSettings: any?)
 				keyValueStrings[kStr] = vStr
 				depth = depth - 1
 			end
-			if reprSettings.sortKeys then
-				table.sort(keyOrder)
-			end
+			if reprSettings.sortKeys then table.sort(keyOrder) end
 			local first = true
 			for _, kStr in pairs(keyOrder) do
 				if not first then
@@ -187,9 +163,7 @@ local function repr(value: any, reprSettings: any?)
 			end
 		end
 		shown[v] = false
-		if reprSettings.pretty then
-			str = str .. "\n" .. tabs
-		end
+		if reprSettings.pretty then str = str .. "\n" .. tabs end
 		str = str .. "}"
 		return str
 	elseif typeof then
@@ -202,15 +176,9 @@ local function repr(value: any, reprSettings: any?)
 			) .. (reprSettings.robloxClassName and ((" (%s)"):format(v.ClassName)) or "")
 		elseif typeof(v) == "Axes" then
 			local s = {}
-			if v.X then
-				table.insert(s, repr(Enum.Axis.X, reprSettings))
-			end
-			if v.Y then
-				table.insert(s, repr(Enum.Axis.Y, reprSettings))
-			end
-			if v.Z then
-				table.insert(s, repr(Enum.Axis.Z, reprSettings))
-			end
+			if v.X then table.insert(s, repr(Enum.Axis.X, reprSettings)) end
+			if v.Y then table.insert(s, repr(Enum.Axis.Y, reprSettings)) end
+			if v.Z then table.insert(s, repr(Enum.Axis.Z, reprSettings)) end
 			return ("Axes.new(%s)"):format(table.concat(s, ", "))
 		elseif typeof(v) == "BrickColor" then
 			return ("BrickColor.new(%q)"):format(v.Name)
@@ -252,9 +220,7 @@ local function repr(value: any, reprSettings: any?)
 		elseif typeof(v) == "Faces" then
 			local s = {}
 			for _, enumItem in pairs(Enum.NormalId:GetEnumItems()) do
-				if v[enumItem.Name] then
-					table.insert(s, repr(enumItem, reprSettings))
-				end
+				if v[enumItem.Name] then table.insert(s, repr(enumItem, reprSettings)) end
 			end
 			return ("Faces.new(%s)"):format(table.concat(s, ", "))
 		elseif typeof(v) == "NumberRange" then

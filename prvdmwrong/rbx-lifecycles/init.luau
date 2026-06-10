@@ -22,9 +22,7 @@ RbxLifecycles.localCharacterRemoving =
 	prvd.lifecycle("onLocalCharacterRemoving", fireConcurrent) :: prvd.Lifecycle<Model>
 
 local function wrapLifecycle(lifecycle: prvd.Lifecycle<...unknown>)
-	return function(...: unknown)
-		lifecycle:fire(...)
-	end
+	return function(...: unknown) lifecycle:fire(...) end
 end
 
 function RbxLifecycles.constructor(self: RbxLifecycles)
@@ -46,9 +44,7 @@ function RbxLifecycles.constructor(self: RbxLifecycles)
 		local character = player.Character or player.CharacterAdded:Wait()
 		self.characterAdded:fire(character)
 
-		if player == Players.LocalPlayer then
-			self.localCharacterAdded:fire(character)
-		end
+		if player == Players.LocalPlayer then self.localCharacterAdded:fire(character) end
 	end
 
 	for _, existingPlayer in Players:GetPlayers() do
@@ -63,9 +59,7 @@ end
 
 function RbxLifecycles.finish(self: RbxLifecycles)
 	for _, connection in self.connections do
-		if connection.Connected then
-			connection:Disconnect()
-		end
+		if connection.Connected then connection:Disconnect() end
 	end
 	table.clear(self.connections)
 end

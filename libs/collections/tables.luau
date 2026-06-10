@@ -60,13 +60,9 @@ export type function Merge(lhs: type, rhs: type)
 	for _, tbl in { lhs, rhs } do
 		if tbl.tag == "table" then
 			for key, values in tbl:properties() do
-				if values.read then
-					result:setreadproperty(key, values.read)
-				end
+				if values.read then result:setreadproperty(key, values.read) end
 
-				if values.write then
-					result:setwriteproperty(key, values.write)
-				end
+				if values.write then result:setwriteproperty(key, values.write) end
 			end
 		elseif tbl.tag == "any" then
 			result:setindexer(types.any, types.any)
@@ -97,9 +93,7 @@ local function filter<KI, VI, KO, VO>(input: { [KI]: VO }, predicate: (KI, VI, {
 	local result = {}
 
 	for key, value in input do
-		if predicate(key, value, input) then
-			result[key] = value
-		end
+		if predicate(key, value, input) then result[key] = value end
 	end
 
 	return result
@@ -145,18 +139,14 @@ end
 local function deepCopy<T>(target: T & {})
 	local clone = table.clone(target)
 	for key, value in clone :: { [any]: any } do
-		if type(value) == "table" then
-			clone[key] = deepCopy(value)
-		end
+		if type(value) == "table" then clone[key] = deepCopy(value) end
 	end
 	return clone
 end
 
 local function findAndRemove<T>(haystack: { T }, needle: T)
 	local index = table.find(haystack, needle)
-	if index then
-		table.remove(haystack, index)
-	end
+	if index then table.remove(haystack, index) end
 end
 
 return table.freeze {

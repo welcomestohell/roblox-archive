@@ -29,9 +29,7 @@ local function registerMode(
 	key: string,
 	mode: types.ActivationMode
 ): Result.Result<types.ActivationMode, RegisterModeError>
-	if modes[key] then
-		return Result.Err { id = functions.literal "alreadyExists" }
-	end
+	if modes[key] then return Result.Err { id = functions.literal "alreadyExists" } end
 
 	local isValid, invalidatedCause = types.ActivationMode:matches(mode)
 
@@ -46,9 +44,7 @@ local function registerMode(
 	}
 end
 
-local function unregisterMode(key: string)
-	modes[key] = nil
-end
+local function unregisterMode(key: string) modes[key] = nil end
 
 export type ActivationError = { id: "noMode" } | { id: "unknownMode" } | { id: "predicateFailed", error: string }
 

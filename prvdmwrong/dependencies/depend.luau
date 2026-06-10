@@ -11,9 +11,7 @@ local unresolvedMt = {
 	__newindex = useBeforeConstructed,
 }
 
-function unresolvedMt:__tostring()
-	return "UnresolvedDependency"
-end
+function unresolvedMt:__tostring() return "UnresolvedDependency" end
 
 -- Wtf luau
 local function depend<Self, Dependencies, NewArgs...>(dependency: types.Dependency<Self, Dependencies, NewArgs...>): typeof(({} :: types.Dependency<Self, Dependencies, NewArgs...>).new(

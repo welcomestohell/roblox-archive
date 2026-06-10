@@ -70,9 +70,7 @@ function Turret.fireBullet(turret: TurretMechanic, bulletTemplate: BasePart)
 	local instance = turret.instance
 	local primaryPart = instance.PrimaryPart
 
-	if not primaryPart then
-		return
-	end
+	if not primaryPart then return end
 
 	if turret.FireSound.Play(turret) then
 		sounds.playInstance(turret.FireSound, instance, turret.instanceConfiguration, assets.sfx.tick)
@@ -101,9 +99,7 @@ function Turret.fireBullet(turret: TurretMechanic, bulletTemplate: BasePart)
 	local linearVelocity = bulletInstance:FindFirstChildOfClass "LinearVelocity"
 	local alignOrientation = bulletInstance:FindFirstChildOfClass "AlignOrientation"
 
-	if not mainAttachment or not linearVelocity or not alignOrientation then
-		return cleanup()
-	end
+	if not mainAttachment or not linearVelocity or not alignOrientation then return cleanup() end
 
 	local finalCFrame = CFrame.lookAt(spawnCFrame.Position, spawnCFrame.Position + spreadAngle)
 
@@ -128,9 +124,7 @@ function Turret.fireBullet(turret: TurretMechanic, bulletTemplate: BasePart)
 				or touch.isToucherValid(turret.Touch, turret.instance, turret.instanceConfiguration, toucher)
 			)
 
-		if isTouched then
-			cleanup(true)
-		end
+		if isTouched then cleanup(true) end
 	end))
 
 	bulletLife:delay(turret:Lifetime(), cleanup, nil)
@@ -157,9 +151,7 @@ function Turret.onStart(self: typeof(Turret), turret: TurretMechanic, level: std
 	turret.life:spawn(function()
 		while not turret.life.destroyed do
 			task.wait(1 / turret:Firerate())
-			if turret:Enabled() then
-				turret:fireBullet(bulletTemplate)
-			end
+			if turret:Enabled() then turret:fireBullet(bulletTemplate) end
 		end
 	end)
 end

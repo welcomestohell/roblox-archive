@@ -36,9 +36,7 @@ end
 function ScrollingImage:onPreRender(deltaTime: number, level: std.Level)
 	local lifetime = level:getLifetime()
 	for _, image in level:getMechanics(ScrollingImage) do
-		if not image:Enabled() then
-			continue
-		end
+		if not image:Enabled() then continue end
 
 		local instance = image.instance
 		local absoluteSize = instance.AbsoluteSize
@@ -68,9 +66,7 @@ function ScrollingImage:onPreRender(deltaTime: number, level: std.Level)
 
 		instance.Position = UDim2.fromOffset(absolutePosition.X, absolutePosition.Y)
 
-		if not image:Synchronized() then
-			image.BasePosition:set(image, instance.Position)
-		end
+		if not image:Synchronized() then image.BasePosition:set(image, instance.Position) end
 	end
 end
 

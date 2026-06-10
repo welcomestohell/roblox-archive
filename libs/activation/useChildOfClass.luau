@@ -12,9 +12,7 @@ local function useChildOfClass(context: types.ActivationContext, childName: stri
 	local child = context.instance:FindFirstChild(childName)
 
 	if child then
-		if child:IsA(childClass) then
-			return child :: any
-		end
+		if child:IsA(childClass) then return child :: any end
 
 		logger:Warn(`\
 			While binding activation, expected child "{childName}" of {context.instance:GetFullName()} to be a \

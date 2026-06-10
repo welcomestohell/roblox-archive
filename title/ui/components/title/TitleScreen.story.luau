@@ -3,7 +3,5 @@ local createFluidStory = require "@core/shared/fluid/createFluidStory"
 
 return createFluidStory {
 	controls = {},
-	render = function()
-		return TitleScreen()
-	end,
+	render = function() return TitleScreen() end,
 }

@@ -34,26 +34,18 @@ Teleporter.Activation = std.useActivation(Teleporter)
 
 function Teleporter.onActivate(self: typeof(Teleporter), teleporter: TeleporterMechanic, level: std.Level, event)
 	local root = character.getMaybeHumanoidRootPart()
-	if not root then
-		return
-	end
+	if not root then return end
 
-	if self.debounce:get(level) or teleporter:Debounced() then
-		return
-	end
+	if self.debounce:get(level) or teleporter:Debounced() then return end
 
 	teleporter.Activation.Enabled(teleporter, false)
 
 	local group = teleporter:Group()
-	if not group then
-		return
-	end
+	if not group then return end
 
 	local groupInstances = level:getGroupedInstances(group)
 	local len = #groupInstances
-	if len == 0 then
-		return
-	end
+	if len == 0 then return end
 
 	self.debounce:set(level, true)
 	teleporter:Debounced(true)

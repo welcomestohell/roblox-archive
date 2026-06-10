@@ -21,9 +21,7 @@ local logger = Log.Logger.new({
 }, {
 	Log.LogSink.new(function(event: LogEvent): ()
 		local prefix: string?
-		if #event.Prefixes > 0 then
-			prefix = `[{table.concat(event.Prefixes, " ")}]`
-		end
+		if #event.Prefixes > 0 then prefix = `[{table.concat(event.Prefixes, " ")}]` end
 
 		local fullRender: string = prefix and prefix .. " " or ""
 		for index, arg: unknown in event.Args do

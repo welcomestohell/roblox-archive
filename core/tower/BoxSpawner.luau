@@ -27,9 +27,7 @@ BoxSpawner:attributeSection "Sound"
 BoxSpawner.Sound = std.useSound(BoxSpawner)
 
 function BoxSpawner.spawn(spawner: BoxSpawnerMechanic, level: std.Level)
-	if spawner.boxLife then
-		spawner.boxLife:destroy()
-	end
+	if spawner.boxLife then spawner.boxLife:destroy() end
 
 	local boxLife = spawner.life:extend()
 	spawner.boxLife = boxLife
@@ -44,9 +42,7 @@ function BoxSpawner.spawn(spawner: BoxSpawnerMechanic, level: std.Level)
 	table.insert(descendants, box)
 	for _, descendant in descendants do
 		descendant:AddTag "Box"
-		if descendant:IsA "BasePart" and not descendant:HasTag(anchoredTag) then
-			descendant.Anchored = false
-		end
+		if descendant:IsA "BasePart" and not descendant:HasTag(anchoredTag) then descendant.Anchored = false end
 	end
 
 	local instancePromises, loadPromises = level:loadDescendantInstancesAsync(box)
@@ -54,14 +50,10 @@ function BoxSpawner.spawn(spawner: BoxSpawnerMechanic, level: std.Level)
 	Promise.all(loadPromises):await()
 end
 
-function BoxSpawner:getActivationInstance(spawner: BoxSpawnerMechanic)
-	return spawner.instance.Button
-end
+function BoxSpawner:getActivationInstance(spawner: BoxSpawnerMechanic) return spawner.instance.Button end
 
 function BoxSpawner.onActivate(self: typeof(BoxSpawner), spawner: BoxSpawnerMechanic, level: std.Level)
-	if spawner:Debounced() then
-		return
-	end
+	if spawner:Debounced() then return end
 
 	spawner:Debounced(true)
 	spawner.Activation.Enabled(spawner, false)
@@ -86,9 +78,7 @@ function BoxSpawner:onStart(spawner: BoxSpawnerMechanic, level: std.Level)
 
 	spawner.life:add(spawner.template)
 
-	if spawner:SpawnOnStart() then
-		spawner:spawn(level)
-	end
+	if spawner:SpawnOnStart() then spawner:spawn(level) end
 end
 
 return BoxSpawner

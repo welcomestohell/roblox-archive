@@ -30,9 +30,7 @@ local typeDestructors: { [string]: (any) -> () } = {
 		end
 	end,
 
-	["thread"] = function(thread: thread)
-		pcall(task.cancel, thread)
-	end,
+	["thread"] = function(thread: thread) pcall(task.cancel, thread) end,
 
 	["table"] = function(tbl: { [any]: any })
 		for _, method in destructorMethods do
@@ -53,9 +51,7 @@ local typeDestructors: { [string]: (any) -> () } = {
 
 function destroy(x: Destroyable)
 	local destructor = typeDestructors[typeof(x)]
-	if destructor then
-		destructor(x)
-	end
+	if destructor then destructor(x) end
 end
 
 return table.freeze {

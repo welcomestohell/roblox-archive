@@ -9,9 +9,7 @@ local useModuleAsComponent = require "@self/use-module-as-component"
 local useModulesAsComponents = require "@self/use-modules-as-components"
 
 local function extendRoot(root: types.RootPrivate): types.Root
-	if root._hasComponentExtensions then
-		return logger:fatalError { template = logger.alreadyExtendedRoot }
-	end
+	if root._hasComponentExtensions then return logger:fatalError { template = logger.alreadyExtendedRoot } end
 
 	root._hasComponentExtensions = true
 	root._classes = {}

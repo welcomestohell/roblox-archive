@@ -35,16 +35,12 @@ function Activator.tryActivate(instance: Instance, level: std.Level)
 end
 
 function Activator.onActivate(self: typeof(Activator), activator: ActivatorMechanic, level: std.Level)
-	if not activator:Enabled() then
-		return
-	end
+	if not activator:Enabled() then return end
 
 	self.Activation.Enabled(activator, false)
 
 	local targetInstance = activator.instance.Target
-	if targetInstance then
-		self.tryActivate(targetInstance, level)
-	end
+	if targetInstance then self.tryActivate(targetInstance, level) end
 
 	for _, grouped in level:getGroupedInstances(self:Group()) do
 		self.tryActivate(grouped, level)

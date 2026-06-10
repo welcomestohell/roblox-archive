@@ -18,9 +18,7 @@ function ScrollingTexture.onPreRender(self: typeof(ScrollingTexture), deltaTime:
 	local lifetime = level:getLifetime()
 
 	for _, texture in level:getMechanics(self) do
-		if not texture:Enabled() then
-			continue
-		end
+		if not texture:Enabled() then continue end
 
 		local speed = texture:Speed()
 		local offset = texture:Offset()

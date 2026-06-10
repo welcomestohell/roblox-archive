@@ -20,9 +20,7 @@ local function useDissolved<T>(source: (read: Read) -> T): Fluid.UsedAs<T>
 
 	return if initialSuccess
 		then dissolvedOrError
-		elseif isDependencyRead then function()
-			return source(Fluid.read :: never)
-		end
+		elseif isDependencyRead then function() return source(Fluid.read :: never) end
 		else error(`Dissolving source threw an error: {dissolvedOrError}`)
 end
 

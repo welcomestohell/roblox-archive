@@ -15,9 +15,7 @@ KitPortal.Activation = activation.useAttributes(KitPortal)
 KitPortal.debounce = false
 
 function KitPortal:onActivate(portal: KitPortalMechanic, level: std.Level)
-	if self.debounce then
-		return
-	end
+	if self.debounce then return end
 
 	self.debounce = true
 	local spawnPortal = level.instance:FindFirstChild "SpawnPortal"

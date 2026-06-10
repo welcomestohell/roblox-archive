@@ -4,6 +4,7 @@ local useDissolved = require "@core/shared/fluid/useDissolved"
 local function Text(props: {
 	name: Fluid.UsedAs<string>?,
 	position: Fluid.UsedAs<UDim2>?,
+	anchorPoint: Fluid.UsedAs<Vector2>?,
 	size: Fluid.UsedAs<UDim2>?,
 	automaticSize: Fluid.UsedAs<Enum.AutomaticSize>?,
 	layoutOrder: Fluid.UsedAs<number>?,
@@ -33,6 +34,7 @@ local function Text(props: {
 		BackgroundTransparency = 1,
 
 		Position = props.position,
+		AnchorPoint = props.anchorPoint,
 		Size = props.size or UDim2.new(0, 0),
 		AutomaticSize = props.automaticSize or Enum.AutomaticSize.XY,
 		LayoutOrder = props.layoutOrder,
@@ -52,13 +54,15 @@ local function Text(props: {
 
 		TextColor3 = props.textColor or Color3.new(1, 1, 1),
 		RichText = if props.textRich == nil then true else props.textRich,
-		FontFace = useDissolved(function(read: useDissolved.Read)
-			return Font.new(
-				read<<Font>>(props.font or Font.fromEnum(Enum.Font.TitilliumWeb)).Family,
-				read<<Enum.FontWeight>>(props.fontWeight or Enum.FontWeight.Regular),
-				read<<Enum.FontStyle>>(props.fontStyle or Enum.FontStyle.Normal)
-			)
-		end),
+		FontFace = useDissolved(
+			function(read: useDissolved.Read)
+				return Font.new(
+					read<<Font>>(props.font or Font.fromEnum(Enum.Font.TitilliumWeb)).Family,
+					read<<Enum.FontWeight>>(props.fontWeight or Enum.FontWeight.Regular),
+					read<<Enum.FontStyle>>(props.fontStyle or Enum.FontStyle.Normal)
+				)
+			end
+		),
 
 		table.unpack(props),
 	}

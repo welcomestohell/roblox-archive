@@ -80,13 +80,9 @@ function Mechanic.new<Self>(self: Self): MechanicImplementation<Self>
 	return implementation
 end
 
-function Mechanic.isMechanicImplementation(x: any)
-	return typeof(x) == "table" and getmetatable(x) == Mechanic
-end
+function Mechanic.isMechanicImplementation(x: any) return typeof(x) == "table" and getmetatable(x) == Mechanic end
 
-function Mechanic.downcast(self: {}): MechanicImplementation<AnyMechanicImplementation>
-	return self :: any
-end
+function Mechanic.downcast(self: {}): MechanicImplementation<AnyMechanicImplementation> return self :: any end
 
 function Mechanic.attributeSection(self: {}, title: string)
 	self = Mechanic.downcast(self)

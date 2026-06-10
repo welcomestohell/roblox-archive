@@ -32,9 +32,7 @@ function AttributeMap.type<T>(_: AttributeMap<T>): T
 	error "This function is undefined, and should only be used in type definitions: `typeof(attributeMap:type())`"
 end
 
-function AttributeMap.isAttributeMap(x: any)
-	return type(x) == "table" and getmetatable(x) == AttributeMap
-end
+function AttributeMap.isAttributeMap(x: any) return type(x) == "table" and getmetatable(x) == AttributeMap end
 
 function AttributeMap.get<T>(self: AttributeMap<T>, instance: resolveInstance.InstanceLike, key: string): T
 	local attribute = getAttribute(self, key)
@@ -75,8 +73,6 @@ function AttributeMap.onChange<T>(
 	return attr:onChange(instance, listener)
 end
 
-function AttributeMap.__tostring<T>(self: AttributeMap<T>)
-	return `AttributeMap("{self.prefix}")`
-end
+function AttributeMap.__tostring<T>(self: AttributeMap<T>) return `AttributeMap("{self.prefix}")` end
 
 return AttributeMap

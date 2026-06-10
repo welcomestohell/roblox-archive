@@ -6,29 +6,19 @@ local logger = require "@core/shared/logger"
 local prvd = require "@prvdmwrong/prvdmwrong"
 local rbxLifecycles = require "@prvdmwrong/rbx-lifecycles"
 
-prvd.hooks.onProviderUsed(function(_, provider)
-	logger:Debug("Used provider", tostring(provider))
-end)
+prvd.hooks.onProviderUsed(function(_, provider) logger:Debug("Used provider", tostring(provider)) end)
 
-prvd.hooks.onLifecycleUsed(function(_, lifecycle)
-	logger:Debug("Used lifecycle", tostring(lifecycle))
-end)
+prvd.hooks.onLifecycleUsed(function(_, lifecycle) logger:Debug("Used lifecycle", tostring(lifecycle)) end)
 
 local root = prvd.root()
 	:useProvider(rbxLifecycles :: any)
-	:willStart(function()
-		logger:Info "Starting up"
-	end)
-	:willFinish(function()
-		logger:Info "Finishing up"
-	end)
+	:willStart(function() logger:Info "Starting up" end)
+	:willFinish(function() logger:Info "Finishing up" end)
 
 local function useProvidersFromMembers(memberParent: Instance)
 	for _, member in memberParent:GetChildren() do
 		local providers = member:FindFirstChild "providers"
-		if providers then
-			root:useModules(providers:GetDescendants())
-		end
+		if providers then root:useModules(providers:GetDescendants()) end
 	end
 end
 
@@ -40,9 +30,7 @@ local function bootstrapClient()
 	useProvidersFromMembers(internal:WaitForChild "Shared")
 
 	local startedRoot = root:start()
-	game.Close:Once(function()
-		startedRoot:finish()
-	end)
+	game.Close:Once(function() startedRoot:finish() end)
 end
 
 local function bootstrapServer()
@@ -52,9 +40,7 @@ local function bootstrapServer()
 	useProvidersFromMembers(ServerScriptService:WaitForChild("Internal"):WaitForChild "Server")
 
 	local startedRoot = root:start()
-	game:BindToClose(function()
-		startedRoot:finish()
-	end)
+	game:BindToClose(function() startedRoot:finish() end)
 end
 
 return table.freeze {

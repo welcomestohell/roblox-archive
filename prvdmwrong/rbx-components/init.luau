@@ -16,9 +16,7 @@ local components = {
 
 local mt = {}
 
-function mt.__call<Self>(_, component: Self): types.Component<Self, any>
-	return create(component)
-end
+function mt.__call<Self>(_, component: Self): types.Component<Self, any> return create(component) end
 
 table.freeze(mt)
 return table.freeze(setmetatable(components, mt))

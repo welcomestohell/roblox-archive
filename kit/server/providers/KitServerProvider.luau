@@ -43,21 +43,17 @@ end
 function KitServerProvider.bootstrapTower(self: KitServerProvider, tower: Level.LevelInstance)
 	local mechanics, decorations = storeOrDefault(tower, "Mechanics"), storeOrDefault(tower, "Decorations")
 
-	net.getTower.on(function(): Instance
-		return tower
-	end)
+	net.getTower.on(function(): Instance return tower end)
 
-	net.loadMechanics.on(function(player: Player): Instance
-		return self.mechanicLoader:cloneToPlayer(player, mechanics)
-	end)
+	net.loadMechanics.on(
+		function(player: Player): Instance return self.mechanicLoader:cloneToPlayer(player, mechanics) end
+	)
 
-	net.loadDecorations.on(function(player: Player): Instance
-		return self.decorationsLoader:cloneToPlayer(player, decorations)
-	end)
+	net.loadDecorations.on(
+		function(player: Player): Instance return self.decorationsLoader:cloneToPlayer(player, decorations) end
+	)
 
-	net.rejoin.on(function(player)
-		TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, player)
-	end)
+	net.rejoin.on(function(player) TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, player) end)
 end
 
 function KitServerProvider.onStart(self: KitServerProvider)

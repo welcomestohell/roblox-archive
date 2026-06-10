@@ -20,9 +20,7 @@ local function bindLifecycle(lifecycle: lifecycles.Lifecycle<...any>, provider: 
 		-- 		debug.profileend()
 		-- 	end)
 		-- else
-		lifecycle:register(function(...)
-			lifecycleMethod(provider, ...)
-		end)
+		lifecycle:register(function(...) lifecycleMethod(provider, ...) end)
 		-- end
 	end
 end
@@ -72,9 +70,7 @@ local function start(root: types.Self): types.StartedRoot
 	local didFinish = false
 
 	function startedRoot:finish()
-		if didFinish then
-			return logger:fatalError { template = logger.alreadyFinished }
-		end
+		if didFinish then return logger:fatalError { template = logger.alreadyFinished } end
 
 		didFinish = true
 		root._finish:fire()

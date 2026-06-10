@@ -17,18 +17,24 @@ local function Padding(props: {
 	return Fluid.create "UIPadding" {
 		Name = props.name or "Padding",
 
-		PaddingTop = useDissolved(function(read: useDissolved.Read)
-			return read<<UDim>>(props.top or props.vertical or props.all or ZERO_UDIM)
-		end),
-		PaddingBottom = useDissolved(function(read: useDissolved.Read)
-			return read<<UDim>>(props.bottom or props.vertical or props.all or ZERO_UDIM)
-		end),
-		PaddingLeft = useDissolved(function(read: useDissolved.Read)
-			return read<<UDim>>(props.left or props.horizontal or props.all or ZERO_UDIM)
-		end),
-		PaddingRight = useDissolved(function(read: useDissolved.Read)
-			return read<<UDim>>(props.right or props.horizontal or props.all or ZERO_UDIM)
-		end),
+		PaddingTop = useDissolved(
+			function(read: useDissolved.Read) return read<<UDim>>(props.top or props.vertical or props.all or ZERO_UDIM) end
+		),
+		PaddingBottom = useDissolved(
+			function(read: useDissolved.Read)
+				return read<<UDim>>(props.bottom or props.vertical or props.all or ZERO_UDIM)
+			end
+		),
+		PaddingLeft = useDissolved(
+			function(read: useDissolved.Read)
+				return read<<UDim>>(props.left or props.horizontal or props.all or ZERO_UDIM)
+			end
+		),
+		PaddingRight = useDissolved(
+			function(read: useDissolved.Read)
+				return read<<UDim>>(props.right or props.horizontal or props.all or ZERO_UDIM)
+			end
+		),
 	}
 end
 

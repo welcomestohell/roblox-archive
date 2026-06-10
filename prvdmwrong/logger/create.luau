@@ -13,17 +13,11 @@ local function create<T>(label: string, errorInfoUrl: string?, templates: T): ty
 	label = `[{label}] `
 	errorInfoUrl = if allowWebLinks then errorInfoUrl else nil
 
-	function self:warn(log)
-		warn(label .. formatLog(self, log, errorInfoUrl))
-	end
+	function self:warn(log) warn(label .. formatLog(self, log, errorInfoUrl)) end
 
-	function self:error(log)
-		threadpool.spawn(error, label .. formatLog(self, log, errorInfoUrl), 0)
-	end
+	function self:error(log) threadpool.spawn(error, label .. formatLog(self, log, errorInfoUrl), 0) end
 
-	function self:fatalError(log)
-		error(label .. formatLog(self, log, errorInfoUrl))
-	end
+	function self:fatalError(log) error(label .. formatLog(self, log, errorInfoUrl)) end
 
 	setmetatable(self :: any, { __index = templates })
 	return self

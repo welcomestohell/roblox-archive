@@ -32,9 +32,7 @@ local function mechanize<Self>(
 	if implementation.instanceType then
 		local instanceType = gt.build(implementation.instanceType)
 		local isValid, reason = instanceType:matches(instance)
-		if not isValid then
-			return Result.Err(`Invalid instance type: {reason:formatErr()}`)
-		end
+		if not isValid then return Result.Err(`Invalid instance type: {reason:formatErr()}`) end
 	end
 
 	local mechanicLife = outerLife:extend()

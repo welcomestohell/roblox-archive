@@ -52,17 +52,13 @@ function ComponentProvider.start(self: ComponentProvider)
 					self.constructedToClass[component :: any] = componentClass
 				end
 
-				if component.added then
-					component:added()
-				end
+				if component.added then component:added() end
 			end
 
 			if not self._destroyingConnections[instance] then
 				self._destroyingConnections[instance] = instance.Destroying:Once(function()
 					for _, component in instanceToComponents do
-						if component.destroy then
-							threadpool.spawn(component.destroy, component)
-						end
+						if component.destroy then threadpool.spawn(component.destroy, component) end
 					end
 					table.clear(instanceToComponents)
 					self.instanceToComponents[instance] = nil
@@ -82,9 +78,7 @@ end
 function ComponentProvider.destroy(self: ComponentProvider)
 	for _, components in self.instanceToComponents do
 		for _, component in components do
-			if component.destroy then
-				component:destroy()
-			end
+			if component.destroy then component:destroy() end
 		end
 		table.clear(components)
 	end
@@ -96,15 +90,11 @@ function ComponentProvider.destroy(self: ComponentProvider)
 	table.clear(self.constructedToClass)
 
 	for _, connection in self._connections do
-		if connection.Connected then
-			connection:Disconnect()
-		end
+		if connection.Connected then connection:Disconnect() end
 	end
 
 	for _, connection in self._destroyingConnections do
-		if connection.Connected then
-			connection:Disconnect()
-		end
+		if connection.Connected then connection:Disconnect() end
 	end
 
 	table.clear(self._connections)
@@ -112,13 +102,9 @@ function ComponentProvider.destroy(self: ComponentProvider)
 end
 
 function ComponentProvider.addComponentClass(self: ComponentProvider, class: types.AnyComponent)
-	if not componentClasses[class] then
-		logger:fatalError { template = logger.invalidComponent }
-	end
+	if not componentClasses[class] then logger:fatalError { template = logger.invalidComponent } end
 
-	if self.componentClasses[class] then
-		logger:fatalError { template = logger.alreadyRegisteredComponent }
-	end
+	if self.componentClasses[class] then logger:fatalError { template = logger.alreadyRegisteredComponent } end
 
 	if class.tag then
 		local tagToComponentClasses = self.tagToComponentClasses[class.tag]
@@ -154,9 +140,7 @@ function ComponentProvider.getAllComponents<C, I>(
 	local result = {}
 	for _, components in self.instanceToComponents do
 		for _, component in components do
-			if self.constructedToClass[component] == class then
-				result[component] = true
-			end
+			if self.constructedToClass[component] == class then result[component] = true end
 		end
 	end
 	return result :: any
@@ -175,9 +159,7 @@ function ComponentProvider.removeComponent<C, I>(self: ComponentProvider, class:
 	if constructed then
 		self.instanceToComponents[instance :: any][class] = nil
 
-		if constructed.removed then
-			threadpool.spawn(constructed.removed :: any, constructed, instance)
-		end
+		if constructed.removed then threadpool.spawn(constructed.removed :: any, constructed, instance) end
 	end
 end
 

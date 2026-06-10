@@ -15,24 +15,16 @@ function Rem.__call(self: Rem, value: Fluid.UsedAs<number>, mode: Fluid.UsedAs<"
 	return if Fluid.read(mode) == "scale" then self:scale(value) else self:px(value)
 end
 
-function Rem.scale(self: Rem, value: Fluid.UsedAs<number>)
-	return Fluid.read(value) * self.rem() / BASE_REM
-end
+function Rem.scale(self: Rem, value: Fluid.UsedAs<number>) return Fluid.read(value) * self.rem() / BASE_REM end
 
 function Rem.intoScale(self: Rem, value: Fluid.UsedAs<number>)
-	return function()
-		return self:scale(value)
-	end
+	return function() return self:scale(value) end
 end
 
-function Rem.px(self: Rem, value: Fluid.UsedAs<number>)
-	return Fluid.read(value) * self.rem()
-end
+function Rem.px(self: Rem, value: Fluid.UsedAs<number>) return Fluid.read(value) * self.rem() end
 
 function Rem.intoPx(self: Rem, value: Fluid.UsedAs<number>)
-	return function()
-		return self:px(value)
-	end
+	return function() return self:px(value) end
 end
 
 function Rem.udim(self: Rem, value: Fluid.UsedAs<number>, mode: Fluid.UsedAs<"scale" | "offset">?): UDim
@@ -40,9 +32,7 @@ function Rem.udim(self: Rem, value: Fluid.UsedAs<number>, mode: Fluid.UsedAs<"sc
 end
 
 function Rem.intoUdim(self: Rem, value: Fluid.UsedAs<number>, mode: Fluid.UsedAs<"scale" | "offset">?)
-	return function()
-		return self:udim(value, mode)
-	end
+	return function() return self:udim(value, mode) end
 end
 
 function Rem.udim2(
@@ -62,9 +52,7 @@ function Rem.intoUdim2(
 	y: Fluid.UsedAs<number>,
 	mode: Fluid.UsedAs<"scale" | "offset">?
 )
-	return function()
-		return self:udim2(x, y, mode)
-	end
+	return function() return self:udim2(x, y, mode) end
 end
 
 local function useRem(): Rem

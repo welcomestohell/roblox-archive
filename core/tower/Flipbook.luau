@@ -31,23 +31,17 @@ function Flipbook:onStart(flipbook: FlipbookMechanic)
 		end
 	end)
 
-	flipbook.Synchronize:onChange(flipbook, function()
-		flipbook:Elapsed(0)
-	end)
+	flipbook.Synchronize:onChange(flipbook, function() flipbook:Elapsed(0) end)
 end
 
 -- FIXME: PingPong desyncs :(
 function Flipbook.onPreRender(self: typeof(Flipbook), deltaTime: number, level: std.Level)
 	local lifetime = level:getLifetime()
 	for _, flipbook: FlipbookMechanic in level:getMechanics(self) do
-		if not flipbook:Enabled() then
-			continue
-		end
+		if not flipbook:Enabled() then continue end
 
 		local framerate = flipbook:Framerate()
-		if framerate == 0 then
-			continue
-		end
+		if framerate == 0 then continue end
 
 		local mode = flipbook:Mode()
 		local isPingPong = mode == Enum.ParticleFlipbookMode.PingPong
@@ -67,9 +61,7 @@ function Flipbook.onPreRender(self: typeof(Flipbook), deltaTime: number, level: 
 					else cycleStep
 			)
 
-		if oldIndex == newIndex then
-			continue
-		end
+		if oldIndex == newIndex then continue end
 
         -- stylua: ignore
 		local position: Vector2 = 
