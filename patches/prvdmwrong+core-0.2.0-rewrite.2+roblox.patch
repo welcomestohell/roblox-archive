@@ -1,0 +1,30 @@
+diff --git a/src/init.luau b/src/init.luau
+index 9acef0a..21df592 100644
+--- a/src/init.luau
++++ b/src/init.luau
+@@ -46,7 +46,7 @@ export type RootStatus = types.RootStatus
+     ```
+ ]=]
+ local prvd = {
+-	version = '0.2.0-rewrite.1',
++	version = "0.2.0-rewrite.1",
+ 
+ 	-- Core API
+ 	Provider = providers.Provider :: never,
+@@ -74,11 +74,8 @@ local prvd = {
+ 	componentRoot = roots.root(),
+ }
+ 
+-return table.freeze(setmetatable(
+-	prvd,
+-	table.freeze {
+-		__call = function<Self>(_, provider: Self): Provider<Self>
+-			return providers.prvd(provider)
+-		end,
+-	}
+-))
++return setmetatable(prvd, {
++	__call = function<Self>(_, provider: Self): Provider<Self>
++		return providers.prvd(provider)
++	end,
++})
