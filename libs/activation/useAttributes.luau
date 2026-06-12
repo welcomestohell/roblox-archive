@@ -9,6 +9,7 @@ local function useAttributes(
 ): types.ActivationAttributes
 	basename = basename or "Activation"
 
+	implementation:attributeSection "Activation"
 	local attributes = {}
 	attributes.Enabled = implementation:attribute(basename .. "Enabled", gt.boolean(), false)
 	attributes.Mode = implementation:attribute(basename .. "Mode", gt.optional(gt.string()), nil)
@@ -30,6 +31,7 @@ local function useAttributes(
 	attributes.Id = implementation:attribute(basename .. "Id", gt.optional(gt.string()), nil)
 
 	attributes.Touch = touch.useAttributes(implementation, basename)
+	implementation:endAttributeSection()
 
 	return attributes
 end

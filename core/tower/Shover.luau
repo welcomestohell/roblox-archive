@@ -1,5 +1,4 @@
 local std = require "@libs/std"
-local threadpool = require "@libs/threadpool"
 
 local Shover = std.Mechanic {}
 export type ShoverMechanic = std.Mechanic<typeof(Shover)>

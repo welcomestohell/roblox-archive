@@ -27,10 +27,12 @@ local function useAttributes(implementation: Mechanic.MechanicImplementation, pr
 	local prefix = prefix or "Transition"
 
 	local attributes = {}
+	implementation:attributeSection "Tween"
 	attributes.Duration = implementation:attribute(prefix .. "Duration", gt.positiveNumber, 0)
 	attributes.Style = implementation:attribute(prefix .. "Style", isEasingStyle:type(), Enum.EasingStyle.Linear)
 	attributes.Direction =
 		implementation:attribute(prefix .. "Direction", isEasingDirection:type(), Enum.EasingDirection.Out)
+	implementation:endAttributeSection()
 
 	return attributes
 end

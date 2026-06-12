@@ -27,13 +27,13 @@ Follower.Enabled = Follower:attribute("Enabled", std.gt.boolean(), true)
 
 Follower.Mode = Follower:attribute(
 	"Mode",
-	std.gt.unionLiterals5("LookAt", "RotationOf", "PositionOf", "PivotOf", "None"),
+	std.gt.literals("LookAt", "RotationOf", "PositionOf", "PivotOf", "None"),
 	functions.literal "None"
 )
 
 Follower.Target = Follower:attribute(
 	"Target",
-	std.gt.unionLiterals5("Character", "Mouse", "Camera", "Pointer", "None"),
+	std.gt.literals("Character", "Mouse", "Camera", "Pointer", "None"),
 	functions.literal "None"
 )
 

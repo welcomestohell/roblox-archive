@@ -16,12 +16,11 @@ Elevator.Speed = Elevator:attribute("Speed", std.gt.number(), 40)
 Elevator.MaxForce = Elevator:attribute("MaxForce", std.gt.number(), math.huge)
 Elevator.Vector = Elevator:attribute(
 	"Vector",
-	std.gt.unionLiterals5("UpVector", "RightVector", "LookVector", "ZVector", "WorldYVector"),
+	std.gt.literals("UpVector", "RightVector", "LookVector", "ZVector", "WorldYVector"),
 	"WorldYVector"
 )
 Elevator.ContinuousUpdates = Elevator:attribute("ContinuousUpdates", std.gt.boolean(), true)
 
-Elevator:attributeSection "Touch"
 Elevator.Touch = std.useTouch(Elevator)
 
 export type Vector = typeof(Elevator.Vector:type())

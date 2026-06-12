@@ -16,7 +16,7 @@ CheckpointTeleporter.debuggerEmoji = "⬅️"
 CheckpointTeleporter.Cooldown = CheckpointTeleporter:attribute("Cooldown", std.gt.positiveNumber, 0)
 CheckpointTeleporter.OnNoCheckpoint = CheckpointTeleporter:attribute(
 	"OnNoCheckpoint",
-	std.gt.unionLiterals2("DoNothing", "ReturnToSpawn"),
+	std.gt.literals("DoNothing", "ReturnToSpawn"),
 	functions.literal "DoNothing"
 )
 

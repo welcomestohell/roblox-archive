@@ -5,6 +5,8 @@ const resolveInstance = require "@libs/core/resolveInstance"
 const gt = require "@libs/vendor/gt"
 const threadpool = require "@libs/threadpool"
 
+local index = 1
+
 const Attribute = {}
 Attribute.__index = Attribute
 
@@ -13,6 +15,7 @@ export type Attribute<T> = setmetatable<{
 	check: gt.Type,
 	defaultValue: T,
 
+	_index: number,
 	_observerCallbacks: { [Instance]: (string) -> () },
 	_observerDisconnectors: { [Instance]: () -> () },
 	_cache: { [Instance]: T },
@@ -124,11 +127,13 @@ local function observeListener<T>(
 end
 
 function Attribute.new<T>(attribute: string, check: T, defaultValue: T): Attribute<T>
+	index += 1
 	return setmetatable({
 		attribute = attribute,
 		check = gt.build(check) :: T,
 		defaultValue = defaultValue,
 
+		_index = index,
 		_observerCallbacks = tables.weak "k",
 		_observerDisconnectors = tables.weak "k",
 		_cache = tables.weak "k",
@@ -142,7 +147,7 @@ function Attribute.type<T>(_: Attribute<T>): T
 	error "This function is undefined, and should only be used in type definitions: `typeof(attribute:type())`"
 end
 
-function Attribute.isAttribute(x: any) return type(x) == "table" and getmetatable(x) == Attribute end
+function Attribute.isAttribute(x: unknown) return type(x) == "table" and getmetatable(x) == Attribute end
 
 function Attribute.peek<T>(self: Attribute<T>, instance: resolveInstance.InstanceLike): T
 	local value = self._cache[resolveInstance(instance)] :: any

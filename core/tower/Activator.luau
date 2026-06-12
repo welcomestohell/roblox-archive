@@ -20,7 +20,6 @@ Activator.Enabled = Activator:attribute("Enabled", std.gt.boolean(), true)
 Activator.Cooldown = Activator:attribute("Cooldown", std.gt.positiveNumber, 0)
 Activator.Group = Activator:attribute("Group", std.gt.string(), "")
 
-Activator:attributeSection "Activation"
 Activator.Activation = activation.useAttributes(Activator)
 
 function Activator.tryActivate(instance: Instance, level: std.Level)

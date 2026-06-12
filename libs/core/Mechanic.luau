@@ -92,6 +92,11 @@ function Mechanic.attributeSection(self: {}, title: string)
 	table.insert(self._metadata.attributeSections, section)
 end
 
+function Mechanic.endAttributeSection(self: {})
+	self = Mechanic.downcast(self)
+	self._metadata.currentAttributeSection = self._metadata.attributeSections[1]
+end
+
 function Mechanic.attribute<T>(self: {}, name: string, type: T, default: T): Attribute.Attribute<T>
 	self = Mechanic.downcast(self)
 

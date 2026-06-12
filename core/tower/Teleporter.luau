@@ -20,17 +20,10 @@ Teleporter.Cooldown = Teleporter:attribute("Cooldown", std.gt.positiveNumber, 0)
 Teleporter.Debounced = Teleporter:attribute("Debounced", std.gt.boolean(), false)
 Teleporter.Teleport = std.useTeleport(Teleporter)
 
-Teleporter:attributeSection "Seamless"
-Teleporter.Seamless = std.useSeamlessTeleport(Teleporter)
-
-Teleporter:attributeSection "Transitions"
-Teleporter.Transition = std.useTween(Teleporter)
-
-Teleporter:attributeSection "Sound"
-Teleporter.Sound = std.useSound(Teleporter)
-
-Teleporter:attributeSection "Activation"
 Teleporter.Activation = std.useActivation(Teleporter)
+Teleporter.Seamless = std.useSeamlessTeleport(Teleporter)
+Teleporter.Sound = std.useSound(Teleporter)
+Teleporter.Transition = std.useTween(Teleporter)
 
 function Teleporter.onActivate(self: typeof(Teleporter), teleporter: TeleporterMechanic, level: std.Level, event)
 	local root = character.getMaybeHumanoidRootPart()

@@ -40,6 +40,7 @@ end
 local function useAttributes(implementation: Mechanic.MechanicImplementation, basename: string?)
 	basename = basename or "Sound"
 
+	implementation:attributeSection "Sounds"
 	local attributes = {}
 	attributes.Basename = implementation:attribute(basename .. "Basename", gt.string(), basename)
 	attributes.Play = implementation:attribute("Play" .. basename, gt.boolean(), true)
@@ -50,6 +51,7 @@ local function useAttributes(implementation: Mechanic.MechanicImplementation, ba
 	attributes.Spatial = implementation:attribute(basename .. "Spatial", gt.boolean(), true)
 	attributes.TimeStart = implementation:attribute(basename .. "TimeStart", gt.positiveNumber, 0)
 	attributes.TimeEnd = implementation:attribute(basename .. "TimeEnd", gt.number(), -1)
+	implementation:endAttributeSection()
 
 	return attributes
 end

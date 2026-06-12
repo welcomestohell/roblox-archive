@@ -5,11 +5,12 @@ const sounds = require "@libs/sounds"
 const tweens = require "@libs/tweens"
 const assets = require "@core/assets"
 
-const GLOW_PADDING = Vector3.new(0.05, 0.05, 0.05) 
+const GLOW_PADDING = Vector3.new(0.05, 0.05, 0.05)
 
 const function useAttributes(implementation: Mechanic.MechanicImplementation, basename: string?)
 	basename = basename or "Press"
-	return {
+	implementation:attributeSection "Press"
+	local attributes = {
 		Enabled = implementation:attribute(basename .. "Enabled", gt.boolean(), true),
 		Offset = implementation:attribute(basename .. "Offset", gt.CFrame(), CFrame.new(0, -0.5, 0)),
 		OffsetEnabled = implementation:attribute(basename .. "OffsetEnabled", gt.boolean(), true),
@@ -18,6 +19,8 @@ const function useAttributes(implementation: Mechanic.MechanicImplementation, ba
 		Sound = sounds.useAttributes(implementation, basename .. "Sound"),
 		Tween = tweens.useAttributes(implementation, basename .. "Tween"),
 	}
+	implementation:endAttributeSection()
+	return attributes
 end
 
 export type PressAttributes = typeof(useAttributes(...))

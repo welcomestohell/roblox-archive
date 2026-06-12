@@ -23,7 +23,7 @@ Flipbook.Mode = Flipbook:attribute(
 )
 
 function Flipbook:onStart(flipbook: FlipbookMechanic)
-	flipbook.GridSize:onBind(flipbook, function(gridSize)
+	flipbook.GridSize:onBind(flipbook, function(gridSize: Vector2)
 		if flipbook.instance.ClassName == "ImageLabel" then
 			flipbook.instance.Size = UDim2.fromScale(gridSize.X, gridSize.Y)
 		elseif flipbook.instance.ClassName == "Decal" then
@@ -47,10 +47,13 @@ function Flipbook.onPreRender(self: typeof(Flipbook), deltaTime: number, level: 
 		local isPingPong = mode == Enum.ParticleFlipbookMode.PingPong
 
 		local gridSize = flipbook:GridSize()
-		local numFrames = flipbook:NumFrames() or gridSize.X * gridSize.Y
+		local numFrames: number = flipbook:NumFrames() or gridSize.X * gridSize.Y
 		local cycleDuration = (if isPingPong and numFrames > 1 then (numFrames - 1) * 2 else numFrames) / framerate
 
-		local elapsed = if flipbook:Synchronize() then lifetime else flipbook:Elapsed(flipbook:Elapsed() + deltaTime)
+		local elapsed = if flipbook:Synchronize()
+			then lifetime
+			else flipbook:Elapsed(flipbook:Elapsed() :: number + deltaTime)
+
 		local cycleStep = math.floor(elapsed % cycleDuration * framerate)
 
 		local oldIndex, newIndex =

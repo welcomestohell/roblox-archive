@@ -40,7 +40,7 @@ Culled.instanceType = std.gt.union(
 )
 Culled.debuggerEmoji = "👻"
 
-Culled.Mode = Culled:attribute("Mode", std.gt.unionLiterals2("Distance", "Camera"), "Distance")
+Culled.Mode = Culled:attribute("Mode", std.gt.literals("Distance", "Camera"), "Distance")
 Culled.Distance = Culled:attribute("Distance", std.gt.NumberRange, NumberRange.new(0, math.huge))
 
 -- Investigate: FindFirstAncestorOfClass to replace all this?
