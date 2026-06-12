@@ -9,13 +9,14 @@ local Promise = require "@roblox_packages/Promise"
 local Result = require "@libs/Result"
 local ScriptCollector = require "@libs/core/ScriptCollector"
 local activation = require "@libs/activation"
-local gt = require "@libs/gt"
+local gt = require "@libs/vendor/gt"
 local marrays = require "@libs/collections/marrays"
 local mechanize = require "@libs/core/mechanize"
 local mmaps = require "@libs/collections/mmaps"
 local prvd = require "@roblox_packages/prvd"
 local tables = require "@libs/collections/tables"
 local threadpool = require "@libs/threadpool"
+const toggle = require("@libs/toggle")
 
 type AnyImplementation = Mechanic.AnyMechanicImplementation
 type MechanicImplementation = Mechanic.MechanicImplementation
@@ -214,6 +215,8 @@ end
 function Level.loadInstance(self: Level, instance: Instance): { Mechanic }
 	local mechanics = {}
 	for _, tag in instance:GetTags() do
+		local instanceConfiguration = instance
+		
 		local mechanicName = string.match(tag, "Mechanic:%s?([%w_%-]+)")
 		if mechanicName then
 			local implementation = Mechanic.downcast(self.scripts.mechanicImplementationByName[mechanicName])
@@ -223,6 +226,7 @@ function Level.loadInstance(self: Level, instance: Instance): { Mechanic }
 			if mechanizeResult:isErr() then continue end
 
 			local mechanic: Mechanic = mechanizeResult:unwrap() :: any
+			instanceConfiguration = mechanic.instanceConfiguration
 			table.insert(self.mechanics, mechanic)
 			table.insert(mechanics, mechanic)
 			marrays.push(self.mechanicsByImplementations, implementation, mechanic)
@@ -237,6 +241,10 @@ function Level.loadInstance(self: Level, instance: Instance): { Mechanic }
 			self.life:add(
 				instance.Destroying:Once(function() marrays.remove(self.instanceByGroups, groupName, instance) end)
 			)
+		end
+
+		if tag == toggle.TAG then
+			toggle.toggleInstance(toggle.Enabled(instance or instanceConfiguration), instance, instanceConfiguration)
 		end
 	end
 	return mechanics

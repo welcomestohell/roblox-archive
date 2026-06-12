@@ -1,0 +1,24 @@
+diff --git a/src/reactive/untrack.luau b/src/reactive/untrack.luau
+index 10ed484..52ab457 100644
+--- a/src/reactive/untrack.luau
++++ b/src/reactive/untrack.luau
+@@ -1,16 +1,16 @@
+ local graph = require("./graph")
+ 
+-local function untrack<T>(source: () -> T): T
++local function untrack<T, Args...>(source: (Args...) -> T, ...: Args...): T
+ 	local scope = graph.get_scope()
+ 	if (not scope) or (scope and not scope.effect) then
+-		return source()
++		return source(...)
+ 	end
+ 
+ 	-- temporarily unbind effect
+ 	local effect = scope.effect
+ 	scope.effect = false :: any
+ 
+-	local value = source()
++	local value = source(...)
+ 
+ 	scope.effect = effect
+ 

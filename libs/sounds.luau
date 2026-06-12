@@ -5,7 +5,7 @@ local SoundService = game:GetService "SoundService"
 local Mechanic = require "@libs/core/Mechanic"
 const resolveInstance = require "@libs/core/resolveInstance"
 local audios = { sfx = {} } --require("@core/shared/generated/audios")
-local gt = require "@libs/gt"
+local gt = require "@libs/vendor/gt"
 
 export type SoundConfiguration = {
 	id: string?,

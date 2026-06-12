@@ -1,3 +1,5 @@
+_G.PRVDMWRONG_PROFILE_LIFECYCLES = false
+
 local ReplicatedStorage = game:GetService "ReplicatedStorage"
 local RunService = game:GetService "RunService"
 local ServerScriptService = game:GetService "ServerScriptService"
@@ -5,8 +7,7 @@ local ServerScriptService = game:GetService "ServerScriptService"
 local logger = require "@core/shared/logger"
 local prvd = require "@roblox_packages/prvd"
 
-prvd.onProviderUsed(function(_, provider) logger:Debug("Used provider", tostring(provider)) end)
-
+prvd.onProviderUsed(function(_, provider) logger:Debug("Used provider", provider.name) end)
 prvd.onLifecycleUsed(function(_, lifecycle) logger:Debug("Used lifecycle", tostring(lifecycle)) end)
 
 local root = prvd.root()

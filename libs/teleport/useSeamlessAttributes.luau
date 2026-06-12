@@ -1,5 +1,5 @@
 local Mechanic = require "@libs/core/Mechanic"
-local gt = require "@libs/gt"
+local gt = require "@libs/vendor/gt"
 
 local SeamlessMeasurement = gt.build(gt.unionLiterals2("Relative", "World"))
 export type SeamlessMeasurement = typeof(SeamlessMeasurement:type())

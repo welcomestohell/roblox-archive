@@ -30,7 +30,7 @@ function KitClientProvider.onStart(self: KitClientProvider)
 	self.level = LevelProvider:tryLoadLevel(tower)
 end
 
-function KitClientProvider.onFinish(self: KitClientProvider)
+function KitClientProvider.onStop(self: KitClientProvider)
 	if self.level then self.level.life:destroy() end
 end
 

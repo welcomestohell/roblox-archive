@@ -1,7 +1,7 @@
 local RunService = game:GetService "RunService"
 
 local Mechanic = require "@libs/core/Mechanic"
-local gt = require "@libs/gt"
+local gt = require "@libs/vendor/gt"
 
 local attribute = require "@libs/attributes/Attribute"
 local character = require "@libs/character"

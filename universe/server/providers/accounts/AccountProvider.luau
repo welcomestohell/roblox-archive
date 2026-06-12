@@ -56,6 +56,6 @@ end
 -- 	AccountStore.removeAccount(player.Name)
 -- end
 
-function AccountProvider.onFinish(self: AccountProvider) PlayerStore:closeAsync() end
+function AccountProvider.onStop(self: AccountProvider) PlayerStore:closeAsync() end
 
 return prvd(AccountProvider)

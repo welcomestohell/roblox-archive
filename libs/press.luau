@@ -1,11 +1,11 @@
 const Mechanic = require "@libs/core/Mechanic"
-const gt = require "@libs/gt"
+const gt = require "@libs/vendor/gt"
 const Life = require "@libs/memory/Life"
 const sounds = require "@libs/sounds"
 const tweens = require "@libs/tweens"
 const assets = require "@core/assets"
 
-const GLOW_PADDING = Vector3.new(0.05, 0.05, 0.05)
+const GLOW_PADDING = Vector3.new(0.05, 0.05, 0.05) 
 
 const function useAttributes(implementation: Mechanic.MechanicImplementation, basename: string?)
 	basename = basename or "Press"

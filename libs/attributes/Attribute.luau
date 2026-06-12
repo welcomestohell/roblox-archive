@@ -2,7 +2,7 @@ const logger = require "@core/shared/logger"
 const observeAttributes = require "@libs/attributes/observeAttributes"
 const tables = require "@libs/collections/tables"
 const resolveInstance = require "@libs/core/resolveInstance"
-const gt = require "@libs/gt"
+const gt = require "@libs/vendor/gt"
 const threadpool = require "@libs/threadpool"
 
 const Attribute = {}

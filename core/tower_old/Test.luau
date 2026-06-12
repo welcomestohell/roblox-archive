@@ -51,15 +51,15 @@ for _, key in DATA_TYPE_KEYS do
 end
 
 Test:attributeSection "Custom Types"
-Test:attribute("Unions", std.gt.union3(std.gt.number(), std.gt.Vector3(), std.gt.CFrame()), 67)
+Test:attribute("Unions", std.gt.union(std.gt.number(), std.gt.Vector3(), std.gt.CFrame()), 67)
 Test:attribute(
 	"NestedUnions",
-	std.gt.union3(std.gt.number(), std.gt.union2(std.gt.Vector2(), std.gt.Vector3()), std.gt.CFrame()),
+	std.gt.union(std.gt.number(), std.gt.union(std.gt.Vector2(), std.gt.Vector3()), std.gt.CFrame()),
 	67
 )
 Test:attribute(
 	"Literals",
-	std.gt.union3(functions.literal "Foo", functions.literal "Bar", functions.literal "Qux"),
+	std.gt.union(functions.literal "Foo", functions.literal "Bar", functions.literal "Qux"),
 	"Foo"
 )
 

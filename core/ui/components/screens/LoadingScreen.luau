@@ -95,7 +95,7 @@ local function LoadingScreen(props: {
 				-- 	AutomaticSize = Enum.AutomaticSize.X,
 				-- 	Size = UDim2.fromScale(0, 0),
 
-				-- 	mapRange<<any>>(function(index)
+				-- 	forRange<<any>>(function(index)
 				-- 		local position, positionMotion = useMotion(UDim2.new(rem:px(index), 0))
 				-- 		positionMotion:tween(rem:udim2(index, -0.25), { reverses = true, repeats = math.huge })
 

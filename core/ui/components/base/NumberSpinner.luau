@@ -1,4 +1,4 @@
-const mapRange = require "@core/shared/fluid/mapRange"
+const forRange = require "@core/shared/fluid/forRange"
 const Text = require "@core/ui/components/base/Text"
 const tables = require "@libs/collections/tables"
 const Fluid = require "@roblox_packages/Fluid"
@@ -52,8 +52,8 @@ const function NumberSpinner(props: {
 			VerticalAlignment = Enum.VerticalAlignment.Center,
 		},
 
-		-- LUAU FIXME: having to set mapRange as any
-		mapRange<<any>>(function(index: number)
+		-- LUAU FIXME: having to set forRange as any
+		forRange<<any>>(function(index: number)
 			const function fauxRotation() return math.floor(Fluid.read(props.value) / 10 ^ (index - 1)) end
 			const function moverPosition() return UDim2.fromScale(0, -(fauxRotation() % 10)) end
 

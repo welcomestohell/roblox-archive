@@ -27,7 +27,7 @@ export type MounterMechanic = std.Mechanic<typeof(Mounter)> & { model: BasePart 
 Mounter.mechanicName = "Attacher"
 Mounter.instanceType = std.gt.instanceTree {
 	MounterActivator = std.isA.Instance(),
-	MounterModel = std.gt.union2(std.isA.BasePart(), std.isA.Model()),
+	MounterModel = std.gt.union(std.isA.BasePart(), std.isA.Model()),
 }
 Mounter.debuggerEmoji = "🔌"
 

@@ -1,5 +1,5 @@
 local Attribute = require "@libs/attributes/Attribute"
-local gt = require "@libs/gt"
+local gt = require "@libs/vendor/gt"
 local threadpool = require "./threadpool"
 
 local Delay = Attribute.new("Delay", gt.positiveNumber, 0)

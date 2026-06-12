@@ -3,7 +3,7 @@ return {
 		place = {
 			title = "Core",
 			folderName = "Core",
-			dependencies = { "libs", "roblox_packages", "prvdmwrong" },
+			dependencies = { "libs", "roblox_packages" },
 		},
 	},
 }

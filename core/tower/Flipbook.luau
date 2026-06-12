@@ -3,7 +3,7 @@ local std = require "@libs/std"
 local Flipbook = std.Mechanic {}
 export type FlipbookMechanic = std.Mechanic<typeof(Flipbook)>
 Flipbook.mechanicName = "Flipbook"
-Flipbook.instanceType = std.gt.union2(std.isA.ImageLabel(), std.isA.Decal())
+Flipbook.instanceType = std.gt.union(std.isA.ImageLabel(), std.isA.Decal())
 Flipbook.debuggerEmoji = "🎞️"
 
 Flipbook.Enabled = Flipbook:attribute("Enabled", std.gt.boolean(), true)
@@ -64,7 +64,7 @@ function Flipbook.onPreRender(self: typeof(Flipbook), deltaTime: number, level: 
 		if oldIndex == newIndex then continue end
 
         -- stylua: ignore
-		local position: Vector2 = 
+		local position: Vector2 =
             if mode == Enum.ParticleFlipbookMode.Random then
                 Vector2.new(math.random(0, gridSize.X - 1), math.random(0, gridSize.Y - 1))
 			else

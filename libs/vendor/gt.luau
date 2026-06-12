@@ -30,7 +30,6 @@ local gt = {
 	fn = GreenTea.fn,
 	Font = GreenTea.Font,
 	Instance = GreenTea.Instance,
-	intersection = GreenTea.intersection,
 	isA = GreenTea.isA,
 	isGtType = GreenTea.isGtType,
 	isType = GreenTea.isType,
@@ -67,14 +66,6 @@ local gt = {
 	wrapFnArgs = GreenTea.wrapFnArgs,
 	wrapFnReturns = GreenTea.wrapFnReturns,
 
-	-- FIXME: new solver is bugged
-	union2 = GreenTea.union :: <T1, T2>(T1, T2) -> T1 | T2,
-	union3 = GreenTea.union :: <T1, T2, T3>(T1, T2, T3) -> T1 | T2 | T3,
-	union4 = GreenTea.union :: <T1, T2, T3, T4>(T1, T2, T3, T4) -> T1 | T2 | T3 | T4,
-	union5 = GreenTea.union :: <T1, T2, T3, T4, T5>(T1, T2, T3, T4, T5) -> T1 | T2 | T3 | T4 | T5,
-	union6 = GreenTea.union :: <T1, T2, T3, T4, T5, T6>(T1, T2, T3, T4, T5, T6) -> T1 | T2 | T3 | T4 | T5 | T6,
-	union7 = GreenTea.union :: <T1, T2, T3, T4, T5, T6, T7>(T1, T2, T3, T4, T5, T6, T7) -> T1 | T2 | T3 | T4 | T5 | T6 | T7,
-
 	-- stylua: ignore
 	union = GreenTea.union ::
 		& (<T1, T2>(T1, T2) -> T1 | T2)
@@ -84,7 +75,24 @@ local gt = {
 		& (<T1, T2, T3, T4, T5, T6>(T1, T2, T3, T4, T5, T6) -> T1 | T2 | T3 | T4 | T5 | T6)
 		& (<T1, T2, T3, T4, T5, T6, T7>(T1, T2, T3, T4, T5, T6, T7) -> T1 | T2 | T3 | T4 | T5 | T6 | T7)
 		& (<T1, T2, T3, T4, T5, T6, T7, T8>(T1, T2, T3, T4, T5, T6, T7, T8) -> T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8)
-,
+		& (<T1, T2, T3, T4, T5, T6, T7, T8, T9>(T1, T2, T3, T4, T5, T6, T7, T8, T9) -> T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9)
+		& (<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10) -> T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9 | T10)
+		& (<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11) -> T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9 | T10 | T11)
+		& (<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11) -> T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9 | T10 | T11 | T12),
+
+	-- stylua: ignore
+	intersection = GreenTea.intersection ::
+		& (<T1, T2>(T1, T2) -> T1 & T2)
+		& (<T1, T2, T3>(T1, T2, T3) -> T1 & T2 & T3)
+		& (<T1, T2, T3, T4>(T1, T2, T3, T4) -> T1 & T2 & T3 & T4)
+		& (<T1, T2, T3, T4, T5>(T1, T2, T3, T4, T5) -> T1 & T2 & T3 & T4 & T5)
+		& (<T1, T2, T3, T4, T5, T6>(T1, T2, T3, T4, T5, T6) -> T1 & T2 & T3 & T4 & T5 & T6)
+		& (<T1, T2, T3, T4, T5, T6, T7>(T1, T2, T3, T4, T5, T6, T7) -> T1 & T2 & T3 & T4 & T5 & T6 & T7)
+		& (<T1, T2, T3, T4, T5, T6, T7, T8>(T1, T2, T3, T4, T5, T6, T7, T8) -> T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8)
+		& (<T1, T2, T3, T4, T5, T6, T7, T8, T9>(T1, T2, T3, T4, T5, T6, T7, T8, T9) -> T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8 & T9)
+		& (<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10) -> T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8 & T9 & T10)
+		& (<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11) -> T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8 & T9 & T10 & T11)
+		& (<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12) -> T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8 & T9 & T10 & T11 & T12),
 }
 
 local function instanceTree(treeOrParent: any, tree: any): GreenTea.Type
@@ -107,11 +115,16 @@ local function instanceTree(treeOrParent: any, tree: any): GreenTea.Type
 	end, parent:format())
 end
 
+function gt.moreThan(min: number?) return gt.number { options = { minExclusive = min } } end
+function gt.moreOrEqual(min: number?) return gt.number { options = { min = min } } end
+function gt.lessThan(min: number?) return gt.number { options = { maxExclusive = min } } end
+function gt.lessOrEqual(min: number?) return gt.number { options = { max = min } } end
 function gt.constrainNumber(min: number?, max: number?) return gt.number { options = { min = min, max = max } } end
-
 function gt.constrainNumberExclusive(min: number?, max: number?)
 	return gt.number { options = { minExclusive = min, maxExclusive = max } }
 end
+gt.positiveNumber = gt.constrainNumberExclusive(0)
+gt.negativeNumber = gt.constrainNumberExclusive(nil, 0)
 
 function gt.enumOf<T>(enum: Enum): any
 	return GreenTea.custom(function(thing)
@@ -130,8 +143,6 @@ function gt.unionLiterals(...: any): any
 	return (gt.union :: any)(table.unpack(components, 1, len))
 end
 
-gt.positiveNumber = gt.constrainNumberExclusive(0)
-gt.negativeNumber = gt.constrainNumberExclusive(nil, 0)
 gt.literal = (GreenTea.literal :: any) :: <T>(x: T | "") -> T
 gt.instanceTree = instanceTree :: (<T>(tree: T) -> T & Instance) & (<P, T>(parent: P, tree: T) -> T & P)
 

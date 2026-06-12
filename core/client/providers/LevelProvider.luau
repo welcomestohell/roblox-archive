@@ -8,7 +8,7 @@ const Life = require "@libs/memory/Life"
 const prvd = require "@roblox_packages/prvd"
 const Charm = require "@roblox_packages/Charm"
 
-local LevelProvider = { activeLevels = Charm.atom<<{ Level }>> {}, priority = -1 }
+local LevelProvider = { activeLevels = Charm.atom<<{ Level.Level }>> {}, priority = -1 }
 export type LevelProvider = typeof(LevelProvider)
 
 function LevelProvider.onInit(self: typeof(LevelProvider))
@@ -30,14 +30,15 @@ function LevelProvider.tryLoadLevel(self: typeof(LevelProvider), instance: Insta
 		character.getCharacter():PivotTo(level.instance.Spawn.CFrame)
 		level:start()
 
-		self.activeLevels(function(activeLevels)
-			table.insert(activeLevels, level)
+		self.activeLevels(function(activeLevels: { Level.Level })
+			-- LUAU FIXME: eugh
+			table.insert(activeLevels :: { any }, level)
 			return activeLevels
 		end)
 
 		level.life:add(function()
-			self.activeLevels(function(activeLevels)
-				tables.findAndRemove(activeLevels, level)
+			self.activeLevels(function(activeLevels: { Level.Level })
+				tables.findAndRemove<<Level.Level>>(activeLevels, level)
 				return activeLevels
 			end)
 		end)

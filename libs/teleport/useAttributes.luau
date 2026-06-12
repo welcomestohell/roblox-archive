@@ -1,5 +1,5 @@
 local Mechanic = require "@libs/core/Mechanic"
-local gt = require "@libs/gt"
+local gt = require "@libs/vendor/gt"
 
 local function useAttributes(implementation: Mechanic.MechanicImplementation, basename: string?)
 	basename = basename or ""

@@ -22,6 +22,10 @@ local core = {
 			letterW = "rbxasset://.asphalt-game/aedb45a6ed76ed6fa0c8866e703b97a29b8f2e4b388be7b54b54cd98eee67132.png",
 		},
 	},
+	phosphor = {
+		caretLineDown = "rbxasset://.asphalt-game/39aaf6d984e58c325b5e29983adf701840273310bd7cab911844ecb4bfdcfb66.png",
+		hourglassSimple = "rbxasset://.asphalt-game/b4da1eab5bde35782a888c4899b09837e3f3bbaf1444baaa405cb805a229c07f.png",
+	},
 	placeholder = "rbxasset://.asphalt-game/5604622ae7befb63e6b55d6e36a1f8801f874b73d378204e863d87262087e7b4.png",
 	sfx = {
 		button = "rbxasset://.asphalt-game/2b293bd53d26f21474598971951bfe07bef5a80ac8afddae50e8c0baaee90498.mp3",
@@ -41,6 +45,9 @@ local core = {
 	ui = {
 		fillLeft = "rbxasset://.asphalt-game/dc6a16d72e58a635b39f605dc6f642a52d798b0264cc11b75f23a2566e01615c.png",
 		fillRight = "rbxasset://.asphalt-game/e4207206db92ac7d321b870d01613c1e90887a83d834c27cde37069df56f4dea.png",
+		icons = {
+			button = "rbxasset://.asphalt-game/31477c170d2a8ca7a7adfc31733e2d30ea9ce6ebdf8d4bd2d8b9b59342f11d24.png",
+		},
 	},
 	vfx = {
 		sparkRing = "rbxasset://.asphalt-game/1ee8872609b0572a1c09c0e57f994fc22e1cde1a8ec298e6dfa05a45a856988a.png",

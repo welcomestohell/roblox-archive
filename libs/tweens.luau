@@ -3,7 +3,7 @@ local TweenService = game:GetService "TweenService"
 local Attribute = require "@libs/attributes/Attribute"
 local Mechanic = require "@libs/core/Mechanic"
 const resolveInstance = require "@libs/core/resolveInstance"
-local gt = require "@libs/gt"
+local gt = require "@libs/vendor/gt"
 
 export type TweenConfiguration = {
 	duration: number?,

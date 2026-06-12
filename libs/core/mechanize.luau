@@ -3,7 +3,7 @@ local HttpService = game:GetService "HttpService"
 local Life = require "@libs/memory/Life"
 local Mechanic = require "@libs/core/Mechanic"
 local Result = require "@libs/Result"
-local gt = require "@libs/gt"
+local gt = require "@libs/vendor/gt"
 
 --[=[
 	@function mechanize

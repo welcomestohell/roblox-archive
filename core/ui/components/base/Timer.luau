@@ -8,10 +8,10 @@ const Fluid = require "@roblox_packages/Fluid"
 const assets = require "@core/assets"
 const useShow = require "@core/shared/fluid/useShow"
 const useToggled = require "@core/shared/fluid/useToggled"
-const Oklab = require "@libs/Oklab"
+const Oklab = require "@libs/vendor/Oklab"
 
 -- TODO: hoursHidden, secondsHidden, millisecondsHidden
-const function Timer(props: {
+export type TimerProps = {
 	name: Fluid.UsedAs<string>?,
 	position: Fluid.UsedAs<UDim2>?,
 	anchorPoint: Fluid.UsedAs<Vector2>?,
@@ -20,11 +20,15 @@ const function Timer(props: {
 	layoutOrder: Fluid.UsedAs<number>?,
 	zIndex: Fluid.UsedAs<number>?,
 
+	icon: Fluid.UsedAs<string>?,
 	color: Fluid.UsedAs<Color3>?,
+	count: Fluid.UsedAs<number>?,
 	valueSeconds: Fluid.UsedAs<number>,
-	startingValueSeconds: Fluid.UsedAs<number>?,
+	totalSeconds: Fluid.UsedAs<number>?,
 	visible: Fluid.UsedAs<boolean>?,
-})
+}
+
+const function Timer(props: TimerProps)
 	const rem = useRem()
 	const nextOrder = useNextOrder()
 
@@ -81,15 +85,14 @@ const function Timer(props: {
 		Visible = function() return scale() >= 0.01 end,
 		Fluid.create "UIScale" { Scale = scale },
 
-		useShow(props.startingValueSeconds, Fluid.untrack :: any, function()
-			const startingValueSeconds = props.startingValueSeconds :: Fluid.UsedAs<number>
+		useShow(props.totalSeconds, Fluid.untrack :: any, function()
+			const totalSeconds = props.totalSeconds :: Fluid.UsedAs<number>
 
 			const function progress()
-				return (Fluid.read(startingValueSeconds) - Fluid.read(props.valueSeconds))
-					/ Fluid.read(startingValueSeconds)
+				return (Fluid.read(totalSeconds) - Fluid.read(props.valueSeconds)) / Fluid.read(totalSeconds)
 			end
 
-			const function isHalfway() return progress() > 0.5 end
+			const function isHalfway() return progress() >= 0.5 end
 
 			return {
 				-- First 50%
@@ -147,7 +150,29 @@ const function Timer(props: {
 			},
 
 			Fluid.create "UICorner" { CornerRadius = rem:intoUdim(0.5) },
-			Padding { horizontal = rem:intoUdim(1), bottom = rem:intoUdim(0.25) },
+			Padding { horizontal = rem:intoUdim(1), bottom = rem:intoUdim(0.125) },
+
+			-- useShow(
+			-- 	props.icon,
+			-- 	Fluid.untrack :: any,
+			-- 	function()
+			-- 		return Fluid.create "Frame" {
+			-- 			Name = "Icon",
+			-- 			BackgroundTransparency = 1,
+			-- 			Size = rem:intoUdim2(4, 4),
+
+			-- 			Padding { all = rem:intoUdim(0.25) },
+			-- 			Fluid.create "ImageLabel" {
+			-- 				BackgroundTransparency = 1,
+			-- 				Position = UDim2.fromScale(0.5, 0.5),
+			-- 				AnchorPoint = Vector2.new(0.5, 0.5),
+			-- 				Size = UDim2.fromScale(1, 1),
+			-- 				Image = props.icon,
+			-- 				ImageColor3 = darkColor,
+			-- 			},
+			-- 		}
+			-- 	end
+			-- ),
 
 			NumberSpinner {
 				name = "MinutesSpinner",

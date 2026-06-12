@@ -1,7 +1,7 @@
 local Result = require "@libs/Result"
 local createChildOfClass = require "@self/createChildOfClass"
 local functions = require "@libs/functions"
-local gt = require "@libs/gt"
+local gt = require "@libs/vendor/gt"
 local logger = require "@core/shared/logger"
 local types = require "@self/types"
 local useAttributes = require "@self/useAttributes"

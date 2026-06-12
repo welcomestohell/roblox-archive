@@ -2,16 +2,16 @@ local Fluid = require "@roblox_packages/Fluid"
 local tables = require "@libs/collections/tables"
 local useDissolved = require "@core/shared/fluid/useDissolved"
 
-local function mapRange<T>(
+local function forRange<T>(
 	map: (index: number) -> T,
 	startingIndex: Fluid.UsedAs<number>,
 	endingIndex: Fluid.UsedAs<number>,
 	step: Fluid.UsedAs<number>?
 ): Fluid.UsedAs<{ T }>
-	return useDissolved(function()
-		local startingIndex = Fluid.read(startingIndex)
-		local endingIndex = Fluid.read(endingIndex)
-		local step = Fluid.read(step or 1)
+	return useDissolved(function(read: useDissolved.Read)
+		local startingIndex = read<<number>>(startingIndex)
+		local endingIndex = read<<number>>(endingIndex)
+		local step = read<<number>>(step or 1)
 
 		local result = tables.create(endingIndex - startingIndex)
 		for index = startingIndex, endingIndex, step do
@@ -22,4 +22,4 @@ local function mapRange<T>(
 	end)
 end
 
-return mapRange
+return forRange
