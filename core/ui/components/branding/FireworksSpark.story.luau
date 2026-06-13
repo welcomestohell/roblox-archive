@@ -1,7 +1,7 @@
 local FireworksSpark = require "./FireworksSpark"
-local createFluidStory = require "@core/shared/fluid/createFluidStory"
+const Liquid = require "@roblox_packages/Liquid"
 
-return createFluidStory {
+return Liquid.createFluidStory {
 	controls = {
 		visible = true,
 		color = Color3.fromHex "#FF004D",

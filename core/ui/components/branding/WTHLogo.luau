@@ -1,9 +1,8 @@
-local Fluid = require "@roblox_packages/Fluid"
-local assets = require "@core/assets"
-local useDelay = require "@core/shared/fluid/useDelay"
-local useRem = require "@core/shared/fluid/useRem"
+const Fluid = require "@roblox_packages/Fluid"
+const assets = require "@core/assets"
+const Liquid = require "@roblox_packages/Liquid"
 
-local function Letter(props: {
+const function Letter(props: {
 	name: string,
 	imageId: string,
 
@@ -54,7 +53,7 @@ local function WTHLogo(props: {
 	layoutOrder: Fluid.UsedAs<number>?,
 	zIndex: Fluid.UsedAs<number>?,
 })
-	local rem = useRem()
+	local rem = Liquid.useRem()
 
 	return Fluid.create "Frame" {
 		Name = props.name or "WTHLogo",
@@ -71,7 +70,7 @@ local function WTHLogo(props: {
 		Letter {
 			name = "W",
 			imageId = assets.branding.wth.letterW,
-			visible = useDelay<<boolean>>(0, props.visible),
+			visible = Liquid.useDelay<<boolean>>(0, props.visible),
 			transparency = props.transparency,
 			xShift = -1,
 			zIndex = 1,
@@ -80,7 +79,7 @@ local function WTHLogo(props: {
 		Letter {
 			name = "T",
 			imageId = assets.branding.wth.letterT,
-			visible = useDelay<<boolean>>(0.1, props.visible),
+			visible = Liquid.useDelay<<boolean>>(0.1, props.visible),
 			transparency = props.transparency,
 			xShift = 0,
 			zIndex = 2,
@@ -89,7 +88,7 @@ local function WTHLogo(props: {
 		Letter {
 			name = "H",
 			imageId = assets.branding.wth.letterH,
-			visible = useDelay<<boolean>>(0.2, props.visible),
+			visible = Liquid.useDelay<<boolean>>(0.2, props.visible),
 			transparency = props.transparency,
 			xShift = 1,
 			zIndex = 1,

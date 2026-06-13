@@ -1,7 +1,7 @@
 local TitleScreen = require "@title/ui/components/title/TitleScreen"
-local createFluidStory = require "@core/shared/fluid/createFluidStory"
+const Liquid = require "@roblox_packages/Liquid"
 
-return createFluidStory {
+return Liquid.createFluidStory {
 	controls = {},
 	render = function() return TitleScreen() end,
 }

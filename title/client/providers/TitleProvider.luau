@@ -1,20 +1,18 @@
-local ContentProvider = game:GetService "ContentProvider"
-local Players = game:GetService "Players"
-local SoundService = game:GetService "SoundService"
-local StarterGui = game:GetService "StarterGui"
+const ContentProvider = game:GetService "ContentProvider"
+const Players = game:GetService "Players"
+const SoundService = game:GetService "SoundService"
+const StarterGui = game:GetService "StarterGui"
 
-local FireworksSplash = require "@title/ui/components/splashes/FireworksSplash"
-local Fluid = require "@roblox_packages/Fluid"
-local LoadingScreen = require "@core/ui/components/screens/LoadingScreen"
-local TitleScreen = require "@title/ui/components/title/TitleScreen"
-local collectAssets = require "@core/shared/assets/collectAssets"
-local coreAssets = require "@core/assets"
-local flattenAssetIds = require "@core/shared/assets/flattenAssetIds"
-local prvd = require "@roblox_packages/prvd"
-local universeAssets = require "@universe/assets"
-local useDelay = require "@core/shared/fluid/useDelay"
-local useNextOrder = require "@core/shared/fluid/useNextOrder"
-local useToggled = require "@core/shared/fluid/useToggled"
+const FireworksSplash = require "@title/ui/components/splashes/FireworksSplash"
+const Fluid = require "@roblox_packages/Fluid"
+const LoadingScreen = require "@core/ui/components/screens/LoadingScreen"
+const TitleScreen = require "@title/ui/components/title/TitleScreen"
+const collectAssets = require "@core/shared/assets/collectAssets"
+const coreAssets = require "@core/assets"
+const flattenAssetIds = require "@core/shared/assets/flattenAssetIds"
+const Liquid = require "@roblox_packages/Liquid"
+const prvd = require "@roblox_packages/prvd"
+const universeAssets = require "@universe/assets"
 
 const DISABLED_CORE_GUIS = {
 	Enum.CoreGuiType.All,
@@ -30,7 +28,7 @@ const DISABLED_CORE_GUIS = {
 
 const FIREWORKS_SPLASH_DURATION = 3
 
-local TitleProvider = {}
+const TitleProvider = {}
 export type TitleProvider = typeof(TitleProvider)
 
 function TitleProvider.onStart(self: TitleProvider)
@@ -58,7 +56,7 @@ function TitleProvider.onStart(self: TitleProvider)
 	end)
 
 	Fluid.root(function()
-		local nextOrder = useNextOrder()
+		local nextOrder = Liquid.useNextOrder()
 
 		local assetModules = collectAssets()
 		local assetIds = {}
@@ -76,14 +74,14 @@ function TitleProvider.onStart(self: TitleProvider)
 			isFireworksVisible(assetsLoaded() == #assetIds)
 		end))
 
-		local isMenuVisible = useDelay<<boolean>>(FIREWORKS_SPLASH_DURATION + 2, isFireworksVisible)
+		local isMenuVisible = Liquid.useDelay<<boolean>>(FIREWORKS_SPLASH_DURATION + 2, isFireworksVisible)
 
 		Fluid.create "Sound" {
 			Name = "BackgroundMusic",
 			Parent = SoundService,
 			SoundId = universeAssets.ost.title,
 			Looped = true,
-			Volume = Fluid.spring(useToggled<<number>>(isMenuVisible, 1, 0), 15, 0.5),
+			Volume = Fluid.spring(Liquid.useToggled<<number>>(isMenuVisible, 1, 0), 15, 0.5),
 			Playing = isMenuVisible,
 		}
 
@@ -92,7 +90,7 @@ function TitleProvider.onStart(self: TitleProvider)
 			Parent = SoundService,
 			SoundId = coreAssets.sfx.speed,
 			Volume = 0.5,
-			Playing = useDelay<<boolean>>(2 / 3, isFireworksVisible),
+			Playing = Liquid.useDelay<<boolean>>(2 / 3, isFireworksVisible),
 		}
 
 		Fluid.create "ScreenGui" {
@@ -112,7 +110,7 @@ function TitleProvider.onStart(self: TitleProvider)
 					},
 
 					FireworksSplash {
-						visible = useDelay<<boolean>>(1, isFireworksVisible),
+						visible = Liquid.useDelay<<boolean>>(1, isFireworksVisible),
 						layoutOrder = nextOrder(),
 					},
 
@@ -121,8 +119,8 @@ function TitleProvider.onStart(self: TitleProvider)
 						Size = UDim2.fromScale(1, 1),
 						BackgroundColor3 = Color3.new(),
 						BackgroundTransparency = Fluid.spring(
-							useToggled<<number>>(
-								useDelay<<boolean>>(FIREWORKS_SPLASH_DURATION, isFireworksVisible),
+							Liquid.useToggled<<number>>(
+								Liquid.useDelay<<boolean>>(FIREWORKS_SPLASH_DURATION, isFireworksVisible),
 								0,
 								1
 							),

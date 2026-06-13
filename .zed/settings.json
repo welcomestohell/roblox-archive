@@ -14,7 +14,6 @@
 		"**/.settings",
 		// Welcome To Hell
 		"./.output",
-		"./.pesde",
 		"./.vscode",
 		"./luau_packages",
 		"./lune_packages",
@@ -23,7 +22,6 @@
 		"./default.project.json",
 		"./sourcemap.project.json",
 	],
-	"file_scan_inclusions": ["roblox_packages/.pesde"],
 	"languages": {
 		"Luau": {
 			"formatter": {

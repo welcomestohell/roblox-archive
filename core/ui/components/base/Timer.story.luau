@@ -1,13 +1,12 @@
-const createFluidStory = require "@core/shared/fluid/createFluidStory"
 const useMotion = require "@core/shared/fluid/useMotion"
 const Timer = require "@core/ui/components/base/Timer"
-const assets = require "@core/assets"
 const timers = require "@libs/timers"
+const Liquid = require "@roblox_packages/Liquid"
 
 const DURATION_SECONDS = 120
 const SPEED_UP = 1
 
-return createFluidStory {
+return Liquid.createFluidStory {
 	controls = {
 		color = Color3.new(1, 0, 0.5),
 		count = 1,

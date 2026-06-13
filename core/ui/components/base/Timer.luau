@@ -1,14 +1,10 @@
-const outProperty = require "@core/shared/fluid/outProperty"
-const useNextOrder = require "@core/shared/fluid/useNextOrder"
-const useRem = require "@core/shared/fluid/useRem"
+const assets = require "@core/assets"
+const Fluid = require "@roblox_packages/Fluid"
+const Liquid = require "@roblox_packages/Liquid"
 const NumberSpinner = require "@core/ui/components/base/NumberSpinner"
+const Oklab = require "@libs/vendor/Oklab"
 const Padding = require "@core/ui/components/base/Padding"
 const Text = require "@core/ui/components/base/Text"
-const Fluid = require "@roblox_packages/Fluid"
-const assets = require "@core/assets"
-const useShow = require "@core/shared/fluid/useShow"
-const useToggled = require "@core/shared/fluid/useToggled"
-const Oklab = require "@libs/vendor/Oklab"
 
 -- TODO: hoursHidden, secondsHidden, millisecondsHidden
 export type TimerProps = {
@@ -29,8 +25,8 @@ export type TimerProps = {
 }
 
 const function Timer(props: TimerProps)
-	const rem = useRem()
-	const nextOrder = useNextOrder()
+	const rem = Liquid.useRem()
+	const nextOrder = Liquid.useNextOrder()
 
 	const color = props.color or Color3.new(1, 1, 1)
 	const function colorLch() return Oklab.color3ToOklch(Fluid.read(color)) end
@@ -61,7 +57,7 @@ const function Timer(props: TimerProps)
 	const millisecondsDigitSize = rem:intoPx(3)
 
 	const contentAbsoluteSize = Fluid.source(Vector2.zero)
-	const scale = Fluid.spring(useToggled(props.visible, 1, 0), 15, 2 / 3)
+	const scale = Fluid.spring(Liquid.useToggled(props.visible, 1, 0), 15, 2 / 3)
 
 	return Fluid.create "CanvasGroup" {
 		Name = props.name or "Timer",
@@ -78,14 +74,14 @@ const function Timer(props: TimerProps)
 		ZIndex = props.zIndex,
 
 		Fluid.create "UICorner" { CornerRadius = rem:intoUdim(0.75) },
-		BackgroundColor3 = useToggled<<Color3>>(props.visible, progressColor, darkColor),
+		BackgroundColor3 = Liquid.useToggled<<Color3>>(props.visible, progressColor, darkColor),
 		ClipsDescendants = true,
 
-		GroupTransparency = Fluid.spring(useToggled(props.visible, 0, 1), 30, 1),
+		GroupTransparency = Fluid.spring(Liquid.useToggled(props.visible, 0, 1), 30, 1),
 		Visible = function() return scale() >= 0.01 end,
 		Fluid.create "UIScale" { Scale = scale },
 
-		useShow(props.totalSeconds, Fluid.untrack :: any, function()
+		Liquid.useShow(props.totalSeconds, Fluid.untrack :: any, function()
 			const totalSeconds = props.totalSeconds :: Fluid.UsedAs<number>
 
 			const function progress()
@@ -103,7 +99,7 @@ const function Timer(props: TimerProps)
 					Size = UDim2.fromScale(2, 2),
 					SizeConstraint = Enum.SizeConstraint.RelativeXX,
 					Image = assets.ui.fillRight,
-					ImageColor3 = useToggled<<Color3>>(isHalfway, progressColor, darkColor),
+					ImageColor3 = Liquid.useToggled<<Color3>>(isHalfway, progressColor, darkColor),
 					Rotation = function()
 						const p = progress()
 						return if isHalfway() then 0 else p * 360
@@ -141,7 +137,7 @@ const function Timer(props: TimerProps)
 				Rotation = 90,
 			},
 
-			outProperty("AbsoluteSize", contentAbsoluteSize),
+			Liquid.outProperty("AbsoluteSize", contentAbsoluteSize),
 
 			Fluid.create "UIListLayout" {
 				FillDirection = Enum.FillDirection.Horizontal,

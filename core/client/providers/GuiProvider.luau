@@ -1,11 +1,10 @@
 const Players = game:GetService "Players"
 
-const useAtom = require "@core/shared/fluid/useAtom"
-const useRem = require "@core/shared/fluid/useRem"
 const Padding = require "@core/ui/components/base/Padding"
 const TimerStack = require "@core/ui/components/hud/TimerStack"
 const timers = require "@libs/timers"
 const Fluid = require "@roblox_packages/Fluid"
+const Liquid = require "@roblox_packages/Liquid"
 const prvd = require "@roblox_packages/prvd"
 
 local GuiProvider = {}
@@ -13,7 +12,7 @@ export type GuiProvider = typeof(GuiProvider)
 
 function GuiProvider.onStart(self: GuiProvider)
 	self.unmount = Fluid.root(function()
-		const rem = useRem()
+		const rem = Liquid.useRem()
 
 		Fluid.create "ScreenGui" {
 			Name = "HeadsUpGui",
@@ -23,7 +22,7 @@ function GuiProvider.onStart(self: GuiProvider)
 
 			Parent = Players.LocalPlayer:WaitForChild "PlayerGui",
 
-			Padding { all = useRem():intoUdim(1) },
+			Padding { all = rem:intoUdim(1) },
 
 			Fluid.create "UIListLayout" {
 				FillDirection = Enum.FillDirection.Horizontal,
@@ -33,7 +32,7 @@ function GuiProvider.onStart(self: GuiProvider)
 				Padding = rem:intoUdim(0.5),
 			},
 
-			TimerStack { timers = useAtom(timers.store) },
+			TimerStack { timers = Liquid.useAtom(timers.store) },
 		}
 	end)
 end

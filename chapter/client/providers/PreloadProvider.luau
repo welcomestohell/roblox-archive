@@ -6,8 +6,8 @@ local LoadingScreen = require "@core/ui/components/screens/LoadingScreen"
 local assets = require "@core/assets"
 local flattenAssetModules = require "@core/shared/assets/flattenAssetModules"
 local net = require "@core/client/generated/net"
+const Liquid = require "@roblox_packages/Liquid"
 local prvd = require "@roblox_packages/prvd"
-local useDelay = require "@core/shared/fluid/useDelay"
 
 local PreloadProvider = {}
 export type PreloadProvider = typeof(PreloadProvider)
@@ -46,7 +46,7 @@ function PreloadProvider.onStart(self: PreloadProvider)
 			ResetOnSpawn = true,
 			Parent = Players.LocalPlayer:WaitForChild "PlayerGui",
 
-			Enabled = useDelay<<boolean>>(1, isLoading),
+			Enabled = Liquid.useDelay<<boolean>>(1, isLoading),
 
 			LoadingScreen {
 				visible = isLoading,

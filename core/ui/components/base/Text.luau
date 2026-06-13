@@ -1,5 +1,5 @@
 local Fluid = require "@roblox_packages/Fluid"
-local useDissolved = require "@core/shared/fluid/useDissolved"
+const Liquid = require "@roblox_packages/Liquid"
 
 local function Text(props: {
 	name: Fluid.UsedAs<string>?,
@@ -54,8 +54,8 @@ local function Text(props: {
 
 		TextColor3 = props.textColor or Color3.new(1, 1, 1),
 		RichText = if props.textRich == nil then true else props.textRich,
-		FontFace = useDissolved(
-			function(read: useDissolved.Read)
+		FontFace = Liquid.useDissolved<<Font>>(
+			function(read: Liquid.Read)
 				return Font.new(
 					read<<Font>>(props.font or Font.fromEnum(Enum.Font.TitilliumWeb)).Family,
 					read<<Enum.FontWeight>>(props.fontWeight or Enum.FontWeight.Regular),

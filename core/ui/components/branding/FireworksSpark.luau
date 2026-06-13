@@ -1,6 +1,6 @@
-local Fluid = require "@roblox_packages/Fluid"
-local assets = require "@core/assets"
-local useRem = require "@core/shared/fluid/useRem"
+const Fluid = require "@roblox_packages/Fluid"
+const assets = require "@core/assets"
+const Liquid = require "@roblox_packages/Liquid"
 
 local function FireworksSpark(props: {
 	visible: Fluid.UsedAs<boolean>,
@@ -15,7 +15,7 @@ local function FireworksSpark(props: {
 	layoutOrder: Fluid.UsedAs<number>?,
 	zIndex: Fluid.UsedAs<number>?,
 })
-	local rem = useRem()
+	local rem = Liquid.useRem()
 
 	local function transparency() return Fluid.read(props.visible) and 0 or 1 end
 

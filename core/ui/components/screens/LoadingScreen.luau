@@ -1,13 +1,10 @@
-local Fluid = require "@roblox_packages/Fluid"
-local Padding = require "@core/ui/components/base/Padding"
-local Text = require "@core/ui/components/base/Text"
-local assets = require "@core/assets"
-local useDelay = require "@core/shared/fluid/useDelay"
-local useNextOrder = require "@core/shared/fluid/useNextOrder"
-local useRem = require "@core/shared/fluid/useRem"
-local useToggled = require "@core/shared/fluid/useToggled"
+const Fluid = require "@roblox_packages/Fluid"
+const Padding = require "@core/ui/components/base/Padding"
+const Text = require "@core/ui/components/base/Text"
+const assets = require "@core/assets"
+const Liquid = require "@roblox_packages/Liquid"
 
-local function LoadingScreen(props: {
+const function LoadingScreen(props: {
 	label: Fluid.UsedAs<string>,
 	title: Fluid.UsedAs<string>,
 	imageId: Fluid.UsedAs<string>?,
@@ -15,17 +12,17 @@ local function LoadingScreen(props: {
 	zIndex: Fluid.UsedAs<number>?,
 	visible: Fluid.UsedAs<boolean>?,
 })
-	local rem = useRem()
-	local nextOrder = useNextOrder()
+	local rem = Liquid.useRem()
+	local nextOrder = Liquid.useNextOrder()
 
 	local function transparency() return Fluid.read(props.visible) and 0 or 1 end
 
 	local function imageTransparency() return Fluid.read(props.visible) and 2 / 3 or 1 end
 
-	local labelVisible = useDelay(0.1, props.visible)
+	local labelVisible = Liquid.useDelay(0.1, props.visible)
 	local function labelTransparency() return labelVisible() and 0 or 1 end
 
-	local titleVisible = useDelay(0.05, props.visible)
+	local titleVisible = Liquid.useDelay(0.05, props.visible)
 	local function titleTransparency() return titleVisible() and 0 or 1 end
 
 	return Fluid.create "ImageLabel" {
@@ -70,7 +67,7 @@ local function LoadingScreen(props: {
 				Size = rem:intoUdim2(10, 6),
 				ImageTransparency = Fluid.spring(transparency, 15, 0.5),
 				Position = Fluid.spring(
-					useToggled<<UDim2>>(props.visible, UDim2.new(), rem:intoUdim2(-0.5, 0)),
+					Liquid.useToggled<<UDim2>>(props.visible, UDim2.new(), rem:intoUdim2(-0.5, 0)),
 					15,
 					0.5
 				),
@@ -83,7 +80,7 @@ local function LoadingScreen(props: {
 				textSize = rem:intoPx(2),
 				transparency = Fluid.spring(labelTransparency, 15, 0.5),
 				position = Fluid.spring(
-					useToggled<<UDim2>>(labelVisible, rem:intoUdim2(10.5, 0), rem:intoUdim2(10, 0)),
+					Liquid.useToggled<<UDim2>>(labelVisible, rem:intoUdim2(10.5, 0), rem:intoUdim2(10, 0)),
 					15,
 					0.5
 				),
@@ -119,7 +116,7 @@ local function LoadingScreen(props: {
 				textSize = rem:intoPx(6),
 				transparency = Fluid.spring(titleTransparency, 15, 0.5),
 				position = Fluid.spring(
-					useToggled<<UDim2>>(titleVisible, rem:intoUdim2(10.5, 1.5), rem:intoUdim2(10, 1.5)),
+					Liquid.useToggled<<UDim2>>(titleVisible, rem:intoUdim2(10.5, 1.5), rem:intoUdim2(10, 1.5)),
 					15,
 					0.5
 				),

@@ -1,9 +1,8 @@
-local Fluid = require "@roblox_packages/Fluid"
-local assets = require "@core/assets"
-local useRem = require "@core/shared/fluid/useRem"
-local useToggled = require "@core/shared/fluid/useToggled"
+const Fluid = require "@roblox_packages/Fluid"
+const assets = require "@core/assets"
+const Liquid = require "@roblox_packages/Liquid"
 
-local function FireworksLogo(props: {
+const function FireworksLogo(props: {
 	visible: Fluid.UsedAs<boolean>,
 	transparency: Fluid.UsedAs<number>?,
 
@@ -16,19 +15,19 @@ local function FireworksLogo(props: {
 	layoutOrder: Fluid.UsedAs<number>?,
 	zIndex: Fluid.UsedAs<number>?,
 })
-	local rem = useRem()
+	local rem = Liquid.useRem()
 
-	local progress = useToggled(props.visible, 0, 1)
+	local progress = Liquid.useToggled(props.visible, 0, 1)
 	local transparency = Fluid.spring(
 		function() return Fluid.read(progress) * math.map(Fluid.read(props.transparency or 0), 0, 1, 1, 0) end,
 		10,
 		0.5
 	)
-	local sparkSize = useToggled(props.visible, UDim2.fromScale(14 / 74, 14 / 24), UDim2.fromScale(0, 0))
+	local sparkSize = Liquid.useToggled(props.visible, UDim2.fromScale(14 / 74, 14 / 24), UDim2.fromScale(0, 0))
 	local topPosition =
-		Fluid.spring(useToggled(props.visible, UDim2.fromScale(0, 0), UDim2.fromScale(0.025, 0)), 10, 1 / 3)
+		Fluid.spring(Liquid.useToggled(props.visible, UDim2.fromScale(0, 0), UDim2.fromScale(0.025, 0)), 10, 1 / 3)
 	local bottomPosition =
-		Fluid.spring(useToggled(props.visible, UDim2.fromScale(0, 0), UDim2.fromScale(0.025, 0)), 10, 1 / 3)
+		Fluid.spring(Liquid.useToggled(props.visible, UDim2.fromScale(0, 0), UDim2.fromScale(0.025, 0)), 10, 1 / 3)
 
 	local sparkRotation = Fluid.source(0)
 	Fluid.effect(function()

@@ -1,9 +1,7 @@
-const forPairs = require "@core/shared/fluid/forPairs"
-const useOsClock = require "@core/shared/fluid/useOsClock"
-const useRem = require "@core/shared/fluid/useRem"
 const Timer = require "@core/ui/components/base/Timer"
 const timers = require "@libs/timers"
 const Fluid = require "@roblox_packages/Fluid"
+const Liquid = require "@roblox_packages/Liquid"
 
 const function TimerStack(props: {
 	name: Fluid.UsedAs<string>?,
@@ -16,8 +14,8 @@ const function TimerStack(props: {
 
 	timers: Fluid.UsedAs<{ [string]: timers.Timer }>,
 })
-	const rem = useRem()
-	const clock = useOsClock()
+	const rem = Liquid.useRem()
+	const clock = Liquid.useOsClock()
 
 	return Fluid.create "Frame" {
 		Name = props.name or "TimerStack",
@@ -38,7 +36,7 @@ const function TimerStack(props: {
 			Padding = rem:intoUdim(0.5),
 		},
 
-		forPairs(props.timers, function(key, timer: timers.Timer): any
+		Liquid.forPairs(props.timers, function(key, timer: timers.Timer): any
 			const firstTimestamp = timer.timestamps[1]
 			const lastTimestamp = timer.timestamps[#timer.timestamps]
 

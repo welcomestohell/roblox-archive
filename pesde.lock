@@ -5,6 +5,11 @@ name = "welcomestohell/game"
 version = "0.1.0"
 target = "roblox"
 
+[overrides."Liquid>Fluid"]
+wally = "wally#godmothersfire/fluid"
+version = "^0.6.41"
+index = "default"
+
 [graph."0x5eal/unzip@0.2.1 luau".pkg_ref]
 ref_ty = "pesde"
 index_url = "https://github.com/pesde-pkg/index"
@@ -169,6 +174,25 @@ argon = [{ name = "pesde/argon", version = "^2.0.26", index = "https://github.co
 luau_lsp = [{ name = "pesde/luau_lsp", version = "^1.55.0", index = "https://github.com/pesde-pkg/index", target = "lune" }, "dev"]
 selene = [{ name = "pesde/selene", version = "^0.29.0", index = "https://github.com/pesde-pkg/index", target = "lune" }, "dev"]
 stylua = [{ name = "pesde/stylua", version = "^2.3.0", index = "https://github.com/pesde-pkg/index", target = "lune" }, "dev"]
+
+[graph."teamfireworks/liquid@0.1.4 roblox"]
+direct = ["Liquid", { name = "teamfireworks/liquid", version = "^0.1.4", index = "default" }, "standard"]
+
+[graph."teamfireworks/liquid@0.1.4 roblox".dependencies]
+Charm = ["wally#littensy/charm@0.11.0-rc.6 roblox", "standard"]
+Fluid = ["wally#godmothersfire/fluid@0.6.41 roblox", "standard"]
+Ripple = ["wally#littensy/ripple@0.10.2 roblox", "standard"]
+
+[graph."teamfireworks/liquid@0.1.4 roblox".pkg_ref]
+ref_ty = "pesde"
+index_url = "https://github.com/pesde-pkg/index"
+
+[graph."teamfireworks/liquid@0.1.4 roblox".pkg_ref.dependencies]
+Charm = [{ wally = "wally#littensy/charm", version = "^0.11.0-rc.6", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+Fluid = [{ wally = "wally#ffrostfall/fluid", version = "^0.6.4", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+Ripple = [{ wally = "wally#littensy/ripple", version = "^0.10.2", index = "https://github.com/UpliftGames/wally-index" }, "standard"]
+rojo = [{ name = "pesde/rojo", version = "^7.5.1", index = "https://github.com/pesde-pkg/index", target = "lune" }, "dev"]
+scripts = [{ name = "pesde/scripts_rojo", version = "^0.2.0", index = "https://github.com/pesde-pkg/index", target = "lune" }, "dev"]
 
 [graph."welcomestohell/cull_throttle@0.0.0-1bf46e124a3b66b1ad0d5489b85e969f0656a7ea roblox"]
 direct = ["CullThrottle", { repo = "https://github.com/welcomestohell/cull-throttle", rev = "08587e8cdda407c0979bfbcca45564c876802dd7" }, "standard"]

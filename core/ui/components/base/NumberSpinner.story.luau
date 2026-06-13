@@ -1,9 +1,9 @@
-const createFluidStory = require "@core/shared/fluid/createFluidStory"
 const useRem = require "@core/shared/fluid/useRem"
 const NumberSpinner = require "@core/ui/components/base/NumberSpinner"
+const Liquid = require "@roblox_packages/Liquid"
 const UILabs = require "@roblox_packages/UILabs"
 
-return createFluidStory {
+return Liquid.createFluidStory {
 	controls = {
 		value = UILabs.Slider(727, 0, 999, 1),
 	},

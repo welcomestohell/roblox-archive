@@ -1,8 +1,8 @@
 local LoadingScreen = require "@core/ui/components/screens/LoadingScreen"
 local assets = require "@core/assets"
-local createFluidStory = require "@core/shared/fluid/createFluidStory"
+const Liquid = require "@roblox_packages/Liquid"
 
-return createFluidStory {
+return Liquid.createFluidStory {
 	controls = {
 		label = "Teleporting",
 		title = "A Star Upon A Child",
