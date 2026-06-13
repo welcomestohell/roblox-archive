@@ -1,4 +1,3 @@
-const useRem = require "@core/shared/fluid/useRem"
 const NumberSpinner = require "@core/ui/components/base/NumberSpinner"
 const Liquid = require "@roblox_packages/Liquid"
 const UILabs = require "@roblox_packages/UILabs"
@@ -8,7 +7,7 @@ return Liquid.createFluidStory {
 		value = UILabs.Slider(727, 0, 999, 1),
 	},
 	render = function(props)
-		local rem = useRem()
+		local rem = Liquid.useRem()
 
 		return NumberSpinner {
 			value = props.controls.value :: any,

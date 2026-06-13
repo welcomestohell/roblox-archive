@@ -1,4 +1,3 @@
-const useMotion = require "@core/shared/fluid/useMotion"
 const Timer = require "@core/ui/components/base/Timer"
 const timers = require "@libs/timers"
 const Liquid = require "@roblox_packages/Liquid"
@@ -13,7 +12,7 @@ return Liquid.createFluidStory {
 		visible = true,
 	},
 	render = function(props)
-		local valueSeconds, valueMotion = useMotion(DURATION_SECONDS)
+		local valueSeconds, valueMotion = Liquid.useMotion(DURATION_SECONDS)
 		valueMotion:tween(0, { duration = DURATION_SECONDS / SPEED_UP })
 		valueMotion:onComplete(function()
 			valueMotion:setPosition(DURATION_SECONDS)
