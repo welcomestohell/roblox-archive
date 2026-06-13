@@ -41,7 +41,7 @@ const SetTransparency = Attribute.new("SetTransparency", gt.boolean(), true)
 const SetEnabled = Attribute.new("SetEnabled", gt.boolean(), true)
 
 const TransparencyEnabled = Attribute.new("TransparencyEnabled", gt.constrainNumber(0, 1), 0)
-const TransparencyDisabled = Attribute.new("TransparencyDisabled", gt.constrainNumber(0, 1), 0.6)
+const TransparencyDisabled = Attribute.new("TransparencyDisabled", gt.constrainNumber(0, 1), 1)
 
 const Tween: tweens.TweenAttributes = {
 	Duration = Attribute.new("ToggleDuration", gt.positiveNumber, 0.2),

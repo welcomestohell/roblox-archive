@@ -211,6 +211,8 @@ end
 
 function Level.loadInstance(self: Level, instance: Instance): { Mechanic }
 	local mechanics = {}
+	local shouldToggle = false
+
 	for _, tag in instance:GetTags() do
 		local mechanicName = string.match(tag, "Mechanic:%s?([%w_%-]+)")
 		if mechanicName then
@@ -231,12 +233,16 @@ function Level.loadInstance(self: Level, instance: Instance): { Mechanic }
 
 		local groupName = string.match(tag, "Group:%s?([%w_%-]+)")
 		if groupName then
+			shouldToggle = true
 			marrays.push(self.instanceByGroups, groupName, instance)
 			self.life:add(
 				instance.Destroying:Once(function() marrays.remove(self.instanceByGroups, groupName, instance) end)
 			)
 		end
 	end
+
+	if shouldToggle then toggle.toggleInstance(false, instance) end
+
 	return mechanics
 end
 
@@ -274,11 +280,16 @@ function Level.start(self: Level)
 	self.life:add(self.instance)
 	self.life:destroyOn(self.instance.Destroying)
 
-	for group, instances in self.instanceByGroups do
-		for _, instance in instances do
-			toggle.toggleInstance(false, instance)
-		end
-	end
+	-- const toggled = {}
+	-- for group, instances in self.instanceByGroups do
+	-- 	for _, instance in instances do
+	-- 		if not toggled[instance] then
+	-- 			toggled[instance] = true
+	-- 			toggle.toggleInstance(false, instance)
+	-- 		end
+	-- 	end
+	-- end
+	-- table.clear(toggled)
 
 	for _, mechanic in self.mechanics do
 		self.life:add(threadpool.spawn(Level.bindActivation, self, mechanic))
