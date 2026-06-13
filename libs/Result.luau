@@ -1,4 +1,5 @@
-local repr = require "./repr"
+local repr = require "@libs/vendor/repr"
+
 local Result = {}
 Result.__index = Result
 

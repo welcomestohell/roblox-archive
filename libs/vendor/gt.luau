@@ -2,12 +2,8 @@
 -- Note that Welcome To Hell plans to switch to the Boba library once runtime
 -- type inspection has been implemented.
 
-const HttpService = game:GetService "HttpService"
-
 const arrays = require "@libs/collections/arrays"
-const objects = require "@libs/collections/objects"
 const tables = require "@libs/collections/tables"
-const repr = require "@libs/repr"
 const typeforge = require "@libs/vendor/typeforge"
 const gt = require "@roblox_packages/gt"
 

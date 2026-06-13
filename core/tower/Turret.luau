@@ -1,10 +1,10 @@
-local assets = require "@core/assets"
-local damage = require "@libs/damage"
-local emission = require "@libs/emission"
-local logger = require "@core/shared/logger"
+const assets = require "@core/assets"
+const damage = require "@libs/damage"
+const emission = require "@libs/emission"
+const logger = require "@core/shared/logger"
 const Level = require "@libs/core/Level"
-local sounds = require "@libs/sounds"
-local std = require "@libs/std"
+const sounds = require "@libs/sounds"
+const std = require "@libs/std"
 const touch = require "@libs/touch"
 
 --[=[
@@ -13,8 +13,8 @@ const touch = require "@libs/touch"
 
 	Turret continously shoot bullets based on its current orientation.
 ]=]
-local Turret = std.Mechanic {}
-export type TurretMechanic = std.Mechanic<typeof(Turret)>
+const Turret = std.Mechanic {}
+export type TurretMechanic = std.Mechanic<typeof(Turret), { template: Bullet }>
 
 Turret.mechanicName = "Turret"
 Turret.instanceType = std.gt.instanceTree(std.isA.Model(), {
@@ -26,7 +26,14 @@ Turret.instanceType = std.gt.instanceTree(std.isA.Model(), {
 })
 Turret.debuggerEmoji = "🔫"
 
+export type Bullet = typeof(Turret.instanceType.Bullet)
+
 Turret.Enabled = Turret:attribute("Enabled", std.gt.boolean(), true)
+Turret.SpreadAngle = Turret:attribute("SpreadAngle", std.gt.NumberRange, NumberRange.new(0, 0))
+
+Turret.Damage = damage.useAttributes(Turret)
+Turret.Sound = sounds.useAttributes(Turret)
+Turret.Touch = touch.useAttributes(Turret)
 
 Turret:attributeSection "Bullets"
 Turret.Firerate = Turret:attribute("Firerate", std.gt.positiveNumber, 1)
@@ -34,20 +41,6 @@ Turret.Speed = Turret:attribute("Speed", std.gt.positiveNumber, 25)
 Turret.Acceleration = Turret:attribute("Acceleration", std.gt.Vector3(), Vector3.zero)
 Turret.Lifetime = Turret:attribute("Lifetime", std.gt.positiveNumber, 2)
 Turret.DestroyOnTouch = Turret:attribute("DestroyOnTouch", std.gt.boolean(), true)
-
--- TODO: implement damage
-Turret:attributeSection "Damage"
-Turret.Damage = damage.useAttributes(Turret)
-Turret.DamageCooldown = Turret:attribute("DamageCooldown", std.gt.positiveNumber, 0.5)
-
-Turret:attributeSection "Spread Angle"
-Turret.SpreadAngle = Turret:attribute("SpreadAngle", std.gt.NumberRange, NumberRange.new(0, 0))
-
-Turret:attributeSection "Sound"
-Turret.FireSound = sounds.useAttributes(Turret, "FireSound")
-
-Turret:attributeSection "Touch"
-Turret.Touch = std.useTouch(Turret)
 
 Turret:attributeSection "Tags"
 Turret.IgnoreTag = Turret:attribute("IgnoreTag", std.gt.string(), "Turret: Ignore")
@@ -66,20 +59,20 @@ function Turret.calculateSpreadAngle(turret: TurretMechanic, direction: Vector3)
 	return (directionCFrame * spreadDirection * spreadAngle).LookVector
 end
 
-function Turret.fireBullet(turret: TurretMechanic, bulletTemplate: BasePart)
+function Turret.onActivate(self: typeof(Turret), turret: TurretMechanic)
 	local instance = turret.instance
 	local primaryPart = instance.PrimaryPart
 
 	if not primaryPart then return end
 
-	if turret.FireSound.Play(turret) then
-		sounds.playInstance(turret.FireSound, instance, turret.instanceConfiguration, assets.sfx.tick)
+	if turret.Sound.Play(turret) then
+		sounds.playInstance(turret.Sound, instance, turret.instanceConfiguration, assets.sfx.tick)
 	end
 
 	emission.emitTaggedDescendants(instance, turret:EmitFireTag())
 
 	local bulletLife = turret.life:extend()
-	local bulletInstance = bulletLife:add(bulletTemplate:Clone())
+	local bulletInstance = bulletLife:add(turret.template:Clone())
 
 	local function cleanup(isTouch: boolean?)
 		emission.emitTaggedDescendants(
@@ -144,14 +137,14 @@ function Turret.onStart(self: typeof(Turret), turret: TurretMechanic, level: std
 	-- them.
 	turret.instance:AddTag(Level.DO_NOT_LOAD_TAG)
 
-	local bulletTemplate = turret.life:add(instance.Bullet)
-	bulletTemplate.Parent = nil
-	bulletTemplate:AddTag "Bullet"
+	turret.template = turret.life:add(instance.Bullet)
+	turret.template.Parent = nil
+	turret.template:AddTag "Bullet"
 
 	turret.life:spawn(function()
 		while not turret.life.destroyed do
 			task.wait(1 / turret:Firerate())
-			if turret:Enabled() then turret:fireBullet(bulletTemplate) end
+			if turret:Enabled() then self:onActivate(turret) end
 		end
 	end)
 end

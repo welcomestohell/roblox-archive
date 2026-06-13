@@ -1,11 +1,8 @@
-const logger = require "@core/shared/logger"
 const Attribute = require "@libs/attributes/Attribute"
 const properties = require "@libs/properties"
 const threadpool = require "@libs/threadpool"
 const tweens = require "@libs/tweens"
 const gt = require "@libs/vendor/gt"
-
-const TAG = "Toggled"
 
 const CLASSES_TO_TOGGLE_ENABLED: { [string]: true } = {
 	Beam = true,
@@ -17,6 +14,8 @@ const CLASSES_TO_TOGGLE_ENABLED: { [string]: true } = {
 	Trail = true,
 	UIStroke = true,
 	UIGradient = true,
+	Light = true,
+	Highlight = true,
 }
 
 const CLASSES_TO_TWEEN: { [string]: string } = {
@@ -31,8 +30,8 @@ const CLASSES_TO_TWEEN: { [string]: string } = {
 	ImageLabel = "ImageTransparency",
 }
 
-const Enabled = Attribute.new("Enabled", gt.boolean(), true)
-const Invert = Attribute.new("Invert", gt.boolean(), true)
+const Enabled = Attribute.new("Enabled", gt.boolean(), false)
+const Invert = Attribute.new("Invert", gt.boolean(), false)
 
 const ToggleDescendants = Attribute.new("ToggleDescendants", gt.boolean(), false)
 const ToggleDescendantsInheritAttributes = Attribute.new("ToggleDescendantsInheritAttributes", gt.boolean(), false)
@@ -51,11 +50,9 @@ const Tween: tweens.TweenAttributes = {
 }
 
 const function toggleInstance(enabled: boolean, instance: Instance, instanceConfiguration: Instance?)
-	logger:Debug("Toggling", instance, "to", enabled, "where instance is", Enabled(instance))
 	instanceConfiguration = instanceConfiguration or instance
 
 	if Invert(instanceConfiguration) then enabled = not enabled end
-	if enabled == Enabled(instanceConfiguration) then return end
 	Enabled(instanceConfiguration, enabled)
 
 	if instance:IsA "BasePart" and SetCollision(instanceConfiguration) then instance.CanCollide = enabled end
@@ -95,7 +92,6 @@ const function toggleInstance(enabled: boolean, instance: Instance, instanceConf
 end
 
 return table.freeze {
-	TAG = TAG,
 	CLASSES_TO_TOGGLE_ENABLED = CLASSES_TO_TOGGLE_ENABLED,
 	CLASSES_TO_TWEEN = CLASSES_TO_TWEEN,
 

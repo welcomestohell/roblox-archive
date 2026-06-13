@@ -39,7 +39,7 @@ local function isToucherValid(
     -- stylua: ignore
 	return (attributes.SupportsCharacter(instanceConfiguration) and character.isFromMaybeCharacter(toucher))
 		or (attributes.SupportsBullets(instanceConfiguration) and (toucher:HasTag("Bullet") or toucher:FindFirstAncestor("Bullet") ~= nil))
-		or (attributes.SupportsBoxes(instanceConfiguration) and (toucher:HasTag("Boxes") or toucher:FindFirstAncestor("Box") ~= nil))
+		or (attributes.SupportsBoxes(instanceConfiguration) and (toucher:HasTag("Box") or toucher:FindFirstAncestor("Box") ~= nil))
 end
 
 return table.freeze {

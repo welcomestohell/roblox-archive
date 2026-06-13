@@ -1,6 +1,6 @@
-local std = require "@libs/std"
+const std = require "@libs/std"
 
-local Template = std.Mechanic {}
+const Template = std.Mechanic {}
 export type TemplateMechanic = std.Mechanic<typeof(Template)>
 Template.mechanicName = "Template"
 Template.instanceType = std.isA.BasePart()

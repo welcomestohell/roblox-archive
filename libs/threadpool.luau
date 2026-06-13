@@ -11,7 +11,7 @@ local function yielder()
 	end
 end
 
-local function spawn<T...>(f: (T...) -> (), ...: T...): thread
+local function spawn<T...>(f: (T...) -> ...any, ...: T...): thread
 	local thread
 	if #freeThreads > 0 then
 		thread = freeThreads[#freeThreads]
@@ -24,7 +24,7 @@ local function spawn<T...>(f: (T...) -> (), ...: T...): thread
 	return task.spawn(thread, f, thread, ...)
 end
 
-local function spawnCallbacks<Args...>(callbacks: { (Args...) -> () }, ...: Args...)
+local function spawnCallbacks<Args...>(callbacks: { (Args...) -> ...any }, ...: Args...)
 	for _, callback in callbacks do
 		spawn(callback, ...)
 	end

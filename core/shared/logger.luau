@@ -1,7 +1,7 @@
 local LogService = game:GetService "LogService"
 
 local Log = require "@roblox_packages/Log"
-local repr = require "@libs/repr"
+local repr = require "@libs/vendor/repr"
 
 export type LogEvent = typeof(Log.LogEvent.new(...))
 

@@ -44,14 +44,14 @@ function Life.extend(self: Life)
 	return inner
 end
 
-function Life.spawn<T>(self: Life, bound: (...any) -> ...any): thread?
+function Life.spawn<T, A...>(self: Life, bound: (A...) -> ...any, ...: A...): thread?
 	if self.destroyed then return nil end
-	local thread = threadpool.spawn(bound)
+	local thread = threadpool.spawn(bound, ...)
 	table.insert(self.objects, function() task.cancel(thread) end)
 	return thread
 end
 
-function Life.delay<A...>(self: Life, duration: number, fn: (A...) -> (), ...: A...): thread?
+function Life.delay<A...>(self: Life, duration: number, fn: (A...) -> ...any, ...: A...): thread?
 	if self.destroyed then return nil end
 	local thread = task.delay(duration, function(fn, ...)
 		if self.destroyed == false then fn(...) end
