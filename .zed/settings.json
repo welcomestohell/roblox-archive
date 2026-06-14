@@ -14,7 +14,7 @@
 		"**/.settings",
 		// Welcome To Hell
 		// "./.output",
-		"./.vscode",
+		// "./.vscode",
 		"./luau_packages",
 		"./lune_packages",
 		"./patches",
