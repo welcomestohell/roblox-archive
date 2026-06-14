@@ -6,6 +6,7 @@ const tweens = require "@libs/tweens"
 const Spinner = std.Mechanic {
 	emoji = "🌀",
 	name = "Spinner",
+	description = "Continously spins within it's axes.",
 	instanceType = std.gt.instanceTree {
 		Center = std.isA.BasePart(),
 		Base = std.isA.BasePart(),
