@@ -1,5 +1,3 @@
--- most of the work is done by Roblox's built in physics.
-
 const std = require "@libs/std"
 
 const FallingPlatform = std.Mechanic {
@@ -9,6 +7,7 @@ const FallingPlatform = std.Mechanic {
 	instanceType = std.gt.instanceTree {
 		Platform = std.gt.instanceTree(std.isA.BasePart(), {
 			AlignPosition = std.isA.AlignPosition(),
+			PrismaticConstraint = std.isA.PrismaticConstraint(),
 		}),
 		End = std.isA.BasePart(),
 	},
@@ -22,23 +21,32 @@ function FallingPlatform.onStart(
 	level: std.Level
 )
 	const platform = fallingPlatform.instance.Platform
+	const alignPosition = platform.AlignPosition
 	const basePos = platform.Position
-	const baseForceY = platform.AlignPosition.MaxAxesForce.Y
-	platform.AlignPosition.Position = basePos
+	const baseForce = alignPosition.MaxAxesForce
+	local falling = false
 
-	fallingPlatform.instance.End.Touched:Connect(function(a)
-		if a == platform then
-			platform.CanCollide = false
-			platform.Transparency = 0.5
-			platform.AlignPosition.MaxAxesForce = Vector3.new(0, baseForceY * 1.5, 0)
-			repeat
-				task.wait(0.01)
-			until (platform.Position - basePos).Magnitude < 0.05
-			platform.CanCollide = true
-			platform.Transparency = 0
-			platform.AlignPosition.MaxAxesForce = Vector3.new(0, baseForceY, 0)
-		end
-	end)
+	alignPosition.Position = basePos
+	platform.PrismaticConstraint.UpperLimit = (fallingPlatform.instance.End.Position - basePos).Magnitude + 1
+
+	fallingPlatform.life:add(fallingPlatform.instance.End.Touched:Connect(function(hit)
+		if hit ~= platform or falling then return end
+		falling = true
+
+		platform.CanCollide = false
+		platform.Transparency = 0.5
+		alignPosition.MaxAxesForce = Vector3.new(0, baseForce.Y * 1.5, 0)
+
+		local RunService = game:GetService "RunService"
+		repeat
+			RunService.PreSimulation:Wait()
+		until (platform.Position - basePos).Magnitude < 0.05
+
+		platform.CanCollide = true
+		platform.Transparency = 0
+		alignPosition.MaxAxesForce = baseForce
+		falling = false
+	end))
 end
 
 return FallingPlatform
