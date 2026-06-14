@@ -12,9 +12,13 @@ local Follower = std.Mechanic {
 	emoji = "👀",
 	name = "Follower",
 	description = "Continously follows the target by looking at, rotating, positioning, or pivoting towards it.",
-	instanceType = std.isA.BasePart(),
+	instanceType = std.gt.instanceTree {
+		Center = std.isA.BasePart(),
+		Base = std.isA.BasePart(),
+	},
 
 	Enabled = std.Attribute("Enabled", std.gt.boolean(), true),
+	Relative = std.Attribute("Relative", std.gt.boolean(), false),
 	Mode = std.Attribute(
 		"Mode",
 		std.gt.literals("LookAt", "RotationOf", "PositionOf", "PivotOf", "None"),
@@ -26,19 +30,15 @@ local Follower = std.Mechanic {
 		functions.literal "None"
 	),
 
-	std.AttributeSection "Origin",
-	Origin = std.Attribute("Origin", std.gt.optional(std.gt.CFrame()), nil),
-	UseOriginRotation = std.Attribute("UseOriginRotation", std.gt.boolean(), false),
-
 	std.AttributeSection "Position Axes",
-	UseXPosition = std.Attribute("XPosition", std.gt.boolean(), true),
-	UseYPosition = std.Attribute("YPosition", std.gt.boolean(), true),
-	UseZPosition = std.Attribute("ZPosition", std.gt.boolean(), true),
+	XPosition = std.Attribute("XPosition", std.gt.boolean(), true),
+	YPosition = std.Attribute("YPosition", std.gt.boolean(), true),
+	ZPosition = std.Attribute("ZPosition", std.gt.boolean(), true),
 
 	std.AttributeSection "Rotation Axes",
-	UseXRotation = std.Attribute("XRotation", std.gt.boolean(), true),
-	UseYRotation = std.Attribute("YRotation", std.gt.boolean(), true),
-	UseZRotation = std.Attribute("ZRotation", std.gt.boolean(), true),
+	XRotation = std.Attribute("XRotation", std.gt.boolean(), true),
+	YRotation = std.Attribute("YRotation", std.gt.boolean(), true),
+	ZRotation = std.Attribute("ZRotation", std.gt.boolean(), true),
 
 	std.AttributeSection "Smoothness",
 	Smooth = std.Attribute("Smooth", std.gt.boolean(), false),
@@ -61,10 +61,6 @@ function Follower.getTargetCFrame(target: Target): CFrame?
 	return nil
 end
 
-function Follower:onStart(follower: FollowerMechanic)
-	follower.Origin:getOrSet(follower, follower.instance.CFrame :: CFrame?)
-end
-
 function Follower.onPreSimulation(self: typeof(Follower), deltaTime: number, level: std.Level)
 	local followers = level:getMechanics(self)
 	local countFollowers = #followers
@@ -84,24 +80,22 @@ function Follower.onPreSimulation(self: typeof(Follower), deltaTime: number, lev
 		-- Dear basketball
 
 		local mode: Mode = follower:Mode()
-		local instance = follower.instance
+		local center = follower.instance.Center
 		if mode == "None" then
 			continue
 		elseif mode == "LookAt" then
-			targetCFrame = CFrame.lookAt(instance:GetPivot().Position, targetCFrame.Position)
+			targetCFrame = CFrame.lookAt(center:GetPivot().Position, targetCFrame.Position)
 		elseif mode == "PositionOf" then
 			targetCFrame = CFrame.new(targetCFrame.Position)
 		elseif mode == "RotationOf" then
-			targetCFrame = CFrame.new(targetCFrame.Position) * instance:GetPivot().Rotation
+			targetCFrame = CFrame.new(targetCFrame.Position) * center:GetPivot().Rotation
 		end
 
-		local baseTransform = follower:Origin()
-		local useRelative = follower:UseOriginRotation()
-		if useRelative and baseTransform then
-			targetCFrame *= baseTransform.Rotation
+		if follower:Relative() then
+			targetCFrame *= center.Rotation
 		end
 
-		local current = instance:GetPivot()
+		local current = center:GetPivot()
 
 		local cx, cy, cz = current.Position.X, current.Position.Y, current.Position.Z
 		local tx, ty, tz = targetCFrame.Position.X, targetCFrame.Position.Y, targetCFrame.Position.Z
@@ -109,24 +103,24 @@ function Follower.onPreSimulation(self: typeof(Follower), deltaTime: number, lev
 		local rx, ry, rz = current:ToOrientation()
 		local trx, try, trz = targetCFrame:ToOrientation()
 
-		if not follower:UseXPosition() then tx = cx end
-		if not follower:UseYPosition() then ty = cy end
-		if not follower:UseZPosition() then tz = cz end
+		if not follower:XPosition() then tx = cx end
+		if not follower:YPosition() then ty = cy end
+		if not follower:ZPosition() then tz = cz end
 
-		if not follower:UseXRotation() then trx = rx end
-		if not follower:UseYRotation() then try = ry end
-		if not follower:UseZRotation() then trz = rz end
+		if not follower:XRotation() then trx = rx end
+		if not follower:YRotation() then try = ry end
+		if not follower:ZRotation() then trz = rz end
 
 		targetCFrame = CFrame.new(tx, ty, tz) * CFrame.fromOrientation(trx, try, trz)
 
 		if follower:Smooth() then
 			local responsiveness = follower:Responsiveness()
 			if responsiveness ~= 0 then
-				targetCFrame = instance.CFrame:Lerp(targetCFrame, 1 - math.exp(-deltaTime / responsiveness))
+				targetCFrame = center.CFrame:Lerp(targetCFrame, 1 - math.exp(-deltaTime / responsiveness))
 			end
 		end
 
-		table.insert(bulkInstances, instance)
+		table.insert(bulkInstances, follower.instance.Base)
 		table.insert(bulkCFrames, targetCFrame)
 		shouldBulkMove = true
 	end

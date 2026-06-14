@@ -8,7 +8,7 @@ const Spinner = std.Mechanic {
 	name = "Spinner",
 	instanceType = std.gt.instanceTree {
 		Center = std.isA.BasePart(),
-		Platform = std.isA.BasePart(),
+		Base = std.isA.BasePart(),
 	},
 
 	Enabled = std.Attribute("Enabled", std.gt.boolean(), true),
@@ -52,7 +52,7 @@ function Spinner.onPreSimulation(self: typeof(Spinner), deltaTime: number, level
 		const angle = spinner:Angle() :: NumberRange
 		const alpha = TweenService:GetValue(cycleProgress, self.Tween.Style(spinner), self.Tween.Direction(spinner))
 		const axisRotation = math.rad(math.map(alpha, 0, 1, angle.Min, angle.Max))
-		spinner.instance.Platform.CFrame = spinner.instance.Center.CFrame
+		spinner.instance.Base.CFrame = spinner.instance.Center.CFrame
 			* CFrame.Angles(
 				spinner:XEnabled() and axisRotation or 0,
 				spinner:YEnabled() and axisRotation or 0,

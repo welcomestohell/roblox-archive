@@ -31,7 +31,7 @@ const CLASSES_TO_TWEEN: { [string]: string } = {
 }
 
 const Enabled = Attribute.new("Enabled", gt.boolean(), false)
-const Invert = Attribute.new("Invert", gt.boolean(), false)
+const Inverted = Attribute.new("Inverted", gt.boolean(), false)
 
 const ToggleDescendants = Attribute.new("ToggleDescendants", gt.boolean(), false)
 const ToggleDescendantsInheritAttributes = Attribute.new("ToggleDescendantsInheritAttributes", gt.boolean(), false)
@@ -52,7 +52,7 @@ const Tween: tweens.TweenAttributes = {
 const function toggleInstance(enabled: boolean, instance: Instance, instanceConfiguration: Instance?)
 	instanceConfiguration = instanceConfiguration or instance
 
-	if Invert(instanceConfiguration) then enabled = not enabled end
+	if Inverted(instanceConfiguration) then enabled = not enabled end
 	Enabled(instanceConfiguration, enabled)
 
 	if instance:IsA "BasePart" and SetCollision(instanceConfiguration) then instance.CanCollide = enabled end
@@ -96,7 +96,7 @@ return table.freeze {
 	CLASSES_TO_TWEEN = CLASSES_TO_TWEEN,
 
 	Enabled = Enabled,
-	Invert = Invert,
+	Inverted = Inverted,
 	SetCollision = SetCollision,
 	SetTransparency = SetTransparency,
 	SetEnabled = SetEnabled,

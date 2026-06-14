@@ -192,8 +192,7 @@ function Level.bindActivation(self: Level, mechanic: Mechanic)
 	local implementation: any = mechanic.implementation
 	local activationAttributes = implementation.Activation :: activation.ActivationAttributes
 	if not activationAttributes then
-		Mechanic.attributeSection(implementation, "Activation")
-		activationAttributes = activation.useAttributes(implementation)
+		activationAttributes = activation.useAttributes()
 		implementation.Activation = activationAttributes
 	end
 
