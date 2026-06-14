@@ -21,10 +21,15 @@ const Vine = std.Mechanic {
 		}),
 	},
 
+	-- TODO: implement animations
+	Animated = std.Attribute("Animated", std.gt.boolean(), true),
 	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 0),
 	KeepMomentum = std.Attribute("KeepMomentum", std.gt.boolean(), true),
 	JumpOnDismount = std.Attribute("JumpOnDismount", std.gt.boolean(), true),
+
 	ActivatorTransparency = std.Attribute("ActivatorTransparency", std.gt.constrainNumber(0, 1), 0),
+	ActivatorPosition = std.Attribute("ActivatorCFrame", std.gt.Vector3(), Vector3.zero),
+	ActivatorSize = std.Attribute("ActivatorSize", std.gt.Vector3(), Vector3.zero),
 
 	std.AttributeSection "Activation",
 	Activation = activation.useAttributes(),
@@ -51,7 +56,9 @@ function Vine.getActivationInstance(self: typeof(Vine), vine: VineMechanic) retu
 function Vine.onStart(self: typeof(Vine), vine: VineMechanic)
 	vine.handle = vine.instance.Handle
 	vine.handle.Parent = nil
-	self.ActivatorTransparency:set(vine, vine.instance.Activator.Transparency)
+	self.ActivatorTransparency(vine, vine.instance.Activator.Transparency)
+	self.ActivatorPosition(vine, vine.instance.Activator.Position)
+	self.ActivatorSize(vine, vine.instance.Activator.Size)
 end
 
 function Vine.onActivate(self: typeof(Vine), vine: VineMechanic, level: std.Level, event: activation.ActivationEvent)
@@ -69,6 +76,8 @@ function Vine.onActivate(self: typeof(Vine), vine: VineMechanic, level: std.Leve
 	self.Activation.Enabled(vine, false)
 
 	vine.instance.Activator.Transparency = 1
+	vine.instance.Activator.Position = vine.instance.Base.Position
+	vine.instance.Activator.Size = Vector3.zero
 
 	const handle = deactivationLife:add(vine.handle:Clone())
 	handle.CFrame = toucher.CFrame + toucher.CFrame.UpVector * (toucher.Size.Y / 2)
@@ -108,7 +117,11 @@ function Vine.onActivate(self: typeof(Vine), vine: VineMechanic, level: std.Leve
 			cooldown,
 			tweens.playFromAttributes,
 			vine.instance.Activator,
-			{ Transparency = vine:ActivatorTransparency() } :: { [string]: unknown },
+			{
+				Transparency = vine:ActivatorTransparency(),
+				Position = vine:ActivatorPosition(),
+				Size = vine:ActivatorSize(),
+			} :: { [string]: unknown },
 			vine.ActivatorTween,
 			vine.instanceConfiguration
 		)

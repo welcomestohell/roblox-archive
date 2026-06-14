@@ -1,7 +1,7 @@
 local collectAssets = require "@core/shared/assets/collectAssets"
 local flattenAssetIds = require "@core/shared/assets/flattenAssetIds"
 
-local function flattenAssetModules(assetIds: { string }?)
+local function flattenAssetModules(assetIds: { string }?): { string }
 	assetIds = assetIds or {}
 	local assetModules = collectAssets()
 	for _, assets in assetModules do

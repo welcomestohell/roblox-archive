@@ -1,3 +1,5 @@
+-- deprecated, move to the instances lib instead
+
 local knownClassProperties: { [string]: { [string]: boolean } } = {}
 
 local function isInInstance(instance: Instance, property: string): boolean

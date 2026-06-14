@@ -1,10 +1,17 @@
+local ContentProvider = game:GetService "ContentProvider"
 const ReplicatedStorage = game:GetService "ReplicatedStorage"
 
+local collectAssets = require "@core/shared/assets/collectAssets"
+local flattenAssetIds = require "@core/shared/assets/flattenAssetIds"
+local flattenAssetModules = require "@core/shared/assets/flattenAssetModules"
+local requireAssetModules = require "@core/shared/assets/requireAssetModules"
 const logger = require "@core/shared/logger"
 const character = require "@libs/character"
+local arrays = require "@libs/collections/arrays"
 const tables = require "@libs/collections/tables"
 const Level = require "@libs/core/Level"
 const Life = require "@libs/memory/Life"
+local threadpool = require "@libs/threadpool"
 const prvd = require "@roblox_packages/prvd"
 const Charm = require "@roblox_packages/Charm"
 
@@ -22,6 +29,10 @@ function LevelProvider.tryLoadLevel(self: typeof(LevelProvider), instance: Insta
 	if not game:IsLoaded() then
 		logger:Debug "Waiting for game to load"
 		game.Loaded:Wait()
+	end
+
+	for _, ids in arrays.map(collectAssets(), flattenAssetIds) do
+		threadpool.spawn(ContentProvider.PreloadAsync, ContentProvider, ids)
 	end
 
 	local levelResult = Level.new(self.life, instance.Name, instance)
