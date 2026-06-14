@@ -5,9 +5,9 @@ local std = require "@libs/std"
 
 local CameraResetter = std.Mechanic {}
 export type CameraResetterMechanic = std.Mechanic<typeof(CameraResetter)>
-CameraResetter.mechanicName = "CameraResetter"
+CameraResetter.name = "CameraResetter"
 CameraResetter.instanceType = std.isA.Instance()
-CameraResetter.debuggerEmoji = "🔄"
+CameraResetter.emoji = "🔄"
 
 CameraResetter:attributeSection "Activation"
 CameraResetter.Activation = activation.useAttributes(CameraResetter)

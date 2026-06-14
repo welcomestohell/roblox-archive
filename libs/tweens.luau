@@ -24,7 +24,7 @@ local isEasingStyle = gt.build(gt.enumOf(Enum.EasingStyle) :: Enum.EasingStyle)
 local isEasingDirection = gt.build(gt.enumOf(Enum.EasingDirection) :: Enum.EasingDirection)
 
 local function useAttributes(implementation: Mechanic.MechanicImplementation, prefix: string?): TweenAttributes
-	local prefix = prefix or "Transition"
+	local prefix = prefix or "Tween"
 
 	local attributes = {}
 	implementation:attributeSection "Tween"

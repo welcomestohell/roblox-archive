@@ -7,9 +7,9 @@ local touch = require "@libs/touch"
 
 local Elevator = std.Mechanic {}
 export type ElevatorMechanic = std.Mechanic<typeof(Elevator), { touching: { [BasePart]: true } }>
-Elevator.mechanicName = "Elevator"
+Elevator.name = "Elevator"
 Elevator.instanceType = std.isA.BasePart()
-Elevator.debuggerEmoji = "🛗"
+Elevator.emoji = "🛗"
 
 Elevator.Enabled = Elevator:attribute("Enabled", std.gt.boolean(), true)
 Elevator.Speed = Elevator:attribute("Speed", std.gt.number(), 40)
@@ -21,7 +21,7 @@ Elevator.Vector = Elevator:attribute(
 )
 Elevator.ContinuousUpdates = Elevator:attribute("ContinuousUpdates", std.gt.boolean(), true)
 
-Elevator.Touch = std.useTouch(Elevator)
+Elevator.Touch = touch.useAttributes(Elevator)
 
 export type Vector = typeof(Elevator.Vector:type())
 

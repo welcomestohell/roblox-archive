@@ -16,7 +16,7 @@ const touch = require "@libs/touch"
 const Turret = std.Mechanic {}
 export type TurretMechanic = std.Mechanic<typeof(Turret), { template: Bullet }>
 
-Turret.mechanicName = "Turret"
+Turret.name = "Turret"
 Turret.instanceType = std.gt.instanceTree(std.isA.Model(), {
 	Bullet = std.gt.instanceTree(std.isA.BasePart(), {
 		BulletAttachment = std.isA.Attachment(),
@@ -24,7 +24,7 @@ Turret.instanceType = std.gt.instanceTree(std.isA.Model(), {
 		BulletVelocity = std.isA.LinearVelocity(),
 	}),
 })
-Turret.debuggerEmoji = "🔫"
+Turret.emoji = "🔫"
 
 export type Bullet = typeof(Turret.instanceType.Bullet)
 

@@ -183,6 +183,10 @@ return table.freeze {
 	literals = literals :: LiteralsConstructor,
 	serialize = serialize,
 
+	-- These types have additional metadata for the Epoch plugin
+	tag = gt.meta(gt.string(), { tag = true }),
+	group = gt.meta(gt.string(), { group = true }),
+
 	-- GreenTea
 	array = gt.array,
 	asGreenTeaType = gt.asGreenTeaType,
@@ -202,6 +206,7 @@ return table.freeze {
 
 	union = gt.union :: UnionConstructor,
 	oneOf = gt.oneOf :: UnionConstructor,
+
 	optional = gt.optional,
 
 	-- Luau

@@ -24,12 +24,12 @@ local LIMB_MAP: { [Enum.Limb]: string } = {
 ]=]
 local Mounter = std.Mechanic {}
 export type MounterMechanic = std.Mechanic<typeof(Mounter)> & { model: BasePart | Model }
-Mounter.mechanicName = "Attacher"
+Mounter.name = "Attacher"
 Mounter.instanceType = std.gt.instanceTree {
 	MounterActivator = std.isA.Instance(),
 	MounterModel = std.gt.union(std.isA.BasePart(), std.isA.Model()),
 }
-Mounter.debuggerEmoji = "🔌"
+Mounter.emoji = "🔌"
 
 Mounter.Enabled = Mounter:withEnabled()
 Mounter.Cooldown = Mounter:attribute("Cooldown", std.gt.positiveNumber, 0)

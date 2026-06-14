@@ -6,14 +6,14 @@ local std = require "@libs/std"
 
 local Vine = std.Mechanic {}
 export type VineMechanic = std.Mechanic<typeof(Vine)> & { templateHandle: BasePart? }
-Vine.mechanicName = "Vine"
+Vine.name = "Vine"
 Vine.instanceType = std.gt.instanceTree {
 	Top = std.isA.BasePart(),
 	Activator = std.isA.BasePart(),
 	Constraint = std.gt.optional(std.isA.Constraint()),
 	Handle = std.gt.optional(std.isA.BasePart()),
 }
-Vine.debuggerEmoji = "🪝"
+Vine.emoji = "🪝"
 
 Vine.Enabled = Vine:withEnabled()
 Vine.Cooldown = Vine:attribute("Cooldown", std.gt.positiveNumber, 0)

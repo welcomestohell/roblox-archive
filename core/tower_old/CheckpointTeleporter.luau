@@ -9,9 +9,9 @@ local tweens = require "@libs/tweens"
 
 local CheckpointTeleporter = std.Mechanic {}
 export type CheckpointTeleporterMechanic = std.Mechanic<typeof(CheckpointTeleporter)>
-CheckpointTeleporter.mechanicName = "CheckpointTeleporter"
+CheckpointTeleporter.name = "CheckpointTeleporter"
 CheckpointTeleporter.instanceType = std.isA.BasePart()
-CheckpointTeleporter.debuggerEmoji = "⬅️"
+CheckpointTeleporter.emoji = "⬅️"
 
 CheckpointTeleporter.Cooldown = CheckpointTeleporter:attribute("Cooldown", std.gt.positiveNumber, 0)
 CheckpointTeleporter.OnNoCheckpoint = CheckpointTeleporter:attribute(

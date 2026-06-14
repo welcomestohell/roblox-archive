@@ -3,9 +3,9 @@ local std = require "@libs/std"
 
 local Wings = std.Mechanic {}
 export type WingsMechanic = std.Mechanic<typeof(Wings)>
-Wings.mechanicName = "Wings"
+Wings.name = "Wings"
 Wings.instanceType = std.isA.Instance()
-Wings.debuggerEmoji = "🪽"
+Wings.emoji = "🪽"
 
 Wings.Enabled = Wings:withEnabled()
 Wings.Cooldown = Wings:attribute("Cooldown", std.gt.positiveNumber, 0)

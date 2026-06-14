@@ -3,9 +3,9 @@ local std = require "@libs/std"
 
 local OneWay = std.Mechanic {}
 export type OneWayMechanic = std.Mechanic<typeof(OneWay)>
-OneWay.mechanicName = "OneWay"
+OneWay.name = "OneWay"
 OneWay.instanceType = std.isA.BasePart()
-OneWay.debuggerEmoji = "⛔"
+OneWay.emoji = "⛔"
 
 OneWay.Enabled = OneWay:attribute("Enabled", std.gt.boolean(), true)
 OneWay.Offset = OneWay:attribute("Offset", std.gt.CFrame(), CFrame.identity)

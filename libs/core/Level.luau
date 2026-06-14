@@ -214,9 +214,9 @@ function Level.loadInstance(self: Level, instance: Instance): { Mechanic }
 	local shouldToggle = false
 
 	for _, tag in instance:GetTags() do
-		local mechanicName = string.match(tag, "Mechanic:%s?([%w_%-]+)")
-		if mechanicName then
-			local implementation = Mechanic.downcast(self.scripts.mechanicImplementationByName[mechanicName])
+		local name = string.match(tag, "Mechanic:%s?([%w_%-]+)")
+		if name then
+			local implementation = Mechanic.downcast(self.scripts.mechanicImplementationByName[name])
 			if not implementation then continue end
 
 			local mechanizeResult = mechanize(implementation, self.life, instance)

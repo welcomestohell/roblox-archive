@@ -6,9 +6,9 @@ const std = require "@libs/std"
 
 const Launcher = std.Mechanic {}
 export type LauncherMechanic = std.Mechanic<typeof(Launcher)>
-Launcher.mechanicName = "Launcher"
+Launcher.name = "Launcher"
 Launcher.instanceType = std.isA.BasePart()
-Launcher.debuggerEmoji = "🦘"
+Launcher.emoji = "🦘"
 
 Launcher.Cooldown = Launcher:attribute("Cooldown", std.gt.positiveNumber, 0)
 Launcher.Power = Launcher:attribute("Power", std.gt.positiveNumber, 100)

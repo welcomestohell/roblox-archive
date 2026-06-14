@@ -4,9 +4,9 @@ const std = require "@libs/std"
 
 const ButtonDisabler = std.Mechanic {}
 export type ButtonDisablerMechanic = std.Mechanic<typeof(ButtonDisabler)>
-ButtonDisabler.mechanicName = "ButtonDisabler"
+ButtonDisabler.name = "ButtonDisabler"
 ButtonDisabler.instanceType = std.isA.Instance()
-ButtonDisabler.debuggerEmoji = "🕹️"
+ButtonDisabler.emoji = "🕹️"
 
 ButtonDisabler.Activation = activation.useAttributes(ButtonDisabler)
 ButtonDisabler.Cooldown = ButtonDisabler:attribute("Cooldown", std.gt.positiveNumber, 0)

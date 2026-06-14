@@ -1,16 +1,18 @@
 local assets = require "@core/assets"
 local character = require "@libs/character"
 local logger = require "@core/shared/logger"
+const activation = require "@libs/activation"
 local sounds = require "@libs/sounds"
 local std = require "@libs/std"
 local teleport = require "@libs/teleport"
+const tweens = require "@libs/tweens"
 
 local Teleporter = std.Mechanic {}
 export type TeleporterMechanic = std.Mechanic<typeof(Teleporter)>
 
-Teleporter.mechanicName = "Teleporter"
+Teleporter.name = "Teleporter"
 Teleporter.instanceType = std.isA.BasePart()
-Teleporter.debuggerEmoji = "🌀"
+Teleporter.emoji = "🌀"
 
 Teleporter.debounce = std.LevelState(false)
 Teleporter.debouncedTeleporters = std.LevelState<<{ [TeleporterMechanic]: true }>> {}
@@ -18,12 +20,12 @@ Teleporter.debouncedTeleporters = std.LevelState<<{ [TeleporterMechanic]: true }
 Teleporter.Group = Teleporter:attribute("Group", std.gt.optional(std.gt.string()), nil)
 Teleporter.Cooldown = Teleporter:attribute("Cooldown", std.gt.positiveNumber, 0)
 Teleporter.Debounced = Teleporter:attribute("Debounced", std.gt.boolean(), false)
-Teleporter.Teleport = std.useTeleport(Teleporter)
 
-Teleporter.Activation = std.useActivation(Teleporter)
-Teleporter.Seamless = std.useSeamlessTeleport(Teleporter)
-Teleporter.Sound = std.useSound(Teleporter)
-Teleporter.Transition = std.useTween(Teleporter)
+Teleporter.Teleport = teleport.useAttributes(Teleporter)
+Teleporter.Activation = activation.useAttributes(Teleporter)
+Teleporter.Seamless = teleport.useSeamlessAttributes(Teleporter)
+Teleporter.Sound = sounds.useAttributes(Teleporter)
+Teleporter.Transition = tweens.useAttributes(Teleporter)
 
 function Teleporter.onActivate(self: typeof(Teleporter), teleporter: TeleporterMechanic, level: std.Level, event)
 	local root = character.getMaybeHumanoidRootPart()

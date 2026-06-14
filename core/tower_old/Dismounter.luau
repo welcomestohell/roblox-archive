@@ -5,9 +5,9 @@ local std = require "@libs/std"
 local Dismounter = std.Mechanic {}
 export type DismounterMechanic = std.Mechanic<typeof(Dismounter)>
 
-Dismounter.mechanicName = "Dismounter"
+Dismounter.name = "Dismounter"
 Dismounter.instanceType = std.isA.Instance()
-Dismounter.debuggerEmoji = "⏏️"
+Dismounter.emoji = "⏏️"
 
 Dismounter.Dismounts = Dismounter:prefixedAttributeMap("Dismounts", std.gt.boolean())
 

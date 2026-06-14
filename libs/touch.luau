@@ -2,7 +2,7 @@ local Mechanic = require "@libs/core/Mechanic"
 local character = require "./character"
 local gt = require "@libs/vendor/gt"
 
-local function useAttributes(implementation: Mechanic.MechanicImplementation, basename: string?)
+const function useAttributes(implementation: Mechanic.MechanicImplementation, basename: string?)
 	basename = basename or "Touch"
 
 	implementation:attributeSection "Touch"
@@ -18,7 +18,7 @@ end
 
 export type TouchAttributes = typeof(useAttributes(nil :: any))
 
-local function isToucherValid(
+const function isToucherValid(
 	attributes: TouchAttributes,
 	instance: Instance,
 	instanceConfiguration: Instance,
@@ -42,7 +42,16 @@ local function isToucherValid(
 		or (attributes.SupportsBoxes(instanceConfiguration) and (toucher:HasTag("Box") or toucher:FindFirstAncestor("Box") ~= nil))
 end
 
+const function castIntoTarget(toucher: BasePart)
+	if character.isFromMaybeCharacter(toucher) then
+		return character.getHumanoidRootPart()
+	else
+		return toucher
+	end
+end
+
 return table.freeze {
 	useAttributes = useAttributes,
 	isToucherValid = isToucherValid,
+	castIntoTarget = castIntoTarget,
 }

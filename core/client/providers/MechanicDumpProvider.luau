@@ -1,7 +1,6 @@
 const HttpService = game:GetService "HttpService"
 const ReplicatedStorage = game:GetService "ReplicatedStorage"
 
-const logger = require "@core/shared/logger"
 const tables = require "@libs/collections/tables"
 const Level = require "@libs/core/Level"
 const Mechanic = require "@libs/core/Mechanic"
@@ -23,9 +22,9 @@ function MechanicDumpProvider.onStart()
 	const dump = {}
 	for _, implementation in Level.baseScripts.mechanicImplementationByName do
 		const implementation = Mechanic.downcast(implementation)
-		dump[implementation.mechanicName] = {
-			mechanicName = implementation.mechanicName,
-			debuggerEmoji = implementation.debuggerEmoji,
+		dump[implementation.name] = {
+			name = implementation.name,
+			emoji = implementation.emoji,
 
 			attributeSections = tables.map(
 				implementation._metadata.attributeSections,

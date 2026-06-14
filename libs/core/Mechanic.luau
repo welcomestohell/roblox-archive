@@ -21,10 +21,10 @@ export type Mechanic<Implementation = { [any]: any }, Mixin = {}> = Implementati
 }
 
 export type AnyMechanicImplementation = {
-	mechanicName: string,
+	name: string,
 	instanceType: Instance,
 
-	debuggerEmoji: string,
+	emoji: string,
 
 	onPreRender: (self: any, deltaTime: number, level: any) -> ()?,
 	onPreAnimation: (self: any, deltaTime: number, level: any) -> ()?,
@@ -72,7 +72,7 @@ function Mechanic.new<Self>(self: Self): MechanicImplementation<Self>
 	end
 
 	function proxy.__tostring(self: Mechanic<AnyMechanicImplementation>)
-		return `{self.implementation.mechanicName}({self.instance:GetFullName()})`
+		return `{self.implementation.name}({self.instance:GetFullName()})`
 	end
 
 	implementation._proxy = proxy

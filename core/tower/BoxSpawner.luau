@@ -1,3 +1,4 @@
+const activation = require "@libs/activation"
 const Level = require "@libs/core/Level"
 const std = require "@libs/std"
 const press = require "@libs/press"
@@ -5,13 +6,13 @@ const Promise = require "@roblox_packages/Promise"
 
 local BoxSpawner = std.Mechanic {}
 export type BoxSpawnerMechanic = std.Mechanic<typeof(BoxSpawner), { template: PVInstance, boxLife: std.Life? }>
-BoxSpawner.mechanicName = "BoxSpawner"
+BoxSpawner.name = "BoxSpawner"
 BoxSpawner.instanceType = std.gt.instanceTree {
 	Button = std.isA.BasePart(),
 	Box = std.isA.PVInstance(),
 	Spawn = std.isA.BasePart(),
 }
-BoxSpawner.debuggerEmoji = "📦"
+BoxSpawner.emoji = "📦"
 
 BoxSpawner.Cooldown = BoxSpawner:attribute("Cooldown", std.gt.positiveNumber, 0)
 BoxSpawner.Debounced = BoxSpawner:attribute("Debounced", std.gt.boolean(), false)
@@ -19,11 +20,8 @@ BoxSpawner.SpawnOnStart = BoxSpawner:attribute("SpawnOnStart", std.gt.boolean(),
 
 BoxSpawner.AnchoredTag = BoxSpawner:attribute("AnchoredTag", std.gt.string(), "Box: Anchored")
 
-BoxSpawner:attributeSection "Activation"
-BoxSpawner.Activation = std.useActivation(BoxSpawner)
-
-BoxSpawner:attributeSection "Press"
-BoxSpawner.Press = std.usePress(BoxSpawner)
+BoxSpawner.Activation = activation.useAttributes(BoxSpawner)
+BoxSpawner.Press = press.useAttributes(BoxSpawner)
 
 function BoxSpawner.spawn(spawner: BoxSpawnerMechanic, level: std.Level)
 	if spawner.boxLife then spawner.boxLife:destroy() end

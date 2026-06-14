@@ -2,9 +2,9 @@ local std = require "@libs/std"
 
 local Shover = std.Mechanic {}
 export type ShoverMechanic = std.Mechanic<typeof(Shover)>
-Shover.mechanicName = "Shover"
+Shover.name = "Shover"
 Shover.instanceType = std.isA.PrismaticConstraint()
-Shover.debuggerEmoji = "🤜"
+Shover.emoji = "🤜"
 
 type ShoverDirection = "In" | "Out"
 type ShoverDirectionAttributes = {

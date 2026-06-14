@@ -7,7 +7,7 @@ local KitPortal = std.Mechanic {}
 export type KitPortalMechanic = std.Mechanic<typeof(KitPortal)>
 KitPortal.basename = "KitPortal"
 KitPortal.instanceType = std.isA.Instance()
-KitPortal.debuggerEmoji = "💠"
+KitPortal.emoji = "💠"
 
 KitPortal:attributeSection "Activation"
 KitPortal.Activation = activation.useAttributes(KitPortal)

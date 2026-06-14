@@ -2,9 +2,9 @@ local std = require "@libs/std"
 
 local Conveyor = std.Mechanic {}
 export type ConveyorMechanic = std.Mechanic<typeof(Conveyor)>
-Conveyor.mechanicName = "Conveyor"
+Conveyor.name = "Conveyor"
 Conveyor.instanceType = std.isA.BasePart()
-Conveyor.debuggerEmoji = "🛣️"
+Conveyor.emoji = "🛣️"
 
 Conveyor.Enabled = Conveyor:attribute("Enabled", std.gt.boolean(), true)
 Conveyor.Speed = Conveyor:attribute("Speed", std.gt.positiveNumber, 0)

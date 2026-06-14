@@ -3,13 +3,7 @@ local Level = require "@libs/core/Level"
 local LevelState = require "@libs/core/LevelState"
 local Life = require "@libs/memory/Life"
 local Mechanic = require "@libs/core/Mechanic"
-local activation = require "@libs/activation"
 local gt = require "@libs/vendor/gt"
-const press = require "@libs/press"
-local sounds = require "@libs/sounds"
-local teleport = require "@libs/teleport"
-local touch = require "@libs/touch"
-local tweens = require "@libs/tweens"
 
 export type AnyMechanicImplementation = Mechanic.AnyMechanicImplementation
 export type Mechanic<Self = any, Mixin = {}> = Mechanic.Mechanic<Self, Mixin>
@@ -40,14 +34,6 @@ return table.freeze {
 	Attribute = Attribute.new,
 	Life = Life.new,
 	LevelState = LevelState.new,
-
-	useActivation = activation.useAttributes,
-	useSeamlessTeleport = teleport.useSeamlessAttributes,
-	useSound = sounds.useAttributes,
-	usePress = press.useAttributes,
-	useTeleport = teleport.useAttributes,
-	useTouch = touch.useAttributes,
-	useTween = tweens.useAttributes,
 
 	gt = gt,
 	isA = gt.isA,

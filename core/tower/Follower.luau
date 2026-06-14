@@ -19,9 +19,9 @@ local mouse = Players.LocalPlayer:GetMouse()
 local Follower = std.Mechanic {}
 export type FollowerMechanic = std.Mechanic<typeof(Follower)>
 
-Follower.mechanicName = "Follower"
+Follower.name = "Follower"
 Follower.instanceType = std.isA.BasePart()
-Follower.debuggerEmoji = "👀"
+Follower.emoji = "👀"
 
 Follower.Enabled = Follower:attribute("Enabled", std.gt.boolean(), true)
 
@@ -115,24 +115,18 @@ function Follower.onPreSimulation(self: typeof(Follower), deltaTime: number, lev
 		local cx, cy, cz = current.Position.X, current.Position.Y, current.Position.Z
 		local tx, ty, tz = targetCFrame.Position.X, targetCFrame.Position.Y, targetCFrame.Position.Z
 
-		local rx, ry, rz = current:ToEulerAnglesXYZ()
-		local trx, try, trz = targetCFrame:ToEulerAnglesXYZ()
-
-		-- FIXME: ts is misbehaving ??????????
+		local rx, ry, rz = current:ToOrientation()
+		local trx, try, trz = targetCFrame:ToOrientation()
 
 		if not follower:UseXPosition() then tx = cx end
-
 		if not follower:UseYPosition() then ty = cy end
-
 		if not follower:UseZPosition() then tz = cz end
 
 		if not follower:UseXRotation() then trx = rx end
-
 		if not follower:UseYRotation() then try = ry end
-
 		if not follower:UseZRotation() then trz = rz end
 
-		targetCFrame = CFrame.new(tx, ty, tz) * CFrame.fromEulerAnglesXYZ(trx, try, trz)
+		targetCFrame = CFrame.new(tx, ty, tz) * CFrame.fromOrientation(trx, try, trz)
 
 		if follower:Smooth() then
 			local responsiveness = follower:Responsiveness()

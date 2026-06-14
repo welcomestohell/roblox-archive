@@ -7,9 +7,9 @@ const std = require "@libs/std"
 const Tripper = std.Mechanic {}
 export type TripperMechanic = std.Mechanic<typeof(Tripper)>
 
-Tripper.mechanicName = "Tripper"
+Tripper.name = "Tripper"
 Tripper.instanceType = std.isA.BasePart()
-Tripper.debuggerEmoji = "🧀"
+Tripper.emoji = "🧀"
 
 Tripper.Cooldown = Tripper:attribute("Cooldown", std.gt.positiveNumber, 0)
 Tripper.StunDuration = Tripper:attribute("StunDuration", std.gt.positiveNumber, 0)

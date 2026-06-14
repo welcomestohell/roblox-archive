@@ -2,9 +2,9 @@ local std = require "@libs/std"
 
 local ScrollingImage = std.Mechanic {}
 export type ScrollingImageMechanic = std.Mechanic<typeof(ScrollingImage)>
-ScrollingImage.mechanicName = "ScrollingImage"
+ScrollingImage.name = "ScrollingImage"
 ScrollingImage.instanceType = std.isA.ImageLabel()
-ScrollingImage.debuggerEmoji = "🏁"
+ScrollingImage.emoji = "🏁"
 
 ScrollingImage.Speed = ScrollingImage:attribute("Speed", std.gt.UDim2(), UDim2.new())
 ScrollingImage.BasePosition = ScrollingImage:attribute("BasePosition", std.gt.UDim2(), UDim2.new())

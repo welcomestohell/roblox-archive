@@ -2,9 +2,9 @@ local std = require "@libs/std"
 
 local Anchor = std.Mechanic {}
 export type AnchorMechanic = std.Mechanic<typeof(Anchor)>
-Anchor.mechanicName = "Anchor"
+Anchor.name = "Anchor"
 Anchor.instanceType = std.isA.BasePart()
-Anchor.debuggerEmoji = "🔱"
+Anchor.emoji = "🔱"
 
 Anchor.JumpOnDismount = Anchor:attribute("JumpOnDismount", std.gt.boolean(), true)
 

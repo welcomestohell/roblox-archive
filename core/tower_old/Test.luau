@@ -10,9 +10,9 @@ local tables = require "@libs/collections/tables"
 ]=]
 local Test = std.Mechanic {}
 export type TestMechanic = std.Mechanic<typeof(Test)>
-Test.mechanicName = "Test"
+Test.name = "Test"
 Test.instanceType = std.isA.Instance()
-Test.debuggerEmoji = "🧪"
+Test.emoji = "🧪"
 
 local DATA_TYPES: { [string]: any } = {
 	string = "Hello World",

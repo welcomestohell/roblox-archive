@@ -8,9 +8,9 @@ const toggle = require "@libs/toggle"
 
 const Button = std.Mechanic {}
 export type ButtonMechanic = std.Mechanic<typeof(Button)>
-Button.mechanicName = "Button"
+Button.name = "Button"
 Button.instanceType = std.gt.union(std.isA.BasePart(), std.isA.Model())
-Button.debuggerEmoji = "🖲️"
+Button.emoji = "🖲️"
 
 Button.Active = Button:attribute("Active", std.gt.boolean(), true)
 Button.Cooldown = Button:attribute("Cooldown", std.gt.positiveNumber, 0.5)

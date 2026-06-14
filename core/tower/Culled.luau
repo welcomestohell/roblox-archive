@@ -28,7 +28,7 @@ const types = require "@libs/types"
 local Culled = std.Mechanic {}
 export type CulledMechanic = std.Mechanic<typeof(Culled)>
 
-Culled.mechanicName = "Culled"
+Culled.name = "Culled"
 Culled.instanceType = std.gt.union(
 	std.isA.BasePart(),
 	std.isA.Model(),
@@ -38,7 +38,7 @@ Culled.instanceType = std.gt.union(
 	std.isA.PointLight(),
 	std.isA.Sound()
 )
-Culled.debuggerEmoji = "👻"
+Culled.emoji = "👻"
 
 Culled.Mode = Culled:attribute("Mode", std.gt.literals("Distance", "Camera"), "Distance")
 Culled.Distance = Culled:attribute("Distance", std.gt.NumberRange, NumberRange.new(0, math.huge))

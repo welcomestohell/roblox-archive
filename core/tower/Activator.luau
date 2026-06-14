@@ -10,11 +10,9 @@ local std = require "@libs/std"
 ]=]
 local Activator = std.Mechanic {}
 export type ActivatorMechanic = std.Mechanic<typeof(Activator)>
-Activator.mechanicName = "Activator"
-Activator.instanceType = std.gt.instanceTree {
-	Target = std.gt.optional(std.isA.ObjectValue()),
-}
-Activator.debuggerEmoji = "👆"
+Activator.name = "Activator"
+Activator.instanceType = std.gt.instanceTree { Target = std.gt.optional(std.isA.ObjectValue()) }
+Activator.emoji = "👆"
 
 Activator.Enabled = Activator:attribute("Enabled", std.gt.boolean(), true)
 Activator.Cooldown = Activator:attribute("Cooldown", std.gt.positiveNumber, 0)

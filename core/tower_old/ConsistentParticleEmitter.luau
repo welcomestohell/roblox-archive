@@ -2,9 +2,9 @@ local std = require "@libs/std"
 
 local ConsistentParticleEmitter = std.Mechanic {}
 export type ConsistentParticleEmitterMechanic = std.Mechanic<typeof(ConsistentParticleEmitter)>
-ConsistentParticleEmitter.mechanicName = "ConsistentParticleEmitter"
+ConsistentParticleEmitter.name = "ConsistentParticleEmitter"
 ConsistentParticleEmitter.instanceType = std.isA.ParticleEmitter()
-ConsistentParticleEmitter.debuggerEmoji = "✨"
+ConsistentParticleEmitter.emoji = "✨"
 
 ConsistentParticleEmitter.Rate = ConsistentParticleEmitter:attribute("Rate", std.gt.positiveNumber, 0)
 

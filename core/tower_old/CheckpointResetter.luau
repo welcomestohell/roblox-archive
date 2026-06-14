@@ -4,9 +4,9 @@ local std = require "@libs/std"
 
 local CheckpointResetter = std.Mechanic {}
 export type CheckpointResetterMechanic = std.Mechanic<typeof(CheckpointResetter)>
-CheckpointResetter.mechanicName = "CheckpointResetter"
+CheckpointResetter.name = "CheckpointResetter"
 CheckpointResetter.instanceType = std.isA.BasePart()
-CheckpointResetter.debuggerEmoji = "🔄"
+CheckpointResetter.emoji = "🔄"
 
 CheckpointResetter.Cooldown = Checkpoint:attribute("CheckpointResetter", std.gt.positiveNumber, 0)
 

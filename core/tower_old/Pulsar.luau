@@ -2,9 +2,9 @@ local std = require "@libs/std"
 
 local Pulsar = std.Mechanic {}
 export type PulsarMechanic = std.Mechanic<typeof(Pulsar)>
-Pulsar.mechanicName = "Pulsar"
+Pulsar.name = "Pulsar"
 Pulsar.instanceType = std.isA.Instance()
-Pulsar.debuggerEmoji = "🌈"
+Pulsar.emoji = "🌈"
 
 -- TODO: implement
 

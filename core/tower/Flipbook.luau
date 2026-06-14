@@ -2,36 +2,33 @@ local std = require "@libs/std"
 
 local Flipbook = std.Mechanic {}
 export type FlipbookMechanic = std.Mechanic<typeof(Flipbook)>
-Flipbook.mechanicName = "Flipbook"
+Flipbook.name = "Flipbook"
 Flipbook.instanceType = std.gt.union(std.isA.ImageLabel(), std.isA.Decal())
-Flipbook.debuggerEmoji = "🎞️"
+Flipbook.emoji = "🎞️"
 
 Flipbook.Enabled = Flipbook:attribute("Enabled", std.gt.boolean(), true)
 Flipbook.Framerate = Flipbook:attribute("Framerate", std.gt.number(), 1)
 Flipbook.NumFrames = Flipbook:attribute("NumFrames", std.gt.optional(std.gt.number()), nil)
 Flipbook.SetDefaults = Flipbook:attribute("SetDefaults", std.gt.boolean(), true)
-Flipbook.Synchronize = Flipbook:attribute("Synchronize", std.gt.boolean(), false)
+Flipbook.Synchronized = Flipbook:attribute("Synchronized", std.gt.boolean(), false)
 Flipbook.Index = Flipbook:attribute("Index", std.gt.number(), 0)
 Flipbook.Elapsed = Flipbook:attribute("Elapsed", std.gt.number(), 0)
 
 Flipbook.GridSize = Flipbook:attribute("GridSize", std.gt.Vector2(), Vector2.one)
-
-Flipbook.Mode = Flipbook:attribute(
-	"Mode",
-	std.gt.enumOf<<Enum.ParticleFlipbookMode>>(Enum.ParticleFlipbookMode),
-	Enum.ParticleFlipbookMode.Loop
-)
+Flipbook.Mode = Flipbook:attribute("Mode", std.gt.enumOf(Enum.ParticleFlipbookMode), Enum.ParticleFlipbookMode.Loop)
 
 function Flipbook:onStart(flipbook: FlipbookMechanic)
 	flipbook.GridSize:onBind(flipbook, function(gridSize: Vector2)
-		if flipbook.instance.ClassName == "ImageLabel" then
-			flipbook.instance.Size = UDim2.fromScale(gridSize.X, gridSize.Y)
-		elseif flipbook.instance.ClassName == "Decal" then
-			flipbook.instance.UVScale = Vector2.one / gridSize
+		if flipbook:SetDefaults() then
+			if flipbook.instance.ClassName == "ImageLabel" then
+				flipbook.instance.Size = UDim2.fromScale(gridSize.X, gridSize.Y)
+			elseif flipbook.instance.ClassName == "Decal" then
+				flipbook.instance.UVScale = Vector2.one / gridSize
+			end
 		end
 	end)
 
-	flipbook.Synchronize:onChange(flipbook, function() flipbook:Elapsed(0) end)
+	flipbook.Synchronized:onChange(flipbook, function() flipbook:Elapsed(0) end)
 end
 
 -- FIXME: PingPong desyncs :(
@@ -50,7 +47,7 @@ function Flipbook.onPreRender(self: typeof(Flipbook), deltaTime: number, level: 
 		local numFrames: number = flipbook:NumFrames() or gridSize.X * gridSize.Y
 		local cycleDuration = (if isPingPong and numFrames > 1 then (numFrames - 1) * 2 else numFrames) / framerate
 
-		local elapsed = if flipbook:Synchronize()
+		local elapsed = if flipbook:Synchronized()
 			then lifetime
 			else flipbook:Elapsed(flipbook:Elapsed() :: number + deltaTime)
 

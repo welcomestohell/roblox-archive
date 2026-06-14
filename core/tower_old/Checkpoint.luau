@@ -5,9 +5,9 @@ local std = require "@libs/std"
 
 local Checkpoint = std.Mechanic {}
 export type CheckpointMechanic = std.Mechanic<typeof(Checkpoint)>
-Checkpoint.mechanicName = "Checkpoint"
+Checkpoint.name = "Checkpoint"
 Checkpoint.instanceType = std.isA.BasePart()
-Checkpoint.debuggerEmoji = "🚩"
+Checkpoint.emoji = "🚩"
 
 Checkpoint.Cooldown = Checkpoint:attribute("Cooldown", std.gt.positiveNumber, 0)
 Checkpoint.Persistent = Checkpoint:attribute("Persistent", std.gt.boolean(), false)

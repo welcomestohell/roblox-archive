@@ -28,9 +28,9 @@ export type ScriptCollector = setmetatable<{
 
         All mechanic implementations that has been collected mapped by it's
         name.
-        
+
         This is distinct from the matching CollectionService tag, which follows
-        `Mechanic: {mechanicName}`.
+        `Mechanic: {name}`.
     ]=]
 	mechanicImplementationByName: { [string]: Mechanic.AnyMechanicImplementation },
 
@@ -81,7 +81,7 @@ end
 
     Processes a ModuleScript instance, collecting MechanicImplementations if it
     is returned from the module.
-    
+
     @param self ScriptCollector -- The ScriptCollector to use.
     @param instance ModuleScript -- The ModuleScript to collect.
 ]=]
@@ -93,22 +93,22 @@ function ScriptCollector.collectModuleScript(self: ScriptCollector, instance: Mo
 
 	if Mechanic.isMechanicImplementation(requiredOrError) then
 		local implementation = Mechanic.downcast(requiredOrError)
-		implementation.mechanicName = implementation.mechanicName or instance.Name
+		implementation.name = implementation.name or instance.Name
 
-		if self.mechanicImplementationByName[implementation.mechanicName] then
+		if self.mechanicImplementationByName[implementation.name] then
 			logger:Error(
 				"Cannot collect mechanic implementation",
 				instance:GetFullName(),
 				"as it's instance tag",
-				implementation.mechanicName,
+				implementation.name,
 				"is already registered; are you trying to `:override()` a mechanic?"
 			)
 			return
 		end
 
 		table.insert(self.mechanicImplementations, implementation)
-		self.mechanicImplementationByName[implementation.mechanicName] = implementation
-		table.insert(self.mechanicTags, implementation.mechanicName)
+		self.mechanicImplementationByName[implementation.name] = implementation
+		table.insert(self.mechanicTags, implementation.name)
 		table.sort(self.mechanicTags)
 	end
 end
@@ -119,7 +119,7 @@ end
 
     Processes a given Instance. If it is a ModuleScript, it is deferred to
     `ScriptCollector.collectModuleScript`.
-    
+
     @param self ScriptCollector -- The ScriptCollector to use.
     @param instance Instance -- The Instance to collect.
 ]=]
@@ -136,7 +136,7 @@ end
 
     Returns a Promise, which can be used with `Promise.all` to collect many
     instances parallel.
-    
+
     @param self ScriptCollector -- The ScriptCollector to use.
     @param instance Instance -- The Instance to collect.
     @return Promise -- A Promise which resolves when the instance has been processed.
@@ -149,7 +149,7 @@ ScriptCollector.collectInstanceAsync =
     @since 0.1.0
 
     Collects many instances in parallel.
-    
+
     @param self ScriptCollector -- The ScriptCollector to use.
     @param instances { Instance } -- Instances to collect.
     @return Promise -- A Promise which resolves when all instances has been processed.
