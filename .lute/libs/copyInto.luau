@@ -3,9 +3,7 @@ local path = require "@std/path"
 
 local function copyInto(from: path.Pathlike, to: path.Pathlike)
 	if fs.type(from) == "dir" then
-		if not fs.exists(to) then
-			fs.createDirectory(to)
-		end
+		if not fs.exists(to) then fs.createDirectory(to, { makeParents = true }) end
 
 		for _, entry in fs.listDirectory(from) do
 			local entryPath = path.join(from, entry.name)

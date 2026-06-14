@@ -13,7 +13,7 @@
 		"**/.classpath",
 		"**/.settings",
 		// Welcome To Hell
-		"./.output",
+		// "./.output",
 		"./.vscode",
 		"./luau_packages",
 		"./lune_packages",
@@ -27,9 +27,7 @@
 			"formatter": {
 				"external": {
 					"command": "stylua",
-					"arguments": [
-						"-"
-					],
+					"arguments": ["-"],
 				},
 			},
 		},
@@ -40,9 +38,7 @@
 				"json": {
 					"schemas": [
 						{
-							"fileMatch": [
-								"*.project.json"
-							],
+							"fileMatch": ["*.project.json"],
 							"url": "https://raw.githubusercontent.com/rojo-rbx/vscode-rojo/refs/heads/master/schemas/project.template.schema.json",
 						},
 					],
@@ -62,9 +58,7 @@
 					"sync": true,
 				},
 				"luau-lsp": {
-					"ignoreGlobs": [
-						"**/.output/**"
-					],
+					"ignoreGlobs": ["**/.output/**"],
 					"sourcemap": {
 						"enabled": true,
 						"autogenerate": false,
@@ -86,10 +80,7 @@
 							"stringRequires": {
 								"enabled": true,
 							},
-							"ignoreGlobs": [
-								"**/.pesde/**",
-								"**/.output/**"
-							],
+							"ignoreGlobs": ["**/.pesde/**", "**/.output/**"],
 							"useConst": true,
 						},
 					},
