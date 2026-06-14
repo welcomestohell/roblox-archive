@@ -1,26 +1,23 @@
-const Mechanic = require "@libs/core/Mechanic"
 const gt = require "@libs/vendor/gt"
 const Life = require "@libs/memory/Life"
 const sounds = require "@libs/sounds"
 const tweens = require "@libs/tweens"
 const assets = require "@core/assets"
+const Attribute = require "@libs/attributes/Attribute"
 
 const GLOW_PADDING = Vector3.new(0.05, 0.05, 0.05)
 
-const function useAttributes(implementation: Mechanic.MechanicImplementation, basename: string?)
+const function useAttributes(basename: string?)
 	basename = basename or "Press"
-	implementation:attributeSection "Press"
-	local attributes = {
-		Enabled = implementation:attribute(basename .. "Enabled", gt.boolean(), true),
-		Offset = implementation:attribute(basename .. "Offset", gt.CFrame(), CFrame.new(0, -0.5, 0)),
-		OffsetEnabled = implementation:attribute(basename .. "OffsetEnabled", gt.boolean(), true),
-		GlowEnabled = implementation:attribute(basename .. "GlowEnabled", gt.boolean(), true),
-		ShockwaveEnabled = implementation:attribute(basename .. "ShockwaveEnabled", gt.boolean(), true),
-		Sound = sounds.useAttributes(implementation, basename .. "Sound"),
-		Tween = tweens.useAttributes(implementation, basename .. "Tween"),
+	return {
+		Enabled = Attribute.new(basename .. "Enabled", gt.boolean(), true),
+		Offset = Attribute.new(basename .. "Offset", gt.CFrame(), CFrame.new(0, -0.5, 0)),
+		OffsetEnabled = Attribute.new(basename .. "OffsetEnabled", gt.boolean(), true),
+		GlowEnabled = Attribute.new(basename .. "GlowEnabled", gt.boolean(), true),
+		ShockwaveEnabled = Attribute.new(basename .. "ShockwaveEnabled", gt.boolean(), true),
+		Sound = sounds.useAttributes(basename .. "Sound"),
+		Tween = tweens.useAttributes(basename .. "Tween"),
 	}
-	implementation:endAttributeSection()
-	return attributes
 end
 
 export type PressAttributes = typeof(useAttributes(...))

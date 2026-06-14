@@ -4,16 +4,20 @@ const character = require "@libs/character"
 const properties = require "@libs/properties"
 const std = require "@libs/std"
 
-const Tripper = std.Mechanic {}
+const Tripper = std.Mechanic {
+	emoji = "🧀",
+	name = "Tripper",
+	description = "When activated, trips the player by making them sit down.",
+	instanceType = std.isA.BasePart(),
+
+	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 0),
+	StunDuration = std.Attribute("StunDuration", std.gt.positiveNumber, 0),
+
+	std.AttributeSection "Activation",
+	Activation = activation.useAttributes(),
+}
+
 export type TripperMechanic = std.Mechanic<typeof(Tripper)>
-
-Tripper.name = "Tripper"
-Tripper.instanceType = std.isA.BasePart()
-Tripper.emoji = "🧀"
-
-Tripper.Cooldown = Tripper:attribute("Cooldown", std.gt.positiveNumber, 0)
-Tripper.StunDuration = Tripper:attribute("StunDuration", std.gt.positiveNumber, 0)
-Tripper.Activation = activation.useAttributes(Tripper)
 
 function Tripper.onActivate(self: typeof(Tripper), tripper: TripperMechanic)
 	const humanoid = character.getMaybeHumanoid()

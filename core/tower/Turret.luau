@@ -1,5 +1,4 @@
 const assets = require "@core/assets"
-const damage = require "@libs/damage"
 const emission = require "@libs/emission"
 const logger = require "@core/shared/logger"
 const Level = require "@libs/core/Level"
@@ -7,46 +6,43 @@ const sounds = require "@libs/sounds"
 const std = require "@libs/std"
 const touch = require "@libs/touch"
 
---[=[
-	@class Turret
-	@tag Mechanic
-
-	Turret continously shoot bullets based on its current orientation.
-]=]
-const Turret = std.Mechanic {}
-export type TurretMechanic = std.Mechanic<typeof(Turret), { template: Bullet }>
-
-Turret.name = "Turret"
-Turret.instanceType = std.gt.instanceTree(std.isA.Model(), {
-	Bullet = std.gt.instanceTree(std.isA.BasePart(), {
-		BulletAttachment = std.isA.Attachment(),
-		BulletAlignOrientation = std.isA.AlignOrientation(),
-		BulletVelocity = std.isA.LinearVelocity(),
+const Turret = std.Mechanic {
+	emoji = "🔫",
+	name = "Turret",
+	description = "Continously shoot bullets based on its current orientation.",
+	instanceType = std.gt.instanceTree(std.isA.Model(), {
+		Bullet = std.gt.instanceTree(std.isA.BasePart(), {
+			BulletAttachment = std.isA.Attachment(),
+			BulletAlignOrientation = std.isA.AlignOrientation(),
+			BulletVelocity = std.isA.LinearVelocity(),
+		}),
 	}),
-})
-Turret.emoji = "🔫"
 
+	Enabled = std.Attribute("Enabled", std.gt.boolean(), true),
+	SpreadAngle = std.Attribute("SpreadAngle", std.gt.NumberRange, NumberRange.new(0, 0)),
+
+	std.AttributeSection "Bullets",
+	Firerate = std.Attribute("Firerate", std.gt.positiveNumber, 1),
+	Speed = std.Attribute("Speed", std.gt.positiveNumber, 25),
+	Acceleration = std.Attribute("Acceleration", std.gt.Vector3(), Vector3.zero),
+	Lifetime = std.Attribute("Lifetime", std.gt.positiveNumber, 2),
+	DestroyOnTouch = std.Attribute("DestroyOnTouch", std.gt.boolean(), true),
+
+	std.AttributeSection "Tags",
+	IgnoreTag = std.Attribute("IgnoreTag", std.gt.tag, "Turret: Ignore"),
+	EmitFireTag = std.Attribute("EmitFireTag", std.gt.tag, "Turret: On Fire"),
+	EmitTouchTag = std.Attribute("EmitTouchTag", std.gt.tag, "Turret: On Touch"),
+	EmitExpireTag = std.Attribute("EmitExpireTag", std.gt.tag, "Turret: On Expire"),
+
+	std.AttributeSection "Sound",
+	Sound = sounds.useAttributes(),
+
+	std.AttributeSection "Touch",
+	Touch = touch.useAttributes(),
+}
+
+export type TurretMechanic = std.Mechanic<typeof(Turret), { template: Bullet }>
 export type Bullet = typeof(Turret.instanceType.Bullet)
-
-Turret.Enabled = Turret:attribute("Enabled", std.gt.boolean(), true)
-Turret.SpreadAngle = Turret:attribute("SpreadAngle", std.gt.NumberRange, NumberRange.new(0, 0))
-
-Turret.Damage = damage.useAttributes(Turret)
-Turret.Sound = sounds.useAttributes(Turret)
-Turret.Touch = touch.useAttributes(Turret)
-
-Turret:attributeSection "Bullets"
-Turret.Firerate = Turret:attribute("Firerate", std.gt.positiveNumber, 1)
-Turret.Speed = Turret:attribute("Speed", std.gt.positiveNumber, 25)
-Turret.Acceleration = Turret:attribute("Acceleration", std.gt.Vector3(), Vector3.zero)
-Turret.Lifetime = Turret:attribute("Lifetime", std.gt.positiveNumber, 2)
-Turret.DestroyOnTouch = Turret:attribute("DestroyOnTouch", std.gt.boolean(), true)
-
-Turret:attributeSection "Tags"
-Turret.IgnoreTag = Turret:attribute("IgnoreTag", std.gt.string(), "Turret: Ignore")
-Turret.EmitFireTag = Turret:attribute("EmitFireTag", std.gt.string(), "Turret: On Fire")
-Turret.EmitTouchTag = Turret:attribute("EmitTouchTag", std.gt.string(), "Turret: On Touch")
-Turret.EmitExpireTag = Turret:attribute("EmitExpireTag", std.gt.string(), "Turret: On Expire")
 
 function Turret.calculateSpreadAngle(turret: TurretMechanic, direction: Vector3): Vector3
 	local spreadAngle: NumberRange = turret:SpreadAngle()

@@ -1,11 +1,10 @@
 const logger = require "@core/shared/logger"
+const AttributeOrder = require "@libs/attributes/AttributeOrder"
 const observeAttributes = require "@libs/attributes/observeAttributes"
 const tables = require "@libs/collections/tables"
 const resolveInstance = require "@libs/core/resolveInstance"
 const gt = require "@libs/vendor/gt"
 const threadpool = require "@libs/threadpool"
-
-local index = 1
 
 const Attribute = {}
 Attribute.__index = Attribute
@@ -15,7 +14,6 @@ export type Attribute<T> = setmetatable<{
 	check: gt.Type,
 	defaultValue: T,
 
-	_index: number,
 	_observerCallbacks: { [Instance]: (string) -> () },
 	_observerDisconnectors: { [Instance]: () -> () },
 	_cache: { [Instance]: T },
@@ -127,20 +125,18 @@ local function observeListener<T>(
 end
 
 function Attribute.new<T>(attribute: string, check: T, defaultValue: T): Attribute<T>
-	index += 1
-	return setmetatable({
+	return AttributeOrder.track(setmetatable({
 		attribute = attribute,
 		check = gt.build(check) :: T,
 		defaultValue = defaultValue,
 
-		_index = index,
 		_observerCallbacks = tables.weak "k",
 		_observerDisconnectors = tables.weak "k",
 		_cache = tables.weak "k",
 		_updated = tables.weak "k",
 		_changeListeners = tables.weak "k",
 		_fetchListeners = tables.weak "k",
-	}, Attribute)
+	}, Attribute))
 end
 
 function Attribute.type<T>(_: Attribute<T>): T
@@ -235,12 +231,6 @@ function Attribute.onChange<T>(
 	return observeListener(self, instance, self._changeListeners, listener)
 end
 
-function Attribute.awaitChange<T>(self: Attribute<T>, instance: resolveInstance.InstanceLike): T
-	local currentThread = coroutine.running()
-	observeListener(self, instance, self._changeListeners, function(value: T) task.spawn(currentThread, value) end)
-	return coroutine.yield()
-end
-
 function Attribute.onBind<T>(
 	self: Attribute<T>,
 	instance: resolveInstance.InstanceLike,
@@ -248,6 +238,12 @@ function Attribute.onBind<T>(
 ): () -> ()
 	threadpool.spawn(listener, Attribute.get(self :: any, instance), self)
 	return Attribute.onChange(self :: any, instance, listener)
+end
+
+function Attribute.awaitChange<T>(self: Attribute<T>, instance: resolveInstance.InstanceLike): T
+	local currentThread = coroutine.running()
+	observeListener(self, instance, self._changeListeners, function(value: T) task.spawn(currentThread, value) end)
+	return coroutine.yield()
 end
 
 function Attribute.__call<T>(self: Attribute<T>, instance: resolveInstance.InstanceLike, ...: T): T

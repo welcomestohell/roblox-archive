@@ -1,35 +1,36 @@
 const TweenService = game:GetService "TweenService"
 
 const std = require "@libs/std"
-const touch = require "@libs/touch"
 const tweens = require "@libs/tweens"
 
-const Spinner = std.Mechanic {}
-export type SpinnerMechanic = std.Mechanic<typeof(Spinner)>
-Spinner.name = "Spinner"
-Spinner.instanceType = std.gt.instanceTree {
-	Center = std.isA.BasePart(),
-	Platform = std.isA.BasePart(),
+const Spinner = std.Mechanic {
+	emoji = "🌀",
+	name = "Spinner",
+	instanceType = std.gt.instanceTree {
+		Center = std.isA.BasePart(),
+		Platform = std.isA.BasePart(),
+	},
+
+	Enabled = std.Attribute("Enabled", std.gt.boolean(), true),
+	Inverted = std.Attribute("Inverted", std.gt.boolean(), false),
+	Angle = std.Attribute("Angle", std.gt.NumberRange, NumberRange.new(0, 360)),
+	Offset = std.Attribute("Offset", std.gt.Vector3(), Vector3.zero),
+
+	std.AttributeSection "Timing",
+	Synchronized = std.Attribute("Synchronized", std.gt.boolean(), true),
+	TimeOffset = std.Attribute("TimeOffset", std.gt.positiveNumber, 0),
+	Elapsed = std.Attribute("Elapsed", std.gt.number(), 0),
+
+	std.AttributeSection "Axes",
+	XEnabled = std.Attribute("XEnabled", std.gt.boolean(), false),
+	YEnabled = std.Attribute("YEnabled", std.gt.boolean(), true),
+	ZEnabled = std.Attribute("ZEnabled", std.gt.boolean(), false),
+
+	std.AttributeSection "Tween",
+	Tween = tweens.useAttributes(),
 }
-Spinner.emoji = "🌀"
 
-Spinner.Enabled = Spinner:attribute("Enabled", std.gt.boolean(), true)
-Spinner.Reversed = Spinner:attribute("Reversed", std.gt.boolean(), false)
-Spinner.Angle = Spinner:attribute("Angle", std.gt.NumberRange, NumberRange.new(0, 360))
-Spinner.Offset = Spinner:attribute("Offset", std.gt.Vector3(), Vector3.zero)
-
-Spinner:attributeSection "Timing"
-Spinner.Synchronized = Spinner:attribute("Synchronized", std.gt.boolean(), true)
-Spinner.TimeOffset = Spinner:attribute("TimeOffset", std.gt.positiveNumber, 0)
-Spinner.Elapsed = Spinner:attribute("Elapsed", std.gt.number(), 0)
-
-Spinner:attributeSection "Axes"
-Spinner.XEnabled = Spinner:attribute("XEnabled", std.gt.boolean(), false)
-Spinner.YEnabled = Spinner:attribute("YEnabled", std.gt.boolean(), true)
-Spinner.ZEnabled = Spinner:attribute("ZEnabled", std.gt.boolean(), false)
-
-Spinner.Touch = touch.useAttributes(Spinner)
-Spinner.Tween = tweens.useAttributes(Spinner)
+export type SpinnerMechanic = std.Mechanic<typeof(Spinner)>
 
 function Spinner.onStart(self: typeof(Spinner), spinner: SpinnerMechanic)
 	spinner.Synchronized:onBind(spinner, function() spinner:Elapsed(0) end)
@@ -47,7 +48,7 @@ function Spinner.onPreSimulation(self: typeof(Spinner), deltaTime: number, level
 
 		const duration = self.Tween.Duration(spinner)
 		local cycleProgress = (elapsed % duration) / duration
-		if spinner:Reversed() then cycleProgress = math.map(cycleProgress, 0, 1, 1, 0) end
+		if spinner:Inverted() then cycleProgress = math.map(cycleProgress, 0, 1, 1, 0) end
 		const angle = spinner:Angle() :: NumberRange
 		const alpha = TweenService:GetValue(cycleProgress, self.Tween.Style(spinner), self.Tween.Direction(spinner))
 		const axisRotation = math.rad(math.map(alpha, 0, 1, angle.Min, angle.Max))

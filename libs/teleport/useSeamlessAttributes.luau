@@ -1,20 +1,16 @@
-local Mechanic = require "@libs/core/Mechanic"
+const Attribute = require "@libs/attributes/Attribute"
 local gt = require "@libs/vendor/gt"
 
 local SeamlessMeasurement = gt.build(gt.literals("Relative", "World"))
 export type SeamlessMeasurement = typeof(SeamlessMeasurement:type())
 
-local function useSeamlessAttributes(implementation: Mechanic.MechanicImplementation, basename: string?)
+local function useSeamlessAttributes(basename: string?)
 	basename = basename or "Seamless"
-
-	implementation:attributeSection "Seamless"
-	local attributes = {}
-	attributes.Enabled = implementation:attribute(basename .. "Enabled", gt.boolean(), false)
-	attributes.Scaled = implementation:attribute(basename .. "Scaled", gt.boolean(), true)
-	attributes.Clamped = implementation:attribute(basename .. "Clamped", gt.boolean(), true)
-	implementation:endAttributeSection()
-
-	return attributes
+	return {
+		Enabled = Attribute.new(basename .. "Enabled", gt.boolean(), false),
+		Scaled = Attribute.new(basename .. "Scaled", gt.boolean(), true),
+		Clamped = Attribute.new(basename .. "Clamped", gt.boolean(), true),
+	}
 end
 
 return useSeamlessAttributes

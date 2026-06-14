@@ -4,18 +4,23 @@ const character = require "@libs/character"
 const emission = require "@libs/emission"
 const std = require "@libs/std"
 
-const Launcher = std.Mechanic {}
-export type LauncherMechanic = std.Mechanic<typeof(Launcher)>
-Launcher.name = "Launcher"
-Launcher.instanceType = std.isA.BasePart()
-Launcher.emoji = "🦘"
+const Launcher = std.Mechanic {
+	emoji = "🦘",
+	name = "Launcher",
+	description = "When activated launches the activator upwards.",
+	instanceType = std.isA.BasePart(),
 
-Launcher.Cooldown = Launcher:attribute("Cooldown", std.gt.positiveNumber, 0)
-Launcher.Power = Launcher:attribute("Power", std.gt.positiveNumber, 100)
-Launcher.RelativeForce = Launcher:attribute("RelativeForce", std.gt.boolean(), false)
-Launcher.ForceFreefall = Launcher:attribute("ForceFreefall", std.gt.boolean(), true)
-Launcher.EmitLaunchTag = Launcher:attribute("EmitLaunchTag", std.gt.string(), "Launcher: On Launch")
-Launcher.Activation = activation.useAttributes(Launcher)
+	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 0),
+	Power = std.Attribute("Power", std.gt.positiveNumber, 100),
+	RelativeForce = std.Attribute("RelativeForce", std.gt.boolean(), false),
+	ForceFreefall = std.Attribute("ForceFreefall", std.gt.boolean(), true),
+	EmitLaunchTag = std.Attribute("EmitLaunchTag", std.gt.tag, "Launcher: On Launch"),
+
+	std.AttributeSection "Activation",
+	Activation = activation.useAttributes(),
+}
+
+export type LauncherMechanic = std.Mechanic<typeof(Launcher)>
 
 function Launcher.onActivate(
 	self: typeof(Launcher),

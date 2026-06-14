@@ -3,6 +3,7 @@ const resolveInstance = require "@libs/core/resolveInstance"
 
 local AttributeMap = {}
 AttributeMap.__index = AttributeMap
+AttributeMap.type = "AttributeMap"
 
 export type AttributeMap<T> = setmetatable<{
 	prefix: string,

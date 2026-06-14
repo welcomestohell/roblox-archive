@@ -1,21 +1,24 @@
 local std = require "@libs/std"
 
-local Flipbook = std.Mechanic {}
+local Flipbook = std.Mechanic {
+	emoji = "🎞️",
+	name = "Flipbook",
+	instanceType = std.gt.union(std.isA.ImageLabel(), std.isA.Decal()),
+
+	Enabled = std.Attribute("Enabled", std.gt.boolean(), true),
+	GridSize = std.Attribute("GridSize", std.gt.Vector2(), Vector2.one),
+	Mode = std.Attribute("Mode", std.gt.enumOf(Enum.ParticleFlipbookMode), Enum.ParticleFlipbookMode.Loop),
+	SetDefaults = std.Attribute("SetDefaults", std.gt.boolean(), true),
+
+	Framerate = std.Attribute("Framerate", std.gt.number(), 1),
+	NumFrames = std.Attribute("NumFrames", std.gt.optional(std.gt.number()), nil),
+	Index = std.Attribute("Index", std.gt.number(), 0),
+
+	Synchronized = std.Attribute("Synchronized", std.gt.boolean(), false),
+	Elapsed = std.Attribute("Elapsed", std.gt.number(), 0),
+}
+
 export type FlipbookMechanic = std.Mechanic<typeof(Flipbook)>
-Flipbook.name = "Flipbook"
-Flipbook.instanceType = std.gt.union(std.isA.ImageLabel(), std.isA.Decal())
-Flipbook.emoji = "🎞️"
-
-Flipbook.Enabled = Flipbook:attribute("Enabled", std.gt.boolean(), true)
-Flipbook.Framerate = Flipbook:attribute("Framerate", std.gt.number(), 1)
-Flipbook.NumFrames = Flipbook:attribute("NumFrames", std.gt.optional(std.gt.number()), nil)
-Flipbook.SetDefaults = Flipbook:attribute("SetDefaults", std.gt.boolean(), true)
-Flipbook.Synchronized = Flipbook:attribute("Synchronized", std.gt.boolean(), false)
-Flipbook.Index = Flipbook:attribute("Index", std.gt.number(), 0)
-Flipbook.Elapsed = Flipbook:attribute("Elapsed", std.gt.number(), 0)
-
-Flipbook.GridSize = Flipbook:attribute("GridSize", std.gt.Vector2(), Vector2.one)
-Flipbook.Mode = Flipbook:attribute("Mode", std.gt.enumOf(Enum.ParticleFlipbookMode), Enum.ParticleFlipbookMode.Loop)
 
 function Flipbook:onStart(flipbook: FlipbookMechanic)
 	flipbook.GridSize:onBind(flipbook, function(gridSize: Vector2)

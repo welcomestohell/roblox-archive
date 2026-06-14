@@ -1,7 +1,6 @@
 local TweenService = game:GetService "TweenService"
 
 local Attribute = require "@libs/attributes/Attribute"
-local Mechanic = require "@libs/core/Mechanic"
 const resolveInstance = require "@libs/core/resolveInstance"
 local gt = require "@libs/vendor/gt"
 
@@ -20,21 +19,13 @@ export type TweenAttributes = {
 	Direction: Attribute.Attribute<Enum.EasingDirection>,
 }
 
-local isEasingStyle = gt.build(gt.enumOf(Enum.EasingStyle) :: Enum.EasingStyle)
-local isEasingDirection = gt.build(gt.enumOf(Enum.EasingDirection) :: Enum.EasingDirection)
-
-local function useAttributes(implementation: Mechanic.MechanicImplementation, prefix: string?): TweenAttributes
-	local prefix = prefix or "Tween"
-
-	local attributes = {}
-	implementation:attributeSection "Tween"
-	attributes.Duration = implementation:attribute(prefix .. "Duration", gt.positiveNumber, 0)
-	attributes.Style = implementation:attribute(prefix .. "Style", isEasingStyle:type(), Enum.EasingStyle.Linear)
-	attributes.Direction =
-		implementation:attribute(prefix .. "Direction", isEasingDirection:type(), Enum.EasingDirection.Out)
-	implementation:endAttributeSection()
-
-	return attributes
+local function useAttributes(basename: string?): TweenAttributes
+	basename = basename or "Tween"
+	return {
+		Duration = Attribute.new(basename .. "Duration", gt.positiveNumber, 0),
+		Style = Attribute.new(basename .. "Style", gt.enumOf(Enum.EasingStyle), Enum.EasingStyle.Linear),
+		Direction = Attribute.new(basename .. "Direction", gt.enumOf(Enum.EasingDirection), Enum.EasingDirection.Out),
+	}
 end
 
 local function configurationFromAttributes(

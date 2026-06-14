@@ -1,24 +1,21 @@
-local activation = require "@libs/activation"
-local std = require "@libs/std"
+const activation = require "@libs/activation"
+const std = require "@libs/std"
 
---[=[
-	@class Activator
-	@tag Mechanic
+const Activator = std.Mechanic {
+	emoji = "👆",
+	name = "Activator",
+	description = "When activated, activates mechanics tagged with it's Group.",
+	instanceType = std.gt.instanceTree { Target = std.gt.optional(std.isA.ObjectValue()) },
 
-	Activates the group when the Activator mechanic is activated. It's most
-	useful in Contraptions.
-]=]
-local Activator = std.Mechanic {}
+	Enabled = std.Attribute("Enabled", std.gt.boolean(), true),
+	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 0),
+	Group = std.Attribute("Group", std.gt.group, ""),
+
+	std.AttributeSection "Activation",
+	Activation = activation.useAttributes(),
+}
+
 export type ActivatorMechanic = std.Mechanic<typeof(Activator)>
-Activator.name = "Activator"
-Activator.instanceType = std.gt.instanceTree { Target = std.gt.optional(std.isA.ObjectValue()) }
-Activator.emoji = "👆"
-
-Activator.Enabled = Activator:attribute("Enabled", std.gt.boolean(), true)
-Activator.Cooldown = Activator:attribute("Cooldown", std.gt.positiveNumber, 0)
-Activator.Group = Activator:attribute("Group", std.gt.string(), "")
-
-Activator.Activation = activation.useAttributes(Activator)
 
 function Activator.tryActivate(instance: Instance, level: std.Level)
 	local mechanics = level.mechanicsByInstance[instance]

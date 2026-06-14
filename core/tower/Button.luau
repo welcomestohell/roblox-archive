@@ -6,27 +6,33 @@ const std = require "@libs/std"
 const timers = require "@libs/timers"
 const toggle = require "@libs/toggle"
 
-const Button = std.Mechanic {}
+const Button = std.Mechanic {
+	emoji = "🖲️",
+	name = "Button",
+	description = "When activated, toggles it's Group for the specified duration.",
+	instanceType = std.gt.union(std.isA.BasePart(), std.isA.Model()),
+
+	activeGroups = std.LevelState<<{ [string]: true }>> {},
+
+	Active = std.Attribute("Active", std.gt.boolean(), true),
+	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 0.5),
+	Duration = std.Attribute("Duration", std.gt.number(), 5),
+	Group = std.Attribute("Group", std.gt.tag, ""),
+
+	std.AttributeSection "Timer",
+	TimerEnabled = std.Attribute("TimerEnabled", std.gt.boolean(), true),
+	HoursHidden = std.Attribute("HoursHidden", std.gt.boolean(), false),
+	MinutesHidden = std.Attribute("MinutesHidden", std.gt.boolean(), false),
+	MillisecondsHidden = std.Attribute("MillisecondsHidden", std.gt.boolean(), false),
+
+	std.AttributeSection "Activation",
+	Activation = activation.useAttributes(),
+
+	std.AttributeSection "Press",
+	Press = press.useAttributes(),
+}
+
 export type ButtonMechanic = std.Mechanic<typeof(Button)>
-Button.name = "Button"
-Button.instanceType = std.gt.union(std.isA.BasePart(), std.isA.Model())
-Button.emoji = "🖲️"
-
-Button.Active = Button:attribute("Active", std.gt.boolean(), true)
-Button.Cooldown = Button:attribute("Cooldown", std.gt.positiveNumber, 0.5)
-Button.Duration = Button:attribute("Duration", std.gt.number(), 5)
-Button.Group = Button:attribute("Group", std.gt.string(), "")
-
-Button:attributeSection "Timer"
-Button.TimerEnabled = Button:attribute("TimerEnabled", std.gt.boolean(), true)
-Button.HoursHidden = Button:attribute("HoursHidden", std.gt.boolean(), false)
-Button.MinutesHidden = Button:attribute("MinutesHidden", std.gt.boolean(), false)
-Button.MillisecondsHidden = Button:attribute("MillisecondsHidden", std.gt.boolean(), false)
-
-Button.Activation = activation.useAttributes(Button)
-Button.Press = press.useAttributes(Button)
-
-Button.activeGroups = std.LevelState<<{ [string]: true }>> {}
 
 function Button.handleGroup(self: typeof(Button), level: std.Level, group: string)
 	if group == "" then return end
@@ -53,7 +59,7 @@ function Button.handleGroup(self: typeof(Button), level: std.Level, group: strin
 end
 
 function Button.onInit(self: typeof(Button), level: std.Level)
-	Button.activeGroups:set(level, {} :: typeof(Button.activeGroups:get(level)))
+	self.activeGroups:set(level, {} :: typeof(self.activeGroups:get(level)))
 end
 
 function Button.getActivationInstance(self: typeof(Button), button: ButtonMechanic)

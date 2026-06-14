@@ -1,8 +1,10 @@
+-- TODO: this lib sucks and should be revamped asap
+
 local ContentProvider = game:GetService "ContentProvider"
 local Debris = game:GetService "Debris"
 local SoundService = game:GetService "SoundService"
 
-local Mechanic = require "@libs/core/Mechanic"
+const Attribute = require "@libs/attributes/Attribute"
 const resolveInstance = require "@libs/core/resolveInstance"
 local audios = { sfx = {} } --require("@core/shared/generated/audios")
 local gt = require "@libs/vendor/gt"
@@ -37,21 +39,19 @@ local function useAssets(assets: { [string]: AsphaltAsset }, cwd: string?)
 	end
 end
 
-local function useAttributes(implementation: Mechanic.MechanicImplementation, basename: string?)
+local function useAttributes(basename: string?)
 	basename = basename or "Sound"
 
-	implementation:attributeSection "Sounds"
 	local attributes = {}
-	attributes.Basename = implementation:attribute(basename .. "Basename", gt.string(), basename)
-	attributes.Play = implementation:attribute("Play" .. basename, gt.boolean(), true)
-	attributes.Id = implementation:attribute(basename .. "Id", gt.optional(gt.string()), nil)
-	attributes.Asset = implementation:attribute(basename .. "Asset", gt.optional(gt.string()), nil)
-	attributes.Volume = implementation:attribute(basename .. "Volume", gt.positiveNumber, 0.5)
-	attributes.Speed = implementation:attribute(basename .. "Speed", gt.positiveNumber, 1)
-	attributes.Spatial = implementation:attribute(basename .. "Spatial", gt.boolean(), true)
-	attributes.TimeStart = implementation:attribute(basename .. "TimeStart", gt.positiveNumber, 0)
-	attributes.TimeEnd = implementation:attribute(basename .. "TimeEnd", gt.number(), -1)
-	implementation:endAttributeSection()
+	attributes.Basename = Attribute.new(basename .. "Basename", gt.string(), basename)
+	attributes.Play = Attribute.new("Play" .. basename, gt.boolean(), true)
+	attributes.Id = Attribute.new(basename .. "Id", gt.optional(gt.string()), nil)
+	attributes.Asset = Attribute.new(basename .. "Asset", gt.optional(gt.string()), nil)
+	attributes.Volume = Attribute.new(basename .. "Volume", gt.positiveNumber, 0.5)
+	attributes.Speed = Attribute.new(basename .. "Speed", gt.positiveNumber, 1)
+	attributes.Spatial = Attribute.new(basename .. "Spatial", gt.boolean(), true)
+	attributes.TimeStart = Attribute.new(basename .. "TimeStart", gt.positiveNumber, 0)
+	attributes.TimeEnd = Attribute.new(basename .. "TimeEnd", gt.number(), -1)
 
 	return attributes
 end

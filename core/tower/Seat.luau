@@ -4,16 +4,23 @@ const character = require "@libs/character"
 const constraints = require "@libs/constraints"
 const std = require "@libs/std"
 
-const Seat = std.Mechanic {}
-export type SeatMechanic = std.Mechanic<typeof(Seat)>
-Seat.name = "Seat"
-Seat.instanceType = std.isA.BasePart()
-Seat.emoji = "🪑"
+const Seat = std.Mechanic {
+	emoji = "🪑",
+	name = "Seat",
+	description = "When activated, seats the player on top by welding.",
+	instanceType = std.isA.BasePart(),
 
-Seat.Cooldown = Seat:attribute("Cooldown", std.gt.positiveNumber, 1)
-Seat.Offset = Seat:attribute("Offset", std.gt.CFrame(), CFrame.identity)
-Seat.Activation = activation.useAttributes(Seat)
-Seat.Deactivation = activation.useAttributes(Seat, "Deactivation")
+	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 1),
+	Offset = std.Attribute("Offset", std.gt.CFrame(), CFrame.identity),
+
+	std.AttributeSection "Activation",
+	Activation = activation.useAttributes(),
+
+	std.AttributeSection "Deactivation",
+	Deactivation = activation.useAttributes "Deactivation",
+}
+
+export type SeatMechanic = std.Mechanic<typeof(Seat)>
 
 -- FIXME: You can mount yourself on multiple seats. EToH solves this with a
 -- shared mountedCOs table, we might need a mounts library

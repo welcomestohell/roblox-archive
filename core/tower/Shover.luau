@@ -1,31 +1,32 @@
 local std = require "@libs/std"
 
-local Shover = std.Mechanic {}
+local Shover = std.Mechanic {
+	emoji = "🤜",
+	name = "Shover",
+	description = "Periodically shoves in and out with knockback.",
+	instanceType = std.isA.PrismaticConstraint(),
+
+	Enabled = std.Attribute("Enabled", std.gt.boolean(), true),
+	directions = {
+		In = {
+			std.AttributeSection "In",
+			delay = std.Attribute("InDelay", std.gt.positiveNumber, 1),
+			power = std.Attribute("InPower", std.gt.positiveNumber, 0),
+		},
+		Out = {
+			std.AttributeSection "Out",
+			delay = std.Attribute("OutDelay", std.gt.positiveNumber, 1),
+			power = std.Attribute("OutPower", std.gt.positiveNumber, 0),
+		},
+	},
+}
+
 export type ShoverMechanic = std.Mechanic<typeof(Shover)>
-Shover.name = "Shover"
-Shover.instanceType = std.isA.PrismaticConstraint()
-Shover.emoji = "🤜"
 
 type ShoverDirection = "In" | "Out"
 type ShoverDirectionAttributes = {
 	delay: std.Attribute<number>,
 	power: std.Attribute<number>,
-}
-
-Shover.Enabled = Shover:attribute("Enabled", std.gt.boolean(), true)
-
-Shover.directions = {} :: { [ShoverDirection]: ShoverDirectionAttributes }
-
-Shover:attributeSection "In"
-Shover.directions.In = {
-	delay = Shover:attribute("InDelay", std.gt.positiveNumber, 1),
-	power = Shover:attribute("InPower", std.gt.positiveNumber, 0),
-}
-
-Shover:attributeSection "Out"
-Shover.directions.Out = {
-	delay = Shover:attribute("OutDelay", std.gt.positiveNumber, 1),
-	power = Shover:attribute("OutPower", std.gt.positiveNumber, 0),
 }
 
 function Shover.shove(shover: ShoverMechanic, direction: ShoverDirection)

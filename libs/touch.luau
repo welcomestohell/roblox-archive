@@ -1,19 +1,15 @@
-local Mechanic = require "@libs/core/Mechanic"
+const Attribute = require "@libs/attributes/Attribute"
 local character = require "./character"
 local gt = require "@libs/vendor/gt"
 
-const function useAttributes(implementation: Mechanic.MechanicImplementation, basename: string?)
+const function useAttributes(basename: string?)
 	basename = basename or "Touch"
-
-	implementation:attributeSection "Touch"
-	local attributes = {
-		CollisionGroup = implementation:attribute(basename .. "CollisionGroup", gt.optional(gt.string()), nil),
-		SupportsCharacter = implementation:attribute(basename .. "SupportsCharacter", gt.boolean(), false),
-		SupportsBullets = implementation:attribute(basename .. "SupportsBullets", gt.boolean(), false),
-		SupportsBoxes = implementation:attribute(basename .. "SupportsBoxes", gt.boolean(), false),
+	return {
+		CollisionGroup = Attribute.new(basename .. "CollisionGroup", gt.optional(gt.string()), nil),
+		SupportsCharacter = Attribute.new(basename .. "SupportsCharacter", gt.boolean(), false),
+		SupportsBullets = Attribute.new(basename .. "SupportsBullets", gt.boolean(), false),
+		SupportsBoxes = Attribute.new(basename .. "SupportsBoxes", gt.boolean(), false),
 	}
-	implementation:endAttributeSection()
-	return attributes
 end
 
 export type TouchAttributes = typeof(useAttributes(nil :: any))

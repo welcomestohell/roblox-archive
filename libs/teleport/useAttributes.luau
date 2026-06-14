@@ -1,18 +1,14 @@
-local Mechanic = require "@libs/core/Mechanic"
+const Attribute = require "@libs/attributes/Attribute"
 local gt = require "@libs/vendor/gt"
 
-local function useAttributes(implementation: Mechanic.MechanicImplementation, basename: string?)
+local function useAttributes(basename: string?)
 	basename = basename or ""
-
-	implementation:attributeSection "Teleportation"
-	local attributes = {}
-	attributes.Transition = implementation:attribute(basename .. "Transition", gt.string(), "Instant")
-	attributes.KeepVelocity = implementation:attribute(basename .. "KeepVelocity", gt.boolean(), true)
-	attributes.Offset = implementation:attribute(basename .. "Offset", gt.CFrame(), CFrame.identity)
-	attributes.ScreenFadeColor = implementation:attribute(basename .. "ScreenFadeColor", gt.Color3(), Color3.new())
-	implementation:endAttributeSection()
-
-	return attributes
+	return {
+		Transition = Attribute.new(basename .. "Transition", gt.string(), "Instant"),
+		KeepVelocity = Attribute.new(basename .. "KeepVelocity", gt.boolean(), true),
+		Offset = Attribute.new(basename .. "Offset", gt.CFrame(), CFrame.identity),
+		ScreenFadeColor = Attribute.new(basename .. "ScreenFadeColor", gt.Color3(), Color3.new()),
+	}
 end
 
 return useAttributes

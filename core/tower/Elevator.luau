@@ -5,24 +5,27 @@ local character = require "@libs/character"
 local std = require "@libs/std"
 local touch = require "@libs/touch"
 
-local Elevator = std.Mechanic {}
+local Elevator = std.Mechanic {
+	emoji = "🛗",
+	name = "Elevator",
+	description = "Propel players and objects in the direction they are facing.",
+	instanceType = std.isA.BasePart(),
+
+	Enabled = std.Attribute("Enabled", std.gt.boolean(), true),
+	Speed = std.Attribute("Speed", std.gt.number(), 40),
+	MaxForce = std.Attribute("MaxForce", std.gt.number(), math.huge),
+	Vector = std.Attribute(
+		"Vector",
+		std.gt.literals("UpVector", "RightVector", "LookVector", "ZVector", "WorldYVector"),
+		"WorldYVector"
+	),
+	ContinuousUpdates = std.Attribute("ContinuousUpdates", std.gt.boolean(), true),
+
+	std.AttributeSection "Touch",
+	Touch = touch.useAttributes(),
+}
+
 export type ElevatorMechanic = std.Mechanic<typeof(Elevator), { touching: { [BasePart]: true } }>
-Elevator.name = "Elevator"
-Elevator.instanceType = std.isA.BasePart()
-Elevator.emoji = "🛗"
-
-Elevator.Enabled = Elevator:attribute("Enabled", std.gt.boolean(), true)
-Elevator.Speed = Elevator:attribute("Speed", std.gt.number(), 40)
-Elevator.MaxForce = Elevator:attribute("MaxForce", std.gt.number(), math.huge)
-Elevator.Vector = Elevator:attribute(
-	"Vector",
-	std.gt.literals("UpVector", "RightVector", "LookVector", "ZVector", "WorldYVector"),
-	"WorldYVector"
-)
-Elevator.ContinuousUpdates = Elevator:attribute("ContinuousUpdates", std.gt.boolean(), true)
-
-Elevator.Touch = touch.useAttributes(Elevator)
-
 export type Vector = typeof(Elevator.Vector:type())
 
 function Elevator.isActive(elevator: ElevatorMechanic, overlap: OverlapParams)

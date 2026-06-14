@@ -1,14 +1,17 @@
 local character = require "@libs/character"
 local std = require "@libs/std"
 
-local OneWay = std.Mechanic {}
-export type OneWayMechanic = std.Mechanic<typeof(OneWay)>
-OneWay.name = "OneWay"
-OneWay.instanceType = std.isA.BasePart()
-OneWay.emoji = "⛔"
+local OneWay = std.Mechanic {
+	emoji = "⛔",
+	name = "OneWay",
+	description = "Only solid for the player from the topmost side.",
+	instanceType = std.isA.BasePart(),
 
-OneWay.Enabled = OneWay:attribute("Enabled", std.gt.boolean(), true)
-OneWay.Offset = OneWay:attribute("Offset", std.gt.CFrame(), CFrame.identity)
+	Enabled = std.Attribute("Enabled", std.gt.boolean(), true),
+	Offset = std.Attribute("Offset", std.gt.CFrame(), CFrame.identity),
+}
+
+export type OneWayMechanic = std.Mechanic<typeof(OneWay)>
 
 function OneWay:onPreSimulation(deltaTime: number, level: std.Level)
 	local root = character.getMaybeHumanoidRootPart()

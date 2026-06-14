@@ -8,53 +8,44 @@ local tables = require "@libs/collections/tables"
 
 local mouse = Players.LocalPlayer:GetMouse()
 
---[=[
-	@class Follower
-	@tag Mechanic
+local Follower = std.Mechanic {
+	emoji = "👀",
+	name = "Follower",
+	description = "Continously follows the target by looking at, rotating, positioning, or pivoting towards it.",
+	instanceType = std.isA.BasePart(),
 
-	Follower makes the instance follow the player's character/camera/mouse/pointer.
+	Enabled = std.Attribute("Enabled", std.gt.boolean(), true),
+	Mode = std.Attribute(
+		"Mode",
+		std.gt.literals("LookAt", "RotationOf", "PositionOf", "PivotOf", "None"),
+		functions.literal "None"
+	),
+	Target = std.Attribute(
+		"Target",
+		std.gt.literals("Character", "Mouse", "Camera", "Pointer", "None"),
+		functions.literal "None"
+	),
 
-	The instance can follow by looking towards the target, or taking the rotation/position/pivot of the target.
-]=]
-local Follower = std.Mechanic {}
+	std.AttributeSection "Origin",
+	Origin = std.Attribute("Origin", std.gt.optional(std.gt.CFrame()), nil),
+	UseOriginRotation = std.Attribute("UseOriginRotation", std.gt.boolean(), false),
+
+	std.AttributeSection "Position Axes",
+	UseXPosition = std.Attribute("XPosition", std.gt.boolean(), true),
+	UseYPosition = std.Attribute("YPosition", std.gt.boolean(), true),
+	UseZPosition = std.Attribute("ZPosition", std.gt.boolean(), true),
+
+	std.AttributeSection "Rotation Axes",
+	UseXRotation = std.Attribute("XRotation", std.gt.boolean(), true),
+	UseYRotation = std.Attribute("YRotation", std.gt.boolean(), true),
+	UseZRotation = std.Attribute("ZRotation", std.gt.boolean(), true),
+
+	std.AttributeSection "Smoothness",
+	Smooth = std.Attribute("Smooth", std.gt.boolean(), false),
+	Responsiveness = std.Attribute("Responsiveness", std.gt.positiveNumber, 1),
+}
+
 export type FollowerMechanic = std.Mechanic<typeof(Follower)>
-
-Follower.name = "Follower"
-Follower.instanceType = std.isA.BasePart()
-Follower.emoji = "👀"
-
-Follower.Enabled = Follower:attribute("Enabled", std.gt.boolean(), true)
-
-Follower.Mode = Follower:attribute(
-	"Mode",
-	std.gt.literals("LookAt", "RotationOf", "PositionOf", "PivotOf", "None"),
-	functions.literal "None"
-)
-
-Follower.Target = Follower:attribute(
-	"Target",
-	std.gt.literals("Character", "Mouse", "Camera", "Pointer", "None"),
-	functions.literal "None"
-)
-
-Follower:attributeSection "Origin"
-Follower.Origin = Follower:attribute("Origin", std.gt.optional(std.gt.CFrame()), nil)
-Follower.UseOriginRotation = Follower:attribute("UseOriginRotation", std.gt.boolean(), false)
-
-Follower:attributeSection "Position Axes"
-Follower.UseXPosition = Follower:attribute("UseXPosition", std.gt.boolean(), true)
-Follower.UseYPosition = Follower:attribute("UseYPosition", std.gt.boolean(), true)
-Follower.UseZPosition = Follower:attribute("UseZPosition", std.gt.boolean(), true)
-
-Follower:attributeSection "Rotation Axes"
-Follower.UseXRotation = Follower:attribute("UseXRotation", std.gt.boolean(), true)
-Follower.UseYRotation = Follower:attribute("UseYRotation", std.gt.boolean(), true)
-Follower.UseZRotation = Follower:attribute("UseZRotation", std.gt.boolean(), true)
-
-Follower:attributeSection "Smoothness"
-Follower.Smooth = Follower:attribute("Smooth", std.gt.boolean(), false)
-Follower.Responsiveness = Follower:attribute("Responsiveness", std.gt.positiveNumber, 1)
-
 export type Mode = typeof(Follower.Mode:type())
 export type Target = typeof(Follower.Target:type())
 

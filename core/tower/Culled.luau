@@ -8,56 +8,55 @@ local CullThrottle = require "@roblox_packages/CullThrottle"
 local std = require "@libs/std"
 const types = require "@libs/types"
 
---[=[
-	@class Culled
-	@tag Mechanic
+-- Investigate: Maybe `Group: DistanceCulled` and `Group: CameraCulled`??
+local Culled = std.Mechanic {
+	emoji = "👻",
+	name = "Culled",
+	description = [[
+		Culled disables instances and mechanics when they're far away or
+		off-screen. Culled is best used for optimizing a tower, but the
+		`Distance` culling mode can be used for gameplay.
 
-	Culled disables instances and mechanics when they're far away or off-screen.
-	Culled is best used for optimizing a tower, but the `Distance` culling mode
-	can be used for gameplay.
+		`Camera` culling guesses if the instance is on-screen using boatbomber's
+		CullThrottle module. `Camera` culling is best for optimizing decoration
+		mechanics, such as Flipbooks. It should not be used for gameplay.
 
-	`Camera` culling guesses if the instance is on-screen using boatbomber's
-	CullThrottle module. `Camera` culling is best for optimizing decoration
-	mechanics, such as Flipbooks. It should not be used for gameplay.
+		For performance, Culled does not include an `Enabled` attribute. To
+		disable culling on an instance completely, remove the `Mechanic: Culled`
+		tag on its configuration. Alternatively, enable culling by adding the
+		`Mechanic: Culled` tag.
+	]],
+	instanceType = std.gt.union(
+		std.isA.BasePart(),
+		std.isA.Model(),
+		std.isA.Bone(),
+		std.isA.Attachment(),
+		std.isA.Beam(),
+		std.isA.PointLight(),
+		std.isA.Sound()
+	),
 
-	For performance, Culled does not include an `Enabled` attribute. To disable
-	culling on an instance completely, remove the `Mechanic: Culled` tag on its
-	configuration. Alternatively, enable culling by adding the
-	`Mechanic: Culled` tag.
-]=]
-local Culled = std.Mechanic {}
+	culler = std.LevelState(types.nilAs<<CullThrottle.CullThrottle>>()),
+	distanceMechanics = std.LevelState<<{ CulledMechanic }>> {},
+	culledMechanics = std.LevelState<<{ CulledMechanic }>> {},
+	instanceToCulled = std.LevelState<<{ [Instance]: CulledMechanic }>> {},
+
+	Mode = std.Attribute("Mode", std.gt.literals("Distance", "Camera"), "Distance"),
+	Distance = std.Attribute("Distance", std.gt.NumberRange, NumberRange.new(0, math.huge)),
+
+	-- Investigate: FindFirstAncestorOfClass to replace all this?
+	-- Maybe even QueryDescendants?
+	UpdateAncestor = std.Attribute("UpdateAncestor", std.gt.optional(std.gt.string()), nil),
+	UpdateDescendant = std.Attribute("UpdateDescendant", std.gt.optional(std.gt.string()), nil),
+
+	-- Investigate: AttributeMap for properties? Or a PropertyToggler mechanic?
+	SetAnchored = std.Attribute("SetAnchored", std.gt.boolean(), false),
+	SetEnabled = std.Attribute("SetEnabled", std.gt.boolean(), false),
+	SetVisible = std.Attribute("SetVisible", std.gt.boolean(), false),
+	SetMechanicsEnabled = std.Attribute("SetMechanicsEnabled", std.gt.boolean(), false),
+}
+
 export type CulledMechanic = std.Mechanic<typeof(Culled)>
-
-Culled.name = "Culled"
-Culled.instanceType = std.gt.union(
-	std.isA.BasePart(),
-	std.isA.Model(),
-	std.isA.Bone(),
-	std.isA.Attachment(),
-	std.isA.Beam(),
-	std.isA.PointLight(),
-	std.isA.Sound()
-)
-Culled.emoji = "👻"
-
-Culled.Mode = Culled:attribute("Mode", std.gt.literals("Distance", "Camera"), "Distance")
-Culled.Distance = Culled:attribute("Distance", std.gt.NumberRange, NumberRange.new(0, math.huge))
-
--- Investigate: FindFirstAncestorOfClass to replace all this?
-Culled.UpdateAncestor = Culled:attribute("UpdateAncestor", std.gt.optional(std.gt.string()), nil)
-Culled.UpdateDescendant = Culled:attribute("UpdateDescendant", std.gt.optional(std.gt.string()), nil)
-
--- Investigate: AttributeMap for properties? Or a PropertyToggler mechanic?
--- Maybe even QueryDescendants?
-Culled.SetAnchored = Culled:attribute("SetAnchored", std.gt.boolean(), false)
-Culled.SetEnabled = Culled:attribute("SetEnabled", std.gt.boolean(), false)
-Culled.SetVisible = Culled:attribute("SetVisible", std.gt.boolean(), false)
-Culled.SetMechanicsEnabled = Culled:attribute("SetMechanicsEnabled", std.gt.boolean(), false)
-
-Culled.culler = std.LevelState(types.nilAs<<CullThrottle.CullThrottle>>())
-Culled.distanceMechanics = std.LevelState<<{ CulledMechanic }>> {}
-Culled.culledMechanics = std.LevelState<<{ CulledMechanic }>> {}
-Culled.instanceToCulled = std.LevelState<<{ [Instance]: CulledMechanic }>> {}
 
 function Culled.onInit(self: typeof(Culled), level: std.Level)
 	self.culler:set(level, level.life:add(CullThrottle.new()))

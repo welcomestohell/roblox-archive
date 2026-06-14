@@ -1,4 +1,6 @@
 local Attribute = require "@libs/attributes/Attribute"
+const AttributeMap = require "@libs/attributes/AttributeMap"
+const AttributeSection = require "@libs/attributes/AttributeSection"
 local Level = require "@libs/core/Level"
 local LevelState = require "@libs/core/LevelState"
 local Life = require "@libs/memory/Life"
@@ -31,9 +33,13 @@ export type Life = Life.Life
 ]=]
 return table.freeze {
 	Mechanic = Mechanic.new,
-	Attribute = Attribute.new,
+
 	Life = Life.new,
 	LevelState = LevelState.new,
+
+	Attribute = Attribute.new,
+	AttributeMap = AttributeMap.new,
+	AttributeSection = AttributeSection.new,
 
 	gt = gt,
 	isA = gt.isA,
