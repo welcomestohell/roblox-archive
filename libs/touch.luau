@@ -6,9 +6,9 @@ const function useAttributes(basename: string?)
 	basename = basename or "Touch"
 	return {
 		CollisionGroup = Attribute.new(basename .. "CollisionGroup", gt.optional(gt.string()), nil),
-		SupportsCharacter = Attribute.new(basename .. "SupportsCharacter", gt.boolean(), false),
-		SupportsBullets = Attribute.new(basename .. "SupportsBullets", gt.boolean(), false),
-		SupportsBoxes = Attribute.new(basename .. "SupportsBoxes", gt.boolean(), false),
+		SupportsCharacter = Attribute.new(basename .. "SupportsCharacter", gt.boolean(), true),
+		SupportsBullets = Attribute.new(basename .. "SupportsBullets", gt.boolean(), true),
+		SupportsBoxes = Attribute.new(basename .. "SupportsBoxes", gt.boolean(), true),
 	}
 end
 

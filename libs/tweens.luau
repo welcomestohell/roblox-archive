@@ -78,17 +78,23 @@ end
 local function playFromAttributes(
 	instance: Instance,
 	propertyTable: { [string]: unknown },
-	attributes: TweenAttributes
+	attributes: TweenAttributes,
+	instanceConfiguration: Instance?
 )
-	play(instance, propertyTable, configurationFromAttributes(attributes, instance))
+	play(instance, propertyTable, configurationFromAttributes(attributes, instanceConfiguration or instance))
 end
 
 local function playAlwaysFromAttributes(
 	instance: Instance,
 	propertyTable: { [string]: unknown },
-	attributes: TweenAttributes
+	attributes: TweenAttributes,
+	instanceConfiguration: Instance?
 )
-	return playAlways(instance, propertyTable, configurationFromAttributes(attributes))
+	return playAlways(
+		instance,
+		propertyTable,
+		configurationFromAttributes(attributes, instanceConfiguration or instance)
+	)
 end
 
 return table.freeze {

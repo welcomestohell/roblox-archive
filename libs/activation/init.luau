@@ -18,7 +18,7 @@ local modes: { [string]: ActivationMode } = {
 	Click = require "@self/modes/Click",
 	Died = require "@self/modes/Died",
 	HumanoidStateChanged = require "@self/modes/HumanoidStateChanged",
-	Jumped = require "@self/modes/Jumped",
+	Jump = require "@self/modes/Jumped",
 	Prompt = require "@self/modes/Prompt",
 	Touch = require "@self/modes/Touch",
 }
