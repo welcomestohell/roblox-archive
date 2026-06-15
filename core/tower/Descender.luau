@@ -56,7 +56,7 @@ function Descender.onStart(self: typeof(Descender), descender: DescenderMechanic
 
 	if descender:ToggleConnectedParts() then
 		for _, connected in base:GetConnectedParts(true) do
-			connected.Massless = true
+			connected.Massless = connected ~= descender
 		end
 	end
 
@@ -68,11 +68,12 @@ function Descender.onStart(self: typeof(Descender), descender: DescenderMechanic
 		const oldVelocity = align.MaxVelocity
 
 		emission.emitTaggedDescendants(descender.instance, descender:EmitToggledTag())
-		toggle.toggleInstance(false, base)
 		if descender:ToggleConnectedParts() then
 			for _, connected in base:GetConnectedParts(true) do
-				toggle.toggleInstance(false, base)
+				toggle.toggleInstance(false, connected)
 			end
+		else
+			toggle.toggleInstance(false, base)
 		end
 
 		align.MaxAxesForce = RELEASE_FORCE
@@ -84,11 +85,12 @@ function Descender.onStart(self: typeof(Descender), descender: DescenderMechanic
 		if descender.life.alive then
 			emission.emitTaggedDescendants(descender.instance, descender:EmitRespawnedTag())
 
-			toggle.toggleInstance(true, base)
 			if descender:ToggleConnectedParts() then
 				for _, connected in base:GetConnectedParts(true) do
-					toggle.toggleInstance(true, base)
+					toggle.toggleInstance(true, connected)
 				end
+			else
+				toggle.toggleInstance(true, base)
 			end
 
 			align.MaxAxesForce = oldForce
