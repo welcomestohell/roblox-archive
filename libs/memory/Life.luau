@@ -12,11 +12,15 @@ local threadpool = require "@libs/threadpool"
 local Life = {}
 Life.__index = Life
 
-export type Life = setmetatable<{ destroyed: boolean, objects: { destruction.Destroyable } }, typeof(Life)>
+export type Life = setmetatable<
+	{ destroyed: boolean, alive: boolean, objects: { destruction.Destroyable } },
+	typeof(Life)
+>
 
 function Life.new(): Life
 	return setmetatable({
 		destroyed = false,
+		alive = true,
 		objects = {} :: { destruction.Destroyable },
 	}, Life)
 end
@@ -82,6 +86,7 @@ end
 function Life.destroy(self: Life)
 	if self.destroyed == false then
 		self.destroyed = true
+		self.alive = false
 
 		for index = #self.objects, 1, -1 do
 			destruction.destroy(self.objects[index])
@@ -91,7 +96,7 @@ function Life.destroy(self: Life)
 	end
 end
 
-function Life.wrapDestroy(self: Life): () -> ()
+function Life.wrapDestroy(self: Life): (...any) -> ()
 	return function() self:destroy() end
 end
 
