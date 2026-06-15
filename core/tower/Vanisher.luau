@@ -17,9 +17,11 @@ const SHRINK_DIRECTION_OFFSETS = {
 const VANISH_HANDLERS: { [VanisherMode]: (vanisher: VanisherMechanic, child: VanisherChild, toucher: BasePart) -> () } =
 	{}
 
-function VANISH_HANDLERS.Fade(vanisher: VanisherMechanic, child: VanisherChild)
+function VANISH_HANDLERS.Fade(vanisher, child)
 	tweens
-		.playAlwaysFromAttributes(child.part, { Transparency = 1 }, vanisher.Tween, vanisher.instanceConfiguration).Completed
+		.playAlwaysFromAttributes(child.part, {
+			Transparency = child.touchedTransparency,
+		}, vanisher.Tween, vanisher.instanceConfiguration).Completed
 		:Wait()
 
 	vanisher:vanish(child)
@@ -72,9 +74,50 @@ export type VanisherMechanic = std.Mechanic<
 	{ vanishLife: std.Life, children: { [BasePart]: VanisherChild } }
 >
 export type VanisherMode = typeof(Vanisher.Mode:type())
-export type VanisherChild = { part: BasePart }
+export type VanisherChild = {
+	part: BasePart,
 
-function Vanisher.vanish(vanisher: VanisherMechanic, child: VanisherChild) end
+	defaultTransparency: number,
+	touchedTransparency: number,
+
+	defaultCanCollide: boolean,
+	touchedCanCollide: boolean,
+
+	originalTransparency: number,
+
+	selection: SelectionBox?,
+}
+
+function Vanisher.respawn(vanisher: VanisherMechanic, child: VanisherChild)
+	child.part.CanCollide = child.defaultCanCollide
+	child.part.CanTouch = true
+
+	if child.selection then child.selection.Color3 = Color3.new() end
+
+	tweens.playAlwaysFromAttributes(child.part, {
+		Transparency = child.defaultTransparency,
+	}, vanisher.Respawn, vanisher.instanceConfiguration)
+
+	vanisher:Active(false)
+
+	vanisher:Emit(vanisher:EmitRespawnedTag())
+end
+
+function Vanisher.vanish(vanisher: VanisherMechanic, child: VanisherChild)
+	child.part.CanCollide = child.touchedCanCollide
+	child.part.CanTouch = false
+	child.part.Transparency = child.touchedTransparency
+
+	if child.selection then child.selection.Color3 = Color3.new(1, 0, 0) end
+
+	vanisher:Emit(vanisher:EmitVanishedTag())
+
+	task.delay(vanisher:Cooldown(), function()
+		if vanisher.life.destroyed then return end
+
+		vanisher:respawn(child)
+	end)
+end
 
 function Vanisher.spawn(vanisher: VanisherMechanic, child: VanisherChild, toucher: BasePart)
 	if vanisher:Active() then return end
@@ -85,7 +128,7 @@ function Vanisher.spawn(vanisher: VanisherMechanic, child: VanisherChild, touche
 	const mode = vanisher:Mode()
 	const handler = VANISH_HANDLERS[mode]
 	if not handler then
-		logger:Warn("Unsupported Vanisher mode:", mode)
+		logger:Warn("Unsupported vanisher mode:", mode)
 		return
 	end
 
@@ -97,8 +140,31 @@ end
 
 function Vanisher.processChild(vanisher: VanisherMechanic, child: Instance)
 	if child:HasTag(vanisher:IgnoreTag()) or not child:IsA "BasePart" then return end
-	const vanisherChild = { part = child }
+
+	local selection = child:FindFirstChild "VanisherSelectionBox"
+	local defaultTransparency = if vanisher:Inverted() then 1 else child.Transparency
+	local touchedTransparency = 1 - defaultTransparency
+	local defaultCanCollide = not vanisher:Inverted()
+	local touchedCanCollide = not defaultCanCollide
+
+	local vanisherChild: VanisherChild = {
+		part = child,
+		selection = if selection and selection:IsA "SelectionBox" then selection else nil,
+
+		originalTransparency = child.Transparency,
+
+		defaultTransparency = defaultTransparency,
+		touchedTransparency = touchedTransparency,
+
+		defaultCanCollide = defaultCanCollide,
+		touchedCanCollide = touchedCanCollide,
+	}
+
+	child.Transparency = defaultTransparency
+	child.CanCollide = defaultCanCollide
+
 	vanisher.children[child] = vanisherChild
+
 	vanisher.life:addMany(
 		child.Destroying:Connect(function()
 			vanisher.children[child] = nil

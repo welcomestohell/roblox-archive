@@ -83,6 +83,9 @@ end
 print(divider "Initializing Rojo projects...")
 initializeRojo(ctx)
 
+-- Yeah bro
+task.wait(1)
+
 local sourcemapWatcher = useSourcemapWatcher(sourcemapPath)
 local sourcemapFileWatcher = fs.watch(sourcemapPath)
 
@@ -103,9 +106,7 @@ local function processChanges()
 	for absolutePath, fileWatcher in sourcemapWatcher.watchers do
 		local event = fileWatcher:next()
 		if event then
-			if event.change then
-				sourcemapWatcher.changes[absolutePath] = "changed"
-			end
+			if event.change then sourcemapWatcher.changes[absolutePath] = "changed" end
 		end
 	end
 
@@ -124,9 +125,7 @@ local function processChanges()
 			if action == "added" then
 				formatter, marker = richterm.green, "+"
 				local outputDir = path.dirname(outputFilepath)
-				if not fs.exists(outputDir) then
-					fs.createDirectory(outputDir, { makeParents = true })
-				end
+				if not fs.exists(outputDir) then fs.createDirectory(outputDir, { makeParents = true }) end
 				fs.writeStringToFile(outputFilepath, transpile(ctx, filepath, fs.readFileToString(filepath)))
 			elseif action == "changed" then
 				formatter, marker = richterm.cyan, "↻"
