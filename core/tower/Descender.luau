@@ -5,9 +5,9 @@ const toggle = require "@libs/toggle"
 const RELEASE_FORCE = Vector3.one * math.huge
 const RELEASE_VELOCITY = math.huge
 
-const FallingPlatform = std.Mechanic {
+const Descender = std.Mechanic {
 	emoji = "⬇️",
-	name = "FallingPlatform",
+	name = "Descender",
 	description = "Descends with the weight of other instances to disable itself when it reaches it's End part.",
 	instanceType = std.gt.instanceTree {
 		Base = std.gt.instanceTree(std.isA.BasePart(), {
@@ -26,21 +26,17 @@ const FallingPlatform = std.Mechanic {
 	ToggleConnectedParts = std.Attribute("ToggleConnectedParts", std.gt.boolean(), true),
 
 	std.AttributeSection "Emission",
-	EmitToggledTag = std.Attribute("EmitToggledTag", std.gt.tag, "FallingPlatform: On Toggled"),
-	EmitRespawnedTag = std.Attribute("EmitRespawnedTag", std.gt.tag, "FallingPlatform: On Respawned"),
+	EmitToggledTag = std.Attribute("EmitToggledTag", std.gt.tag, "Descender: On Toggled"),
+	EmitRespawnedTag = std.Attribute("EmitRespawnedTag", std.gt.tag, "Descender: On Respawned"),
 }
 
-export type FallingPlatformMechanic = std.Mechanic<typeof(FallingPlatform)>
+export type DescenderMechanic = std.Mechanic<typeof(Descender)>
 
-function FallingPlatform.onStart(
-	self: typeof(FallingPlatform),
-	fallingPlatform: FallingPlatformMechanic,
-	level: std.Level
-)
-	const base = fallingPlatform.instance.Base
+function Descender.onStart(self: typeof(Descender), descender: DescenderMechanic, level: std.Level)
+	const base = descender.instance.Base
 	const align = base.AlignPosition
 
-	fallingPlatform.life:add(self.Mass:onBind(fallingPlatform, function(mass: number)
+	descender.life:add(self.Mass:onBind(descender, function(mass: number)
 		const oldProperties = base.CustomPhysicalProperties
 		const densityMultiplier = 1 / (base.Mass * oldProperties.Density)
 		base.CustomPhysicalProperties = PhysicalProperties.new(
@@ -58,22 +54,22 @@ function FallingPlatform.onStart(
 	align.Position = base.Position
 	base.Anchored = false
 
-	if fallingPlatform:ToggleConnectedParts() then
+	if descender:ToggleConnectedParts() then
 		for _, connected in base:GetConnectedParts(true) do
 			connected.Massless = true
 		end
 	end
 
-	fallingPlatform.life:add(fallingPlatform.instance.End.Touched:Connect(function(toucher: BasePart)
-		if toucher ~= base or fallingPlatform:Active() or not fallingPlatform:Enabled() then return end
-		fallingPlatform:Active(true)
+	descender.life:add(descender.instance.End.Touched:Connect(function(toucher: BasePart)
+		if toucher ~= base or descender:Active() or not descender:Enabled() then return end
+		descender:Active(true)
 
 		const oldForce = align.MaxAxesForce
 		const oldVelocity = align.MaxVelocity
 
-		emission.emitTaggedDescendants(fallingPlatform.instance, fallingPlatform:EmitToggledTag())
+		emission.emitTaggedDescendants(descender.instance, descender:EmitToggledTag())
 		toggle.toggleInstance(false, base)
-		if fallingPlatform:ToggleConnectedParts() then
+		if descender:ToggleConnectedParts() then
 			for _, connected in base:GetConnectedParts(true) do
 				toggle.toggleInstance(false, base)
 			end
@@ -82,14 +78,14 @@ function FallingPlatform.onStart(
 		align.MaxAxesForce = RELEASE_FORCE
 		align.MaxVelocity = RELEASE_VELOCITY
 
-		task.wait(fallingPlatform:ToggleDuration())
+		task.wait(descender:ToggleDuration())
 
 		-- By now, the falling platform could be destroyed, so we check again.
-		if fallingPlatform.life.alive then
-			emission.emitTaggedDescendants(fallingPlatform.instance, fallingPlatform:EmitRespawnedTag())
+		if descender.life.alive then
+			emission.emitTaggedDescendants(descender.instance, descender:EmitRespawnedTag())
 
 			toggle.toggleInstance(true, base)
-			if fallingPlatform:ToggleConnectedParts() then
+			if descender:ToggleConnectedParts() then
 				for _, connected in base:GetConnectedParts(true) do
 					toggle.toggleInstance(true, base)
 				end
@@ -98,9 +94,9 @@ function FallingPlatform.onStart(
 			align.MaxAxesForce = oldForce
 			align.MaxVelocity = oldVelocity
 
-			fallingPlatform:Active(false)
+			descender:Active(false)
 		end
 	end))
 end
 
-return FallingPlatform
+return Descender
