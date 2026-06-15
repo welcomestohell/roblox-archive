@@ -1,11 +1,10 @@
-local RunService = game:GetService "RunService"
-local Workspace = game:GetService "Workspace"
+const RunService = game:GetService "RunService"
+const Workspace = game:GetService "Workspace"
 
-local character = require "@libs/character"
-local std = require "@libs/std"
-local touch = require "@libs/touch"
+const std = require "@libs/std"
+const touch = require "@libs/touch"
 
-local Elevator = std.Mechanic {
+const Elevator = std.Mechanic {
 	emoji = "🛗",
 	name = "Elevator",
 	description = "Propel players and objects in the direction they are facing.",
@@ -81,7 +80,7 @@ function Elevator.spawnPart(elevator: ElevatorMechanic, part: BasePart, overlap:
 	velocity.Parent = part
 
 	elevator.touching[part] = true
-	while elevator:isActive(overlap) and not spawnLife.destroyed do
+	while elevator:isActive(overlap) and spawnLife.alive do
 		if elevator:ContinuousUpdates() then
 			faceVector = elevator:faceVector()
 			velocity.MaxAxesForce = elevator:maxForce(faceVector)
@@ -97,18 +96,14 @@ function Elevator:onStart(elevator: ElevatorMechanic)
 	elevator.touching = {}
 
 	elevator.life:add(elevator.instance.Touched:Connect(function(toucher)
-		if not touch.isToucherValid(elevator.Touch, elevator.instance, elevator.instanceConfiguration, toucher) then
-			return
-		end
+		if touch.isToucherValid(elevator.Touch, elevator.instance, elevator.instanceConfiguration, toucher) then
+			local target = touch.castIntoTarget(toucher)
 
-		local overlap = OverlapParams.new()
+			local overlap = OverlapParams.new()
+			overlap.FilterType = Enum.RaycastFilterType.Include
+			overlap.FilterDescendantsInstances = { target }
 
-		local maybeCharacter = character.getMaybeCharacter() :: Instance?
-		if maybeCharacter and toucher:IsDescendantOf(maybeCharacter) then
-			elevator:spawnPart(character.getHumanoidRootPart(), overlap)
-		else
-			overlap:AddToFilter(toucher)
-			elevator:spawnPart(toucher, overlap)
+			elevator:spawnPart(target, overlap)
 		end
 	end))
 end
