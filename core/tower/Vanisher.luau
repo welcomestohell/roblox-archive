@@ -100,7 +100,9 @@ function Vanisher.processChild(vanisher: VanisherMechanic, child: Instance)
 	const vanisherChild = { part = child }
 	vanisher.children[child] = vanisherChild
 	vanisher.life:addMany(
-		child.Destroying:Connect(function() vanisher.children[child] = nil end),
+		child.Destroying:Connect(function()
+			vanisher.children[child] = nil
+		end),
 		child.Touched:Connect(function(toucher: BasePart)
 			if touch.isToucherValid(vanisher.Touch, child, vanisher.instanceConfiguration, toucher) then
 				-- TODO: we should swap toucher to wholebody if its the
@@ -117,7 +119,9 @@ function Vanisher.onStart(self: typeof(Vanisher), vanisher: VanisherMechanic)
 	if vanisher.instance:IsA "BasePart" then
 		vanisher:processChild(vanisher.instance)
 	else
-		vanisher.life:add(vanisher.instance.ChildAdded:Connect(function(child) vanisher:processChild(child) end))
+		vanisher.life:add(vanisher.instance.ChildAdded:Connect(function(child)
+			vanisher:processChild(child)
+		end))
 		for _, child in vanisher.instance:GetChildren() do
 			vanisher:processChild(child)
 		end

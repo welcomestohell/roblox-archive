@@ -169,7 +169,9 @@ type function sort_type(input: type)
 	end
 end
 
-type function stringify_preview(input: type) return `\n> {string.gsub(stringify(input), "\n", "\n> ")}` end
+type function stringify_preview(input: type)
+	return `\n> {string.gsub(stringify(input), "\n", "\n> ")}`
+end
 
 type function stringify_table(
 	input: typeof(types.singleton(nil)),
@@ -193,7 +195,9 @@ type function stringify_table(
 	for key in properties do
 		table.insert(keys, key)
 	end
-	table.sort(keys, function(a, b) return tostring(a) > tostring(b) end)
+	table.sort(keys, function(a, b)
+		return tostring(a) > tostring(b)
+	end)
 
 	for _, key in keys do
 		local value = properties[key]
@@ -358,9 +362,13 @@ type function stringify_main(input: type, nestedness: number, pre_padding: strin
 	return if input_type == "string" then `"{input}"` else tostring(input)
 end
 
-type function stringify(input: type) return stringify_main(input, 1) end
+type function stringify(input: type)
+	return stringify_main(input, 1)
+end
 
-type function hashset_can_insert(input_tag: string) return input_tag == "singleton" end
+type function hashset_can_insert(input_tag: string)
+	return input_tag == "singleton"
+end
 
 type function hashset_insert(hashset: typeof(types.newtable()), non_hashsettable: { type }, input: type)
 	if hashset_can_insert(input.tag) then
@@ -603,7 +611,9 @@ type function components_find(
 end
 
 type function components_find_type(input: { type }, as: "union" | "intersection", tag_to_find: string): boolean
-	return components_find(input, as, function(_, tag: string) return tag == tag_to_find end)
+	return components_find(input, as, function(_, tag: string)
+		return tag == tag_to_find
+	end)
 end
 
 type function union_from_components(input: { type })
@@ -1093,10 +1103,9 @@ export type function Pick(input: type, to_pick: type)
 end
 
 export type function Flatten(input: type)
-	return handle_negation(
-		input,
-		function(input: type) return FlattenFunction(FlattenTable(unions_and_intersections_flatten(input))) end
-	)
+	return handle_negation(input, function(input: type)
+		return FlattenFunction(FlattenTable(unions_and_intersections_flatten(input)))
+	end)
 end
 
 export type function Clean(input: type)
@@ -1168,12 +1177,13 @@ export type function OmitUnion(input: type, to_omit: type)
 		if to_omit.tag == "union" then
 			local hashset, non_hashsettable = hashset_from_components(FlattenUnion(to_omit):components())
 
-			return union_filter(
-				input,
-				function(component): boolean return hashset_has_type(hashset, non_hashsettable, component) end
-			) or types.never
+			return union_filter(input, function(component): boolean
+				return hashset_has_type(hashset, non_hashsettable, component)
+			end) or types.never
 		else
-			return union_filter(input, function(component: type) return component == to_omit end) or types.never
+			return union_filter(input, function(component: type)
+				return component == to_omit
+			end) or types.never
 		end
 	end)
 end
@@ -1187,12 +1197,13 @@ export type function PickUnion(input: type, to_pick: type)
 		if to_pick.tag == "union" then
 			local hashset, non_hashsettable = hashset_from_components(FlattenUnion(to_pick):components())
 
-			return union_filter(
-				input,
-				function(component): boolean return not hashset_has_type(hashset, non_hashsettable, component) end
-			) or types.never
+			return union_filter(input, function(component): boolean
+				return not hashset_has_type(hashset, non_hashsettable, component)
+			end) or types.never
 		else
-			return union_filter(input, function(component: type) return component ~= to_pick end) or types.never
+			return union_filter(input, function(component: type)
+				return component ~= to_pick
+			end) or types.never
 		end
 	end)
 end
@@ -1237,12 +1248,13 @@ export type function OmitIntersection(input: type, to_omit: type)
 		if to_omit.tag == "union" then
 			local hashset, non_hashsettable = hashset_from_components(FlattenUnion(to_omit):components())
 
-			return intersection_filter(
-				input,
-				function(component): boolean return hashset_has_type(hashset, non_hashsettable, component) end
-			) or types.never
+			return intersection_filter(input, function(component): boolean
+				return hashset_has_type(hashset, non_hashsettable, component)
+			end) or types.never
 		else
-			return intersection_filter(input, function(component: type) return component == to_omit end) or types.never
+			return intersection_filter(input, function(component: type)
+				return component == to_omit
+			end) or types.never
 		end
 	end)
 end
@@ -1258,12 +1270,13 @@ export type function PickIntersection(input: type, to_pick: type)
 		if to_pick.tag == "union" then
 			local hashset, non_hashsettable = hashset_from_components(FlattenUnion(to_pick):components())
 
-			return intersection_filter(
-				input,
-				function(component): boolean return not hashset_has_type(hashset, non_hashsettable, component) end
-			) or types.never
+			return intersection_filter(input, function(component): boolean
+				return not hashset_has_type(hashset, non_hashsettable, component)
+			end) or types.never
 		else
-			return intersection_filter(input, function(component: type) return component ~= to_pick end) or types.never
+			return intersection_filter(input, function(component: type)
+				return component ~= to_pick
+			end) or types.never
 		end
 	end)
 end
@@ -1318,14 +1331,13 @@ export type function OmitTableByKeys(input: typeof(types.newtable()), to_omit: t
 	if to_omit.tag == "union" then
 		local hashset, non_hashsettable = hashset_from_components(FlattenUnion(to_omit):components())
 
-		return table_filter_by_keys(
-			input,
-			function(component: type)
-				return if hashset_has_type(hashset, non_hashsettable, component) then true else false
-			end
-		)
+		return table_filter_by_keys(input, function(component: type)
+			return if hashset_has_type(hashset, non_hashsettable, component) then true else false
+		end)
 	else
-		return table_filter_by_keys(input, function(component: type) return component == to_omit end)
+		return table_filter_by_keys(input, function(component: type)
+			return component == to_omit
+		end)
 	end
 end
 
@@ -1344,14 +1356,13 @@ export type function OmitTableByValues(input: typeof(types.newtable()), to_omit:
 	if to_omit.tag == "union" then
 		local hashset, non_hashsettable = hashset_from_components(FlattenUnion(to_omit):components())
 
-		return table_filter_by_values(
-			input,
-			function(component: type)
-				return if hashset_has_type(hashset, non_hashsettable, component) then true else false
-			end
-		)
+		return table_filter_by_values(input, function(component: type)
+			return if hashset_has_type(hashset, non_hashsettable, component) then true else false
+		end)
 	else
-		return table_filter_by_values(input, function(component: type) return component == to_omit end)
+		return table_filter_by_values(input, function(component: type)
+			return component == to_omit
+		end)
 	end
 end
 
@@ -1369,14 +1380,13 @@ export type function PickTableByKeys(input: typeof(types.newtable()), to_pick: t
 	if to_pick.tag == "union" then
 		local hashset, non_hashsettable = hashset_from_components(FlattenUnion(to_pick):components())
 
-		return table_filter_by_keys(
-			input,
-			function(component: type)
-				return if not hashset_has_type(hashset, non_hashsettable, component) then true else false
-			end
-		)
+		return table_filter_by_keys(input, function(component: type)
+			return if not hashset_has_type(hashset, non_hashsettable, component) then true else false
+		end)
 	else
-		return table_filter_by_keys(input, function(component: type) return component ~= to_pick end)
+		return table_filter_by_keys(input, function(component: type)
+			return component ~= to_pick
+		end)
 	end
 end
 
@@ -1395,14 +1405,13 @@ export type function PickTableByValues(input: typeof(types.newtable()), to_pick:
 	if to_pick.tag == "union" then
 		local hashset, non_hashsettable = hashset_from_components(FlattenUnion(to_pick):components())
 
-		return table_filter_by_values(
-			input,
-			function(component: type)
-				return if not hashset_has_type(hashset, non_hashsettable, component) then true else false
-			end
-		)
+		return table_filter_by_values(input, function(component: type)
+			return if not hashset_has_type(hashset, non_hashsettable, component) then true else false
+		end)
 	else
-		return table_filter_by_values(input, function(component: type) return component ~= to_pick end)
+		return table_filter_by_values(input, function(component: type)
+			return component ~= to_pick
+		end)
 	end
 end
 
@@ -1591,7 +1600,9 @@ type function partial_core(
 			local components = value:components()
 
 			if
-				components_find(components, "union", function(component: type) return component == nil_singleton end)
+				components_find(components, "union", function(component: type)
+					return component == nil_singleton
+				end)
 			then
 				return value
 			else
@@ -1604,9 +1615,13 @@ type function partial_core(
 	end)
 end
 
-export type function Partial(input: typeof(types.newtable())) return partial_core(input, table_map_values_shallow) end
+export type function Partial(input: typeof(types.newtable()))
+	return partial_core(input, table_map_values_shallow)
+end
 
-export type function DeepPartial(input: typeof(types.newtable())) return partial_core(input, table_map_values_deep) end
+export type function DeepPartial(input: typeof(types.newtable()))
+	return partial_core(input, table_map_values_deep)
+end
 
 type function required_core(
 	input: typeof(types.newtable()),
@@ -1627,12 +1642,18 @@ type function required_core(
 
 	local nil_singleton = types.singleton(nil)
 
-	return map_callback(input, function(value) return OmitUnion(value, nil_singleton) end)
+	return map_callback(input, function(value)
+		return OmitUnion(value, nil_singleton)
+	end)
 end
 
-export type function Required(input: typeof(types.newtable())) return required_core(input, table_map_values_shallow) end
+export type function Required(input: typeof(types.newtable()))
+	return required_core(input, table_map_values_shallow)
+end
 
-export type function DeepRequired(input: typeof(types.newtable())) return required_core(input, table_map_values_deep) end
+export type function DeepRequired(input: typeof(types.newtable()))
+	return required_core(input, table_map_values_deep)
+end
 
 export type function ReadOnly(input: typeof(types.newtable()))
 	local input_tag = input.tag
@@ -1897,6 +1918,8 @@ export type function Expect(expect: type, to_be: type)
 	return expect
 end
 
-export type function Negate(input: type) return if input.tag == "negation" then input else types.negationof(input) end
+export type function Negate(input: type)
+	return if input.tag == "negation" then input else types.negationof(input)
+end
 
 return nil

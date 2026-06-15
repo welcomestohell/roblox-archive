@@ -12,7 +12,9 @@ const function Letter(props: {
 	xShift: number,
 	zIndex: number,
 })
-	local function progress() return Fluid.read(props.visible) and 0 or 1 end
+	local function progress()
+		return Fluid.read(props.visible) and 0 or 1
+	end
 
 	local function size()
 		local scale = 1 + Fluid.read(progress) / 20
@@ -63,7 +65,9 @@ local function WTHLogo(props: {
 		AnchorPoint = props.anchorPoint,
 		Position = props.position,
 		LayoutOrder = props.layoutOrder,
-		Size = props.size or function() return UDim2.fromOffset(rem(24), rem(24)) end,
+		Size = props.size or function()
+			return UDim2.fromOffset(rem(24), rem(24))
+		end,
 
 		Fluid.create "UIAspectRatioConstraint" {},
 

@@ -63,6 +63,8 @@ Test:attribute(
 	"Foo"
 )
 
-function Test:onActivate(test: TestMechanic) test.log:info "Activated!" end
+function Test:onActivate(test: TestMechanic)
+	test.log:info "Activated!"
+end
 
 return Test

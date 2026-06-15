@@ -29,12 +29,20 @@ const function Timer(props: TimerProps)
 	const nextOrder = Liquid.useNextOrder()
 
 	const color = props.color or Color3.new(1, 1, 1)
-	const function colorLch() return Oklab.color3ToOklch(Fluid.read(color)) end
+	const function colorLch()
+		return Oklab.color3ToOklch(Fluid.read(color))
+	end
 
-	const function colorLightness() return math.clamp(colorLch().X, 2 / 3, 1) end
-	const function colorChroma() return math.clamp(colorLch().Y * 1.5, 0, 0.2) end
+	const function colorLightness()
+		return math.clamp(colorLch().X, 2 / 3, 1)
+	end
+	const function colorChroma()
+		return math.clamp(colorLch().Y * 1.5, 0, 0.2)
+	end
 
-	const function baseColor() return Oklab.oklchToColor3(Vector3.new(colorLightness(), colorChroma(), colorLch().Z)) end
+	const function baseColor()
+		return Oklab.oklchToColor3(Vector3.new(colorLightness(), colorChroma(), colorLch().Z))
+	end
 
 	const function darkColor()
 		return Oklab.oklchToColor3(Vector3.new(colorLightness() * 0.7, colorChroma(), colorLch().Z))
@@ -48,9 +56,15 @@ const function Timer(props: TimerProps)
 		return Oklab.oklchToColor3(Vector3.new(colorLightness() * 1.25, colorChroma(), colorLch().Z))
 	end
 
-	const function minutes() return Fluid.read(props.valueSeconds) // 60 end
-	const function seconds() return Fluid.read(props.valueSeconds) % 60 end
-	const function milliseconds() return Fluid.read(props.valueSeconds) * 100 % 100 end
+	const function minutes()
+		return Fluid.read(props.valueSeconds) // 60
+	end
+	const function seconds()
+		return Fluid.read(props.valueSeconds) % 60
+	end
+	const function milliseconds()
+		return Fluid.read(props.valueSeconds) * 100 % 100
+	end
 
 	const digitSize = rem:intoUdim2(4, 4)
 	const digitTextSize = rem:intoPx(5)
@@ -78,7 +92,9 @@ const function Timer(props: TimerProps)
 		ClipsDescendants = true,
 
 		GroupTransparency = Fluid.spring(Liquid.useToggled(props.visible, 0, 1), 30, 1),
-		Visible = function() return scale() >= 0.01 end,
+		Visible = function()
+			return scale() >= 0.01
+		end,
 		Fluid.create "UIScale" { Scale = scale },
 
 		Liquid.useShow(props.totalSeconds, Fluid.untrack :: any, function()
@@ -88,7 +104,9 @@ const function Timer(props: TimerProps)
 				return (Fluid.read(totalSeconds) - Fluid.read(props.valueSeconds)) / Fluid.read(totalSeconds)
 			end
 
-			const function isHalfway() return progress() >= 0.5 end
+			const function isHalfway()
+				return progress() >= 0.5
+			end
 
 			return {
 				-- First 50%
@@ -133,7 +151,9 @@ const function Timer(props: TimerProps)
 			BackgroundColor3 = Color3.new(1, 1, 1),
 
 			Fluid.create "UIGradient" {
-				Color = function() return ColorSequence.new(lightColor(), baseColor()) end,
+				Color = function()
+					return ColorSequence.new(lightColor(), baseColor())
+				end,
 				Rotation = 90,
 			},
 
@@ -211,7 +231,9 @@ const function Timer(props: TimerProps)
 
 			Text {
 				name = "MillisecondsSpinner",
-				text = function() return string.format("%02i", milliseconds()) end,
+				text = function()
+					return string.format("%02i", milliseconds())
+				end,
 				textSize = millisecondsDigitSize,
 				textColor = darkColor,
 

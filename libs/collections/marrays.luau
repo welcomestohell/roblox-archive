@@ -10,11 +10,17 @@ local function get<K, V>(marray: MapArray<K, V>, key: K): { V }
 	return result
 end
 
-local function push<K, V>(marray: MapArray<K, V>, key: K, value: V) table.insert(get(marray, key), value) end
+local function push<K, V>(marray: MapArray<K, V>, key: K, value: V)
+	table.insert(get(marray, key), value)
+end
 
-local function pop<K, V>(marray: MapArray<K, V>, key: K, value: V) return table.remove(get(marray, key), value) end
+local function pop<K, V>(marray: MapArray<K, V>, key: K, value: V)
+	return table.remove(get(marray, key), value)
+end
 
-local function remove<K, V>(marray: MapArray<K, V>, key: K, value: V) tables.findAndRemove(get(marray, key), value) end
+local function remove<K, V>(marray: MapArray<K, V>, key: K, value: V)
+	tables.findAndRemove(get(marray, key), value)
+end
 
 return table.freeze {
 	get = get,

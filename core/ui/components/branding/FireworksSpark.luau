@@ -17,7 +17,9 @@ local function FireworksSpark(props: {
 })
 	local rem = Liquid.useRem()
 
-	local function transparency() return Fluid.read(props.visible) and 0 or 1 end
+	local function transparency()
+		return Fluid.read(props.visible) and 0 or 1
+	end
 
 	local size = Fluid.spring(function()
 		local scale = math.map(transparency(), 0, 1, 1, 0)
@@ -27,7 +29,9 @@ local function FireworksSpark(props: {
 	local sparkRotation = Fluid.source(0)
 	Fluid.effect(function()
 		Fluid.read(props.visible)
-		Fluid.untrack(function() return sparkRotation(sparkRotation() + 3) end)
+		Fluid.untrack(function()
+			return sparkRotation(sparkRotation() + 3)
+		end)
 	end)
 
 	return Fluid.create "Frame" {
@@ -39,7 +43,9 @@ local function FireworksSpark(props: {
 		Position = props.position,
 		Rotation = props.rotation,
 		LayoutOrder = props.layoutOrder,
-		Size = props.size or function() return UDim2.fromOffset(rem(24), rem(24)) end,
+		Size = props.size or function()
+			return UDim2.fromOffset(rem(24), rem(24))
+		end,
 
 		Fluid.create "ImageLabel" {
 			BackgroundTransparency = 1,
@@ -52,7 +58,9 @@ local function FireworksSpark(props: {
 			ImageColor3 = props.color,
 			ImageTransparency = Fluid.spring(transparency, 15, 0.5),
 
-			Rotation = Fluid.spring(function() return sparkRotation() * -60 * 2 end, 15, 1),
+			Rotation = Fluid.spring(function()
+				return sparkRotation() * -60 * 2
+			end, 15, 1),
 		},
 
 		Fluid.create "ImageLabel" {
@@ -66,7 +74,9 @@ local function FireworksSpark(props: {
 			ImageColor3 = props.color,
 			ImageTransparency = Fluid.spring(transparency, 15, 0.5),
 
-			Rotation = Fluid.spring(function() return sparkRotation() * -60 end, 15, 1),
+			Rotation = Fluid.spring(function()
+				return sparkRotation() * -60
+			end, 15, 1),
 		},
 	}
 end

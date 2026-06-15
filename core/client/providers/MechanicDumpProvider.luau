@@ -46,7 +46,9 @@ function MechanicDumpProvider.onStart()
 
 	const bind = Instance.new "BindableFunction"
 	bind.Name = "GetMechanicDump"
-	function bind.OnInvoke() return encodedDump end
+	function bind.OnInvoke()
+		return encodedDump
+	end
 	bind.Parent = ReplicatedStorage
 end
 

@@ -37,6 +37,8 @@ function GuiProvider.onStart(self: GuiProvider)
 	end)
 end
 
-function GuiProvider.onStop(self: GuiProvider) self.unmount() end
+function GuiProvider.onStop(self: GuiProvider)
+	self.unmount()
+end
 
 return prvd(GuiProvider)

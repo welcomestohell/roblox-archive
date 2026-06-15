@@ -54,15 +54,13 @@ local function Text(props: {
 
 		TextColor3 = props.textColor or Color3.new(1, 1, 1),
 		RichText = if props.textRich == nil then true else props.textRich,
-		FontFace = Liquid.useDissolved<<Font>>(
-			function(read: Liquid.Read)
-				return Font.new(
-					read<<Font>>(props.font or Font.fromEnum(Enum.Font.TitilliumWeb)).Family,
-					read<<Enum.FontWeight>>(props.fontWeight or Enum.FontWeight.Regular),
-					read<<Enum.FontStyle>>(props.fontStyle or Enum.FontStyle.Normal)
-				)
-			end
-		),
+		FontFace = Liquid.useDissolved<<Font>>(function(read: Liquid.Read)
+			return Font.new(
+				read<<Font>>(props.font or Font.fromEnum(Enum.Font.TitilliumWeb)).Family,
+				read<<Enum.FontWeight>>(props.fontWeight or Enum.FontWeight.Regular),
+				read<<Enum.FontStyle>>(props.fontStyle or Enum.FontStyle.Normal)
+			)
+		end),
 
 		table.unpack(props),
 	}

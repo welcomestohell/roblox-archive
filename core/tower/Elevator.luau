@@ -64,7 +64,9 @@ function Elevator.spawnPart(elevator: ElevatorMechanic, part: BasePart, overlap:
 
 	local spawnLife = elevator.life:extend()
 	spawnLife:destroyOn(part.Destroying)
-	spawnLife:add(function() elevator.touching[part] = nil end)
+	spawnLife:add(function()
+		elevator.touching[part] = nil
+	end)
 
 	local velocityAttachment = spawnLife:add(Instance.new "Attachment")
 	velocityAttachment.Parent = part

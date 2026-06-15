@@ -46,7 +46,9 @@ function PreloadProvider.onInit(self: PreloadProvider)
 		end
 	end
 
-	net.fetchAssetIds.on(function(player: Player) return assetIds end)
+	net.fetchAssetIds.on(function(player: Player)
+		return assetIds
+	end)
 end
 
 return prvd(PreloadProvider)

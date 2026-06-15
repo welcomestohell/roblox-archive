@@ -18,7 +18,9 @@ const JUMP_BOOST_ICON = assets.phosphor.caretLineDown
 const GRAVITY_BOOST_ICON = assets.phosphor.caretLineDown
 
 const store = Charm.atom<<{ [string]: Timer }>> {}
-Charm.subscribe(store, function(store) logger:Debug("timers.store:", store) end)
+Charm.subscribe(store, function(store)
+	logger:Debug("timers.store:", store)
+end)
 
 -- FIXME: this doesnt account for the longest durations
 const function increment(key: string, props: TimerProps)

@@ -7,13 +7,23 @@ local ServerScriptService = game:GetService "ServerScriptService"
 local logger = require "@core/shared/logger"
 local prvd = require "@roblox_packages/prvd"
 
-prvd.onProviderUsed(function(_, provider) logger:Debug("Used provider", provider.name) end)
-prvd.onLifecycleUsed(function(_, lifecycle) logger:Debug("Used lifecycle", tostring(lifecycle)) end)
+prvd.onProviderUsed(function(_, provider)
+	logger:Debug("Used provider", provider.name)
+end)
+prvd.onLifecycleUsed(function(_, lifecycle)
+	logger:Debug("Used lifecycle", tostring(lifecycle))
+end)
 
 local root = prvd.root()
-root.onInit:register(function() logger:Debug "Initializing" end)
-root.onStart:register(function() logger:Debug "Starting" end)
-root.onStop:register(function() logger:Debug "Stopping" end)
+root.onInit:register(function()
+	logger:Debug "Initializing"
+end)
+root.onStart:register(function()
+	logger:Debug "Starting"
+end)
+root.onStop:register(function()
+	logger:Debug "Stopping"
+end)
 
 local function useProvidersFromMembers(memberParent: Instance)
 	for _, member in memberParent:GetChildren() do
@@ -30,7 +40,9 @@ local function bootstrapClient()
 	useProvidersFromMembers(internal:WaitForChild "Shared")
 
 	local startedRoot = root:start()
-	game.Close:Once(function() startedRoot:stop() end)
+	game.Close:Once(function()
+		startedRoot:stop()
+	end)
 end
 
 local function bootstrapServer()
@@ -40,7 +52,9 @@ local function bootstrapServer()
 	useProvidersFromMembers(ServerScriptService:WaitForChild("Internal"):WaitForChild "Server")
 
 	local startedRoot = root:start()
-	game:BindToClose(function() startedRoot:stop() end)
+	game:BindToClose(function()
+		startedRoot:stop()
+	end)
 end
 
 return table.freeze {

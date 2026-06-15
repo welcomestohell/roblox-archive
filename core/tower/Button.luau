@@ -111,7 +111,9 @@ function Button.onActivate(self: typeof(Button), button: ButtonMechanic, level: 
 			icon = timers.BUTTON_ICON,
 		})
 
-		deactivationLife:add(function() timers.decrement(key) end)
+		deactivationLife:add(function()
+			timers.decrement(key)
+		end)
 		deactivationLife:delay(duration, deactivationLife:wrapDestroy())
 	end
 end

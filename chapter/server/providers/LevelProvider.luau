@@ -42,9 +42,9 @@ function LevelProvider.onStart(self: KitServerProvider)
 
 	local mechanics, _decorations = storeOrDefault(Workspace, "Mechanics"), storeOrDefault(Workspace, "Decorations")
 
-	net.loadMechanics.on(
-		function(player: Player): Instance return self.mechanicLoader:cloneToPlayer(player, mechanics) end
-	)
+	net.loadMechanics.on(function(player: Player): Instance
+		return self.mechanicLoader:cloneToPlayer(player, mechanics)
+	end)
 end
 
 return prvd(LevelProvider)

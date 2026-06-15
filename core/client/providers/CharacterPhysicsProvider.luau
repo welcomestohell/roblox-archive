@@ -37,7 +37,9 @@ function CharacterPhysicsProvider.onLocalCharacterAdded(self: CharacterPhysicsPr
 
 	-- Head collisions
 	head.CanCollide = true
-	life:add(character.Head:GetPropertyChangedSignal("CanCollide"):Connect(function() head.CanCollide = true end))
+	life:add(character.Head:GetPropertyChangedSignal("CanCollide"):Connect(function()
+		head.CanCollide = true
+	end))
 
 	-- Trusses
 	local function onStateChanged(oldState: Enum.HumanoidStateType, newState: Enum.HumanoidStateType)

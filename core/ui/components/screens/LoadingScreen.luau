@@ -15,15 +15,23 @@ const function LoadingScreen(props: {
 	local rem = Liquid.useRem()
 	local nextOrder = Liquid.useNextOrder()
 
-	local function transparency() return Fluid.read(props.visible) and 0 or 1 end
+	local function transparency()
+		return Fluid.read(props.visible) and 0 or 1
+	end
 
-	local function imageTransparency() return Fluid.read(props.visible) and 2 / 3 or 1 end
+	local function imageTransparency()
+		return Fluid.read(props.visible) and 2 / 3 or 1
+	end
 
 	local labelVisible = Liquid.useDelay(0.1, props.visible)
-	local function labelTransparency() return labelVisible() and 0 or 1 end
+	local function labelTransparency()
+		return labelVisible() and 0 or 1
+	end
 
 	local titleVisible = Liquid.useDelay(0.05, props.visible)
-	local function titleTransparency() return titleVisible() and 0 or 1 end
+	local function titleTransparency()
+		return titleVisible() and 0 or 1
+	end
 
 	return Fluid.create "ImageLabel" {
 		Name = props.name or "LoadingScreen",

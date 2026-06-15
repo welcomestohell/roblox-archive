@@ -57,11 +57,21 @@ type LiteralsConstructor =
 -- Who is this gif
 type InstanceTreeConstructor = (<T>(tree: T) -> T & Instance) & (<P, T>(parent: P, tree: T) -> T & P)
 
-const function moreThan(min: number?) return gt.number { options = { minExclusive = min } } end
-const function moreOrEqual(min: number?) return gt.number { options = { min = min } } end
-const function lessThan(min: number?) return gt.number { options = { maxExclusive = min } } end
-const function lessOrEqual(min: number?) return gt.number { options = { max = min } } end
-const function constrainNumber(min: number?, max: number?) return gt.number { options = { min = min, max = max } } end
+const function moreThan(min: number?)
+	return gt.number { options = { minExclusive = min } }
+end
+const function moreOrEqual(min: number?)
+	return gt.number { options = { min = min } }
+end
+const function lessThan(min: number?)
+	return gt.number { options = { maxExclusive = min } }
+end
+const function lessOrEqual(min: number?)
+	return gt.number { options = { max = min } }
+end
+const function constrainNumber(min: number?, max: number?)
+	return gt.number { options = { min = min, max = max } }
+end
 const function constrainNumberExclusive(min: number?, max: number?)
 	return gt.number { options = { minExclusive = min, maxExclusive = max } }
 end
@@ -137,10 +147,9 @@ const function serialize(ty: Type)
 		string = ty.string,
 		table = ty.table and {
 			array = ty.table.array,
-			contents = tables.map<<any, any>>(
-				ty.table.contents,
-				function(key, value) return serialize(key), serialize(value) end
-			),
+			contents = tables.map<<any, any>>(ty.table.contents, function(key, value)
+				return serialize(key), serialize(value)
+			end),
 			count = ty.table.count,
 			indexer = ty.table.indexer and {
 				key = serialize(ty.table.indexer.key),

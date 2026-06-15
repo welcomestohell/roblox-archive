@@ -9,7 +9,9 @@
 
 local TAU = 2 * math.pi
 
-local function cbrt(x: number) return math.sign(x) * math.abs(x) ^ (1 / 3) end
+local function cbrt(x: number)
+	return math.sign(x) * math.abs(x) ^ (1 / 3)
+end
 
 local Oklab = {}
 
@@ -365,9 +367,13 @@ function Oklab.color3ToOklch(c: Color3, use_default_gamut_clip: boolean?): Vecto
 	return Oklab.oklabToOklch(Oklab.linearSRGBtoOklab(Oklab.color3ToLinearSRGB(c)))
 end
 
-function Oklab.oklabToColor3(c: Vector3) return Oklab.linearSRGBToColor3(Oklab.oklabToLinearSRGB(c)) end
+function Oklab.oklabToColor3(c: Vector3)
+	return Oklab.linearSRGBToColor3(Oklab.oklabToLinearSRGB(c))
+end
 
-function Oklab.oklchToColor3(c: Vector3) return Oklab.linearSRGBToColor3(Oklab.oklabToLinearSRGB(Oklab.oklchToOklab(c))) end
+function Oklab.oklchToColor3(c: Vector3)
+	return Oklab.linearSRGBToColor3(Oklab.oklabToLinearSRGB(Oklab.oklchToOklab(c)))
+end
 
 --[[
 	LCH EXTENSIONS

@@ -100,11 +100,15 @@ function TitleProvider.onStart(self: TitleProvider)
 
 			Parent = Players.LocalPlayer.PlayerGui,
 
-			Fluid.show(isMenuVisible, function(): any return TitleScreen() end, function()
+			Fluid.show(isMenuVisible, function(): any
+				return TitleScreen()
+			end, function()
 				return {
 					LoadingScreen {
 						label = "Loading",
-						title = function() return `{assetsLoaded()}/{#assetIds} Assets` end,
+						title = function()
+							return `{assetsLoaded()}/{#assetIds} Assets`
+						end,
 						visible = isAssetsLoading,
 						layoutOrder = nextOrder(),
 					},

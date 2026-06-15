@@ -289,7 +289,9 @@ function Vanisher.Run(scope: _T.Scope, utility: _T.Utility)
 
 		blinkSound.PlaybackSpeed *= 1.2
 		blinkSound:Play()
-		task.delay(blinkSound.TimeLength / blinkSound.PlaybackSpeed, function() blinkSound:Destroy() end)
+		task.delay(blinkSound.TimeLength / blinkSound.PlaybackSpeed, function()
+			blinkSound:Destroy()
+		end)
 		vanish(vanisherPart)
 	end
 
@@ -332,15 +334,9 @@ function Vanisher.Run(scope: _T.Scope, utility: _T.Utility)
 		end
 
 		-- To support moving for unanchored objects
-		local vanisherConnection = cleanupScope:add(
-			RunService.PreRender:Connect(
-				function()
-					shrinkPart.CFrame = vanisher.CFrame
-						* relativeOffset
-						* CFrame.new((shrinkPart.Size * 0.5) * direction)
-				end
-			)
-		)
+		local vanisherConnection = cleanupScope:add(RunService.PreRender:Connect(function()
+			shrinkPart.CFrame = vanisher.CFrame * relativeOffset * CFrame.new((shrinkPart.Size * 0.5) * direction)
+		end))
 
 		local tween = startTween(shrinkPart, { Size = endSize })
 		tween.Completed:Wait()
@@ -356,7 +352,9 @@ function Vanisher.Run(scope: _T.Scope, utility: _T.Utility)
 	end
 
 	local VANISH_HANDLERS = {
-		Constant = function() return handleConstantMode end,
+		Constant = function()
+			return handleConstantMode
+		end,
 
 		Blink = function()
 			active = true
@@ -419,9 +417,9 @@ function Vanisher.Run(scope: _T.Scope, utility: _T.Utility)
 	for _, vanisherPart in vanisherParts do
 		local vanisher = vanisherPart.part
 		if vanisher:GetAttribute "Activated" ~= nil then onActivatedChanged(vanisherPart) end
-		scope:add(
-			vanisher:GetAttributeChangedSignal("Activated"):Connect(function() onActivatedChanged(vanisherPart) end)
-		)
+		scope:add(vanisher:GetAttributeChangedSignal("Activated"):Connect(function()
+			onActivatedChanged(vanisherPart)
+		end))
 	end
 
 	--> Main Functionality
@@ -445,7 +443,9 @@ function Vanisher.Run(scope: _T.Scope, utility: _T.Utility)
 		end
 	end
 
-	local function getWholeBody() return utility.Character.getHitbox "StaticWholeBody" end
+	local function getWholeBody()
+		return utility.Character.getHitbox "StaticWholeBody"
+	end
 
 	for _, vanisherPart in vanisherParts do
 		local vanisher = vanisherPart.part
@@ -459,18 +459,17 @@ function Vanisher.Run(scope: _T.Scope, utility: _T.Utility)
 		end))
 
 		if touchConfiguration.canFlip then -- RIP @v6.0.1
-			scope:add(
-				utility.ClientObjects.bindToFlip(
-					vanisher,
-					function(rootPart) spawnVanisher(vanisherPart, getWholeBody()[1]) end
-				)
-			)
+			scope:add(utility.ClientObjects.bindToFlip(vanisher, function(rootPart)
+				spawnVanisher(vanisherPart, getWholeBody()[1])
+			end))
 		end
 	end
 
 	--> Sequencer Cache Support
 	local cache = utility.Scope.getCached(scope, scope.scriptPath, handleCache)
-	cache[vanisherObject] = function() spawnVanisher(vanisherParts[1], getWholeBody()[1]) end
+	cache[vanisherObject] = function()
+		spawnVanisher(vanisherParts[1], getWholeBody()[1])
+	end
 	scope:add(function()
 		cache[vanisherObject] = nil
 		cache = nil :: any

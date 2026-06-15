@@ -9,7 +9,9 @@ local function get<K, V, T>(mmap: MapMap<K, V, T>, key: K): { [V]: T }
 	return result
 end
 
-local function set<K, V, T>(mmap: MapMap<K, V, T>, key: K, value: V, value2: T) get(mmap, key)[value] = value2 end
+local function set<K, V, T>(mmap: MapMap<K, V, T>, key: K, value: V, value2: T)
+	get(mmap, key)[value] = value2
+end
 
 return table.freeze {
 	get = get,

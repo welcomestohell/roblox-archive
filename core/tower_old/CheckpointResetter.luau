@@ -15,12 +15,9 @@ CheckpointResetter.Activation = activation.useAttributes(CheckpointResetter)
 
 function CheckpointResetter:onActivate(resetter: CheckpointResetterMechanic, level: std.Level)
 	self.Activation.Enabled(resetter, false)
-	resetter.life:delay(
-		resetter:Cooldown(),
-		function(self: typeof(self), resetter: typeof(resetter)) self.Activation.Enabled(resetter, true) end,
-		self,
-		resetter
-	)
+	resetter.life:delay(resetter:Cooldown(), function(self: typeof(self), resetter: typeof(resetter))
+		self.Activation.Enabled(resetter, true)
+	end, self, resetter)
 
 	Checkpoint.currentCheckpoint:set(level, nil)
 end

@@ -43,12 +43,16 @@ const function TimerStack(props: {
 			const endTimestamp = lastTimestamp + timer.duration
 
 			const props: Timer.TimerProps = {
-				valueSeconds = function() return math.max(endTimestamp - clock(), 0) end,
+				valueSeconds = function()
+					return math.max(endTimestamp - clock(), 0)
+				end,
 				totalSeconds = timer.duration,
 				icon = timer.icon,
 				color = timer.color,
 				count = #timer.timestamps,
-				visible = function() return clock() - firstTimestamp >= 0 and endTimestamp - clock() >= 0.05 end,
+				visible = function()
+					return clock() - firstTimestamp >= 0 and endTimestamp - clock() >= 0.05
+				end,
 				layoutOrder = firstTimestamp * 1000,
 			}
 

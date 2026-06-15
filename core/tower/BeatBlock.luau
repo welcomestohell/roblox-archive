@@ -81,7 +81,9 @@ function BeatBlock.onStart(self: typeof(BeatBlock), beatblock: BeatBlockMechanic
 	beatblock.emitters = tables.weak "k"
 
 	beatblock.life:addMany(
-		beatblock.instance.ChildAdded:Connect(function(child) beatblock.processChild(beatblock, child) end),
+		beatblock.instance.ChildAdded:Connect(function(child)
+			beatblock.processChild(beatblock, child)
+		end),
 		beatblock.instance.DescendantAdded:Connect(function(descendant)
 			if descendant:HasTag(beatblock:EmitSwitchedTag()) then beatblock.emitters[descendant] = true end
 		end),

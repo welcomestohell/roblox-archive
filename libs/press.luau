@@ -48,7 +48,9 @@ const function usePress(props: {
 			offsetTween.isReversed = true
 			offsetTween.duration /= 2
 		else
-			life:add(function() tweens.play(props.instance, { CFrame = originalCFrame }, offsetTween) end)
+			life:add(function()
+				tweens.play(props.instance, { CFrame = originalCFrame }, offsetTween)
+			end)
 		end
 
 		tweens.play(
@@ -69,13 +71,17 @@ const function usePress(props: {
 		if props.flash then
 			adornment.Transparency = 0
 			tweens.play(adornment, { Transparency = 1 }, tweenConfiguration)
-			task.delay(tweenConfiguration.duration, function() life:destroy() end)
+			task.delay(tweenConfiguration.duration, function()
+				life:destroy()
+			end)
 		else
 			adornment.Transparency = 1
 			tweens.play(adornment, { Transparency = 0 }, tweenConfiguration)
 			life:add(function()
 				tweens.play(adornment, { Transparency = 1 }, tweenConfiguration)
-				task.delay(tweenConfiguration.duration, function() life:destroy() end)
+				task.delay(tweenConfiguration.duration, function()
+					life:destroy()
+				end)
 			end)
 		end
 	end

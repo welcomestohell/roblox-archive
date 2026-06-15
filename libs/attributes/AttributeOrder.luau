@@ -16,13 +16,17 @@ const function track<T>(attribute: T): T
 	return attribute
 end
 
-const function orderOf<T>(attribute: T) return attributeToOrder[attribute] end
+const function orderOf<T>(attribute: T)
+	return attributeToOrder[attribute]
+end
 
 return table.freeze {
 	attributeToOrder = attributeToOrder,
 	orderToAttribute = orderToAttribute,
 
-	currentOrder = function() return currentOrder end,
+	currentOrder = function()
+		return currentOrder
+	end,
 
 	nextOrder = nextOrder,
 	track = track,

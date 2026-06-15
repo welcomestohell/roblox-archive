@@ -81,8 +81,9 @@ function Level.new(outerLife: Life.Life, name: string, instance: Instance)
 			onInit = prvd.lifecycle("onInit", function(lifecycle: prvd.Lifecycle<Level>, level: any)
 				local promises: { Promise.Promise } = {}
 				for index, listener in lifecycle.callbacks do
-					promises[index] = Promise.try(listener, level)
-						:catch(function(e) warn(`Failed to initialize mechanic implementation: {e}`) end)
+					promises[index] = Promise.try(listener, level):catch(function(e)
+						warn(`Failed to initialize mechanic implementation: {e}`)
+					end)
 				end
 				Promise.all(promises):await()
 			end),
@@ -155,7 +156,9 @@ function Level.registerLifecyclesForImplementation(self: Level, implementation: 
 	for _, lifecycle in self.implementationLifecycles do
 		local method: (AnyImplementation, ...any) -> () = (implementation :: any)[lifecycle.method]
 		if type(method) == "function" then
-			local function listener(...) return method(implementation, ...) end
+			local function listener(...)
+				return method(implementation, ...)
+			end
 			mmaps.set(self.implementationLifecycleListeners, lifecycle, implementation, listener)
 			lifecycle:register(listener)
 		end
@@ -167,7 +170,9 @@ function Level.registerLifecyclesForMechanic(self: Level, mechanic: Mechanic)
 		local implementation = mechanic.implementation
 		local method: (AnyImplementation, Mechanic, ...any) -> () = (implementation :: any)[lifecycle.method]
 		if type(method) == "function" then
-			local function listener(...) return method(implementation, mechanic, ...) end
+			local function listener(...)
+				return method(implementation, mechanic, ...)
+			end
 			mmaps.set(self.mechanicLifecycleListeners, lifecycle, mechanic, listener)
 			lifecycle:register(listener)
 		end
@@ -234,9 +239,9 @@ function Level.loadInstance(self: Level, instance: Instance): { Mechanic }
 		if groupName then
 			shouldToggle = true
 			marrays.push(self.instanceByGroups, groupName, instance)
-			self.life:add(
-				instance.Destroying:Once(function() marrays.remove(self.instanceByGroups, groupName, instance) end)
-			)
+			self.life:add(instance.Destroying:Once(function()
+				marrays.remove(self.instanceByGroups, groupName, instance)
+			end))
 		end
 	end
 
@@ -297,12 +302,18 @@ function Level.start(self: Level)
 	self.mechanicLifecycles.onStart:fire(self)
 
 	self.life:addMany(
-		RunService.PreSimulation:Connect(function(dt) self.implementationLifecycles.onPreSimulation:fire(dt, self) end),
-		RunService.PostSimulation:Connect(
-			function(dt) self.implementationLifecycles.onPostSimulation:fire(dt, self) end
-		),
-		RunService.PreRender:Connect(function(dt) self.implementationLifecycles.onPreRender:fire(dt, self) end),
-		RunService.PreAnimation:Connect(function(dt) self.implementationLifecycles.onPreAnimation:fire(dt, self) end),
+		RunService.PreSimulation:Connect(function(dt)
+			self.implementationLifecycles.onPreSimulation:fire(dt, self)
+		end),
+		RunService.PostSimulation:Connect(function(dt)
+			self.implementationLifecycles.onPostSimulation:fire(dt, self)
+		end),
+		RunService.PreRender:Connect(function(dt)
+			self.implementationLifecycles.onPreRender:fire(dt, self)
+		end),
+		RunService.PreAnimation:Connect(function(dt)
+			self.implementationLifecycles.onPreAnimation:fire(dt, self)
+		end),
 		-- TODO: Should we keep this, now that we have 'Level: Do Not Load' tag?
 		self.instance.DescendantAdded:Connect(function(instance)
 			for _, mechanic in self:loadInstance(instance) do
@@ -315,9 +326,13 @@ function Level.start(self: Level)
 
 	-- LUAU FIXME: this should typecheck fine?
 	table.insert(Level.activeLevels :: { any }, self)
-	self.life:add(function() tables.findAndRemove<<Level>>(Level.activeLevels, self) end)
+	self.life:add(function()
+		tables.findAndRemove<<Level>>(Level.activeLevels, self)
+	end)
 end
 
-function Level.__tostring(self: Level) return `Level({self.name})` end
+function Level.__tostring(self: Level)
+	return `Level({self.name})`
+end
 
 return table.freeze(Level)

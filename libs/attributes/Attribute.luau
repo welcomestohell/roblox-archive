@@ -143,7 +143,9 @@ function Attribute.type<T>(_: Attribute<T>): T
 	error "This function is undefined, and should only be used in type definitions: `typeof(attribute:type())`"
 end
 
-function Attribute.isAttribute(x: unknown) return type(x) == "table" and getmetatable(x) == Attribute end
+function Attribute.isAttribute(x: unknown)
+	return type(x) == "table" and getmetatable(x) == Attribute
+end
 
 function Attribute.peek<T>(self: Attribute<T>, instance: resolveInstance.InstanceLike): T
 	local value = self._cache[resolveInstance(instance)] :: any
@@ -242,7 +244,9 @@ end
 
 function Attribute.awaitChange<T>(self: Attribute<T>, instance: resolveInstance.InstanceLike): T
 	local currentThread = coroutine.running()
-	observeListener(self, instance, self._changeListeners, function(value: T) task.spawn(currentThread, value) end)
+	observeListener(self, instance, self._changeListeners, function(value: T)
+		task.spawn(currentThread, value)
+	end)
 	return coroutine.yield()
 end
 
@@ -250,6 +254,8 @@ function Attribute.__call<T>(self: Attribute<T>, instance: resolveInstance.Insta
 	return if select("#", ...) == 0 then self:get(instance) else self:set(instance, ...)
 end
 
-function Attribute.__tostring<T>(self: Attribute<T>) return `Attribute<{self.check:format()}>("{self.attribute}")` end
+function Attribute.__tostring<T>(self: Attribute<T>)
+	return `Attribute<{self.check:format()}>("{self.attribute}")`
+end
 
 return Attribute

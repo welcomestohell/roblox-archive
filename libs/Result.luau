@@ -13,11 +13,17 @@ function Result.Err<E>(value: E): Result<any, E>
 	return table.freeze(setmetatable({ kind = "Err" :: "Err", value = value }, Result))
 end
 
-function Result.isResult(x: any) return typeof(x) == "table" and getmetatable(x) == Result end
+function Result.isResult(x: any)
+	return typeof(x) == "table" and getmetatable(x) == Result
+end
 
-function Result.isOk(self: Result<any, any>) return self.kind == "Ok" end
+function Result.isOk(self: Result<any, any>)
+	return self.kind == "Ok"
+end
 
-function Result.isErr(self: Result<any, any>) return self.kind == "Err" end
+function Result.isErr(self: Result<any, any>)
+	return self.kind == "Err"
+end
 
 function Result.expect<T>(self: Result<T, any>, message: string): T
 	return if Result.isOk(self) then self.value else error(message, 2)
@@ -27,7 +33,9 @@ function Result.expectErr<E>(self: Result<any, E>, message: string): E
 	return if Result.isErr(self) then self.value else error(message, 2)
 end
 
-function Result.unwrap<T>(self: Result<T, any>): T return if Result.isOk(self) then self.value else error(self.value, 2) end
+function Result.unwrap<T>(self: Result<T, any>): T
+	return if Result.isOk(self) then self.value else error(self.value, 2)
+end
 
 function Result.unwrapErr<E>(self: Result<any, E>): E
 	return if Result.isErr(self) then self.value else error(self.value, 2)

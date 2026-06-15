@@ -57,7 +57,9 @@ function Mounter:onActivate(mounter: MounterMechanic)
 	local mountLife = mounter.life:extend()
 
 	local cleanupLife = mountLife:extend()
-	cleanupLife:add(function() task.delay(mounter:CleanupDelay(), destroy, mountLife) end)
+	cleanupLife:add(function()
+		task.delay(mounter:CleanupDelay(), destroy, mountLife)
+	end)
 
 	local model = mountLife:add(mounter.model:Clone())
 	mountLife:destroyOn(model.Destroying)

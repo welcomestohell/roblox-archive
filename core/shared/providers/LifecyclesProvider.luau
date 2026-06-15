@@ -22,7 +22,9 @@ LifecyclesProvider.localCharacterRemoving =
 	prvd.lifecycle("onLocalCharacterRemoving", prvd.fireConcurrent) :: prvd.Lifecycle<Model>
 
 local function wrapLifecycle(lifecycle: prvd.Lifecycle<...unknown>)
-	return function(...: unknown) lifecycle:fire(...) end
+	return function(...: unknown)
+		lifecycle:fire(...)
+	end
 end
 
 function LifecyclesProvider.onInit(self: RbxLifecycles)

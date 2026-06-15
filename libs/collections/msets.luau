@@ -8,9 +8,13 @@ local function get<K, V>(mset: MapSet<K, V>, key: K): { [V]: true }
 	return result
 end
 
-local function set<K, V>(mset: MapSet<K, V>, key: K, value: V) get(mset, key)[value] = true end
+local function set<K, V>(mset: MapSet<K, V>, key: K, value: V)
+	get(mset, key)[value] = true
+end
 
-local function remove<K, V>(mset: MapSet<K, V>, key: K, value: V) get(mset, key)[value] = nil end
+local function remove<K, V>(mset: MapSet<K, V>, key: K, value: V)
+	get(mset, key)[value] = nil
+end
 
 return table.freeze {
 	get = get,

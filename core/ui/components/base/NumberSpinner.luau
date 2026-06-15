@@ -54,8 +54,12 @@ const function NumberSpinner(props: {
 
 		-- LUAU FIXME: having to set forRange as any
 		Liquid.forRange<<any>>(function(index: number)
-			const function fauxRotation() return math.floor(Fluid.read(props.value) / 10 ^ (index - 1)) end
-			const function moverPosition() return UDim2.fromScale(0, -(fauxRotation() % 10)) end
+			const function fauxRotation()
+				return math.floor(Fluid.read(props.value) / 10 ^ (index - 1))
+			end
+			const function moverPosition()
+				return UDim2.fromScale(0, -(fauxRotation() % 10))
+			end
 
 			return Fluid.create "Frame" {
 				Name = `Digit{index}`,
@@ -73,29 +77,26 @@ const function NumberSpinner(props: {
 					Size = UDim2.fromScale(1, 1),
 					BackgroundTransparency = 1,
 
-					tables.map(
-						DIGITS,
-						function(index: number, digit: number)
-							return index,
-								Text {
-									name = `Digit{digit}`,
-									position = UDim2.fromScale(0, index - 1),
-									size = UDim2.fromScale(1, 1),
-									automaticSize = Enum.AutomaticSize.None,
+					tables.map(DIGITS, function(index: number, digit: number)
+						return index,
+							Text {
+								name = `Digit{digit}`,
+								position = UDim2.fromScale(0, index - 1),
+								size = UDim2.fromScale(1, 1),
+								automaticSize = Enum.AutomaticSize.None,
 
-									text = tostring(digit),
-									textSize = props.textSize,
-									textScaled = props.textScaled,
-									textColor = props.textColor,
-									textRich = props.textRich,
-									textWraps = props.textWraps,
-									textTruncate = props.textTruncate,
-									font = props.font,
-									fontWeight = props.fontWeight,
-									fontStyle = props.fontStyle,
-								}
-						end
-					),
+								text = tostring(digit),
+								textSize = props.textSize,
+								textScaled = props.textScaled,
+								textColor = props.textColor,
+								textRich = props.textRich,
+								textWraps = props.textWraps,
+								textTruncate = props.textTruncate,
+								font = props.font,
+								fontWeight = props.fontWeight,
+								fontStyle = props.fontStyle,
+							}
+					end),
 				},
 			}
 		end, 1, props.numDigits),

@@ -12,14 +12,20 @@ type Accounts = {
 
 local getAccounts, setAccounts = Charm.signal({} :: Accounts)
 
-local function getAccount(username: string): Account? return getAccounts()[username] end
+local function getAccount(username: string): Account?
+	return getAccounts()[username]
+end
 
 local function setAccount(username: string, account: Account)
-	setAccounts(function(state: Accounts) return objects.set(state, username, account) end)
+	setAccounts(function(state: Accounts)
+		return objects.set(state, username, account)
+	end)
 end
 
 local function removeAccount(username: string)
-	setAccounts(function(state: Accounts) return objects.delete(state, username) end)
+	setAccounts(function(state: Accounts)
+		return objects.delete(state, username)
+	end)
 end
 
 return {

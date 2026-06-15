@@ -44,7 +44,9 @@ local function registerMode(
 	}
 end
 
-local function unregisterMode(key: string) modes[key] = nil end
+local function unregisterMode(key: string)
+	modes[key] = nil
+end
 
 export type ActivationError = { id: "noMode" } | { id: "unknownMode" } | { id: "predicateFailed", error: string }
 

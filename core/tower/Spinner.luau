@@ -34,7 +34,9 @@ const Spinner = std.Mechanic {
 export type SpinnerMechanic = std.Mechanic<typeof(Spinner)>
 
 function Spinner.onStart(self: typeof(Spinner), spinner: SpinnerMechanic)
-	spinner.Synchronized:onBind(spinner, function() spinner:Elapsed(0) end)
+	spinner.Synchronized:onBind(spinner, function()
+		spinner:Elapsed(0)
+	end)
 end
 
 function Spinner.onPreSimulation(self: typeof(Spinner), deltaTime: number, level: std.Level)

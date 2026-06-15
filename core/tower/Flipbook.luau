@@ -31,7 +31,9 @@ function Flipbook:onStart(flipbook: FlipbookMechanic)
 		end
 	end)
 
-	flipbook.Synchronized:onChange(flipbook, function() flipbook:Elapsed(0) end)
+	flipbook.Synchronized:onChange(flipbook, function()
+		flipbook:Elapsed(0)
+	end)
 end
 
 -- FIXME: PingPong desyncs :(

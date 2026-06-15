@@ -25,7 +25,9 @@ function Life.new(): Life
 	}, Life)
 end
 
-function Life.isLife(x: any): boolean return typeof(x) == "table" and getmetatable(x) == Life end
+function Life.isLife(x: any): boolean
+	return typeof(x) == "table" and getmetatable(x) == Life
+end
 
 function Life.add<T>(self: Life, bound: T): T
 	if self.destroyed then return bound end
@@ -44,14 +46,18 @@ end
 function Life.extend(self: Life)
 	local inner = Life.new()
 	self:add(inner)
-	inner:add(function() self:remove(inner) end)
+	inner:add(function()
+		self:remove(inner)
+	end)
 	return inner
 end
 
 function Life.spawn<T, A...>(self: Life, bound: (A...) -> ...any, ...: A...): thread?
 	if self.destroyed then return nil end
 	local thread = threadpool.spawn(bound, ...)
-	table.insert(self.objects, function() task.cancel(thread) end)
+	table.insert(self.objects, function()
+		task.cancel(thread)
+	end)
 	return thread
 end
 
@@ -77,10 +83,16 @@ function Life.removeMany<T...>(self: Life, ...: T...): T...
 	return ...
 end
 
-function Life.removeAll(self: Life) table.clear(self.objects) end
+function Life.removeAll(self: Life)
+	table.clear(self.objects)
+end
 
 function Life.destroyOn(self: Life, signal: RBXScriptSignal): RBXScriptConnection?
-	return if self.destroyed then nil else self:add(signal:Connect(function() self:destroy() end))
+	return if self.destroyed
+		then nil
+		else self:add(signal:Connect(function()
+			self:destroy()
+		end))
 end
 
 function Life.destroy(self: Life)
@@ -97,11 +109,17 @@ function Life.destroy(self: Life)
 end
 
 function Life.wrapDestroy(self: Life): (...any) -> ()
-	return function() self:destroy() end
+	return function()
+		self:destroy()
+	end
 end
 
-function Life.__tostring(_: Life) return "Life" end
+function Life.__tostring(_: Life)
+	return "Life"
+end
 
-function Life.__len(self: Life) return #self.objects end
+function Life.__len(self: Life)
+	return #self.objects
+end
 
 return table.freeze(Life)

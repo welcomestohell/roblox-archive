@@ -52,7 +52,9 @@ function BoxSpawner.spawn(spawner: BoxSpawnerMechanic, level: std.Level)
 	Promise.all(loadPromises):await()
 end
 
-function BoxSpawner:getActivationInstance(spawner: BoxSpawnerMechanic) return spawner.instance.Button end
+function BoxSpawner:getActivationInstance(spawner: BoxSpawnerMechanic)
+	return spawner.instance.Button
+end
 
 function BoxSpawner.onActivate(self: typeof(BoxSpawner), spawner: BoxSpawnerMechanic, level: std.Level)
 	if spawner:Debounced() then return end
