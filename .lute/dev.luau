@@ -83,12 +83,6 @@ end
 print(divider "Initializing Rojo projects...")
 initializeRojo(ctx)
 
--- Yeah bro
-task.wait(1)
-
-local sourcemapWatcher = useSourcemapWatcher(sourcemapPath)
-local sourcemapFileWatcher = fs.watch(sourcemapPath)
-
 local sourcemapArgs = {
 	"sourcemap",
 	"--absolute",
@@ -101,6 +95,9 @@ local sourcemapArgs = {
 run("rojo", sourcemapArgs)
 table.insert(sourcemapArgs, 2, "--watch")
 task.spawn(run, "rojo", sourcemapArgs, { quiet = true } :: run.Options)
+
+local sourcemapWatcher = useSourcemapWatcher(sourcemapPath)
+local sourcemapFileWatcher = fs.watch(sourcemapPath)
 
 local function processChanges()
 	for absolutePath, fileWatcher in sourcemapWatcher.watchers do
