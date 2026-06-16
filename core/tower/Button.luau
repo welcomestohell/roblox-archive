@@ -62,7 +62,7 @@ function Button.onInit(self: typeof(Button), level: std.Level)
 	self.activeGroups:set(level, {} :: typeof(self.activeGroups:get(level)))
 end
 
-function Button.getActivationInstance(self: typeof(Button), button: ButtonMechanic)
+function Button.getActivationInstances(self: typeof(Button), button: ButtonMechanic)
 	return if button.instance:IsA "BasePart"
 		then button.instance :: BasePart
 		else button.instance.PrimaryPart or button.instance:FindFirstChild "Button" :: BasePart
@@ -71,7 +71,7 @@ end
 function Button.onActivate(self: typeof(Button), button: ButtonMechanic, level: std.Level)
 	if button:Active() then return end
 
-	local buttonPart: BasePart = self:getActivationInstance(button)
+	local buttonPart: BasePart = self:getActivationInstances(button)
 	if not buttonPart then
 		logger:Warn("Missing primary part on button", button.instance:GetFullName())
 		return

@@ -32,14 +32,15 @@ local function observeInstance(self: Attribute<unknown>, instance: Instance)
 			local changeListeners = self._changeListeners[instance]
 			if changeListeners and next(changeListeners) ~= nil then
 				local value = instance:GetAttribute(self.attribute)
+				self._cache[instance] = value
+				self._updated[instance] = true
 				threadpool.spawnCallbacks(changeListeners, value, self)
 			else
 				local disconnect: () -> () = self._observerDisconnectors[instance]
 				if disconnect then disconnect() end
 				self._observerDisconnectors[instance] = nil
+				self._updated[instance] = nil
 			end
-
-			self._updated[instance] = nil
 		end
 
 		self._observerCallbacks[instance] = onAttributesChanged

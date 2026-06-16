@@ -118,6 +118,16 @@ const function literals(...: any): any
 	return gt.union(table.unpack(components, 1, len))
 end
 
+const function keysOf<T>(tbl: T): keyof<T>
+	const components = {}
+	for key in tbl :: any do
+		table.insert(components, gt.literal(key))
+	end
+	return gt.union(table.unpack(components :: any)) :: any
+end
+
+const literals: LiteralsConstructor = literals
+
 -- Serializes the given `gt.Type` into a JSON-encodable object. Note that this assumes any literals are JSON-encodable (I hope so)
 const function serialize(ty: Type)
 	return {
@@ -188,6 +198,7 @@ return table.freeze {
 	negativeNumber = lessThan(0),
 
 	enumOf = enumOf,
+	keysOf = keysOf,
 	instanceTree = instanceTree :: InstanceTreeConstructor,
 	literals = literals :: LiteralsConstructor,
 	serialize = serialize,

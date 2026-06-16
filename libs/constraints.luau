@@ -8,7 +8,11 @@ local function weld(life: Life.Life, from: BasePart, to: BasePart)
 	return life:add(weldConstraint)
 end
 
-local function populateAttachments(life: Life.Life, constraint: Constraint): (Attachment, Attachment)
+local function populateAttachments(
+	life: Life.Life,
+	-- In reality, anything with Attachment0 and Attachment1
+	constraint: Constraint | Beam
+): (Attachment, Attachment)
 	local attachment0 = life:add(Instance.new "Attachment")
 	local attachment1 = life:add(Instance.new "Attachment")
 

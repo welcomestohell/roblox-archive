@@ -52,7 +52,7 @@ function BoxSpawner.spawn(spawner: BoxSpawnerMechanic, level: std.Level)
 	Promise.all(loadPromises):await()
 end
 
-function BoxSpawner:getActivationInstance(spawner: BoxSpawnerMechanic)
+function BoxSpawner:getActivationInstances(spawner: BoxSpawnerMechanic)
 	return spawner.instance.Button
 end
 

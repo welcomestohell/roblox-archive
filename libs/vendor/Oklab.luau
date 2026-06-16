@@ -375,6 +375,10 @@ function Oklab.oklchToColor3(c: Vector3)
 	return Oklab.linearSRGBToColor3(Oklab.oklabToLinearSRGB(Oklab.oklchToOklab(c)))
 end
 
+function Oklab.lerpColor3s(left: Color3, right: Color3, alpha)
+	return Oklab.oklabToColor3(Oklab.color3ToOklab(left):Lerp(Oklab.color3ToOklab(right), alpha))
+end
+
 --[[
 	LCH EXTENSIONS
 ]]

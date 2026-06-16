@@ -51,7 +51,7 @@ const Vine = std.Mechanic {
 
 export type VineMechanic = std.Mechanic<typeof(Vine), { handle: BasePart }>
 
-function Vine.getActivationInstance(self: typeof(Vine), vine: VineMechanic)
+function Vine.getActivationInstances(self: typeof(Vine), vine: VineMechanic)
 	return vine.instance.Activator
 end
 

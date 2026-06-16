@@ -46,6 +46,7 @@ Sift = { wally = "csqrl/sift", version = "^0.0.11" }
 Signal = { wally = "data-oriented-house/lemonsignal", version = "^1.10.0" }
 typeforge = { wally = "cameronpcampbell/typeforge", version = "^3.0.4" }
 UILabs = { wally = "pepeeltoro41/ui-labs", version = "^2.4.2" }
+CatRom = { wally = "ecurtiss/catrom", version = "^1.0.0-rc1" }
 
 [overrides]
 "Liquid>Fluid" = { wally = "godmothersfire/fluid", version = "^0.6.41" }

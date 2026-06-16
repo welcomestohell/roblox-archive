@@ -12,7 +12,7 @@ export type MechanicImplementationMetadata = {
 	attributeSections: { AttributeSection },
 }
 
-export type Mechanic<Implementation = { [any]: any }, Mixin = {}> = Implementation & Mixin & {
+export type Mechanic<Implementation = { [unknown]: unknown }, Mixin = {}> = Implementation & Mixin & {
 	life: Life.Life,
 	id: string,
 	implementation: Implementation,
@@ -34,7 +34,8 @@ export type AnyMechanicImplementation = {
 	onInit: (self: any, level: any) -> ()?,
 	onStart: (self: any, mechanic: Mechanic<any>, level: any) -> ()?,
 	onActivate: (self: any, mechanic: Mechanic<any>, level: any, activationEvent: any) -> ()?,
-	onBindActivation: (self: any, mechanic: Mechanic<any>, level: any) -> ()?,
+	bindActivation: (self: any, mechanic: Mechanic<any>, level: any) -> ()?,
+	getActivationInstances: (self: any, mechanic: Mechanic<any>, level: any) -> (Instance | { Instance })?,
 }
 
 local Mechanic = {}

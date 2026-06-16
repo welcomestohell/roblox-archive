@@ -99,7 +99,7 @@ function Level.new(outerLife: Life.Life, name: string, instance: Instance)
 			onStart = prvd.lifecycle<<(Mechanic, Level)>>("onStart", prvd.fireConcurrent),
 			onActivate = prvd.lifecycle<<(Mechanic, Level, {})>>("onActivate", prvd.fireConcurrent),
 			bindActivation = prvd.lifecycle<<(Mechanic, Level)>>("bindActivation", prvd.fireConcurrent),
-			getActivationInstance = prvd.lifecycle<<(Mechanic, Level)>>("getActivationInstance", prvd.fireConcurrent),
+			getActivationInstances = prvd.lifecycle<<(Mechanic, Level)>>("getActivationInstances", prvd.fireConcurrent),
 		},
 	}, Level)
 
@@ -190,10 +190,6 @@ function Level.bindActivation(self: Level, mechanic: Mechanic)
 	local onActivate = self:getListenerForMechanic<<(Level, activation.ActivationEvent)>>(self.mechanicLifecycles.onActivate, mechanic)
 	if not onActivate then return end
 
-	-- stylua: ignore
-	local getActivationInstance = self:getListenerForMechanic<<(Level)>>(self.mechanicLifecycles.getActivationInstance, mechanic)
-	local instance = getActivationInstance and getActivationInstance(self) or mechanic.instance
-
 	local implementation: any = mechanic.implementation
 	local activationAttributes = implementation.Activation :: activation.ActivationAttributes
 	if not activationAttributes then
@@ -201,16 +197,23 @@ function Level.bindActivation(self: Level, mechanic: Mechanic)
 		implementation.Activation = activationAttributes
 	end
 
-	activation.bindActivation {
-		attributes = activationAttributes,
-		activationLife = mechanic.life,
-		instanceLife = mechanic.life,
-		instance = instance,
-		instanceConfiguration = mechanic.instanceConfiguration,
-		onActivate = function(context: activation.ActivationContext, event: activation.ActivationEvent)
-			onActivate(self, event)
-		end,
-	}
+	-- stylua: ignore
+	local getActivationInstances = self:getListenerForMechanic<<(Level)>>(self.mechanicLifecycles.getActivationInstances, mechanic)
+	local instance = getActivationInstances and getActivationInstances(self) or mechanic.instance
+	const instances: { Instance } = type(instance) == "table" and instance or { instance }
+
+	for _, instance in instances do
+		activation.bindActivation {
+			attributes = activationAttributes,
+			activationLife = mechanic.life,
+			instanceLife = mechanic.life,
+			instance = instance,
+			instanceConfiguration = mechanic.instanceConfiguration,
+			onActivate = function(context: activation.ActivationContext, event: activation.ActivationEvent)
+				onActivate(self, event)
+			end,
+		}
+	end
 end
 
 function Level.loadInstance(self: Level, instance: Instance): { Mechanic }

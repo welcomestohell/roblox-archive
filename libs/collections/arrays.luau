@@ -12,10 +12,10 @@ const function weaken<T>(array: { T }): { T }
 	return setmetatable(array, WEAK_METATABLE)
 end
 
-const function map<VI, VO>(original: { VI }, map: (VI) -> VO)
+const function map<VI, VO>(original: { VI }, map: (VI, number) -> VO)
 	const transformed = create(#original) :: { VO }
 	for index, original in original do
-		transformed[index] = map(original)
+		transformed[index] = map(original, index)
 	end
 	return transformed
 end
