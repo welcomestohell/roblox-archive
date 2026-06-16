@@ -4,6 +4,7 @@ export type Curve = types.Curve
 
 const curves = {
 	Bezier = require "@self/Bezier",
+	BSpline = require "@self/BSpline",
 	CatRom = require "@self/CatRom",
 	Catenary = require "@self/Catenary",
 	Linear = require "@self/Linear",
