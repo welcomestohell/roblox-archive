@@ -3,6 +3,7 @@ const constraints = require "@libs/constraints"
 const curves = require "@libs/curves"
 const functions = require "@libs/functions"
 const std = require "@libs/std"
+const toggle = require "@libs/toggle"
 const Oklab = require "@libs/vendor/Oklab"
 
 const Zipline = std.Mechanic {
@@ -15,10 +16,9 @@ const Zipline = std.Mechanic {
 	},
 
 	std.AttributeSection "Curve",
-	CurveType = std.Attribute("CurveType", std.gt.keysOf(curves), "CatRom"),
+	CurveType = std.Attribute("CurveType", std.gt.keysOf(curves.CURVES), "CatmullRom"),
 	CatenarySlack = std.Attribute("CatenarySlack", std.gt.constrainNumberExclusive(1), 1.05),
 
-	-- TODO: SegmentTransparency akin to SegmentColor, tho I'm not that unemployed
 	std.AttributeSection "Segments",
 	SegmentType = std.Attribute("SegmentType", std.gt.literals("Part", "Beam"), "Part"),
 	SegmentCount = std.Attribute("SegmentCount", std.gt.positiveNumber, 20),
@@ -116,10 +116,10 @@ function Zipline.createSegments(zipline: ZiplineMechanic)
 
 	const segmentType = zipline:SegmentType()
 	const segmentCount = zipline:calculateSegmentCount()
-	local previousPosition = zipline.curve:solvePosition(0)
 
 	const startPoint = zipline.pointInstances[1]
 	const startPointPosition = zipline.points[1]
+	local previousPosition = zipline.curve:solvePosition(0)
 
 	for index = 1, segmentCount do
 		const alpha = index / segmentCount
@@ -144,6 +144,8 @@ function Zipline.createSegments(zipline: ZiplineMechanic)
 			segment.Material = Enum.Material.SmoothPlastic
 			segment.Shape = Enum.PartType.Cylinder
 			segment.Size = Vector3.new(segmentLength, 0, 0)
+
+			constraints.weld(segmentsLife, startPoint, segment)
 			segment.Parent = zipline.segmentsPartContainer
 
 			activation.bindActivation {
@@ -153,8 +155,6 @@ function Zipline.createSegments(zipline: ZiplineMechanic)
 				instanceConfiguration = zipline.instanceConfiguration,
 				onActivate = zipline.onActivateCallback,
 			}
-
-			constraints.weld(segmentsLife, startPoint, segment)
 		else
 			segment = segmentsLife:add(Instance.new "Beam")
 			segment.Name = tostring(index)
@@ -236,6 +236,7 @@ function Zipline.solvePoints(zipline: ZiplineMechanic): { Vector3 }
 		if point and point:IsA "BasePart" then
 			table.insert(zipline.points, point.Position)
 			table.insert(zipline.pointInstances, point)
+			toggle.SetCollision(point, false)
 			-- FIXME: Name property doesn't fire??
 			pointsLife:destroyOn(point:GetPropertyChangedSignal "Name")
 			pointsLife:destroyOn(point:GetPropertyChangedSignal "Position")
@@ -245,6 +246,31 @@ function Zipline.solvePoints(zipline: ZiplineMechanic): { Vector3 }
 	end
 
 	zipline:createCurve()
+
+	const pointCount = #zipline.pointInstances
+	for index, point in zipline.pointInstances do
+		toggle.toggleInstance(index % pointCount <= 1, point)
+
+		if index == 1 then
+			activation.bindActivation {
+				attributes = zipline.StartpointActivation,
+				instanceLife = pointsLife,
+				instance = zipline.pointInstances[1],
+				instanceConfiguration = zipline.instanceConfiguration,
+				onActivate = zipline.onActivateCallback,
+			}
+		end
+
+		if index == #zipline.pointInstances then
+			activation.bindActivation {
+				attributes = zipline.EndpointActivation,
+				instanceLife = pointsLife,
+				instance = zipline.pointInstances[#zipline.pointInstances],
+				instanceConfiguration = zipline.instanceConfiguration,
+				onActivate = zipline.onActivateCallback,
+			}
+		end
+	end
 
 	return zipline.points
 end
@@ -288,19 +314,13 @@ function Zipline.onStart(self: typeof(Zipline), zipline: ZiplineMechanic, level:
 	)
 end
 
-function Zipline.getActivationInstances(self: typeof(Zipline), zipline: ZiplineMechanic)
-	return {
-		zipline.instance.Points:FindFirstChild "1",
-		zipline.instance.Points:FindFirstChild(tostring(#zipline.instance.Points:GetChildren())),
-	}
-end
-
 function Zipline.onActivate(
 	self: typeof(Zipline),
 	zipline: ZiplineMechanic,
 	level: std.Level,
 	event: activation.ActivationEvent
 )
+	print("im so activated:", event)
 end
 
 return Zipline

@@ -5,10 +5,10 @@ export type Curve = types.Curve
 const curves = {
 	Bezier = require "@self/Bezier",
 	BSpline = require "@self/BSpline",
-	CatRom = require "@self/CatRom",
 	Catenary = require "@self/Catenary",
+	CatmullRom = require "@self/CatmullRom",
 	Linear = require "@self/Linear",
 }
 
-curves.CURVES = curves :: { [string]: Curve }
+curves.CURVES = table.clone(curves) :: { [string]: Curve }
 return table.freeze(curves)
