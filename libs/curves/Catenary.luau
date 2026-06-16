@@ -5,7 +5,7 @@
 --   https://www.alanzucconi.com/2020/12/13/catenary-2/
 --   https://en.wikipedia.org/wiki/Catenary#Mathematical_description
 
-const PRECISION = 0.0001
+const PRECISION = 0.00001
 
 const Catenary = {}
 Catenary.__index = Catenary
@@ -20,12 +20,6 @@ const function coth(x: number)
 end
 
 function Catenary.solve2D(h: number, v: number, l: number): (number, number, number)
-	local minLength = math.sqrt(h ^ 2 + v ^ 2)
-	if l <= minLength then
-		-- approximate as a straight line
-		return 99999, h / 2, v / 2
-	end
-
 	local target = math.sqrt(l ^ 2 - v ^ 2)
 
 	local aLow = 0.001
@@ -42,8 +36,7 @@ function Catenary.solve2D(h: number, v: number, l: number): (number, number, num
 		end
 	end
 
-	-- prevent division by zero if l matches v perfectly
-	local n = (l + v) / math.max(l - v, 0.00001)
+	local n = (l + v) / (l - v)
 
 	const p = (h - a * math.log(n)) / 2
 	const q = (v - l * coth(h / (2 * a))) / 2
@@ -60,15 +53,11 @@ function Catenary.create3DSolver(p1: Vector3, p2: Vector3, l: number): (t: numbe
 
 	const horizontalUnit = horizontalDirection.Unit
 
-	return if h < PRECISION
-		then function(t)
-			return p1:Lerp(p2, t)
-		end
-		else function(t)
-			local x = h * t
-			local y = a * math.cosh((x - p) / a) + q
-			return Vector3.new(p1.X + horizontalUnit.X * x, p1.Y + y, p1.Z + horizontalUnit.Z * x)
-		end
+	return function(t)
+		local x = h * t
+		local y = a * math.cosh((x - p) / a) + q
+		return Vector3.new(p1.X + horizontalUnit.X * x, p1.Y + y, p1.Z + horizontalUnit.Z * x)
+	end
 end
 
 function Catenary.new(props: { points: { Vector3 }, slack: number }): Catenary
@@ -87,10 +76,11 @@ function Catenary.new(props: { points: { Vector3 }, slack: number }): Catenary
 end
 
 function Catenary.solvePosition(self: Catenary, alpha: number): Vector3
-	alpha = math.clamp(alpha, 0, 0.99999)
+	alpha = math.clamp(alpha, 0, 1 - PRECISION)
 
 	local segmentCount = #self.solvers
 	if segmentCount <= 1 then return self.points[1] or Vector3.zero end
+
 	local index = alpha * segmentCount
 	local segmentIndex = math.clamp(math.floor(index) + 1, 1, segmentCount)
 	local t = index - math.floor(index)
