@@ -26,7 +26,7 @@ function Catenary.solve2D(h: number, v: number, l: number): (number, number, num
 	local aHigh = 100000.0
 	local a = (aLow + aHigh) / 2
 
-	while (aHigh - aLow) > PRECISION do
+	while aHigh - aLow > PRECISION do
 		a = (aLow + aHigh) / 2
 
 		if target >= 2 * a * math.sinh(h / (2 * a)) then
