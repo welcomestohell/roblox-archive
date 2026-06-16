@@ -131,8 +131,8 @@ function Zipline.createSegments(zipline: ZiplineMechanic)
 		end
 
 		const segmentLength = (nextPosition - previousPosition).Magnitude
-		local segmentCFrame = CFrame.lookAt(previousPosition, nextPosition) * CFrame.Angles(0, math.pi * 0.5, 0)
-		segmentCFrame += segmentCFrame.RightVector * (segmentLength / 2)
+		const centerPosition = previousPosition:Lerp(nextPosition, 0.5)
+		const segmentCFrame = CFrame.lookAt(centerPosition, nextPosition) * CFrame.Angles(0, math.pi * 0.5, 0)
 
 		local segment
 		if segmentType == "Part" then
@@ -218,6 +218,7 @@ function Zipline.createCurve(zipline: ZiplineMechanic)
 	zipline:createSegments()
 end
 
+-- FIXME: there are bugs when removing points at runtime, fix tmr morning
 function Zipline.solvePoints(zipline: ZiplineMechanic): { Vector3 }
 	if zipline.pointsLife and zipline.pointsLife.alive then zipline.pointsLife:destroy() end
 
