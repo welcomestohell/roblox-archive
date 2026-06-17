@@ -402,19 +402,7 @@ function Zipline.onActivate(
 		currentDirection = -1
 	end
 
-	const activatables: { [std.Attribute<boolean>]: boolean } = {
-		[self.StartpointActivation.Enabled] = self.StartpointActivation.Enabled(zipline),
-		[self.EndpointActivation.Enabled] = self.EndpointActivation.Enabled(zipline),
-		[self.SegmentActivation.Enabled] = self.SegmentActivation.Enabled(zipline),
-	}
-
-	for activatableAttribute in activatables do
-		activatableAttribute(zipline, false)
-	end
-
 	const function onDismount()
-		mounts.dismountMechanic(toucher, zipline)
-
 		if isPlayer then
 			const humanoid = character.getMaybeHumanoid()
 			if humanoid then
@@ -429,11 +417,7 @@ function Zipline.onActivate(
 				* currentDirection
 		end
 
-		zipline.life:delay(zipline:Cooldown(), function(zipline: ZiplineMechanic, activatables: typeof(activatables))
-			for activatableAttribute, wasActivable in activatables do
-				activatableAttribute(zipline, wasActivable)
-			end
-		end, zipline, activatables)
+		zipline.life:delay(zipline:Cooldown(), mounts.dismountMechanic, toucher, zipline)
 	end
 
 	activationLife:destroyOn(mounts.mountMechanic(toucher, zipline))
