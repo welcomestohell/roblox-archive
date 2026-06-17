@@ -45,7 +45,7 @@ const Zipline = std.Mechanic {
 
 	std.AttributeSection "User Control",
 	UserControlEnabled = std.Attribute("UserControlEnabled", std.gt.boolean(), false),
-	UserControlAcceleration = std.Attribute("UserControlAcceleration", std.gt.positiveNumber, 1 / 0.25),
+	UserControlAcceleration = std.Attribute("UserControlAcceleration", std.gt.positiveNumber, 1 / 0.1),
 
 	std.AttributeSection "Activation",
 	StartpointActivation = activation.useAttributes "StartpointActivation",
