@@ -46,6 +46,7 @@ const function castIntoTarget(toucher: BasePart)
 	end
 end
 
+--- @deprecated use `mounts.castToucher`
 const function castIntoMount(toucher: BasePart)
 	if character.isFromMaybeCharacter(toucher) then
 		return character.getCharacter().Head

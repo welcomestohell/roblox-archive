@@ -1,7 +1,7 @@
 const Attribute = require "@libs/attributes/Attribute"
 local gt = require "@libs/vendor/gt"
 local touch = require "@libs/touch"
-local types = require "./types"
+local types = require "@libs/activation/types"
 
 local function useAttributes(basename: string?): types.ActivationAttributes
 	basename = basename or "Activation"

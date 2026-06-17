@@ -1,6 +1,7 @@
 local destruction = require "./destruction"
 local tables = require "@libs/collections/tables"
 local threadpool = require "@libs/threadpool"
+const Signal = require "@roblox_packages/Signal"
 
 --[=[
 	@class life
@@ -87,13 +88,14 @@ function Life.removeAll(self: Life)
 	table.clear(self.objects)
 end
 
-function Life.destroyOn(self: Life, signal: RBXScriptSignal): RBXScriptConnection?
-	return if self.destroyed
-		then nil
-		else self:add(signal:Connect(function()
-			self:destroy()
-		end))
+const function destroyOn(self: Life, signal: RBXScriptSignal | Signal.Signal<...any>)
+	return if self.destroyed then nil else self:add((signal :: any):Connect(self:wrapDestroy()))
 end
+
+Life.destroyOn = destroyOn :: (
+	& ((self: Life, signal: RBXScriptSignal) -> RBXScriptConnection?)
+	& (<T...>(self: Life, signal: Signal.Signal<T...>) -> Signal.Connection<T...>?)
+)
 
 function Life.destroy(self: Life)
 	if self.destroyed == false then

@@ -2,6 +2,7 @@ const activation = require "@libs/activation"
 const Attribute = require "@libs/attributes/Attribute"
 const character = require "@libs/character"
 const constraints = require "@libs/constraints"
+const mounts = require "@libs/mounts"
 const std = require "@libs/std"
 
 const Seat = std.Mechanic {
@@ -22,23 +23,22 @@ const Seat = std.Mechanic {
 
 export type SeatMechanic = std.Mechanic<typeof(Seat)>
 
--- FIXME: You can mount yourself on multiple seats. EToH solves this with a
--- shared mountedCOs table, we might need a mounts library
 function Seat.onActivate(self: typeof(Seat), seat: SeatMechanic, level: std.Level)
 	const rootPart = character.getMaybeHumanoidRootPart()
 	const humanoid = character.getMaybeHumanoid()
 
-	if not rootPart or not humanoid then return end
+	if not rootPart or not humanoid or mounts.isMechanicMounted(rootPart, seat) then return end
+	const deactivationLife = seat.life:extend()
+	deactivationLife:destroyOn(mounts.mountMechanic(rootPart, seat))
 
 	self.Activation.Enabled(seat, false)
 	humanoid.Sit = true
-
-	const deactivationLife = seat.life:extend()
 	rootPart.CFrame = (seat.instance.CFrame + seat.instance.CFrame.UpVector * (seat.instance.Size.Y / 2 + 1.5))
 		* seat:Offset()
 	constraints.weld(deactivationLife, seat.instance, rootPart)
 
 	deactivationLife:add(function()
+		mounts.dismountMechanic(rootPart, seat)
 		rootPart.CFrame = CFrame.new(rootPart.Position) * CFrame.Angles(0, math.rad(rootPart.Orientation.Y), 0)
 		humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
 		seat.life:delay(seat:Cooldown(), Attribute.set :: any, self.Activation.Enabled, seat, true)

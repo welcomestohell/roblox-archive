@@ -20,6 +20,8 @@ export type Mechanic<Implementation = { [unknown]: unknown }, Mixin = {}> = Impl
 	instanceConfiguration: Instance,
 }
 
+export type AnyMechanic = any
+
 export type AnyMechanicImplementation = {
 	name: string,
 	instanceType: Instance,

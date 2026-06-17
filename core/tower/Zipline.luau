@@ -1,7 +1,12 @@
+const RunService = game:GetService "RunService"
+
 const activation = require "@libs/activation"
+const Attribute = require "@libs/attributes/Attribute"
+const character = require "@libs/character"
 const constraints = require "@libs/constraints"
 const curves = require "@libs/curves"
 const functions = require "@libs/functions"
+const mounts = require "@libs/mounts"
 const std = require "@libs/std"
 const toggle = require "@libs/toggle"
 const Oklab = require "@libs/vendor/Oklab"
@@ -11,9 +16,12 @@ const Zipline = std.Mechanic {
 	name = "Zipline",
 	description = "When activated, carries the activator across it's curve.",
 	instanceType = std.gt.instanceTree {
-		-- Handle = std.isA.BasePart(),
+		Handle = std.isA.BasePart(),
 		Points = std.isA.Instance(),
 	},
+
+	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 1),
+	Speed = std.Attribute("Speed", std.gt.positiveNumber, 1),
 
 	std.AttributeSection "Curve",
 	CurveType = std.Attribute("CurveType", std.gt.keysOf(curves.CURVES), "CatmullRom"),
@@ -38,6 +46,9 @@ const Zipline = std.Mechanic {
 	StartpointActivation = activation.useAttributes "StartpointActivation",
 	EndpointActivation = activation.useAttributes "EndpointActivation",
 	SegmentActivation = activation.useAttributes "SegmentActivation",
+
+	std.AttributeSection "Dismount",
+	Dismount = activation.useAttributes "Dismount",
 }
 
 export type ZiplineMechanic = std.Mechanic<typeof(Zipline), {
@@ -45,11 +56,15 @@ export type ZiplineMechanic = std.Mechanic<typeof(Zipline), {
 
 	segmentsLife: std.Life?,
 	segmentsPartContainer: Instance,
-	segments: { BasePart | Beam },
+	segments: { CFrame },
+	segmentLengths: { number },
+	segmentInstances: { BasePart | Beam },
 
 	pointsLife: std.Life?,
 	pointInstances: { BasePart },
 	points: { Vector3 },
+
+	handle: BasePart,
 }>
 
 -- we bind activation ourselves
@@ -113,6 +128,8 @@ function Zipline.createSegments(zipline: ZiplineMechanic)
 	const segmentsLife = zipline.life:extend()
 	zipline.segmentsLife = segmentsLife
 	table.clear(zipline.segments)
+	table.clear(zipline.segmentInstances)
+	table.clear(zipline.segmentLengths)
 
 	const segmentType = zipline:SegmentType()
 	const segmentCount = zipline:calculateSegmentCount()
@@ -172,7 +189,9 @@ function Zipline.createSegments(zipline: ZiplineMechanic)
 			attachment1.Parent = startPoint
 		end
 
-		table.insert(zipline.segments :: { BasePart | Beam }, segment)
+		table.insert(zipline.segments, segmentCFrame)
+		table.insert(zipline.segmentLengths, segmentLength)
+		table.insert(zipline.segmentInstances :: { BasePart | Beam }, segment)
 
 		previousPosition = nextPosition
 	end
@@ -186,14 +205,14 @@ function Zipline.updateSegments(zipline: ZiplineMechanic)
 	const thickness = zipline:SegmentThickness()
 
 	if zipline:SegmentType() == "Part" then
-		for _, part in zipline.segments :: { BasePart } do
+		for _, part in zipline.segmentInstances :: { BasePart } do
 			const index = tonumber(part.Name) :: number
 			part.Color = zipline:calculateSegmentPartColor(index, segmentCount)
 			part.Transparency = zipline:calculateSegmentTransparency(index, segmentCount)
 			part.Size = Vector3.new(part.Size.X, thickness, thickness)
 		end
 	else
-		for _, beam in zipline.segments :: { Beam } do
+		for _, beam in zipline.segmentInstances :: { Beam } do
 			const index = tonumber(beam.Name) :: number
 			beam.Color = ColorSequence.new(
 				zipline:calculateSegmentPartColor(index - 1, segmentCount),
@@ -276,6 +295,8 @@ function Zipline.solvePoints(zipline: ZiplineMechanic): { Vector3 }
 	return zipline.points
 end
 
+-- TODO: Move/refactor curve generation to the curves library, there are
+-- further usecases such as camera splines and tightrope ProceduralModels
 function Zipline.onStart(self: typeof(Zipline), zipline: ZiplineMechanic, level: std.Level)
 	function zipline.onActivateCallback(_, event: activation.ActivationEvent)
 		self:onActivate(zipline, level, event)
@@ -297,7 +318,12 @@ function Zipline.onStart(self: typeof(Zipline), zipline: ZiplineMechanic, level:
 	zipline.segmentsPartContainer.Name = "SegmentParts"
 	zipline.segmentsPartContainer.Parent = zipline.instance
 
+	zipline.handle = zipline.instance.Handle
+	zipline.handle.Parent = nil
+
 	zipline.segments = {}
+	zipline.segmentInstances = {}
+	zipline.segmentLengths = {}
 	zipline.points = {}
 	zipline.pointInstances = {}
 	zipline:solvePoints()
@@ -321,7 +347,222 @@ function Zipline.onActivate(
 	level: std.Level,
 	event: activation.ActivationEvent
 )
-	print("im so activated:", event)
+	const activator = if event.kind == "Touch" then event.toucher else character.getMaybeHumanoidRootPart()
+	const toucher = if activator and character.isFromCharacter(activator)
+		then character.getCharacter().Head
+		else activator
+
+	if not toucher or mounts.isMechanicMounted(toucher, zipline) then return end
+
+	const startpointActivatable = self.StartpointActivation.Enabled(zipline)
+	const endpointActivatable = self.EndpointActivation.Enabled(zipline)
+	const segmentActivatable = self.SegmentActivation.Enabled(zipline)
+
+	self.StartpointActivation.Enabled(zipline, false)
+	self.EndpointActivation.Enabled(zipline, false)
+	self.SegmentActivation.Enabled(zipline, false)
+
+	const activationLife = zipline.life:extend()
+	activationLife:destroyOn(mounts.mountMechanic(toucher, zipline))
+	activationLife:add(function()
+		mounts.dismountMechanic(toucher, zipline)
+
+		zipline.life:delay(
+			zipline:Cooldown(),
+			Attribute.set :: any,
+			self.StartpointActivation.Enabled,
+			zipline,
+			startpointActivatable
+		)
+
+		zipline.life:delay(
+			zipline:Cooldown(),
+			Attribute.set :: any,
+			self.EndpointActivation.Enabled,
+			zipline,
+			endpointActivatable
+		)
+
+		zipline.life:delay(
+			zipline:Cooldown(),
+			Attribute.set :: any,
+			self.SegmentActivation.Enabled,
+			zipline,
+			segmentActivatable
+		)
+
+		--[[
+			-- 	------------------------------------------------------------------------
+			-- 	--> Dismount function
+			-- 	local function dismountZipline()
+			-- 		rideScope:cleanup(true, true)
+
+			-- 		if isPlayer and humanoid then
+			-- 			utility.Character.carryPart(false, ropeBar, not configuration.HandleAnimation)
+			-- 			humanoid.PlatformStand = false
+
+			-- 			if configuration.JumpOnDismount then humanoid:ChangeState(Enum.HumanoidStateType.Jumping) end
+			-- 		end
+			-- 		utility.Functions.playSoundFromInstance(attachTo, soundsFolder, "Jump")
+
+			-- 		if mountedCOs[attachTo] and mountedCOs[attachTo][zipline] then
+			-- 			mountedCOs[attachTo][zipline] = nil
+			-- 			if utility.Table.IsEmpty(mountedCOs[attachTo]) then mountedCOs[attachTo] = nil end
+			-- 		end
+
+			-- 		task.delay(TOUCH_COOLDOWN, function()
+			-- 			rideDebounce[attachTo] = nil
+			-- 		end)
+
+			-- 		if not attachTo then return end
+			-- 		if configuration.KeepMomentum and segments[currentSegment] then
+			-- 			attachTo.AssemblyLinearVelocity = segments[currentSegment].CFrame.RightVector
+			-- 				* configuration.Speed
+			-- 				* currentDirection
+			-- 		else
+			-- 			attachTo.AssemblyLinearVelocity = Vector3.zero
+			-- 		end
+			-- 	end
+		]]
+	end)
+
+	const handle = activationLife:add(zipline.handle:Clone())
+	handle.CFrame = CFrame.lookAt(zipline.points[1], zipline.segments[1].Position)
+	handle.Parent = zipline.instance
+
+	toucher.CFrame = handle.CFrame - handle.CFrame.UpVector * (toucher.Size.X / 2)
+	constraints.weld(activationLife, handle, toucher)
+
+	local currentDirection = 1
+	local currentProgress = 0
+	local currentSegment = if event.kind ~= "Touch" or event.toucher == zipline.pointInstances[1]
+		then 1
+		elseif event.toucher == zipline.pointInstances[#zipline.pointInstances] then #zipline.segments
+		else table.find(zipline.segmentInstances, event.instance) or 1
+
+	activation.bindActivation {
+		attributes = self.Dismount,
+		instanceLife = activationLife,
+		instance = zipline.instance,
+		instanceConfiguration = zipline.instanceConfiguration,
+		onActivate = activationLife:wrapDestroy(),
+	}
+
+	activationLife:add(RunService.PreSimulation:Connect(function(deltaTime: number)
+		const segment = zipline.segments[currentSegment]
+		const segmentLength = zipline.segmentLengths[currentSegment]
+		const goal = segment + segment.RightVector * (currentProgress - (segmentLength / 2))
+
+		handle.CFrame = goal * CFrame.Angles(0, -math.pi / 2, 0)
+		currentProgress = math.clamp(
+			currentProgress + currentDirection * zipline:Speed() * deltaTime,
+			if currentSegment <= 1 then 0 else -math.huge,
+			if currentDirection >= #zipline.segments then segmentLength else math.huge
+		)
+
+		while true do
+			if currentProgress < segmentLength or currentSegment > #zipline.segments then break end
+
+			currentSegment += 1
+			currentProgress -= segmentLength
+			if not zipline.segments[currentSegment] then return activationLife:destroy() end
+		end
+	end))
+
+	-- 	------------------------------------------------------------------------
+	-- 	--> Move ride
+	-- 	rideScope:add(RunService.Heartbeat:Connect(function(deltaTime: number)
+	-- 		debug.profilebegin "Zipline Movement"
+	-- 		local segmentPart = segments[currentSegment]
+	-- 		if not segmentPart then
+	-- 			rideScope:cleanup(true, true)
+	-- 			return
+	-- 		end
+
+	-- 		local goalCF = segmentPart.CFrame
+	-- 			+ segmentPart.CFrame.RightVector * (segmentProgress - (segmentPart.Size.X * 0.5))
+	-- 		ropeGuide.CFrame = goalCF * CFrame.Angles(0, -math.pi * 0.5, 0)
+
+	-- 		segmentProgress += currentDirection * configuration.Speed * deltaTime
+	-- 		segmentProgress = math.clamp(
+	-- 			segmentProgress,
+	-- 			if currentSegment <= 1 then 0 else -math.huge,
+	-- 			if currentSegment >= #segments then segmentPart.Size.X else math.huge
+	-- 		)
+	-- 		local ziplineBlocked = (currentSegment <= 1 and segmentProgress <= 0)
+	-- 			or (currentSegment >= #segments and segmentProgress >= segmentPart.Size.X)
+
+	-- 		local finishedSegmentUpdate = false
+	-- 		if currentDirection > 0 then
+	-- 			repeat
+	-- 				if segmentProgress > segmentPart.Size.X and currentSegment < #segments then
+	-- 					currentSegment += 1
+	-- 					segmentProgress -= segmentPart.Size.X
+
+	-- 					local newSegment = segments[currentSegment]
+	-- 					if not newSegment then
+	-- 						rideScope:cleanup(true, true)
+	-- 						return
+	-- 					end
+	-- 					segmentPart = newSegment
+	-- 				else
+	-- 					finishedSegmentUpdate = true
+	-- 				end
+	-- 			until finishedSegmentUpdate
+	-- 		elseif currentDirection < 0 then
+	-- 			repeat
+	-- 				if segmentProgress < 0 and currentSegment > 1 then
+	-- 					currentSegment -= 1
+	-- 					local newSegment = segments[currentSegment]
+	-- 					if not newSegment then
+	-- 						rideScope:cleanup(true, true)
+	-- 						return
+	-- 					end
+	-- 					segmentProgress += newSegment.Size.X
+	-- 					segmentPart = newSegment
+	-- 				else
+	-- 					finishedSegmentUpdate = true
+	-- 				end
+	-- 			until finishedSegmentUpdate
+	-- 		end
+
+	-- 		if configuration.AllowUserControl then
+	-- 			local controlVector = -controls:GetMoveVector().Z
+
+	-- 			local directionIncrement = CONTROL_ACCEL_TIME * deltaTime
+	-- 			if currentDirection < controlVector then
+	-- 				currentDirection = math.clamp(currentDirection + directionIncrement, -1, controlVector)
+	-- 			elseif currentDirection > controlVector then
+	-- 				currentDirection = math.clamp(currentDirection - directionIncrement, controlVector, 1)
+	-- 			end
+
+	-- 			if currentDirection == 0 or ziplineBlocked then
+	-- 				if particleClone.Enabled then particleClone.Enabled = false end
+	-- 				if loopSoundClone.Playing then loopSoundClone:Stop() end
+	-- 			elseif currentDirection ~= 0 and not ziplineBlocked then
+	-- 				if not particleClone.Enabled then particleClone.Enabled = true end
+	-- 				if not loopSoundClone.Playing then loopSoundClone:Play() end
+	-- 			end
+	-- 		end
+
+	-- 		if not attachTo or not attachTo.Parent or not (mountedCOs[attachTo] and mountedCOs[attachTo][zipline]) then
+	-- 			dismountZipline()
+	-- 		end
+
+	-- 		if currentSegment >= #segments and segmentProgress >= segmentPart.Size.X then
+	-- 			if configuration.AllowEndDismount then
+	-- 				dismountZipline()
+	-- 			elseif configuration.Loop then
+	-- 				currentSegment = 1
+	-- 				segmentProgress = 0
+	-- 			end
+	-- 		elseif currentSegment == 1 and segmentProgress <= 0 and configuration.Loop and currentDirection < 0 then
+	-- 			currentSegment = #segments
+	-- 			segmentProgress = segments[#segments].Size.X
+	-- 		end
+	-- 		debug.profileend()
+	-- 	end))
+	-- end
 end
 
 return Zipline

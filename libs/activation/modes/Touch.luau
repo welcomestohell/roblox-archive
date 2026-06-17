@@ -12,7 +12,7 @@ end
 function Touch.implement(context: types.ActivationContext)
 	context.activationLife:add((context.instance :: BasePart).Touched:Connect(function(toucher: BasePart)
 		if touch.isToucherValid(context.attributes.Touch, context.instance, context.instanceConfiguration, toucher) then
-			context:onActivate { kind = "Touch", toucher = toucher }
+			context:onActivate { kind = "Touch", toucher = toucher, instance = context.instance :: BasePart }
 		end
 	end))
 end
