@@ -10,6 +10,7 @@ const mounts = require "@libs/mounts"
 const std = require "@libs/std"
 const toggle = require "@libs/toggle"
 const Oklab = require "@libs/vendor/Oklab"
+const PlayerModule = require "@libs/vendor/PlayerModule"
 
 const Zipline = std.Mechanic {
 	emoji = "🚠",
@@ -23,8 +24,6 @@ const Zipline = std.Mechanic {
 	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 1),
 	Mode = std.Attribute("Mode", std.gt.literals("Zip", "Grind"), "Zip"),
 	Speed = std.Attribute("Speed", std.gt.positiveNumber, 1),
-	KeepMomentum = std.Attribute("KeepMomentum", std.gt.boolean(), true),
-	JumpOnDismount = std.Attribute("JumpOnDismount", std.gt.boolean(), true),
 
 	std.AttributeSection "Curve",
 	CurveType = std.Attribute("CurveType", std.gt.keysOf(curves.CURVES), "CatmullRom"),
@@ -41,12 +40,19 @@ const Zipline = std.Mechanic {
 		"AllPoints"
 	),
 
+	std.AttributeSection "User Control",
+	UserControlEnabled = std.Attribute("UserControlEnabled", std.gt.boolean(), false),
+	UserControlAcceleration = std.Attribute("UserControlAcceleration", std.gt.positiveNumber, 1 / 0.25),
+
 	std.AttributeSection "Activation",
 	StartpointActivation = activation.useAttributes "StartpointActivation",
 	EndpointActivation = activation.useAttributes "EndpointActivation",
 	SegmentActivation = activation.useAttributes "SegmentActivation",
 
 	std.AttributeSection "Dismount",
+	DismountOnEndpoints = std.Attribute("DismountOnEndpoints", std.gt.boolean(), true),
+	JumpOnDismount = std.Attribute("JumpOnDismount", std.gt.boolean(), true),
+	KeepMomentum = std.Attribute("KeepMomentum", std.gt.boolean(), true),
 	Dismount = activation.useAttributes "Dismount",
 }
 
@@ -371,6 +377,7 @@ function Zipline.onActivate(
 	const endpoint = zipline.pointInstances[#zipline.pointInstances]
 
 	local currentDirection = if event.kind == "Touch" and event.instance == endpoint then -1 else 1
+
 	local currentLength = if event.kind ~= "Touch" or event.instance == zipline.pointInstances[1]
 		then 0
 		elseif event.instance == endpoint then totalLength
@@ -443,58 +450,37 @@ function Zipline.onActivate(
 	}
 
 	activationLife:add(RunService.PreSimulation:Connect(function(deltaTime: number)
+		-- FIXME: starting from endpoint fucks this up
+		-- ...usercontrol needs a rework imo to use the camera direction
+		-- also, segmentactivation always face to endpoint, this should use
+		-- camera as well
+		-- we got much bigger fish to fry rn tho
+		if zipline:UserControlEnabled() then
+			const controlVector = -PlayerModule:GetControls():GetMoveVector().Z
+			const directionIncrement = zipline:UserControlAcceleration() * deltaTime
+
+			currentDirection = if currentDirection < controlVector
+				then math.clamp(currentDirection + directionIncrement, -1, controlVector)
+				else math.clamp(currentDirection - directionIncrement, controlVector, 1)
+		end
+
 		const currentSegment = currentSegment()
 		if not currentSegment then return activationLife:destroy() end
 
 		currentLength = math.clamp(currentLength + currentDirection * zipline:Speed() * deltaTime, 0, totalLength)
-		if currentLength >= totalLength - LOOKAHEAD or currentLength <= 0 then return activationLife:destroy() end
+		if zipline:DismountOnEndpoints() and (currentLength >= totalLength - LOOKAHEAD or currentLength <= 0) then
+			return activationLife:destroy()
+		end
 
 		const alpha = math.clamp(currentLength / totalLength, 0, 1)
 		const currentPosition = zipline.curve:solvePosition(alpha)
 
-		const targetAlpha = alpha + (currentDirection * LOOKAHEAD)
+		const lookDirection = if currentDirection == 0 then 1 else math.sign(currentDirection)
+		const targetAlpha = alpha + (lookDirection * LOOKAHEAD)
 		const targetPosition = zipline.curve:solvePosition(math.clamp(targetAlpha, 0, 1))
 
 		handle.CFrame = CFrame.lookAt(currentPosition, targetPosition)
 	end))
-
-	-- 		if configuration.AllowUserControl then
-	-- 			local controlVector = -controls:GetMoveVector().Z
-
-	-- 			local directionIncrement = CONTROL_ACCEL_TIME * deltaTime
-	-- 			if currentDirection < controlVector then
-	-- 				currentDirection = math.clamp(currentDirection + directionIncrement, -1, controlVector)
-	-- 			elseif currentDirection > controlVector then
-	-- 				currentDirection = math.clamp(currentDirection - directionIncrement, controlVector, 1)
-	-- 			end
-
-	-- 			if currentDirection == 0 or ziplineBlocked then
-	-- 				if particleClone.Enabled then particleClone.Enabled = false end
-	-- 				if loopSoundClone.Playing then loopSoundClone:Stop() end
-	-- 			elseif currentDirection ~= 0 and not ziplineBlocked then
-	-- 				if not particleClone.Enabled then particleClone.Enabled = true end
-	-- 				if not loopSoundClone.Playing then loopSoundClone:Play() end
-	-- 			end
-	-- 		end
-
-	-- 		if not attachTo or not attachTo.Parent or not (mountedCOs[attachTo] and mountedCOs[attachTo][zipline]) then
-	-- 			dismountZipline()
-	-- 		end
-
-	-- 		if currentSegment >= #segments and segmentProgress >= segmentPart.Size.X then
-	-- 			if configuration.AllowEndDismount then
-	-- 				dismountZipline()
-	-- 			elseif configuration.Loop then
-	-- 				currentSegment = 1
-	-- 				segmentProgress = 0
-	-- 			end
-	-- 		elseif currentSegment == 1 and segmentProgress <= 0 and configuration.Loop and currentDirection < 0 then
-	-- 			currentSegment = #segments
-	-- 			segmentProgress = segments[#segments].Size.X
-	-- 		end
-	-- 		debug.profileend()
-	-- 	end))
-	-- end
 end
 
 return Zipline

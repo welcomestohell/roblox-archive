@@ -1,3 +1,10 @@
-const PlayerModule = require "@playermodule"
+const RunService = game:GetService "RunService"
 
-return (require)(game:GetService("Players").LocalPlayer:WaitForChild "PlayerModule") :: typeof(PlayerModule)
+-- gng cooking up straight POISON
+return (
+	if RunService:IsClient()
+		then (require)(game:GetService("Players").LocalPlayer:WaitForChild("PlayerScripts"):WaitForChild "PlayerModule")
+		else {}
+) :: typeof((function()
+	return require "@playermodule"
+end)())

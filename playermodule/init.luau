@@ -7,22 +7,24 @@
 --]]
 
 -- Forked for use in Welcome To Hell
+const CameraModule = require "@self/CameraModule"
+const ControlModule = require "@self/ControlModule"
 
 local PlayerModule = {}
 PlayerModule.__index = PlayerModule
 
 function PlayerModule.new()
 	local self = setmetatable({}, PlayerModule)
-	self.cameras = require(script:WaitForChild "CameraModule")
-	self.controls = require(script:WaitForChild "ControlModule")
+	self.cameras = CameraModule
+	self.controls = ControlModule
 	return self
 end
 
-function PlayerModule:GetCameras()
+function PlayerModule.GetCameras(self: any): typeof(CameraModule)
 	return self.cameras
 end
 
-function PlayerModule:GetControls()
+function PlayerModule.GetControls(self: any): typeof(ControlModule)
 	return self.controls
 end
 
