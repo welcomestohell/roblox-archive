@@ -92,10 +92,7 @@ const function destroyOn(self: Life, signal: RBXScriptSignal | Signal.Signal<...
 	return if self.destroyed then nil else self:add((signal :: any):Connect(self:wrapDestroy()))
 end
 
-Life.destroyOn = destroyOn :: (
-	& ((self: Life, signal: RBXScriptSignal) -> RBXScriptConnection?)
-	& (<T...>(self: Life, signal: Signal.Signal<T...>) -> Signal.Connection<T...>?)
-)
+Life.destroyOn = destroyOn :: (self: Life, signal: RBXScriptSignal | Signal.Signal<...any>) -> any?
 
 function Life.destroy(self: Life)
 	if self.destroyed == false then
