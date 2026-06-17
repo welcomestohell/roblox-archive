@@ -67,6 +67,8 @@ export type ZiplineMechanic = std.Mechanic<typeof(Zipline), {
 	handle: BasePart,
 }>
 
+const LOOKAHEAD = 0.0001
+
 -- we bind activation ourselves
 Zipline.bindActivation = functions.noop
 
@@ -253,15 +255,18 @@ function Zipline.solvePoints(zipline: ZiplineMechanic): { Vector3 }
 	const container = zipline.instance.Points
 	for index = 1, #container:GetChildren() do
 		const point = container:FindFirstChild(tostring(index))
-		if point and point:IsA "BasePart" then
-			table.insert(zipline.points, point.Position)
-			table.insert(zipline.pointInstances, point)
-			toggle.SetCollision(point, false)
+		if not point then continue end
+
+		const part = if point:IsA "BasePart" then point elseif point:IsA "Model" then point.PrimaryPart else nil
+		if part then
+			table.insert(zipline.points, part.Position)
+			table.insert(zipline.pointInstances, part)
+			toggle.SetCollision(part, false)
 			-- FIXME: Name property doesn't fire??
 			pointsLife:destroyOn(point:GetPropertyChangedSignal "Name")
-			pointsLife:destroyOn(point:GetPropertyChangedSignal "Position")
-			pointsLife:add(point:GetPropertyChangedSignal("Color"):Connect(zipline.updateSegmentsCallback))
-			pointsLife:add(point:GetPropertyChangedSignal("Transparency"):Connect(zipline.updateSegmentsCallback))
+			pointsLife:destroyOn(part:GetPropertyChangedSignal "Position")
+			pointsLife:add(part:GetPropertyChangedSignal("Color"):Connect(zipline.updateSegmentsCallback))
+			pointsLife:add(part:GetPropertyChangedSignal("Transparency"):Connect(zipline.updateSegmentsCallback))
 		end
 	end
 
@@ -365,6 +370,7 @@ function Zipline.onActivate(
 	const activationLife = zipline.life:extend()
 	activationLife:destroyOn(mounts.mountMechanic(toucher, zipline))
 	activationLife:add(function()
+		print "Im so destroyed"
 		mounts.dismountMechanic(toucher, zipline)
 
 		zipline.life:delay(
@@ -426,19 +432,35 @@ function Zipline.onActivate(
 		]]
 	end)
 
+	local totalLength = 0
+	local segmentTotalLengths = {}
+	for index, length in zipline.segmentLengths do
+		segmentTotalLengths[index] = totalLength
+		totalLength += length
+	end
+
+	const endpoint = zipline.pointInstances[#zipline.pointInstances]
+
+	local currentDirection = if event.kind == "Touch" and event.instance == endpoint then -1 else 1
+	local currentLength = if event.kind ~= "Touch" or event.instance == zipline.pointInstances[1]
+		then 0
+		elseif event.instance == endpoint then totalLength
+		else segmentTotalLengths[table.find(zipline.segmentInstances, event.instance) or 1]
+
+	const function currentSegment(): number?
+		const totalSegments = #segmentTotalLengths
+		for index = totalSegments, 1, -1 do
+			if currentLength >= segmentTotalLengths[index] then return index end
+		end
+		return totalSegments
+	end
+
 	const handle = activationLife:add(zipline.handle:Clone())
-	handle.CFrame = CFrame.lookAt(zipline.points[1], zipline.segments[1].Position)
+	handle.CFrame = zipline.segments[currentSegment() :: number] * CFrame.Angles(0, -math.pi / 2, 0)
 	handle.Parent = zipline.instance
 
 	toucher.CFrame = handle.CFrame - handle.CFrame.UpVector * (toucher.Size.X / 2)
 	constraints.weld(activationLife, handle, toucher)
-
-	local currentDirection = 1
-	local currentProgress = 0
-	local currentSegment = if event.kind ~= "Touch" or event.toucher == zipline.pointInstances[1]
-		then 1
-		elseif event.toucher == zipline.pointInstances[#zipline.pointInstances] then #zipline.segments
-		else table.find(zipline.segmentInstances, event.instance) or 1
 
 	activation.bindActivation {
 		attributes = self.Dismount,
@@ -449,24 +471,19 @@ function Zipline.onActivate(
 	}
 
 	activationLife:add(RunService.PreSimulation:Connect(function(deltaTime: number)
-		const segment = zipline.segments[currentSegment]
-		const segmentLength = zipline.segmentLengths[currentSegment]
-		const goal = segment + segment.RightVector * (currentProgress - (segmentLength / 2))
+		const currentSegment = currentSegment()
+		if not currentSegment then return activationLife:destroy() end
 
-		handle.CFrame = goal * CFrame.Angles(0, -math.pi / 2, 0)
-		currentProgress = math.clamp(
-			currentProgress + currentDirection * zipline:Speed() * deltaTime,
-			if currentSegment <= 1 then 0 else -math.huge,
-			if currentDirection >= #zipline.segments then segmentLength else math.huge
-		)
+		currentLength = math.clamp(currentLength + currentDirection * zipline:Speed() * deltaTime, 0, totalLength)
+		if currentLength >= totalLength - LOOKAHEAD or currentLength <= 0 then return activationLife:destroy() end
 
-		while true do
-			if currentProgress < segmentLength or currentSegment > #zipline.segments then break end
+		const alpha = math.clamp(currentLength / totalLength, 0, 1)
+		const currentPosition = zipline.curve:solvePosition(alpha)
 
-			currentSegment += 1
-			currentProgress -= segmentLength
-			if not zipline.segments[currentSegment] then return activationLife:destroy() end
-		end
+		const targetAlpha = alpha + (currentDirection * LOOKAHEAD)
+		const targetPosition = zipline.curve:solvePosition(math.clamp(targetAlpha, 0, 1))
+
+		handle.CFrame = CFrame.lookAt(currentPosition, targetPosition)
 	end))
 
 	-- 	------------------------------------------------------------------------
