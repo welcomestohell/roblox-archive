@@ -97,6 +97,8 @@ return table.freeze {
 
 	Enabled = Enabled,
 	Inverted = Inverted,
+	ToggleDescendants = ToggleDescendants,
+	ToggleDescendantsInheritAttributes = ToggleDescendantsInheritAttributes,
 	SetCollision = SetCollision,
 	SetTransparency = SetTransparency,
 	SetEnabled = SetEnabled,

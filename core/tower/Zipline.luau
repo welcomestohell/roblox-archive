@@ -1,28 +1,31 @@
 const RunService = game:GetService "RunService"
+const Workspace = game:GetService "Workspace"
 
+const Oklab = require "@libs/vendor/Oklab"
+const PlayerModule = require "@libs/vendor/PlayerModule"
 const activation = require "@libs/activation"
 const character = require "@libs/character"
 const constraints = require "@libs/constraints"
 const curves = require "@libs/curves"
 const functions = require "@libs/functions"
 const lerp = require "@libs/lerp"
+const logger = require "@core/shared/logger"
 const mounts = require "@libs/mounts"
 const std = require "@libs/std"
 const toggle = require "@libs/toggle"
-const Oklab = require "@libs/vendor/Oklab"
-const PlayerModule = require "@libs/vendor/PlayerModule"
 
 const Zipline = std.Mechanic {
 	emoji = "🚠",
 	name = "Zipline",
 	description = "When activated, carries the activator across it's curve.",
 	instanceType = std.gt.instanceTree {
-		Handle = std.isA.BasePart(),
+		Handle = std.gt.union(std.isA.BasePart(), std.isA.Model()),
 		Points = std.isA.Instance(),
 	},
 
-	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 1),
 	Mode = std.Attribute("Mode", std.gt.literals("Zip", "Grind"), "Zip"),
+	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 1),
+	HandleHidden = std.Attribute("HandleHidden", std.gt.boolean(), false),
 	Speed = std.Attribute("Speed", std.gt.positiveNumber, 1),
 
 	std.AttributeSection "Curve",
@@ -53,6 +56,7 @@ const Zipline = std.Mechanic {
 	DismountOnEndpoints = std.Attribute("DismountOnEndpoints", std.gt.boolean(), true),
 	JumpOnDismount = std.Attribute("JumpOnDismount", std.gt.boolean(), true),
 	KeepMomentum = std.Attribute("KeepMomentum", std.gt.boolean(), true),
+	DismountDelay = std.Attribute("DismountDelay", std.gt.positiveNumber, 0.1),
 	Dismount = activation.useAttributes "Dismount",
 }
 
@@ -69,10 +73,11 @@ export type ZiplineMechanic = std.Mechanic<typeof(Zipline), {
 	pointInstances: { BasePart },
 	points: { Vector3 },
 
-	handle: BasePart,
+	handle: BasePart | Model,
 }>
 
 const LOOKAHEAD = 0.0001
+const THRESHOLD = -0.1
 
 -- we bind activation ourselves
 Zipline.bindActivation = functions.noop
@@ -238,7 +243,7 @@ function Zipline.createCurve(zipline: ZiplineMechanic)
 	zipline:createSegments()
 end
 
--- FIXME: there are bugs when removing points at runtime, fix tmr morning
+-- FIXME: there are bugs when removing points at runtime
 function Zipline.solvePoints(zipline: ZiplineMechanic): { Vector3 }
 	if zipline.pointsLife and zipline.pointsLife.alive then zipline.pointsLife:destroy() end
 
@@ -359,42 +364,55 @@ function Zipline.onActivate(
 
 	if not toucher or mounts.isMechanicMounted(toucher, zipline) then return end
 
-	const startpointActivatable = self.StartpointActivation.Enabled(zipline)
-	const endpointActivatable = self.EndpointActivation.Enabled(zipline)
-	const segmentActivatable = self.SegmentActivation.Enabled(zipline)
+	const activationLife = zipline.life:extend()
+	const handleModel = activationLife:add(zipline.handle:Clone())
+	const handle = handleModel:IsA "BasePart" and handleModel or handleModel.PrimaryPart
+	if not handle then
+		logger:Error(zipline.instance, "is missing a Handle part")
+		return activationLife:destroy()
+	end
 
-	self.StartpointActivation.Enabled(zipline, false)
-	self.EndpointActivation.Enabled(zipline, false)
-	self.SegmentActivation.Enabled(zipline, false)
-
-	local totalLength = 0
-	local segmentTotalLengths = {}
+	local totalLength, totalSegments = 0, #zipline.segmentLengths
+	local segmentTotalLengths = table.create(totalSegments) :: { number }
 	for index, length in zipline.segmentLengths do
 		segmentTotalLengths[index] = totalLength
 		totalLength += length
 	end
 
 	const endpoint = zipline.pointInstances[#zipline.pointInstances]
-
-	local currentDirection = if event.kind == "Touch" and event.instance == endpoint then -1 else 1
-
-	local currentLength = if event.kind ~= "Touch" or event.instance == zipline.pointInstances[1]
-		then 0
-		elseif event.instance == endpoint then totalLength
-		else segmentTotalLengths[table.find(zipline.segmentInstances, event.instance) or 1]
-
-	const function currentSegment(): number
-		const totalSegments = #segmentTotalLengths
-		for index = totalSegments, 1, -1 do
-			if currentLength >= segmentTotalLengths[index] then return index end
+	local currentLength = 0
+	if event.kind == "Touch" then
+		if event.instance == endpoint then
+			currentLength = totalLength
+		else
+			const segmentIndex = table.find(zipline.segmentInstances, event.instance)
+			currentLength = if segmentIndex then segmentTotalLengths[segmentIndex] else 0
 		end
-		return totalSegments
 	end
 
-	const activationLife = zipline.life:extend()
-	activationLife:destroyOn(mounts.mountMechanic(toucher, zipline))
-	activationLife:destroyOn(toucher.Destroying)
-	activationLife:add(function()
+	-- stylua: ignore
+	local segmentIndex = math.clamp(math.floor(currentLength / totalLength * #segmentTotalLengths) + 1, 1, totalSegments)
+	const initialCFrame = zipline.segments[segmentIndex]
+	const initialTangent = initialCFrame.RightVector
+
+	local currentDirection = 1
+	if currentLength >= totalLength or (event.kind == "Touch" and event.instance == endpoint) then
+		currentDirection = -1
+	elseif currentLength > 0 and Workspace.CurrentCamera.CFrame.LookVector:Dot(initialTangent) < 0 then
+		currentDirection = -1
+	end
+
+	const activatables: { [std.Attribute<boolean>]: boolean } = {
+		[self.StartpointActivation.Enabled] = self.StartpointActivation.Enabled(zipline),
+		[self.EndpointActivation.Enabled] = self.EndpointActivation.Enabled(zipline),
+		[self.SegmentActivation.Enabled] = self.SegmentActivation.Enabled(zipline),
+	}
+
+	for activatableAttribute in activatables do
+		activatableAttribute(zipline, false)
+	end
+
+	const function onDismount()
 		mounts.dismountMechanic(toucher, zipline)
 
 		if isPlayer then
@@ -406,80 +424,112 @@ function Zipline.onActivate(
 		end
 
 		if zipline:KeepMomentum() then
-			toucher.AssemblyLinearVelocity = zipline.segments[currentSegment()].RightVector
+			toucher.AssemblyLinearVelocity = zipline.segments[segmentIndex].RightVector
 				* zipline:Speed()
 				* currentDirection
 		end
 
-		zipline.life:delay(
-			zipline:Cooldown(),
-			function(zipline: ZiplineMechanic, startpointActivatable, endpointActivatable, segmentActivatable)
-				zipline.StartpointActivation.Enabled(zipline, startpointActivatable)
-				zipline.EndpointActivation.Enabled(zipline, endpointActivatable)
-				zipline.SegmentActivation.Enabled(zipline, segmentActivatable)
-			end,
-			zipline,
-			startpointActivatable,
-			endpointActivatable,
-			segmentActivatable
-		)
-	end)
-
-	const handle = activationLife:add(zipline.handle:Clone())
-	handle.CFrame = zipline.segments[currentSegment() :: number]
-	if zipline:Mode() == "Grind" then
-		handle.Size = Vector3.zero
-		handle.Transparency = 1
+		zipline.life:delay(zipline:Cooldown(), function(zipline: ZiplineMechanic, activatables: typeof(activatables))
+			for activatableAttribute, wasActivable in activatables do
+				activatableAttribute(zipline, wasActivable)
+			end
+		end, zipline, activatables)
 	end
-	handle.Parent = zipline.instance
+
+	activationLife:destroyOn(mounts.mountMechanic(toucher, zipline))
+	activationLife:destroyOn(toucher.Destroying)
+	activationLife:add(onDismount)
+
+	const dismountDelay = zipline:DismountDelay()
+	const dismountStart = os.clock() + dismountDelay
+	activationLife:delay(dismountDelay, activation.bindActivation, {
+		attributes = self.Dismount,
+		instanceLife = activationLife,
+		instance = zipline.instance,
+		instanceConfiguration = zipline.instanceConfiguration,
+		onActivate = activationLife:wrapDestroy(),
+	})
+
+	if zipline:HandleHidden() or zipline:Mode() == "Grind" then
+		handle.Size = Vector3.zero
+		toggle.ToggleDescendants(handleModel, true)
+		toggle.ToggleDescendantsInheritAttributes(handleModel, true)
+		toggle.toggleInstance(false, handleModel)
+	end
+
+	handle.CFrame = initialCFrame
+	handleModel.Parent = zipline.instance
 
 	toucher.CFrame = if zipline:Mode() == "Zip"
 		then handle.CFrame - handle.CFrame.UpVector * (toucher.Size.X / 2)
 		else (if isPlayer
 			then handle.CFrame + handle.CFrame.UpVector * 3
 			else handle.CFrame + handle.CFrame.UpVector * (toucher.Size.X / 2)) * CFrame.Angles(0, -math.pi / 2, 0)
-
 	constraints.weld(activationLife, handle, toucher)
 
-	activation.bindActivation {
-		attributes = self.Dismount,
-		instanceLife = activationLife,
-		instance = zipline.instance,
-		instanceConfiguration = zipline.instanceConfiguration,
-		onActivate = activationLife:wrapDestroy(),
-	}
-
 	activationLife:add(RunService.PreSimulation:Connect(function(deltaTime: number)
-		-- FIXME: starting from endpoint fucks this up
-		-- ...usercontrol needs a rework imo to use the camera direction
-		-- also, segmentactivation always face to endpoint, this should use
-		-- camera as well
-		-- we got much bigger fish to fry rn tho
-		if zipline:UserControlEnabled() then
-			const controlVector = -PlayerModule:GetControls():GetMoveVector().Z
-			const directionIncrement = zipline:UserControlAcceleration() * deltaTime
+		debug.profilebegin "Zipline"
 
-			currentDirection = if currentDirection < controlVector
-				then math.clamp(currentDirection + directionIncrement, -1, controlVector)
-				else math.clamp(currentDirection - directionIncrement, controlVector, 1)
+		if zipline:UserControlEnabled() then
+			const moveVector: Vector3 = PlayerModule:GetControls():GetMoveVector()
+
+			local targetDirection = 0
+			if moveVector.Magnitude > 0 then
+				const cameraCFrame = Workspace.CurrentCamera.CFrame
+				const worldMoveDirection = Workspace.CurrentCamera.CFrame.RightVector * moveVector.X
+					+ cameraCFrame.LookVector * -moveVector.Z
+
+				const currentTangent = zipline.segments[segmentIndex].RightVector
+				const projection = worldMoveDirection.Unit:Dot(currentTangent)
+
+				targetDirection = if projection > THRESHOLD then 1 elseif projection < -THRESHOLD then -1 else 0
+			end
+
+			const directionIncrement = zipline:UserControlAcceleration() * deltaTime
+			currentDirection = if currentDirection < targetDirection
+				then math.min(currentDirection + directionIncrement, targetDirection)
+				else math.max(currentDirection - directionIncrement, targetDirection)
 		end
 
-		const currentSegment = currentSegment()
-		if not currentSegment then return activationLife:destroy() end
+		while segmentIndex < totalSegments and currentLength >= segmentTotalLengths[segmentIndex + 1] do
+			segmentIndex += 1
+		end
 
-		currentLength = math.clamp(currentLength + currentDirection * zipline:Speed() * deltaTime, 0, totalLength)
-		if zipline:DismountOnEndpoints() and (currentLength >= totalLength - LOOKAHEAD or currentLength <= 0) then
-			return activationLife:destroy()
+		while segmentIndex > 1 and currentLength < segmentTotalLengths[segmentIndex] do
+			segmentIndex -= 1
+		end
+
+		const isOutOfBounds = (currentLength <= 0 and currentDirection < 0)
+			or (currentLength >= totalLength and currentDirection > 0)
+
+		const appliedDirection = if isOutOfBounds then 0 else currentDirection
+		currentLength = math.clamp(currentLength + appliedDirection * zipline:Speed() * deltaTime, 0, totalLength)
+
+		if zipline:DismountOnEndpoints() and os.clock() > dismountStart then
+			if
+				(currentLength <= 0 and currentDirection < 0)
+				or (currentLength >= totalLength - LOOKAHEAD and currentDirection > 0)
+			then
+				return activationLife:destroy()
+			end
 		end
 
 		const alpha = math.clamp(currentLength / totalLength, 0, 1)
 		const currentPosition = zipline.curve:solvePosition(alpha)
 
 		const lookDirection = if currentDirection == 0 then 1 else math.sign(currentDirection)
-		const targetAlpha = alpha + (lookDirection * LOOKAHEAD)
-		const targetPosition = zipline.curve:solvePosition(math.clamp(targetAlpha, 0, 1))
+		const isEndpoint = alpha + (lookDirection * LOOKAHEAD) > 1 or alpha + (lookDirection * LOOKAHEAD) < 0
+		const targetAlpha = math.clamp(alpha + (if isEndpoint then -lookDirection else lookDirection) * LOOKAHEAD, 0, 1)
 
-		handle.CFrame = CFrame.lookAt(currentPosition, targetPosition)
+		const targetPosition = zipline.curve:solvePosition(targetAlpha)
+		if currentPosition == targetPosition then
+			handle.CFrame = zipline.segments[segmentIndex] - zipline.segments[segmentIndex].Position + currentPosition
+		else
+			local baseOrientation = CFrame.lookAt(currentPosition, targetPosition)
+			handle.CFrame = if isEndpoint then baseOrientation * CFrame.Angles(0, math.pi, 0) else baseOrientation
+		end
+
+		debug.profileend()
 	end))
 end
 
