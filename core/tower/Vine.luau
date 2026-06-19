@@ -1,10 +1,11 @@
 const activation = require "@libs/activation"
-local Attribute = require "@libs/attributes/Attribute"
-local character = require "@libs/character"
-local constraints = require "@libs/constraints"
-local emission = require "@libs/emission"
+const Attribute = require "@libs/attributes/Attribute"
+const character = require "@libs/character"
+const constraints = require "@libs/constraints"
+const emission = require "@libs/emission"
+const mounts = require "@libs/mounts"
 const std = require "@libs/std"
-local tweens = require "@libs/tweens"
+const tweens = require "@libs/tweens"
 
 const Vine = std.Mechanic {
 	emoji = "🪝",
@@ -24,8 +25,9 @@ const Vine = std.Mechanic {
 	-- TODO: implement animations
 	Animated = std.Attribute("Animated", std.gt.boolean(), true),
 	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 0),
-	KeepMomentum = std.Attribute("KeepMomentum", std.gt.boolean(), true),
+	HideHandle = std.Attribute("HideHandle", std.gt.boolean(), false),
 	JumpOnDismount = std.Attribute("JumpOnDismount", std.gt.boolean(), true),
+	KeepMomentum = std.Attribute("KeepMomentum", std.gt.boolean(), true),
 
 	ActivatorTransparency = std.Attribute("ActivatorTransparency", std.gt.constrainNumber(0, 1), 0),
 	ActivatorPosition = std.Attribute("ActivatorCFrame", std.gt.Vector3(), Vector3.zero),
@@ -46,7 +48,7 @@ const Vine = std.Mechanic {
 	std.AttributeSection "Tweens",
 	ActivatorTween = tweens.useAttributes "ActivatorTween",
 
-	active = {},
+	-- active = std,
 }
 
 export type VineMechanic = std.Mechanic<typeof(Vine), { handle: BasePart }>
@@ -68,26 +70,28 @@ function Vine.onActivate(self: typeof(Vine), vine: VineMechanic, level: std.Leve
 		then event.toucher
 		else character.getCharacter().Head
 
-	if self.active[toucher] then return end
-	self.active[toucher] = true
+	if mounts.isMechanicMounted(toucher, vine) then return end
 
-	const isPlayer = character.isFromCharacter(toucher)
-
-	const deactivationLife = vine.life:extend()
-	deactivationLife:destroyOn(toucher.Destroying)
+	const activationLife = vine.life:extend()
+	activationLife:destroyOn(mounts.mountMechanic(toucher, vine))
+	activationLife:destroyOn(toucher.Destroying)
 	self.Activation.Enabled(vine, false)
 
 	vine.instance.Activator.Transparency = 1
 	vine.instance.Activator.Position = vine.instance.Base.Position
 	vine.instance.Activator.Size = Vector3.zero
 
-	const handle = deactivationLife:add(vine.handle:Clone())
+	const handle = activationLife:add(vine.handle:Clone())
+	if vine:HideHandle() then
+		handle.Size = Vector3.zero
+		handle.Transparency = 1
+	end
 	handle.CFrame = toucher.CFrame + toucher.CFrame.UpVector * (toucher.Size.Y / 2)
 	handle.Anchored = false
 	handle.Parent = vine.instance
-	constraints.weld(deactivationLife, handle, toucher)
+	constraints.weld(activationLife, handle, toucher)
 
-	const constraint = deactivationLife:add(vine.instance.Constraint:Clone())
+	const constraint = activationLife:add(vine.instance.Constraint:Clone())
 	constraint.Color = vine.instance.Activator.BrickColor
 	constraint.Attachment0 = handle:FindFirstChild "HandleAttachment" :: Attachment
 	constraint.Attachment1 = vine.instance.Base:FindFirstChild "BaseAttachment" :: Attachment
@@ -96,12 +100,12 @@ function Vine.onActivate(self: typeof(Vine), vine: VineMechanic, level: std.Leve
 
 	emission.emitTaggedDescendants(vine.instance, vine:EmitActivatedTag())
 
-	deactivationLife:add(function()
+	activationLife:add(function()
 		self.active[toucher] = nil
 
 		if toucher and vine:KeepMomentum() == false then toucher.AssemblyLinearVelocity = Vector3.zero end
 
-		if isPlayer then
+		if character.isFromCharacter(toucher) then
 			const humanoid = character.getMaybeHumanoid()
 			if humanoid then
 				humanoid.PlatformStand = false
@@ -130,12 +134,11 @@ function Vine.onActivate(self: typeof(Vine), vine: VineMechanic, level: std.Leve
 	end)
 
 	activation.bindActivation {
-		instanceLife = deactivationLife,
+		instanceLife = activationLife,
 		instance = vine.instance.Activator,
 		instanceConfiguration = vine.instanceConfiguration,
 		attributes = self.Deactivation,
-
-		onActivate = deactivationLife:wrapDestroy() :: (...any) -> (),
+		onActivate = activationLife:wrapDestroy(),
 	}
 end
 

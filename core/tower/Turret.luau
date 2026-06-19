@@ -1,8 +1,6 @@
-const assets = require "@core/assets"
 const emission = require "@libs/emission"
 const logger = require "@core/shared/logger"
 const Level = require "@libs/core/Level"
-const sounds = require "@libs/sounds"
 const std = require "@libs/std"
 const touch = require "@libs/touch"
 
@@ -10,13 +8,14 @@ const Turret = std.Mechanic {
 	emoji = "🔫",
 	name = "Turret",
 	description = "Continously shoot bullets based on its current orientation.",
-	instanceType = std.gt.instanceTree(std.isA.Model(), {
+	instanceType = std.gt.instanceTree {
+		Base = std.isA.BasePart(),
 		Bullet = std.gt.instanceTree(std.isA.BasePart(), {
 			BulletAttachment = std.isA.Attachment(),
 			BulletAlignOrientation = std.isA.AlignOrientation(),
 			BulletVelocity = std.isA.LinearVelocity(),
 		}),
-	}),
+	},
 
 	Enabled = std.Attribute("Enabled", std.gt.boolean(), true),
 	SpreadAngle = std.Attribute("SpreadAngle", std.gt.NumberRange, NumberRange.new(0, 0)),
@@ -34,9 +33,6 @@ const Turret = std.Mechanic {
 	EmitTouchTag = std.Attribute("EmitTouchTag", std.gt.tag, "Turret: On Touch"),
 	EmitExpireTag = std.Attribute("EmitExpireTag", std.gt.tag, "Turret: On Expire"),
 
-	std.AttributeSection "Sound",
-	Sound = sounds.useAttributes(),
-
 	std.AttributeSection "Touch",
 	Touch = touch.useAttributes(),
 }
@@ -45,32 +41,23 @@ export type TurretMechanic = std.Mechanic<typeof(Turret), { template: Bullet }>
 export type Bullet = typeof(Turret.instanceType.Bullet)
 
 function Turret.calculateSpreadAngle(turret: TurretMechanic, direction: Vector3): Vector3
-	local spreadAngle: NumberRange = turret:SpreadAngle()
+	const spreadAngleRange: NumberRange = turret:SpreadAngle()
 
-	local directionCFrame = CFrame.new(Vector3.zero, direction)
-	local spreadDirection = CFrame.fromOrientation(0, 0, math.random() * math.tau)
-	local spreadAngle =
-		CFrame.fromOrientation(math.rad(spreadAngle.Min + math.random() * (spreadAngle.Max - spreadAngle.Min)), 0, 0)
+	const directionCFrame = CFrame.new(Vector3.zero, direction)
+	const spreadDirection = CFrame.fromOrientation(0, 0, math.random() * math.tau)
+	-- stylua: ignore
+	const spreadAngle = CFrame.fromOrientation(math.rad(spreadAngleRange.Min + math.random() * (spreadAngleRange.Max - spreadAngleRange.Min)), 0, 0)
 
 	return (directionCFrame * spreadDirection * spreadAngle).LookVector
 end
 
 function Turret.onActivate(self: typeof(Turret), turret: TurretMechanic)
-	local instance = turret.instance
-	local primaryPart = instance.PrimaryPart
+	emission.emitTaggedDescendants(turret.instance, turret:EmitFireTag())
 
-	if not primaryPart then return end
+	const bulletLife = turret.life:extend()
+	const bulletInstance = bulletLife:add(turret.template:Clone())
 
-	if turret.Sound.Play(turret) then
-		sounds.playInstance(turret.Sound, instance, turret.instanceConfiguration, assets.sfx.tick)
-	end
-
-	emission.emitTaggedDescendants(instance, turret:EmitFireTag())
-
-	local bulletLife = turret.life:extend()
-	local bulletInstance = bulletLife:add(turret.template:Clone())
-
-	local function cleanup(isTouch: boolean?)
+	const function cleanup(isTouch: boolean?)
 		emission.emitTaggedDescendants(
 			bulletInstance,
 			if isTouch then turret:EmitTouchTag() else turret:EmitExpireTag()
@@ -78,15 +65,15 @@ function Turret.onActivate(self: typeof(Turret), turret: TurretMechanic)
 		bulletLife:destroy()
 	end
 
-	local spawnCFrame: CFrame = primaryPart.CFrame
-	local spreadAngle = turret:calculateSpreadAngle(spawnCFrame.LookVector)
+	const spawnCFrame: CFrame = turret.instance.base.CFrame
+	const spreadAngle = turret:calculateSpreadAngle(spawnCFrame.LookVector)
 
 	bulletInstance.Massless = true
 	bulletInstance:PivotTo(spawnCFrame)
 
-	local mainAttachment = bulletInstance:FindFirstChildOfClass "Attachment"
-	local linearVelocity = bulletInstance:FindFirstChildOfClass "LinearVelocity"
-	local alignOrientation = bulletInstance:FindFirstChildOfClass "AlignOrientation"
+	const mainAttachment = bulletInstance:FindFirstChildOfClass "Attachment"
+	const linearVelocity = bulletInstance:FindFirstChildOfClass "LinearVelocity"
+	const alignOrientation = bulletInstance:FindFirstChildOfClass "AlignOrientation"
 
 	if not mainAttachment or not linearVelocity or not alignOrientation then return cleanup() end
 
@@ -98,14 +85,14 @@ function Turret.onActivate(self: typeof(Turret), turret: TurretMechanic)
 	linearVelocity.MaxForce = math.huge
 
 	alignOrientation.Attachment0 = mainAttachment
-	alignOrientation.CFrame = primaryPart.CFrame.Rotation
+	alignOrientation.CFrame = spawnCFrame.Rotation
 
 	bulletInstance.Anchored = false
-	bulletInstance.Parent = instance
+	bulletInstance.Parent = turret.instance
 
 	bulletLife:add(bulletInstance.Touched:Connect(function(toucher)
-		local destroyOnTouch = turret:DestroyOnTouch()
-		local isTouched = destroyOnTouch
+		const destroyOnTouch = turret:DestroyOnTouch()
+		const isTouched = destroyOnTouch
 			and not toucher:IsDescendantOf(turret.instance)
 			and not toucher:HasTag(turret:IgnoreTag())
 			and (
@@ -120,8 +107,8 @@ function Turret.onActivate(self: typeof(Turret), turret: TurretMechanic)
 end
 
 function Turret.onStart(self: typeof(Turret), turret: TurretMechanic, level: std.Level)
-	local instance = turret.instance
-	local primaryPart = instance.PrimaryPart
+	const instance = turret.instance
+	const primaryPart = instance.PrimaryPart
 
 	if not primaryPart then
 		logger:Error("Turret", instance:GetFullName(), "is missing the PrimaryPart.")

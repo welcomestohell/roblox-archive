@@ -46,18 +46,8 @@ const function castIntoTarget(toucher: BasePart)
 	end
 end
 
---- @deprecated use `mounts.castToucher`
-const function castIntoMount(toucher: BasePart)
-	if character.isFromMaybeCharacter(toucher) then
-		return character.getCharacter().Head
-	else
-		return toucher
-	end
-end
-
 return table.freeze {
 	useAttributes = useAttributes,
 	isToucherValid = isToucherValid,
 	castIntoTarget = castIntoTarget,
-	castIntoMount = castIntoMount,
 }

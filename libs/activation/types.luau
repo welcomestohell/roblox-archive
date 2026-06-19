@@ -20,7 +20,7 @@ export type ActivationAttributes = {
 export type ActivationEvent =
 	| { kind: "Click", detector: ClickDetector }
 	| { kind: "Died" }
-	| { kind: "Jumped" }
+	| { kind: "Jump" }
 	| { kind: "HumanoidStateChanged", old: Enum.HumanoidStateType, new: Enum.HumanoidStateType }
 	| { kind: "Prompt", prompt: ProximityPrompt }
 	| { kind: "Touch", instance: BasePart, toucher: BasePart }

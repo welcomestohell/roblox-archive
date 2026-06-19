@@ -25,7 +25,7 @@ const Zipline = std.Mechanic {
 
 	Mode = std.Attribute("Mode", std.gt.literals("Zip", "Grind"), "Zip"),
 	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 1),
-	HandleHidden = std.Attribute("HandleHidden", std.gt.boolean(), false),
+	HideHandle = std.Attribute("HideHandle", std.gt.boolean(), false),
 	Speed = std.Attribute("Speed", std.gt.positiveNumber, 1),
 
 	std.AttributeSection "Curve",
@@ -434,7 +434,7 @@ function Zipline.onActivate(
 		onActivate = activationLife:wrapDestroy(),
 	})
 
-	if zipline:HandleHidden() or zipline:Mode() == "Grind" then
+	if zipline:HideHandle() or zipline:Mode() == "Grind" then
 		handle.Size = Vector3.zero
 		toggle.ToggleDescendants(handleModel, true)
 		toggle.ToggleDescendantsInheritAttributes(handleModel, true)

@@ -317,7 +317,6 @@ function Level.start(self: Level)
 		RunService.PreAnimation:Connect(function(dt)
 			self.implementationLifecycles.onPreAnimation:fire(dt, self)
 		end),
-		-- TODO: Should we keep this, now that we have 'Level: Do Not Load' tag?
 		self.instance.DescendantAdded:Connect(function(instance)
 			for _, mechanic in self:loadInstance(instance) do
 				self.life:add(threadpool.spawn(Level.bindActivation, self, mechanic))

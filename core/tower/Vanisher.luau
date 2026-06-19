@@ -1,6 +1,5 @@
 const logger = require "@core/shared/logger"
 const std = require "@libs/std"
-const toggle = require "@libs/toggle"
 const touch = require "@libs/touch"
 const tweens = require "@libs/tweens"
 

@@ -85,11 +85,7 @@ function Button.onActivate(self: typeof(Button), button: ButtonMechanic, level: 
 
 	local deactivationLife = button.life:extend()
 	deactivationLife:addMany(
-		press.usePress {
-			instance = buttonPart,
-			instanceConfiguration = button.instanceConfiguration,
-			attributes = self.Press,
-		},
+		press.usePress(self.Press, buttonPart, button.instanceConfiguration),
 		function()
 			button:Active(false)
 			self:handleGroup(level, group)

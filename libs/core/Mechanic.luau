@@ -20,6 +20,7 @@ export type Mechanic<Implementation = { [unknown]: unknown }, Mixin = {}> = Impl
 	instanceConfiguration: Instance,
 }
 
+-- TODO: How do we type this?
 export type AnyMechanic = any
 
 export type AnyMechanicImplementation = {
@@ -89,28 +90,6 @@ end
 
 function Mechanic.downcast(self: {}): MechanicImplementation<AnyMechanicImplementation>
 	return self :: any
-end
-
-function Mechanic.attributeSection(self: {}, title: string)
-	-- self = Mechanic.downcast(self)
-
-	-- Yeah were doing metadata later
-	-- local section: AttributeSection = { title = title, attributes = {} }
-	-- self._metadata.currentAttributeSection = section
-	-- table.insert(self._metadata.attributeSections, section)
-end
-
-function Mechanic.endAttributeSection(self: {})
-	-- self = Mechanic.downcast(self)
-	-- self._metadata.currentAttributeSection = self._metadata.attributeSections[1]
-end
-
-function Mechanic.attribute<T>(self: {}, name: string, type: T, default: T): Attribute.Attribute<T>
-	-- self = Mechanic.downcast(self)
-
-	local attribute = Attribute.new(name, type, default)
-	-- table.insert(self._metadata.currentAttributeSection.attributes, attribute)
-	return attribute
 end
 
 return table.freeze(Mechanic)

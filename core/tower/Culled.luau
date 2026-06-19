@@ -3,7 +3,7 @@ local Players = game:GetService "Players"
 const logger = require "@core/shared/logger"
 const Attribute = require "@libs/attributes/Attribute"
 const tables = require "@libs/collections/tables"
-const properties = require "@libs/properties"
+const instances = require "@libs/instances"
 local CullThrottle = require "@roblox_packages/CullThrottle"
 local std = require "@libs/std"
 const types = require "@libs/types"
@@ -106,11 +106,11 @@ function Culled.updateVisible(culled: CulledMechanic, level: std.Level, isVisibl
 		or culled:UpdateDescendant() and culled.instance:FindFirstChild(culled:UpdateDescendant(), true)
 		or culled.instance
 
-	if culled:SetAnchored() then pcall(properties.setUnsafe, target, "Anchored", isVisible) end
+	if culled:SetAnchored() then pcall(instances.setUnsafe, target, "Anchored", isVisible) end
 
-	if culled:SetEnabled() then pcall(properties.setUnsafe, target, "Enabled", isVisible) end
+	if culled:SetEnabled() then pcall(instances.setUnsafe, target, "Enabled", isVisible) end
 
-	if culled:SetVisible() then pcall(properties.setUnsafe, target, "Visible", isVisible) end
+	if culled:SetVisible() then pcall(instances.setUnsafe, target, "Visible", isVisible) end
 
 	if culled:SetMechanicsEnabled() and level.mechanicsByInstance[target] then
 		for _, mechanic in level.mechanicsByInstance[target] do

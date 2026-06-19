@@ -1,5 +1,5 @@
 const Attribute = require "@libs/attributes/Attribute"
-const properties = require "@libs/properties"
+const instances = require "@libs/instances"
 const threadpool = require "@libs/threadpool"
 const tweens = require "@libs/tweens"
 const gt = require "@libs/vendor/gt"
@@ -33,7 +33,7 @@ const CLASSES_TO_TWEEN: { [string]: string } = {
 const Enabled = Attribute.new("Enabled", gt.boolean(), false)
 const Inverted = Attribute.new("Inverted", gt.boolean(), false)
 
-const ToggleDescendants = Attribute.new("ToggleDescendants", gt.boolean(), false)
+const ToggleDescendants = Attribute.new("ToggleDescendants", gt.boolean(), true)
 const ToggleDescendantsInheritAttributes = Attribute.new("ToggleDescendantsInheritAttributes", gt.boolean(), false)
 
 const SetCollision = Attribute.new("SetCollision", gt.boolean(), true)
@@ -60,7 +60,7 @@ const function toggleInstance(enabled: boolean, instance: Instance, instanceConf
 	if SetEnabled(instanceConfiguration) then
 		for className in CLASSES_TO_TOGGLE_ENABLED do
 			if instance:IsA(className) then
-				properties.setUnsafe(instance, "Enabled", enabled)
+				instances.setUnsafe(instance, "Enabled", enabled)
 				break
 			end
 		end
