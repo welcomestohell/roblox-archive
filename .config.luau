@@ -5,7 +5,9 @@ return {
 			members = { "./workspace/*" },
 
 			build = {
-				globals = {},
+				globals = {
+					TEST_GLOBAL = "foo",
+				},
 				place = {
 					folderCasing = "pascal",
 					baseProject = {

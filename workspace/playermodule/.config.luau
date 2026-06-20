@@ -3,11 +3,9 @@ return {
 		languagemode = "nocheck",
 		lint = { ["*"] = false },
 	},
-	wth = {
+	rose = {
 		placeMixin = {
-			transpile = true,
-			folderName = "PlayerModule",
-			rojo = {
+			mapping = {
 				{ name = "StarterPlayer" },
 				{ name = "StarterPlayerScripts" },
 			},

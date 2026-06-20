@@ -1,9 +1,7 @@
 return {
-	wth = {
+	rose = {
 		placeMixin = {
-			transpile = true,
-			folderName = "Libs",
-			rojo = {
+			mapping = {
 				{ name = "ReplicatedStorage" },
 			},
 		},

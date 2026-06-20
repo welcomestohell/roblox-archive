@@ -1,9 +1,8 @@
 return {
-	wth = {
+	rose = {
 		place = {
 			title = "Core",
-			folderName = "Core",
-			dependencies = { "libs", "pkgs", "playermodule" },
+			dependencies = { "libs", "playermodule" },
 		},
 	},
 }
