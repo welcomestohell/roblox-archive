@@ -53,7 +53,6 @@ CatRom = { wally = "ecurtiss/catrom", version = "^1.0.0-rc1" }
 
 [patches]
 "corecii/greentea" = { "0.4.11 roblox" = "patches/corecii+greentea-0.4.11+roblox.patch" }
-"josephh310/vide_typed" = { "0.4.4 roblox" = "patches/josephh310+vide_typed-0.4.4+roblox.patch" }
 "wally#paradoxum-games/lyra" = { "0.6.0 roblox" = "patches/wally#paradoxum-games+lyra-0.6.0+roblox.patch" }
 "prvdmwrong/core" = { "0.2.0-rewrite.2 roblox" = "patches/prvdmwrong+core-0.2.0-rewrite.2+roblox.patch" }
 "wally#godmothersfire/fluid" = { "0.6.41 roblox" = "patches/wally#godmothersfire+fluid-0.6.41+roblox.patch" }
