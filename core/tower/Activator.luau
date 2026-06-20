@@ -33,15 +33,15 @@ function Activator.onActivate(self: typeof(Activator), activator: ActivatorMecha
 
 	self.Activation.Enabled(activator, false)
 
-	local targetInstance = activator.instance.Target
+	local targetInstance = activator.instance:FindFirstChild "Target"
 	if targetInstance then self.tryActivate(targetInstance, level) end
 
-	for _, grouped in level:getGroupedInstances(self:Group()) do
+	for _, grouped in level:getGroupedInstances(activator:Group()) do
 		self.tryActivate(grouped, level)
 	end
 
 	task.wait(activator:Cooldown())
-	self.Activation.Enabled(activator, true)
+	if activator.life.alive then self.Activation.Enabled(activator, true) end
 end
 
 return Activator

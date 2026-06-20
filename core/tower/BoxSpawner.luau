@@ -67,7 +67,7 @@ function BoxSpawner.onActivate(self: typeof(BoxSpawner), spawner: BoxSpawnerMech
 		spawner.Activation.Enabled(spawner, true)
 	end, spawner)
 
-	spawner.life:add(press.usePress(self.Press, spawner.instance, spawner.instanceConfiguration, true))
+	spawner.life:add(press.usePress(self.Press, spawner.instance.Button, spawner.instanceConfiguration, true))
 
 	spawner:spawn(level)
 end

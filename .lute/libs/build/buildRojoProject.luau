@@ -13,21 +13,15 @@ local function insertMapping(
 	local current = tree
 
 	for _, segment in segments do
-		if not current[segment.name] then
-			current[segment.name] = {}
-		end
+		if not current[segment.name] then current[segment.name] = {} end
 
 		current = current[segment.name]
 
-		if segment.className then
-			current["$className"] = segment.className
-		end
+		if segment.className then current["$className"] = segment.className end
 	end
 
 	if sourceName and sourcePath then
-		if not current[sourceName] then
-			current[sourceName] = {}
-		end
+		if not current[sourceName] then current[sourceName] = {} end
 
 		current = current[sourceName]
 
@@ -63,8 +57,8 @@ local function buildRojoProject(kind: "source" | "output", members: { types.Mono
 	return {
 		name = `Welcome To Hell: {place.title}`,
 		emitLegacyScripts = false,
-		servePlaceIds = { tonumber(place.placeId) },
-		placeId = tonumber(place.placeId),
+		-- servePlaceIds = { tonumber(place.placeId) },
+		-- placeId = tonumber(place.placeId),
 		globIgnorePaths = { "**/.config.luau" },
 		tree = tree,
 	}

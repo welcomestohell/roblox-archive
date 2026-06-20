@@ -65,7 +65,7 @@ function Turret.onActivate(self: typeof(Turret), turret: TurretMechanic)
 		bulletLife:destroy()
 	end
 
-	const spawnCFrame: CFrame = turret.instance.base.CFrame
+	const spawnCFrame: CFrame = turret.instance.Base.CFrame
 	const spreadAngle = turret:calculateSpreadAngle(spawnCFrame.LookVector)
 
 	bulletInstance.Massless = true
