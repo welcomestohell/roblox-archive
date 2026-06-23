@@ -1,6 +1,7 @@
 # Pesde
 .pesde
 roblox_packages/*
+roblox_server_packages/*
 luau_packages
 lune_packages
 !roblox_packages/.config.luau
@@ -20,6 +21,8 @@ sourcemap.json
 # Environment variables
 .env
 
-# Rose development environment
-./rose
-./rose/**
+# Rose
+.rose
+.rose/**
+rose
+rose/**

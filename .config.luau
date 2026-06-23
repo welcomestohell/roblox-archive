@@ -10,8 +10,7 @@ return {
 				},
 				preInit = {
 					{ run = "asphalt sync studio" },
-					{ run = "lute rose ripple --nofail --nostdio -- blink {ROSE_DIR_PATH}/.blink" },
-					{ spawn = "lute rose ripple -c --nostdio --nofail -- blink --watch {ROSE_DIR_PATH}/.blink" },
+					{ run = "lute rose ripple --nofail --nostdio -- blink .blink" },
 				},
 				place = {
 					folderCasing = "pascal",

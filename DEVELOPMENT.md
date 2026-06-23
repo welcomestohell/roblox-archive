@@ -10,14 +10,15 @@ lute setup
 # install all packages if you wanna
 pesde install
 
-# list out all the scripts you can run
-lute scripts
+# list available rose commands
+lute rose help
 
 # all commands have --help
-lute dev --help
+lute rose dev --help
 
-# dev command has a built-in menu, try it out!
-lute dev title
+# start a live dev session for a workspace member
+# press Enter while dev is running to open the place in Roblox Studio
+lute rose dev kit
 
 # when you're done with libs, core, game, or chapter, deploy all places
 lute deploy
@@ -25,8 +26,9 @@ lute deploy
 # one will do just fine
 lute deploy title
 
-# need to run something inside all folders?
-lute ripple blink --watch .blink
+# all rose commands must be run from the repo root
+# need to run something across all workspace members?
+lute rose ripple -- pesde install
 ```
 
 ## Configuration
@@ -91,4 +93,4 @@ Starting with least dependencies:
 - `title`: The title screen, or spawn game, of Welcome To Hell.
 - `chapter1`, `chapter2`, etc: Individual chapters of Welcome To Hell.
 
-Code is copied and transformed inside the `out` folder.
+Code is copied and transformed inside the `.rose/build` folder.
