@@ -12,12 +12,12 @@
 		"**/.classpath",
 		"**/.settings",
 		// Welcome To Hell
-		"./.output",
+		// "./.output",
 		"./luau_packages",
 		"./lune_packages",
 		"./asphalt.lock.toml",
-		"./default.project.json",
-		"./sourcemap.project.json",
+		// "./default.project.json",
+		// "./sourcemap.project.json",
 	],
 	"languages": {
 		"Luau": {

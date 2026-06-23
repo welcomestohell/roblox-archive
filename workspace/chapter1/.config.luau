@@ -5,7 +5,7 @@ return {
 			placeId = "133797375930717",
 			dependencies = { "chapter" },
 			globals = {
-				WTH_CHAPTER_TITLE = "Chapter 1",
+				WTH_CHAPTER_TITLE = { value = "Chapter 1" },
 			},
 		},
 	},

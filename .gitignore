@@ -19,3 +19,7 @@ sourcemap.json
 
 # Environment variables
 .env
+
+# Rose development environment
+./rose
+./rose/**

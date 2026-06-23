@@ -7,7 +7,7 @@ export type Options = {
 	cwd: path.Pathlike?,
 	env: { [string]: string }?,
 	quiet: boolean?,
-	ignoreFailure: boolean?,
+	nofail: boolean?,
 	captureOutput: boolean?,
 }
 
@@ -32,11 +32,9 @@ local function run(program: string, args: { any }, options: Options?)
 
 	-- lute doesn't stream output when using `default` stdio; so we print it
 	-- here for ergonomics
-	if options.captureOutput and not options.quiet then
-		io.write(result.stdout, result.stderr)
-	end
+	if options.captureOutput and not options.quiet then io.write(result.stdout, result.stderr) end
 
-	return if result.ok or options.ignoreFailure then result else error(result.stderr)
+	return if result.ok or options.nofail then result else error(result.stderr)
 end
 
 return run

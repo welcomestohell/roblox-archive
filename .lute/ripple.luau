@@ -15,5 +15,5 @@ table.remove(forwarded, 1)
 
 for _, member in monorepo do
 	log.verbose(member.dirName)
-	task.spawn(run, program, forwarded, { cwd = member.dirPath, ignoreFailure = true } :: run.Options)
+	task.spawn(run, program, forwarded, { cwd = member.dirPath, nofail = true } :: run.Options)
 end

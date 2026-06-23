@@ -6,7 +6,12 @@ return {
 
 			build = {
 				globals = {
-					TEST_GLOBAL = "foo",
+					WTH_CHAPTER_TITLE = {},
+				},
+				preInit = {
+					{ run = "asphalt sync studio" },
+					{ run = "lute rose ripple --nofail --nostdio -- blink {ROSE_DIR_PATH}/.blink" },
+					{ spawn = "lute rose ripple -c --nostdio --nofail -- blink --watch {ROSE_DIR_PATH}/.blink" },
 				},
 				place = {
 					folderCasing = "pascal",
