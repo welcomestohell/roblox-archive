@@ -2,6 +2,7 @@ return {
 	rose = {
 		place = {
 			title = "Chapter 5",
+			folderName = "Chapter5",
 			placeId = "71114528235209",
 			dependencies = { "chapter" },
 			globals = {

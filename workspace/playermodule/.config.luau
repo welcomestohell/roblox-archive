@@ -5,6 +5,7 @@ return {
 	},
 	rose = {
 		placeMixin = {
+			folderName = "PlayerModule",
 			transpile = true,
 			mapping = {
 				{ name = "StarterPlayer" },

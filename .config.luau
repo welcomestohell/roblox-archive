@@ -18,7 +18,6 @@ return {
 					preInit = "asphalt sync studio",
 				},
 				place = {
-					folderCasing = "pascal",
 					baseProject = {
 						globIgnorePaths = { "**/.config.luau" },
 						emitLegacyScripts = false,
@@ -86,6 +85,10 @@ return {
 		languagemode = "strict",
 		lint = { ["*"] = true, LocalShadow = false },
 		aliases = {
+			-- Pesde
+			pkgs = "roblox_packages",
+			serverpkgs = "roblox_server_packages",
+			-- Workspace
 			chapter = "workspace/chapter",
 			chapter1 = "workspace/chapter1",
 			chapter2 = "workspace/chapter2",
@@ -99,8 +102,7 @@ return {
 			libs = "workspace/libs",
 			title = "workspace/title",
 			universe = "workspace/universe",
-			pkgs = "roblox_packages",
-			serverpkgs = "roblox_server_packages",
+			playermodule = "workspace/playermodule",
 		},
 	},
 }
