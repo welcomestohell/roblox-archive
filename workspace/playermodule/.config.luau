@@ -5,6 +5,7 @@ return {
 	},
 	rose = {
 		placeMixin = {
+			transpile = true,
 			mapping = {
 				{ name = "StarterPlayer" },
 				{ name = "StarterPlayerScripts" },

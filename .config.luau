@@ -8,9 +8,14 @@ return {
 				globals = {
 					WTH_CHAPTER_TITLE = {},
 				},
-				preInit = {
-					{ run = "asphalt sync studio" },
-					{ run = "lute rose ripple --nofail --nostdio -- blink .blink" },
+				idl = {
+					program = "blink",
+					filename = ".blink",
+					initArguments = {},
+					watchArguments = { "--watch" },
+				},
+				scripts = {
+					preInit = "asphalt sync studio",
 				},
 				place = {
 					folderCasing = "pascal",
