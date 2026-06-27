@@ -2,6 +2,7 @@ const activation = require "@libs/activation/init"
 const character = require "@libs/character"
 const constraints = require "@libs/constraints"
 const Level = require "@libs/core/Level"
+const emission = require "@libs/emission"
 const mounts = require "@libs/mounts"
 const std = require "@libs/std"
 
@@ -153,6 +154,8 @@ function Mounter.onActivate(
 	mount.Parent = mounter.instance
 	level:loadDescendantInstancesAsync(mount)
 
+	emission.emitTaggedDescendants(mount, mounter:EmitMountedTag())
+
 	activationLife:add(function()
 		mounter:Active(false)
 		mounter.life:delay(
@@ -165,7 +168,8 @@ function Mounter.onActivate(
 			wasActivatable
 		)
 
-		if mount.Parent then mounter.life:delay(mounter:CleanupDelay(), game.Destroy, mount) end
+		emission.emitTaggedDescendants(mount, mounter:EmitDismountedTag())
+		if mount.Parent then mounter.life:delay(mounter:CleanupDelay(), mountLife:wrapDestroy()) end
 	end)
 end
 
