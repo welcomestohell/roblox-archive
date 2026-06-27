@@ -1,4 +1,4 @@
-const activation = require "@libs/activation/init"
+const activation = require "@libs/activation"
 const character = require "@libs/character"
 const constraints = require "@libs/constraints"
 const Level = require "@libs/core/Level"
@@ -24,6 +24,13 @@ const Mounter = std.Mechanic {
 	std.AttributeSection "Activation",
 	Activation = activation.useAttributes(),
 
+	std.AttributeSection "Dismount",
+	Dismount = activation.useAttributes "Dismount",
+
+	std.AttributeSection "Emission",
+	EmitMountedTag = std.Attribute("EmitMountedTag", std.gt.tag, "Mounter: On Mounted"),
+	EmitDismountedTag = std.Attribute("EmitMountedTag", std.gt.tag, "Mounter: On Dismounted"),
+
 	std.AttributeSection "Mount",
 	MountMode = std.Attribute("MountMode", std.gt.literals("Align", "Weld"), "Weld"),
 	MountName = std.Attribute("MountName", std.gt.string(), "Mounter"),
@@ -31,16 +38,12 @@ const Mounter = std.Mechanic {
 	MountLimb = std.Attribute("MountLimb", std.gt.enumOf(Enum.Limb), Enum.Limb.Torso),
 	Massless = std.Attribute("Massless", std.gt.boolean(), true),
 	CleanupDelay = std.Attribute("CleanupDelay", std.gt.positiveNumber, 0),
-
-	std.AttributeSection "Emission",
-	EmitMountedTag = std.Attribute("EmitMountedTag", std.gt.tag, "Mounter: On Mounted"),
-	EmitDismountedTag = std.Attribute("EmitMountedTag", std.gt.tag, "Mounter: On Dismounted"),
 }
 
 export type Mounter = typeof(Mounter)
 export type MounterMechanic = std.Mechanic<Mounter, { mount: Model | BasePart }>
 
-function Mounter:getActivationInstance(mounter: MounterMechanic)
+function Mounter:getActivationInstances(mounter: MounterMechanic)
 	return mounter.instance.Activator
 end
 
@@ -119,15 +122,14 @@ function Mounter.onActivate(
 
 	const activationLife = mounter.life:extend()
 	activationLife:add(mounts.mount(target, mounter.instance, mountName))
-	mountLife:add(activationLife)
 
 	const mode = mounter:MountMode()
 	if mode == "Weld" then
-		mount:PivotTo(target.CFrame * mounter:Offset())
+		mount:PivotTo(target.CFrame * mounter:MountOffset())
 		constraints.weld(mountLife, primary, target)
 	elseif mode == "Align" then
 		const bodyAttachment = mountLife:add(Instance.new "Attachment")
-		bodyAttachment.CFrame = mounter:Offset()
+		bodyAttachment.CFrame = mounter:MountOffset()
 		bodyAttachment.Name = "MounterBody"
 		bodyAttachment.Parent = target
 
@@ -161,7 +163,7 @@ function Mounter.onActivate(
 		mounter.life:delay(
 			mounter:Cooldown(),
 			function(mounter: typeof(mounter), wasActivatable: typeof(wasActivatable))
-				mounter.Activation.Enabled(wasActivatable)
+				mounter.Activation.Enabled(mounter, wasActivatable)
 				mounter:Debounced(false)
 			end,
 			mounter,
@@ -169,8 +171,16 @@ function Mounter.onActivate(
 		)
 
 		emission.emitTaggedDescendants(mount, mounter:EmitDismountedTag())
-		if mount.Parent then mounter.life:delay(mounter:CleanupDelay(), mountLife:wrapDestroy()) end
+		mounter.life:delay(mounter:CleanupDelay(), mountLife:wrapDestroy())
 	end)
+
+	activation.bindActivation {
+		attributes = self.Dismount,
+		instanceLife = activationLife,
+		instance = mounter.instance,
+		instanceConfiguration = mounter.instanceConfiguration,
+		onActivate = activationLife:wrapDestroy(),
+	}
 end
 
 return Mounter
