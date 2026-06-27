@@ -2,7 +2,7 @@ return {
 	rose = {
 		workspace = {
 			name = "Welcome To Hell",
-			members = { "./workspace/*" },
+			members = { "./workspace/*", "./workplace/*" },
 
 			build = {
 				globals = {
@@ -88,19 +88,20 @@ return {
 			-- Pesde
 			pkgs = "roblox_packages",
 			serverpkgs = "roblox_server_packages",
+			-- Workplace
+			chapter1 = "workplace/chapter1",
+			chapter2 = "workplace/chapter2",
+			chapter3 = "workplace/chapter3",
+			chapter4 = "workplace/chapter4",
+			chapter5 = "workplace/chapter5",
+			chapter6 = "workplace/chapter6",
+			chapter7 = "workplace/chapter7",
+			kit = "workplace/kit",
+			title = "workplace/title",
 			-- Workspace
 			chapter = "workspace/chapter",
-			chapter1 = "workspace/chapter1",
-			chapter2 = "workspace/chapter2",
-			chapter3 = "workspace/chapter3",
-			chapter4 = "workspace/chapter4",
-			chapter5 = "workspace/chapter5",
-			chapter6 = "workspace/chapter6",
-			chapter7 = "workspace/chapter7",
 			core = "workspace/core",
-			kit = "workspace/kit",
 			libs = "workspace/libs",
-			title = "workspace/title",
 			universe = "workspace/universe",
 			playermodule = "workspace/playermodule",
 		},

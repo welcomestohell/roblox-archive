@@ -1,10 +1,9 @@
 # Pesde
 .pesde
-roblox_packages/*
-roblox_server_packages/*
 luau_packages
 lune_packages
-!roblox_packages/.config.luau
+roblox_packages
+roblox_server_packages
 
 # Build files
 .output
@@ -24,5 +23,8 @@ sourcemap.json
 # Rose
 .rose
 .rose/**
+
+# Some developers have a local copy of Rose to develop it alongside
+# Welcome To Hell
 rose
 rose/**
