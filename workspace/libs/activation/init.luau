@@ -1,11 +1,11 @@
-local Result = require "@libs/Result"
-local createChildOfClass = require "@self/createChildOfClass"
-local functions = require "@libs/functions"
-local gt = require "@libs/vendor/gt"
-local logger = require "@core/shared/logger"
-local types = require "@self/types"
-local useAttributes = require "@self/useAttributes"
-local useChildOfClass = require "@self/useChildOfClass"
+const Result = require "@libs/Result"
+const createChildOfClass = require "@self/createChildOfClass"
+const functions = require "@libs/functions"
+const gt = require "@libs/vendor/gt"
+const logger = require "@core/shared/logger"
+const types = require "@self/types"
+const useAttributes = require "@self/useAttributes"
+const useChildOfClass = require "@self/useChildOfClass"
 
 export type ActivationAttributes = types.ActivationAttributes
 export type PredicateContext = types.PredicateContext
@@ -14,7 +14,7 @@ export type ActivationContext = types.ActivationContext
 export type ActivationEvent = types.ActivationEvent
 export type ActivationMode = types.ActivationMode
 
-local modes: { [string]: ActivationMode } = {
+const modes: { [string]: ActivationMode } = {
 	Click = require "@self/modes/Click",
 	Died = require "@self/modes/Died",
 	HumanoidStateChanged = require "@self/modes/HumanoidStateChanged",
@@ -25,7 +25,7 @@ local modes: { [string]: ActivationMode } = {
 
 export type RegisterModeError = { id: "invalidMode", cause: gt.Cause } | { id: "alreadyExists" }
 
-local function registerMode(
+const function registerMode(
 	key: string,
 	mode: types.ActivationMode
 ): Result.Result<types.ActivationMode, RegisterModeError>
@@ -44,13 +44,13 @@ local function registerMode(
 	}
 end
 
-local function unregisterMode(key: string)
+const function unregisterMode(key: string)
 	modes[key] = nil
 end
 
 export type ActivationError = { id: "noMode" } | { id: "unknownMode" } | { id: "predicateFailed", error: string }
 
-local function activate(context: types.ActivationContext): Result.Result<nil, ActivationError>
+const function activate(context: types.ActivationContext): Result.Result<nil, ActivationError>
 	local modeKey = context.attributes.Mode(context.instanceConfiguration)
 	if modeKey then
 		local mode: ActivationMode? = modes[modeKey]
@@ -75,7 +75,7 @@ local function activate(context: types.ActivationContext): Result.Result<nil, Ac
 	return Result.Err { id = functions.literal "noMode" }
 end
 
-local function bindActivation(bindContext: BindContext)
+const function bindActivation(bindContext: BindContext)
 	local context = table.clone(bindContext) :: ActivationContext
 	local life = context.instanceLife:extend()
 	context.activationLife = life:extend()
@@ -101,6 +101,10 @@ local function bindActivation(bindContext: BindContext)
 	life:add(context.attributes.Mode:onBind(context.instanceConfiguration, update))
 end
 
+const function castEvent(eventLike: { kind: string }): ActivationEvent
+	return eventLike :: ActivationEvent
+end
+
 return table.freeze {
 	modes = modes,
 	registerMode = registerMode,
@@ -108,6 +112,7 @@ return table.freeze {
 
 	activate = activate,
 	bindActivation = bindActivation,
+	castEvent = castEvent,
 
 	createChildOfClass = createChildOfClass,
 	useChildOfClass = useChildOfClass,

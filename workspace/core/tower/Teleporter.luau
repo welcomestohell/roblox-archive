@@ -1,7 +1,6 @@
 const character = require "@libs/character"
 const logger = require "@core/shared/logger"
 const activation = require "@libs/activation"
-const Attribute = require "@libs/attributes/Attribute"
 const emission = require "@libs/emission"
 const std = require "@libs/std"
 const teleport = require "@libs/teleport"
@@ -16,7 +15,9 @@ const Teleporter = std.Mechanic {
 	debounce = std.LevelState(false),
 	debouncedTeleporters = std.LevelState<<{ [TeleporterMechanic]: true }>> {},
 
-	Group = std.Attribute("Group", std.gt.tag, ""),
+	Active = std.Attribute("Active", std.gt.boolean(), true),
+	Group = std.Attribute("Group", std.gt.group, ""),
+	Debounced = std.Attribute("Debounced", std.gt.boolean(), false),
 	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 0),
 	Teleport = teleport.useAttributes(),
 
@@ -39,20 +40,10 @@ function Teleporter.onActivate(self: typeof(Teleporter), teleporter: TeleporterM
 	const root = character.getMaybeHumanoidRootPart()
 	if not root then return end
 
-	if self.debounce:get(level) then return end
-
-	teleporter.Activation.Enabled(teleporter, false)
-
 	const group = teleporter:Group()
-	if not group then return end
-
 	const groupInstances = level:getGroupedInstances(group)
 	const len = #groupInstances
 	if len == 0 then return end
-
-	self.debounce:set(level, true)
-	self.Activation.Enabled(teleporter, false)
-	teleporter.life:delay(teleporter:Cooldown(), Attribute.set :: any, self.Activation.Enabled, teleporter, true)
 
 	math.randomseed(os.clock())
 	const targetDestination = groupInstances[if len == 1 then 1 else math.random(1, len)]
@@ -60,6 +51,14 @@ function Teleporter.onActivate(self: typeof(Teleporter), teleporter: TeleporterM
 		logger:Warn("Expected teleporter destination", targetDestination:GetFullName(), "to be a BasePart")
 		return
 	end
+
+	if self.debounce:get(level) then return end
+	self.debounce:set(level, true)
+
+	const wasActivatable = self.Activation.Enabled(teleporter)
+	self.Activation.Enabled(teleporter, false)
+	teleporter:Active(true)
+	teleporter:Debounced(true)
 
 	emission.emitTaggedDescendants(teleporter.instance, teleporter:EmitActivatedTag())
 
@@ -77,6 +76,11 @@ function Teleporter.onActivate(self: typeof(Teleporter), teleporter: TeleporterM
 	}
 
 	self.debounce:set(level, false)
+	teleporter:Active(false)
+
+	task.wait(teleporter:Cooldown())
+	self.Activation.Enabled(teleporter, wasActivatable)
+	teleporter:Debounced(false)
 end
 
 return Teleporter

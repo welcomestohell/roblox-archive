@@ -26,6 +26,7 @@ export type ActivationEvent =
 	| { kind: "Touch", instance: BasePart, toucher: BasePart }
 	| { kind: "Activator" }
 	| { kind: "Contraption" }
+	| { kind: "Activator", mechanic: any }
 
 export type PredicateContext = {
 	instance: Instance,
