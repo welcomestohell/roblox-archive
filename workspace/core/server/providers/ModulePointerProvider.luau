@@ -3,6 +3,8 @@ const ReplicatedStorage = game:GetService "ReplicatedStorage"
 const Lazy = require "@libs/Lazy"
 const prvd = require "@pkgs/prvd"
 
+const CONTAINER_NAME = "ModulePointers"
+
 --[[
 	Provides ModuleScript pointers intended for reusing smaller configurations
 	such as mechanic configurations. This helps reduce memory usage as less
@@ -15,11 +17,11 @@ const ModulePointerProvider = {}
 export type ModulePointerProvider = typeof(ModulePointerProvider)
 
 ModulePointerProvider.container = Lazy.new(function()
-	const defaultContainer = ReplicatedStorage:WaitForChild "ModulePointers"
+	const defaultContainer = ReplicatedStorage:FindFirstChild(CONTAINER_NAME)
 	if defaultContainer and defaultContainer:IsA "Folder" then return defaultContainer end
 
 	const container = Instance.new "Folder"
-	container.Name = "ModulePointers"
+	container.Name = CONTAINER_NAME
 	container.Parent = ReplicatedStorage
 	return container
 end)
@@ -33,7 +35,7 @@ end)
 function ModulePointerProvider.tryCacheInstance(self: ModulePointerProvider, instance: Instance)
 	if instance:IsA "ModuleScript" then
 		const pointer = self.templatePointer:get():Clone()
-		pointer.Name = pointer.Name
+		pointer.Name = instance.Name
 		pointer.Value = instance
 
 		for _, tag in instance:GetTags() do
@@ -41,9 +43,9 @@ function ModulePointerProvider.tryCacheInstance(self: ModulePointerProvider, ins
 			instance:RemoveTag(tag)
 		end
 
+		pointer.Parent = instance.Parent
 		instance.Name = instance:GetFullName()
 		instance.Parent = self.container:get()
-		pointer.Parent = pointer.Parent
 	end
 end
 

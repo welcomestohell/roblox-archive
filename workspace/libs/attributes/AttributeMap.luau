@@ -1,5 +1,5 @@
 const Attribute = require "@libs/attributes/Attribute"
-const resolveInstance = require "@libs/core/resolveInstance"
+const instances = require "@libs/instances"
 
 local AttributeMap = {}
 AttributeMap.__index = AttributeMap
@@ -37,14 +37,14 @@ function AttributeMap.isAttributeMap(x: any)
 	return type(x) == "table" and getmetatable(x) == AttributeMap
 end
 
-function AttributeMap.get<T>(self: AttributeMap<T>, instance: resolveInstance.InstanceLike, key: string): T
+function AttributeMap.get<T>(self: AttributeMap<T>, instance: instances.InstanceLike, key: string): T
 	local attribute = getAttribute(self, key)
 
 	return attribute:get(instance)
 end
 
-function AttributeMap.getAll<T>(self: AttributeMap<T>, instance: resolveInstance.InstanceLike): T
-	local resolved = resolveInstance(instance)
+function AttributeMap.getAll<T>(self: AttributeMap<T>, instance: instances.InstanceLike): T
+	local resolved = instances.resolveInstanceLike(instance)
 	local prefixLen = #self.prefix
 	local result = {}
 
@@ -59,7 +59,7 @@ function AttributeMap.getAll<T>(self: AttributeMap<T>, instance: resolveInstance
 	return result :: any
 end
 
-function AttributeMap.set<T>(self: AttributeMap<T>, instance: resolveInstance.InstanceLike, key: string, value: any)
+function AttributeMap.set<T>(self: AttributeMap<T>, instance: instances.InstanceLike, key: string, value: any)
 	local attribute = getAttribute(self, key)
 
 	attribute:set(instance, value)
@@ -67,7 +67,7 @@ end
 
 function AttributeMap.onChange<T>(
 	self: AttributeMap<T>,
-	instance: resolveInstance.InstanceLike,
+	instance: instances.InstanceLike,
 	key: string,
 	listener: (value: any) -> ()
 ): () -> ()

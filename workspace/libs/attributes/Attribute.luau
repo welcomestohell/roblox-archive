@@ -2,7 +2,7 @@ const logger = require "@core/shared/logger"
 const AttributeOrder = require "@libs/attributes/AttributeOrder"
 const observeAttributes = require "@libs/attributes/observeAttributes"
 const tables = require "@libs/collections/tables"
-const resolveInstance = require "@libs/core/resolveInstance"
+const instances = require "@libs/instances"
 const gt = require "@libs/vendor/gt"
 const threadpool = require "@libs/threadpool"
 
@@ -97,7 +97,7 @@ local function observeListener<T>(
 	listenerMap: { [Instance]: { (value: T, attribute: Attribute<T>) -> () } },
 	listener: (value: T, attribute: Attribute<T>) -> ()
 ): () -> ()
-	local resolved = resolveInstance(instance)
+	local resolved = instances.resolveInstanceLike(instance)
 
 	local instanceListeners = listenerMap[resolved]
 	if not instanceListeners then
@@ -148,24 +148,24 @@ function Attribute.isAttribute(x: unknown)
 	return type(x) == "table" and getmetatable(x) == Attribute
 end
 
-function Attribute.peek<T>(self: Attribute<T>, instance: resolveInstance.InstanceLike): T
-	local value = self._cache[resolveInstance(instance)] :: any
+function Attribute.peek<T>(self: Attribute<T>, instance: instances.InstanceLike): T
+	local value = self._cache[instances.resolveInstanceLike(instance)] :: any
 
 	if value == nil then value = self.defaultValue end
 
 	return value
 end
 
-function Attribute.fetch<T>(self: Attribute<T>, instance: resolveInstance.InstanceLike): T
-	local fetched = fetchInstance(self, resolveInstance(instance))
+function Attribute.fetch<T>(self: Attribute<T>, instance: instances.InstanceLike): T
+	local fetched = fetchInstance(self, instances.resolveInstanceLike(instance))
 
 	if fetched == nil then fetched = self.defaultValue end
 
 	return fetched
 end
 
-function Attribute.get<T>(self: Attribute<T>, instance: resolveInstance.InstanceLike): T
-	local resolved = resolveInstance(instance)
+function Attribute.get<T>(self: Attribute<T>, instance: instances.InstanceLike): T
+	local resolved = instances.resolveInstanceLike(instance)
 
 	if not self._updated[resolved] then return fetchInstance(self, resolved) end
 
@@ -176,7 +176,7 @@ function Attribute.get<T>(self: Attribute<T>, instance: resolveInstance.Instance
 	return cached
 end
 
-function Attribute.getOrSet<T>(self: Attribute<T>, instance: resolveInstance.InstanceLike, default: T): T
+function Attribute.getOrSet<T>(self: Attribute<T>, instance: instances.InstanceLike, default: T): T
 	local value = self:get(instance)
 
 	if default == nil then default = self.defaultValue end
@@ -186,7 +186,7 @@ function Attribute.getOrSet<T>(self: Attribute<T>, instance: resolveInstance.Ins
 	return value
 end
 
-function Attribute.getOrSetWith<T>(self: Attribute<T>, instance: resolveInstance.InstanceLike, derive: () -> T): T
+function Attribute.getOrSetWith<T>(self: Attribute<T>, instance: instances.InstanceLike, derive: () -> T): T
 	local value = self:get(instance)
 
 	if value == nil then value = self:set(instance, derive()) end
@@ -194,10 +194,10 @@ function Attribute.getOrSetWith<T>(self: Attribute<T>, instance: resolveInstance
 	return value
 end
 
-function Attribute.set<T>(self: Attribute<T>, instance: resolveInstance.InstanceLike, value: T): T
+function Attribute.set<T>(self: Attribute<T>, instance: instances.InstanceLike, value: T): T
 	if value == nil then value = self.defaultValue end
 
-	local resolved = resolveInstance(instance)
+	local resolved = instances.resolveInstanceLike(instance)
 
 	resolved:SetAttribute(self.attribute, value)
 
@@ -207,11 +207,12 @@ function Attribute.set<T>(self: Attribute<T>, instance: resolveInstance.Instance
 	return value
 end
 
-function Attribute.assert<T>(self: Attribute<T?>, instance: resolveInstance.InstanceLike, message: string?): T
+function Attribute.assert<T>(self: Attribute<T?>, instance: instances.InstanceLike, message: string?): T
 	local value = Attribute.get(self :: any, instance)
 	assert(
 		value ~= nil,
-		message or `Instance {resolveInstance(instance):GetFullName()} is missing attribute {self.attribute}!`
+		message
+			or `Instance {instances.resolveInstanceLike(instance):GetFullName()} is missing attribute {self.attribute}!`
 	)
 	return value
 end
@@ -219,7 +220,7 @@ end
 -- (lazily evaluated)
 function Attribute.onFetch<T>(
 	self: Attribute<T>,
-	instance: resolveInstance.InstanceLike,
+	instance: instances.InstanceLike,
 	listener: (value: T, attribute: Attribute<T>) -> ()
 ): () -> ()
 	return observeListener(self, instance, self._fetchListeners, listener)
@@ -228,7 +229,7 @@ end
 -- (eagerly evaluated)
 function Attribute.onChange<T>(
 	self: Attribute<T>,
-	instance: resolveInstance.InstanceLike,
+	instance: instances.InstanceLike,
 	listener: (value: T, attribute: Attribute<T>) -> ()
 ): () -> ()
 	return observeListener(self, instance, self._changeListeners, listener)
@@ -236,14 +237,14 @@ end
 
 function Attribute.onBind<T>(
 	self: Attribute<T>,
-	instance: resolveInstance.InstanceLike,
+	instance: instances.InstanceLike,
 	listener: (value: T, attribute: Attribute<T>) -> ()
 ): () -> ()
 	threadpool.spawn(listener, Attribute.get(self :: any, instance), self)
 	return Attribute.onChange(self :: any, instance, listener)
 end
 
-function Attribute.awaitChange<T>(self: Attribute<T>, instance: resolveInstance.InstanceLike): T
+function Attribute.awaitChange<T>(self: Attribute<T>, instance: instances.InstanceLike): T
 	local currentThread = coroutine.running()
 	observeListener(self, instance, self._changeListeners, function(value: T)
 		task.spawn(currentThread, value)
@@ -251,7 +252,7 @@ function Attribute.awaitChange<T>(self: Attribute<T>, instance: resolveInstance.
 	return coroutine.yield()
 end
 
-function Attribute.__call<T>(self: Attribute<T>, instance: resolveInstance.InstanceLike, ...: T): T
+function Attribute.__call<T>(self: Attribute<T>, instance: instances.InstanceLike, ...: T): T
 	return if select("#", ...) == 0 then self:get(instance) else self:set(instance, ...)
 end
 

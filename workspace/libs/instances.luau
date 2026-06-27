@@ -1,20 +1,30 @@
-const knownClassProperties: { [string]: { [string]: boolean } } = {}
+-- LUAU FIXME: Waiting on cyclic requires RFC to be merged, this depends on
+-- Mechanic type </3
+export type InstanceLike = any
 
-const function setUnsafe(instance: Instance, property: string, value: any)
+--[[
+	Helper APIs to work with Roblox instances.
+]]
+const instances = {
+	knownClassProperties = {} :: { [string]: { [string]: boolean } },
+}
+
+function instances.setUnsafe(instance: Instance, property: string, value: any)
 	(instance :: any)[property] = value
 end
-const function getUnsafe(instance: Instance, property: string): any
+
+function instances.getUnsafe(instance: Instance, property: string): any
 	return (instance :: any)[property]
 end
 
-const function hasProperty(instance: Instance, property: string): boolean
-	local knownProperties = knownClassProperties[instance.ClassName]
+function instances.hasProperty(instance: Instance, property: string): boolean
+	local knownProperties = instances.knownClassProperties[instance.ClassName]
 	if knownProperties then
 		local propertyExists = knownProperties[property]
 		if propertyExists ~= nil then return propertyExists end
 	else
 		knownProperties = {}
-		knownClassProperties[instance.ClassName] = knownProperties
+		instances.knownClassProperties[instance.ClassName] = knownProperties
 	end
 
 	local propertyExists = pcall(function(instance: any, property)
@@ -24,7 +34,39 @@ const function hasProperty(instance: Instance, property: string): boolean
 	return propertyExists
 end
 
-const function copyCAT(from: Instance, to: Instance)
+--[[
+	Resolves ModuleScripts from module pointers. To optimize memory usage from
+	modules, Welcome To Hell caches ModuleScripts under a LevelInstance into
+	ReplicatedStorage.ModulePointers alongside ObjectValue module pointers.
+]]
+function instances.resolveModulePointer(resolvable: Instance): ModuleScript?
+	-- What the FUCK is stylua smoking?
+	-- stylua: ignore
+	return
+		if resolvable:IsA "ModuleScript" then
+			resolvable
+		elseif resolvable:IsA "ObjectValue" and resolvable:HasTag "Welcome To Hell: Module Pointer" and resolvable.Value then
+			instances.resolveModulePointer(resolvable.Value)
+		else
+			nil
+end
+
+--[[
+	Resolves Instances from Mechanics and plain instances.
+]]
+function instances.resolveInstanceLike(resolvable: InstanceLike): Instance
+	local type = typeof(resolvable)
+	return if type == "Instance"
+		then resolvable
+		elseif type == "table" then resolvable.instanceConfiguration or resolvable.instance
+		else error(`Expected an instance or a mechanic, got {resolvable}`)
+end
+
+--[[
+	Copies children, attributes, and tags to the destination instance. It's a
+	creative name.
+]]
+function instances.copyCAT(from: Instance, to: Instance)
 	for _, child in from:GetChildren() do
 		child:Clone().Parent = to
 	end
@@ -38,12 +80,4 @@ const function copyCAT(from: Instance, to: Instance)
 	end
 end
 
-return table.freeze {
-	knownClassProperties = knownClassProperties,
-
-	hasProperty = hasProperty,
-	setUnsafe = setUnsafe,
-	getUnsafe = getUnsafe,
-
-	copyCAT = copyCAT,
-}
+return table.freeze(instances)
