@@ -37,7 +37,7 @@ const Mounter = std.Mechanic {
 	MountOffset = std.Attribute("MountOffset", std.gt.CFrame(), CFrame.new(0, 0, -5)),
 	MountLimb = std.Attribute("MountLimb", std.gt.enumOf(Enum.Limb), Enum.Limb.Torso),
 	Massless = std.Attribute("Massless", std.gt.boolean(), true),
-	CleanupDelay = std.Attribute("CleanupDelay", std.gt.positiveNumber, 0),
+	RemoveAfter = std.Attribute("RemoveAfter", std.gt.positiveNumber, 0),
 }
 
 export type Mounter = typeof(Mounter)
@@ -111,7 +111,7 @@ function Mounter.onActivate(
 	end
 
 	-- We extend level's life instead of mounter, so we can support
-	-- CleanupDelay like EToH.
+	-- RemoveAfter like EToH.
 	const mountLife = level.life:extend()
 	const mount = mountLife:add(mounter.mount:Clone())
 	mount.Name ..= " (Active)"
@@ -175,7 +175,7 @@ function Mounter.onActivate(
 
 		mounts.dismount(toucher, mounter.instance)
 		emission.emitTaggedDescendants(mount, mounter:EmitDismountedTag())
-		mounter.life:delay(mounter:CleanupDelay(), mountLife:wrapDestroy())
+		mounter.life:delay(mounter:RemoveAfter(), mountLife:wrapDestroy())
 	end)
 
 	activation.bindActivation {

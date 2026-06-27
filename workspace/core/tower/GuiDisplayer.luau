@@ -42,13 +42,29 @@ function GuiDisplayer.onActivate(self: GuiDisplayerModule, displayer: GuiDisplay
 	displayer:Debounced(true)
 
 	const activationLife = displayer.life:extend()
-	activationLife:add(function()
-		displayer:Active(false)
-		displayer.life:delay(displayer:Cooldown(), function()
-			self.Activation.Enabled(displayer, wasActivatable)
-			displayer:Debounced(true)
+	activationLife:addMany(
+		function()
+			displayer:Active(false)
+			displayer.life:delay(displayer:Cooldown(), function()
+				self.Activation.Enabled(displayer, wasActivatable)
+				displayer:Debounced(false)
+			end)
+		end,
+		self.RemoveAfter:onBind(displayer, function(duration)
+			if duration > 0 then
+				task.wait(duration)
+				activationLife:destroy()
+			end
 		end)
-	end)
+	)
+
+	activation.bindActivation {
+		instanceLife = activationLife,
+		instance = displayer.instance.Activator,
+		instanceConfiguration = displayer.instanceConfiguration,
+		attributes = self.Deactivation,
+		onActivate = activationLife:wrapDestroy(),
+	}
 
 	const playerGui = Players.LocalPlayer.PlayerGui
 	if displayer.instance.Component then
@@ -85,21 +101,6 @@ function GuiDisplayer.onActivate(self: GuiDisplayerModule, displayer: GuiDisplay
 		screenGui.Parent = playerGui
 		level:loadDescendantInstancesAsync(screenGui)
 	end
-
-	activationLife:add(self.RemoveAfter:onBind(displayer, function(duration)
-		if duration > 0 then
-			task.wait(duration)
-			activationLife:destroy()
-		end
-	end))
-
-	activation.bindActivation {
-		instanceLife = activationLife,
-		instance = displayer.instance.Activator,
-		instanceConfiguration = displayer.instanceConfiguration,
-		attributes = self.Deactivation,
-		onActivate = activationLife:wrapDestroy(),
-	}
 end
 
 return GuiDisplayer
