@@ -87,7 +87,10 @@ function Mounter.onActivate(
 	level: std.Level,
 	event: activation.ActivationEvent
 )
-	const toucher = event.kind == "Touch" and event.toucher or character.getMaybeHumanoidRootPart()
+	const toucher = if event.kind == "Touch" and not character.isFromCharacter(event.toucher)
+		then event.toucher
+		else character.getMaybeHumanoidRootPart()
+
 	if not toucher then return end
 
 	const mountName = mounter:MountName()
@@ -170,6 +173,7 @@ function Mounter.onActivate(
 			wasActivatable
 		)
 
+		mounts.dismount(toucher, mounter.instance)
 		emission.emitTaggedDescendants(mount, mounter:EmitDismountedTag())
 		mounter.life:delay(mounter:CleanupDelay(), mountLife:wrapDestroy())
 	end)
