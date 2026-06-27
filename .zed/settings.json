@@ -55,7 +55,7 @@
 					"sync": true,
 				},
 				"luau-lsp": {
-					"ignoreGlobs": ["**/.output/**"],
+					"ignoreGlobs": ["**/.rose/**"],
 					"sourcemap": {
 						"enabled": true,
 						"autogenerate": false,
@@ -77,7 +77,7 @@
 							"stringRequires": {
 								"enabled": true,
 							},
-							"ignoreGlobs": ["**/.pesde/**", "**/.output/**"],
+							"ignoreGlobs": ["**/.pesde/**", "**/.rose/**"],
 							"useConst": true,
 						},
 					},
