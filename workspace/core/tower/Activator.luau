@@ -21,10 +21,20 @@ const Activator = std.Mechanic {
 
 export type ActivatorMechanic = std.Mechanic<typeof(Activator)>
 
+const function shouldActivate(context: activation.ActivationContext, activator: ActivatorMechanic)
+	const group = Activator.Group(context.instanceConfiguration)
+	const targetInstance = activator.instance:FindFirstChild "Target"
+
+	return activator:Group() == group
+		or context.instanceConfiguration:HasTag(activator:Tag())
+		or targetInstance
+			and targetInstance:IsA "ObjectValue"
+			and (targetInstance.Value == context.instance or targetInstance.Value == context.instanceConfiguration)
+end
+
 const function implementActivatorMode(context: activation.ActivationContext)
 	Activator.onActivatedSignal:Connect(function(activator: ActivatorMechanic)
-		const group = Activator.Group(context.instanceConfiguration)
-		if activator:Group() == group or context.instanceConfiguration:HasTag(activator:Tag()) then
+		if shouldActivate(context, activator) then
 			context:onActivate(activation.castEvent { kind = "Activator", mechanic = activator })
 		end
 	end)
@@ -39,16 +49,12 @@ function Activator.onActivate(self: typeof(Activator), activator: ActivatorMecha
 	self.Activation.Enabled(activator, false)
 	activator:Debounced(true)
 
-	local targetInstance = activator.instance:FindFirstChild "Target"
-	if targetInstance then self.tryActivate(targetInstance, level) end
-
 	self.onActivatedSignal:Fire(activator)
 
-	task.wait(activator:Cooldown())
-	if activator.life.alive then
-		self.Activation.Enabled(activator, wasActivatable)
+	activator.life:delay(activator:Cooldown(), function(activator: typeof(activator))
+		activator.Activation.Enabled(activator, wasActivatable)
 		activator:Debounced(false)
-	end
+	end, activator)
 end
 
 return Activator

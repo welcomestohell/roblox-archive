@@ -58,15 +58,6 @@ function GuiDisplayer.onActivate(self: GuiDisplayerModule, displayer: GuiDisplay
 		end)
 	)
 
-	activation.bindActivation {
-		instanceLife = activationLife,
-		instance = displayer.instance.Activator,
-		instanceConfiguration = displayer.instanceConfiguration,
-		attributes = self.Deactivation,
-		onActivate = activationLife:wrapDestroy(),
-	}
-
-	const playerGui = Players.LocalPlayer.PlayerGui
 	if displayer.instance.Component then
 		const requireSuccess, componentOrError =
 			pcall(require, instances.resolveModulePointer(displayer.instance.Component))
@@ -88,7 +79,18 @@ function GuiDisplayer.onActivate(self: GuiDisplayerModule, displayer: GuiDisplay
 			return
 		end
 
-		const mountSuccess, cleanupOrError = pcall(Fluid.mount, componentOrError, playerGui)
+		const mountSuccess, cleanupOrError = pcall(Fluid.root, function()
+			const result = (componentOrError :: () -> unknown)()
+			if typeof(result) == "Instance" then
+				if result:IsA "ScreenGui" then
+					activationLife:add(result).Parent = Players.LocalPlayer.PlayerGui
+					return
+				end
+				result:Destroy()
+			end
+			error(`Expected component in {displayer.instance:GetFullName()} to return a ScreenGui, got {result}`)
+		end)
+
 		if mountSuccess then
 			activationLife:add(cleanupOrError)
 		else
@@ -98,9 +100,17 @@ function GuiDisplayer.onActivate(self: GuiDisplayerModule, displayer: GuiDisplay
 		end
 	elseif displayer.instance.ScreenGui then
 		const screenGui = activationLife:add(displayer.instance.ScreenGui:Clone())
-		screenGui.Parent = playerGui
+		screenGui.Parent = Players.LocalPlayer.PlayerGui
 		level:loadDescendantInstancesAsync(screenGui)
 	end
+
+	activation.bindActivation {
+		instanceLife = activationLife,
+		instance = displayer.instance.Activator,
+		instanceConfiguration = displayer.instanceConfiguration,
+		attributes = self.Deactivation,
+		onActivate = activationLife:wrapDestroy(),
+	}
 end
 
 return GuiDisplayer
