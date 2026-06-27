@@ -4,7 +4,7 @@ local Lazy = {}
 Lazy.__index = Lazy
 Lazy.type = "Lazy"
 
-export type Lazy<T> = setmetatable<{ loaded: boolean, loadCallback: () -> T, value: T? }, typeof(Lazy)>
+export type Lazy<T> = setmetatable<{ loaded: boolean, loadCallback: () -> T, value: T }, typeof(Lazy)>
 
 function Lazy.new<T>(loadCallback: () -> T): Lazy<T>
 	return setmetatable({ loaded = false, loadCallback = loadCallback, value = nil }, Lazy)

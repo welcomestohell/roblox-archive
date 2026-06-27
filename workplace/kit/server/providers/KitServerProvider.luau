@@ -7,6 +7,7 @@ local Workspace = game:GetService "Workspace"
 
 local Level = require "@libs/core/Level"
 local PlayerInstanceLoader = require "@core/server/PlayerInstanceLoader"
+const ModulePointerProvider = require "@core/server/providers/ModulePointerProvider"
 local logger = require "@core/shared/logger"
 local net = require "@kit/server/generated/net"
 local prvd = require "@pkgs/prvd"
@@ -42,6 +43,10 @@ end
 
 function KitServerProvider.bootstrapTower(self: KitServerProvider, tower: Level.LevelInstance)
 	local mechanics, decorations = storeOrDefault(tower, "Mechanics"), storeOrDefault(tower, "Decorations")
+
+	for _, instance in mechanics:GetDescendants() do
+		ModulePointerProvider:tryCacheInstance(instance)
+	end
 
 	net.getTower.on(function(): Instance
 		return tower
