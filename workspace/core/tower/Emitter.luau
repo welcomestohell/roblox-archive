@@ -8,7 +8,7 @@ const Emitter = std.Mechanic {
 	description = "When activated, emits all Sounds and ParticleEmitters under itself.",
 	instanceType = std.isA.Instance(),
 
-	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 0),
+	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 1),
 	Debounced = std.Attribute("Debounced", std.gt.boolean(), false),
 
 	std.AttributeSection "Activation",

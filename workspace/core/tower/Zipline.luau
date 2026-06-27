@@ -25,7 +25,7 @@ const Zipline = std.Mechanic {
 
 	Mode = std.Attribute("Mode", std.gt.literals("Zip", "Grind"), "Zip"),
 	Active = std.Attribute("Active", std.gt.boolean(), false),
-	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 0),
+	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 1),
 	Debounced = std.Attribute("Debounced", std.gt.boolean(), false),
 	HideHandle = std.Attribute("HideHandle", std.gt.boolean(), false),
 	Speed = std.Attribute("Speed", std.gt.positiveNumber, 1),
@@ -252,7 +252,7 @@ function Zipline.solvePoints(zipline: ZiplineMechanic): { Vector3 }
 	const pointsLife = zipline.life:extend()
 	zipline.pointsLife = pointsLife
 	pointsLife:add(function()
-		zipline:solvePoints()
+		if zipline.life.alive then zipline:solvePoints() end
 	end)
 
 	table.clear(zipline.points)
@@ -364,7 +364,10 @@ function Zipline.onActivate(
 		then if zipline:Mode() == "Zip" then character.getCharacter().Head else character.getHumanoidRootPart()
 		else activator
 
-	if not toucher or mounts.isMechanicMounted(toucher, zipline) then return end
+	if not toucher then return end
+
+	const mountInstance = mounts.castToucher(toucher) :: BasePart
+	if mounts.isMechanicMounted(mountInstance, zipline) then return end
 
 	const activationLife = zipline.life:extend()
 	const handleModel = activationLife:add(zipline.handle:Clone())
@@ -430,7 +433,7 @@ function Zipline.onActivate(
 		end, zipline, toucher)
 	end
 
-	activationLife:destroyOn(mounts.mountMechanic(toucher, zipline))
+	activationLife:destroyOn(mounts.mountMechanic(mountInstance, zipline))
 	activationLife:destroyOn(toucher.Destroying)
 	activationLife:add(onDismount)
 

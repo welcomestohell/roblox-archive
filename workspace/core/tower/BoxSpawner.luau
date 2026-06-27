@@ -14,7 +14,7 @@ const BoxSpawner = std.Mechanic {
 		Spawn = std.isA.BasePart(),
 	},
 
-	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 0),
+	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 1),
 	Debounced = std.Attribute("Debounced", std.gt.boolean(), false),
 	SpawnOnStart = std.Attribute("SpawnOnStart", std.gt.boolean(), false),
 	AnchoredTag = std.Attribute("AnchoredTag", std.gt.tag, "Box: Anchored"),

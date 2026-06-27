@@ -43,7 +43,7 @@ export type AnyMechanicImplementation = {
 
 local Mechanic = {}
 Mechanic.__index = Mechanic
-Mechanic.type = "Mechanic"
+Mechanic.type = "MechanicImplementation"
 
 -- Instance properties can't be defined on Mechanic because it
 -- breaks metatable typing...

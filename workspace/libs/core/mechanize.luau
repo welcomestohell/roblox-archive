@@ -40,6 +40,7 @@ local function mechanize<Self>(
 	mechanicLife:destroyOn(instance.Destroying)
 
 	local mechanic: any = setmetatable({
+		type = "Mechanic",
 		life = mechanicLife,
 		id = HttpService:GenerateGUID(false),
 		implementation = implementation,

@@ -22,11 +22,16 @@ local typeDestructors: { [string]: (any) -> () } = {
 
 	["function"] = function(fn: () -> ())
 		local co = coroutine.create(fn)
-		coroutine.resume(co)
-		if coroutine.status(co) ~= "dead" then
+		local success, result = coroutine.resume(co)
+
+		if not success or coroutine.status(co) ~= "dead" then
 			local source, line, name = debug.info(fn, "sln")
-			name = name == "" or name == nil and "Anonymous function" or "Function " .. name :: string
-			logger:Error(name, "from line", line, "of", source, "attempted to yield during cleanup")
+			name = if name == "" or name == nil then "Anonymous function" else "Function " .. name :: string
+			if success then
+				logger:Error(name, "from line", line, "of", source, "attempted to yield during cleanup")
+			else
+				logger:Error(name, "from line", line, "of", source, "errored while cleaning up:", result)
+			end
 		end
 	end,
 

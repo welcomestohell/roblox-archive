@@ -3,7 +3,7 @@ const std = require "@libs/std"
 const touch = require "@libs/touch"
 const tweens = require "@libs/tweens"
 
-const SHRINK_DIRECTION_OFFSETS = {
+const _SHRINK_DIRECTION_OFFSETS = {
 	Center = Vector3.zero,
 	Top = Vector3.yAxis,
 	Bottom = -Vector3.yAxis,
@@ -35,7 +35,7 @@ const Vanisher = std.Mechanic {
 	},
 
 	Active = std.Attribute("Active", std.gt.boolean(), false),
-	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 0),
+	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 1),
 	Mode = std.Attribute("Mode", std.gt.literals("Fade", "Blink", "Constant", "Shrink", "Fall"), "Fade"),
 	Inverted = std.Attribute("Inverted", std.gt.boolean(), false),
 

@@ -56,10 +56,16 @@ end
 ]]
 function instances.resolveInstanceLike(resolvable: InstanceLike): Instance
 	local type = typeof(resolvable)
-	return if type == "Instance"
-		then resolvable
-		elseif type == "table" then resolvable.instanceConfiguration or resolvable.instance
-		else error(`Expected an instance or a mechanic, got {resolvable}`)
+	-- stylua: ignore
+	return
+		if type == "Instance" then
+			resolvable
+		elseif type == "table" and resolvable.type == "Mechanic" then
+			resolvable.instanceConfiguration 	or resolvable.instance
+		elseif type == "table" and resolvable.type == "MechanicImplementation" then
+			error(`No instance to resolve for MechanicImplementation {resolvable} (did you mean to use colon syntax on a mechanic *instance*?)`)
+		else
+			error(`Expected an instance or a mechanic, got {resolvable}`)
 end
 
 --[[

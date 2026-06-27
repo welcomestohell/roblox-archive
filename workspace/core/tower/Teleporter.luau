@@ -18,7 +18,7 @@ const Teleporter = std.Mechanic {
 	Active = std.Attribute("Active", std.gt.boolean(), true),
 	Group = std.Attribute("Group", std.gt.group, ""),
 	Debounced = std.Attribute("Debounced", std.gt.boolean(), false),
-	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 0),
+	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 1),
 	Teleport = teleport.useAttributes(),
 
 	std.AttributeSection "Activation",

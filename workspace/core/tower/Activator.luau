@@ -8,7 +8,7 @@ const Activator = std.Mechanic {
 	description = "When activated, activates mechanics tagged with it's Group.",
 	instanceType = std.gt.instanceTree { Target = std.gt.optional(std.isA.ObjectValue()) },
 
-	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 0),
+	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 1),
 	Debounced = std.Attribute("Debounced", std.gt.boolean(), false),
 	Group = std.Attribute("Group", std.gt.group, ""),
 	Tag = std.Attribute("Tag", std.gt.tag, ""),

@@ -8,7 +8,7 @@ const ButtonDisabler = std.Mechanic {
 	description = "When activated, deactivates all active Buttons matching it's Group.",
 	instanceType = std.isA.Instance(),
 
-	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 0),
+	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 1),
 	Debounced = std.Attribute("Debounced", std.gt.boolean(), false),
 	Group = std.Attribute("Group", std.gt.tag, ""),
 

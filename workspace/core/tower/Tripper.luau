@@ -10,7 +10,7 @@ const Tripper = std.Mechanic {
 	instanceType = std.isA.BasePart(),
 
 	Active = std.Attribute("Active", std.gt.boolean(), false),
-	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 0),
+	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 1),
 	Debounced = std.Attribute("Debounced", std.gt.boolean(), false),
 	StunDuration = std.Attribute("StunDuration", std.gt.positiveNumber, 0),
 
@@ -40,16 +40,11 @@ function Tripper.onActivate(self: typeof(Tripper), tripper: TripperMechanic)
 			tripper.life:delay(stunDuration, humanoid.SetStateEnabled, humanoid, Enum.HumanoidStateType.Jumping, true)
 		end
 
-		task.wait(stunDuration)
-		if tripper.life.alive then
-			tripper:Active(false)
-
-			task.wait(tripper:Cooldown())
-			if tripper.life.alive then
-				tripper:Debounced(false)
-				self.Activation.Enabled(wasActivatable)
-			end
-		end
+		tripper:Active(false)
+		tripper.life:delay(tripper:Cooldown(), function(tripper: typeof(tripper))
+			tripper:Debounced(false)
+			self.Activation.Enabled(tripper, wasActivatable)
+		end, tripper)
 	end
 end
 

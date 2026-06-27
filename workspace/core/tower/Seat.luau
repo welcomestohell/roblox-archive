@@ -22,9 +22,10 @@ const Seat = std.Mechanic {
 	Deactivation = activation.useAttributes "Deactivation",
 }
 
-export type SeatMechanic = std.Mechanic<typeof(Seat)>
+export type Seat = typeof(Seat)
+export type SeatMechanic = std.Mechanic<Seat>
 
-function Seat.onActivate(self: typeof(Seat), seat: SeatMechanic, level: std.Level)
+function Seat.onActivate(self: Seat, seat: SeatMechanic, level: std.Level)
 	const rootPart = character.getMaybeHumanoidRootPart()
 	const humanoid = character.getMaybeHumanoid()
 
@@ -43,17 +44,15 @@ function Seat.onActivate(self: typeof(Seat), seat: SeatMechanic, level: std.Leve
 	constraints.weld(activationLife, seat.instance, rootPart)
 
 	activationLife:add(function()
+		seat:Active(false)
+		seat.life:delay(seat:Cooldown(), function(seat: typeof(seat))
+			self.Activation.Enabled(seat, wasActivatable)
+			seat:Debounced(false)
+		end, seat)
+
 		mounts.dismountMechanic(rootPart, seat)
 		rootPart.CFrame = CFrame.new(rootPart.Position) * CFrame.Angles(0, math.rad(rootPart.Orientation.Y), 0)
 		humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-
-		self:Active(false)
-		seat.life:delay(seat:Cooldown(), function(seat: typeof(seat))
-			if seat.life.alive then
-				self.Activation.Enabled(seat, wasActivatable)
-				self:Debounced(false)
-			end
-		end, seat)
 	end)
 
 	activation.bindActivation {

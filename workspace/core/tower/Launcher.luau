@@ -9,7 +9,7 @@ const Launcher = std.Mechanic {
 	description = "When activated, launches the activator upwards.",
 	instanceType = std.isA.BasePart(),
 
-	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 0),
+	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 1),
 	Debounced = std.Attribute("Debounced", std.gt.boolean(), false),
 	Power = std.Attribute("Power", std.gt.positiveNumber, 100),
 	RelativeForce = std.Attribute("RelativeForce", std.gt.boolean(), false),

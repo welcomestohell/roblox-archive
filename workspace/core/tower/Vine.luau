@@ -24,7 +24,7 @@ const Vine = std.Mechanic {
 	-- TODO: implement animations
 	Animated = std.Attribute("Animated", std.gt.boolean(), true),
 	Active = std.Attribute("Active", std.gt.boolean(), false),
-	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 0),
+	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 1),
 	Debounced = std.Attribute("Debounced", std.gt.boolean(), false),
 	HideHandle = std.Attribute("HideHandle", std.gt.boolean(), false),
 	JumpOnDismount = std.Attribute("JumpOnDismount", std.gt.boolean(), true),
@@ -68,7 +68,8 @@ function Vine.onActivate(self: typeof(Vine), vine: VineMechanic, level: std.Leve
 		then event.toucher
 		else character.getCharacter().Head
 
-	if mounts.isMechanicMounted(toucher, vine) then return end
+	const mountInstance = mounts.castToucher(toucher) :: BasePart
+	if mounts.isMechanicMounted(mountInstance, vine) then return end
 
 	const wasActivatable = self.Activation.Enabled(vine)
 	self.Activation.Enabled(vine, false)
@@ -76,7 +77,7 @@ function Vine.onActivate(self: typeof(Vine), vine: VineMechanic, level: std.Leve
 	vine:Debounced(true)
 
 	const activationLife = vine.life:extend()
-	activationLife:destroyOn(mounts.mountMechanic(toucher, vine))
+	activationLife:destroyOn(mounts.mountMechanic(mountInstance, vine))
 	activationLife:destroyOn(toucher.Destroying)
 
 	vine.instance.Activator.Transparency = 1
