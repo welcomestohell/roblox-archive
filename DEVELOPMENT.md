@@ -29,6 +29,13 @@ lute deploy title
 # all rose commands must be run from the repo root
 # need to run something across all workspace members?
 lute rose ripple -- pesde install
+
+# command to kill rojo if lute doesnt shutdown correctly.
+#---------------------------------------------------------
+# macOS/Linux Kernel:
+kill -9 $(lsof -t -i:34872)
+# Windows (Powershell):
+Stop-Process -Id (Get-NetTCPConnection -LocalPort 34872).OwningProcess -Force
 ```
 
 ## Configuration
