@@ -9,6 +9,7 @@ const ButtonDisabler = std.Mechanic {
 	instanceType = std.isA.Instance(),
 
 	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 0),
+	Debounced = std.Attribute("Debounced", std.gt.boolean(), false),
 	Group = std.Attribute("Group", std.gt.tag, ""),
 
 	std.AttributeSection "Activation",
@@ -17,14 +18,21 @@ const ButtonDisabler = std.Mechanic {
 export type ButtonDisablerMechanic = std.Mechanic<typeof(ButtonDisabler)>
 
 -- Investigate: Should we add disabling individual buttons?
-function ButtonDisabler.onActivate(self: typeof(ButtonDisabler), mechanic: ButtonDisablerMechanic, level: std.Level)
-	self.Activation.Enabled(mechanic, false)
-	const group = mechanic:Group()
+function ButtonDisabler.onActivate(self: typeof(ButtonDisabler), disabler: ButtonDisablerMechanic, level: std.Level)
+	const wasActivatable = self.Activation.Enabled(disabler)
+	self.Activation.Enabled(disabler, false)
+	disabler:Debounced(true)
+
+	const group = disabler:Group()
 	for _, button: Button.ButtonMechanic in level:getMechanics(Button) do
 		if button:Group() == group then button:Active(false) end
 	end
-	task.wait(mechanic:Cooldown())
-	self.Activation.Enabled(mechanic, true)
+
+	task.wait(disabler:Cooldown())
+	if disabler.life.alive then
+		self.Activation.Enabled(disabler, wasActivatable)
+		disabler:Debounced(false)
+	end
 end
 
 return ButtonDisabler

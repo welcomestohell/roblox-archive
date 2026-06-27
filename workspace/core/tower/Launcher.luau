@@ -1,5 +1,4 @@
 const activation = require "@libs/activation"
-const Attribute = require "@libs/attributes/Attribute"
 const character = require "@libs/character"
 const emission = require "@libs/emission"
 const std = require "@libs/std"
@@ -7,10 +6,11 @@ const std = require "@libs/std"
 const Launcher = std.Mechanic {
 	emoji = "🦘",
 	name = "Launcher",
-	description = "When activated launches the activator upwards.",
+	description = "When activated, launches the activator upwards.",
 	instanceType = std.isA.BasePart(),
 
 	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 0),
+	Debounced = std.Attribute("Debounced", std.gt.boolean(), false),
 	Power = std.Attribute("Power", std.gt.positiveNumber, 100),
 	RelativeForce = std.Attribute("RelativeForce", std.gt.boolean(), false),
 	ForceFreefall = std.Attribute("ForceFreefall", std.gt.boolean(), true),
@@ -28,8 +28,9 @@ function Launcher.onActivate(
 	level: std.Level,
 	event: activation.ActivationEvent
 )
+	const wasActivatable = self.Activation.Enabled(launcher)
 	self.Activation.Enabled(launcher, false)
-	launcher.life:delay(launcher:Cooldown(), Attribute.set :: any, self.Activation.Enabled, launcher, true)
+	launcher:Debounced(true)
 
 	local target = event.kind == "Touch" and event.toucher or character:getMaybeHumanoidRootPart()
 	if not target then return end
@@ -43,6 +44,12 @@ function Launcher.onActivate(
 		else Vector3.new(target.AssemblyLinearVelocity.X, launcher:Power(), target.AssemblyLinearVelocity.Z)
 
 	emission.emitTaggedDescendants(launcher.instance, launcher:EmitLaunchTag())
+
+	task.wait(launcher:Cooldown())
+	if launcher.life.alive then
+		self.Activation.Enabled(launcher, wasActivatable)
+		launcher:Debounced(false)
+	end
 end
 
 return Launcher

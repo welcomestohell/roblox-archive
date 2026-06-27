@@ -24,7 +24,9 @@ const Zipline = std.Mechanic {
 	},
 
 	Mode = std.Attribute("Mode", std.gt.literals("Zip", "Grind"), "Zip"),
-	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 1),
+	Active = std.Attribute("Active", std.gt.boolean(), false),
+	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 0),
+	Debounced = std.Attribute("Debounced", std.gt.boolean(), false),
 	HideHandle = std.Attribute("HideHandle", std.gt.boolean(), false),
 	Speed = std.Attribute("Speed", std.gt.positiveNumber, 1),
 
@@ -372,6 +374,9 @@ function Zipline.onActivate(
 		return activationLife:destroy()
 	end
 
+	zipline:Active(true)
+	zipline:Debounced(true)
+
 	local totalLength, totalSegments = 0, #zipline.segmentLengths
 	local segmentTotalLengths = table.create(totalSegments) :: { number }
 	for index, length in zipline.segmentLengths do
@@ -403,6 +408,8 @@ function Zipline.onActivate(
 	end
 
 	const function onDismount()
+		zipline:Active(false)
+
 		if isPlayer then
 			const humanoid = character.getMaybeHumanoid()
 			if humanoid then
@@ -417,7 +424,10 @@ function Zipline.onActivate(
 				* currentDirection
 		end
 
-		zipline.life:delay(zipline:Cooldown(), mounts.dismountMechanic, toucher, zipline)
+		zipline.life:delay(zipline:Cooldown(), function(zipline: typeof(zipline), toucher: typeof(toucher))
+			zipline:Debounced(false)
+			mounts.dismountMechanic(toucher, zipline)
+		end, zipline, toucher)
 	end
 
 	activationLife:destroyOn(mounts.mountMechanic(toucher, zipline))

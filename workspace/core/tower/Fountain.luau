@@ -2,7 +2,7 @@ const std = require "@libs/std"
 const Oklab = require "@libs/vendor/Oklab"
 
 const Fountain = std.Mechanic {
-	emoji = "❔",
+	emoji = "☀️",
 	name = "Fountain",
 	description = "Hello, Welcome To Hell!",
 	instanceType = std.gt.instanceTree {

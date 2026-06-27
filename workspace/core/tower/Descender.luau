@@ -17,8 +17,8 @@ const Descender = std.Mechanic {
 		End = std.isA.BasePart(),
 	},
 
-	Enabled = std.Attribute("Enabled", std.gt.boolean(), true),
 	Active = std.Attribute("Active", std.gt.boolean(), false),
+	Enabled = std.Attribute("Enabled", std.gt.boolean(), true),
 	Mass = std.Attribute("Mass", std.gt.positiveNumber, 12.6),
 
 	std.AttributeSection "Toggle",
@@ -81,7 +81,6 @@ function Descender.onStart(self: typeof(Descender), descender: DescenderMechanic
 
 		task.wait(descender:ToggleDuration())
 
-		-- By now, the falling platform could be destroyed, so we check again.
 		if descender.life.alive then
 			emission.emitTaggedDescendants(descender.instance, descender:EmitRespawnedTag())
 

@@ -1,5 +1,4 @@
 const activation = require "@libs/activation"
-const Attribute = require "@libs/attributes/Attribute"
 const character = require "@libs/character"
 const constraints = require "@libs/constraints"
 const emission = require "@libs/emission"
@@ -24,7 +23,9 @@ const Vine = std.Mechanic {
 
 	-- TODO: implement animations
 	Animated = std.Attribute("Animated", std.gt.boolean(), true),
+	Active = std.Attribute("Active", std.gt.boolean(), false),
 	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 0),
+	Debounced = std.Attribute("Debounced", std.gt.boolean(), false),
 	HideHandle = std.Attribute("HideHandle", std.gt.boolean(), false),
 	JumpOnDismount = std.Attribute("JumpOnDismount", std.gt.boolean(), true),
 	KeepMomentum = std.Attribute("KeepMomentum", std.gt.boolean(), true),
@@ -75,7 +76,11 @@ function Vine.onActivate(self: typeof(Vine), vine: VineMechanic, level: std.Leve
 	const activationLife = vine.life:extend()
 	activationLife:destroyOn(mounts.mountMechanic(toucher, vine))
 	activationLife:destroyOn(toucher.Destroying)
+
+	const wasActivatable = self.Activation.Enabled(vine)
 	self.Activation.Enabled(vine, false)
+	vine:Active(true)
+	vine:Debounced(true)
 
 	vine.instance.Activator.Transparency = 1
 	vine.instance.Activator.Position = vine.instance.Base.Position
@@ -103,6 +108,8 @@ function Vine.onActivate(self: typeof(Vine), vine: VineMechanic, level: std.Leve
 	activationLife:add(function()
 		self.active[toucher] = nil
 
+		if vine.life.destroyed then return end
+
 		if toucher and vine:KeepMomentum() == false then toucher.AssemblyLinearVelocity = Vector3.zero end
 
 		if character.isFromCharacter(toucher) then
@@ -116,21 +123,18 @@ function Vine.onActivate(self: typeof(Vine), vine: VineMechanic, level: std.Leve
 
 		emission.emitTaggedDescendants(vine.instance, vine:EmitDeactivatedTag())
 
-		const cooldown = vine:Cooldown()
-		vine.life:delay(cooldown, emission.emitTaggedDescendants, vine.instance, vine:EmitRefreshedTag())
-		vine.life:delay(cooldown, Attribute.set :: any, self.Activation.Enabled, vine, true)
-		vine.life:delay(
-			cooldown,
-			tweens.playFromAttributes,
-			vine.instance.Activator,
-			{
+		vine:Active(false)
+		vine.life:delay(vine:Cooldown(), function(vine: typeof(vine))
+			emission.emitTaggedDescendants(vine.instance, vine:EmitRefreshedTag())
+			tweens.playFromAttributes(vine.instance.Activator, {
 				Transparency = vine:ActivatorTransparency(),
 				Position = vine:ActivatorPosition(),
 				Size = vine:ActivatorSize(),
-			} :: { [string]: unknown },
-			vine.ActivatorTween,
-			vine.instanceConfiguration
-		)
+			}, vine.ActivatorTween, vine.instanceConfiguration)
+
+			vine.Activation.Enabled(vine, wasActivatable)
+			vine:Debounced(false)
+		end, vine)
 	end)
 
 	activation.bindActivation {
