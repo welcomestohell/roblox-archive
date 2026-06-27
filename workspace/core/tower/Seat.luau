@@ -1,6 +1,7 @@
 const activation = require "@libs/activation"
 const character = require "@libs/character"
 const constraints = require "@libs/constraints"
+const emission = require "@libs/emission"
 const mounts = require "@libs/mounts"
 const std = require "@libs/std"
 
@@ -15,11 +16,15 @@ const Seat = std.Mechanic {
 	Debounced = std.Attribute("Debounced", std.gt.boolean(), false),
 	Offset = std.Attribute("Offset", std.gt.CFrame(), CFrame.identity),
 
+	std.AttributeSection "Emission",
+	EmitMountedTag = std.Attribute("EmitMountedTag", std.gt.tag, "Seat: On Mounted"),
+	EmitDismountedTag = std.Attribute("EmitMountedTag", std.gt.tag, "Seat: On Dismounted"),
+
 	std.AttributeSection "Activation",
 	Activation = activation.useAttributes(),
 
-	std.AttributeSection "Deactivation",
-	Deactivation = activation.useAttributes "Deactivation",
+	std.AttributeSection "Dismount",
+	Dismount = activation.useAttributes "Dismount",
 }
 
 export type Seat = typeof(Seat)
@@ -42,6 +47,7 @@ function Seat.onActivate(self: Seat, seat: SeatMechanic, level: std.Level)
 	rootPart.CFrame = (seat.instance.CFrame + seat.instance.CFrame.UpVector * (seat.instance.Size.Y / 2 + 1.5))
 		* seat:Offset()
 	constraints.weld(activationLife, seat.instance, rootPart)
+	emission.emitTaggedDescendants(seat.instance, seat:EmitMountedTag())
 
 	activationLife:add(function()
 		seat:Active(false)
@@ -53,13 +59,14 @@ function Seat.onActivate(self: Seat, seat: SeatMechanic, level: std.Level)
 		mounts.dismountMechanic(rootPart, seat)
 		rootPart.CFrame = CFrame.new(rootPart.Position) * CFrame.Angles(0, math.rad(rootPart.Orientation.Y), 0)
 		humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+		emission.emitTaggedDescendants(seat.instance, seat:EmitDismountedTag())
 	end)
 
 	activation.bindActivation {
 		instanceLife = seat.life,
 		instance = seat.instance,
 		instanceConfiguration = seat.instanceConfiguration,
-		attributes = self.Deactivation,
+		attributes = self.Dismount,
 		onActivate = activationLife:wrapDestroy(),
 	}
 end
