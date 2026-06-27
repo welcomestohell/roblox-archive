@@ -12,15 +12,15 @@ content = false
 
 [inputs.core]
 path = "assets/core/**/*"
-output_path = "core/assets"
+output_path = "workspace/core/assets"
 output_basename = "init"
 
 [inputs.title]
 path = "assets/title/**/*"
-output_path = "title/assets"
+output_path = "workplace/title/assets"
 output_basename = "init"
 
 [inputs.universe]
 path = "assets/universe/**/*"
-output_path = "universe/assets"
+output_path = "workspace/universe/assets"
 output_basename = "init"
