@@ -1,3 +1,5 @@
+const gt = require "@libs/vendor/gt"
+
 -- LUAU FIXME: Waiting on cyclic requires RFC to be merged, this depends on
 -- Mechanic type </3
 export type InstanceLike = any
@@ -6,6 +8,7 @@ export type InstanceLike = any
 	Helper APIs to work with Roblox instances.
 ]]
 const instances = {
+	ModulePointerLike = gt.union(gt.isA.ObjectValue(), gt.isA.ModuleScript()),
 	knownClassProperties = {} :: { [string]: { [string]: boolean } },
 }
 
