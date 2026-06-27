@@ -7,8 +7,14 @@
 	"luau-lsp.completion.imports.requireStyle": "alwaysAbsolute",
 	"luau-lsp.completion.imports.stringRequires.enabled": true,
 	"luau-lsp.completion.showPropertiesOnMethodCall": true,
-	"luau-lsp.ignoreGlobs": ["**/.pesde/**", "**/.rose/**"],
-	"luau-lsp.completion.imports.ignoreGlobs": ["**/.pesde/**", "**/.rose/**"],
+	"luau-lsp.ignoreGlobs": [
+		"**/.pesde/**",
+		"**/.rose/**"
+	],
+	"luau-lsp.completion.imports.ignoreGlobs": [
+		"**/.pesde/**",
+		"**/.rose/**"
+	],
 	"files.exclude": {
 		"**/.git": true,
 		"**/.svn": true,
@@ -18,7 +24,7 @@
 		"**/*.lock": true,
 		// ".pesde": true,
 		// "roblox_packages/.pesde": false,
-		".output": true,
+		".rose": true,
 		"patches": true,
 		"lune_packages": true,
 		"luau_packages": true,
