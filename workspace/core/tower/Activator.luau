@@ -11,6 +11,7 @@ const Activator = std.Mechanic {
 	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 0),
 	Debounced = std.Attribute("Debounced", std.gt.boolean(), false),
 	Group = std.Attribute("Group", std.gt.group, ""),
+	Tag = std.Attribute("Tag", std.gt.tag, ""),
 
 	std.AttributeSection "Activation",
 	Activation = activation.useAttributes(),
@@ -21,10 +22,10 @@ const Activator = std.Mechanic {
 export type ActivatorMechanic = std.Mechanic<typeof(Activator)>
 
 const function implementActivatorMode(context: activation.ActivationContext)
-	const group = Activator.Group(context.instanceConfiguration)
 	Activator.onActivatedSignal:Connect(function(activator: ActivatorMechanic)
-		if activator:Group() == group then
-			context:onActivate(activation.castEvent { kind = "activator", mechanic = activator })
+		const group = Activator.Group(context.instanceConfiguration)
+		if activator:Group() == group or context.instanceConfiguration:HasTag(activator:Tag()) then
+			context:onActivate(activation.castEvent { kind = "Activator", mechanic = activator })
 		end
 	end)
 end
