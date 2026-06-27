@@ -30,10 +30,6 @@ const Vine = std.Mechanic {
 	JumpOnDismount = std.Attribute("JumpOnDismount", std.gt.boolean(), true),
 	KeepMomentum = std.Attribute("KeepMomentum", std.gt.boolean(), true),
 
-	ActivatorTransparency = std.Attribute("ActivatorTransparency", std.gt.constrainNumber(0, 1), 0),
-	ActivatorPosition = std.Attribute("ActivatorCFrame", std.gt.Vector3(), Vector3.zero),
-	ActivatorSize = std.Attribute("ActivatorSize", std.gt.Vector3(), Vector3.zero),
-
 	std.AttributeSection "Activation",
 	Activation = activation.useAttributes(),
 
@@ -46,10 +42,11 @@ const Vine = std.Mechanic {
 	EmitJumpedTag = std.Attribute("EmitJumpTag", std.gt.tag, "Vine: On Jumped"),
 	EmitRefreshedTag = std.Attribute("EmitRefreshedTag", std.gt.tag, "Vine: On Refreshed"),
 
-	std.AttributeSection "Tweens",
+	std.AttributeSection "Activator",
 	ActivatorTween = tweens.useAttributes "ActivatorTween",
-
-	-- active = std,
+	ActivatorTransparency = std.Attribute("ActivatorTransparency", std.gt.constrainNumber(0, 1), 0),
+	ActivatorPosition = std.Attribute("ActivatorCFrame", std.gt.Vector3(), Vector3.zero),
+	ActivatorSize = std.Attribute("ActivatorSize", std.gt.Vector3(), Vector3.zero),
 }
 
 export type VineMechanic = std.Mechanic<typeof(Vine), { handle: BasePart }>
@@ -73,14 +70,14 @@ function Vine.onActivate(self: typeof(Vine), vine: VineMechanic, level: std.Leve
 
 	if mounts.isMechanicMounted(toucher, vine) then return end
 
-	const activationLife = vine.life:extend()
-	activationLife:destroyOn(mounts.mountMechanic(toucher, vine))
-	activationLife:destroyOn(toucher.Destroying)
-
 	const wasActivatable = self.Activation.Enabled(vine)
 	self.Activation.Enabled(vine, false)
 	vine:Active(true)
 	vine:Debounced(true)
+
+	const activationLife = vine.life:extend()
+	activationLife:destroyOn(mounts.mountMechanic(toucher, vine))
+	activationLife:destroyOn(toucher.Destroying)
 
 	vine.instance.Activator.Transparency = 1
 	vine.instance.Activator.Position = vine.instance.Base.Position
@@ -106,12 +103,11 @@ function Vine.onActivate(self: typeof(Vine), vine: VineMechanic, level: std.Leve
 	emission.emitTaggedDescendants(vine.instance, vine:EmitActivatedTag())
 
 	activationLife:add(function()
-		self.active[toucher] = nil
-
-		if vine.life.destroyed then return end
+		vine:Active(false)
+		mounts.dismountMechanic(toucher, vine)
+		emission.emitTaggedDescendants(vine.instance, vine:EmitDeactivatedTag())
 
 		if toucher and vine:KeepMomentum() == false then toucher.AssemblyLinearVelocity = Vector3.zero end
-
 		if character.isFromCharacter(toucher) then
 			const humanoid = character.getMaybeHumanoid()
 			if humanoid then
@@ -121,19 +117,16 @@ function Vine.onActivate(self: typeof(Vine), vine: VineMechanic, level: std.Leve
 			end
 		end
 
-		emission.emitTaggedDescendants(vine.instance, vine:EmitDeactivatedTag())
-
-		vine:Active(false)
 		vine.life:delay(vine:Cooldown(), function(vine: typeof(vine))
+			vine.Activation.Enabled(vine, wasActivatable)
+			vine:Debounced(false)
+
 			emission.emitTaggedDescendants(vine.instance, vine:EmitRefreshedTag())
 			tweens.playFromAttributes(vine.instance.Activator, {
 				Transparency = vine:ActivatorTransparency(),
 				Position = vine:ActivatorPosition(),
 				Size = vine:ActivatorSize(),
 			}, vine.ActivatorTween, vine.instanceConfiguration)
-
-			vine.Activation.Enabled(vine, wasActivatable)
-			vine:Debounced(false)
 		end, vine)
 	end)
 

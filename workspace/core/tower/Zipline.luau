@@ -409,6 +409,7 @@ function Zipline.onActivate(
 
 	const function onDismount()
 		zipline:Active(false)
+		mounts.dismountMechanic(toucher, zipline)
 
 		if isPlayer then
 			const humanoid = character.getMaybeHumanoid()
@@ -426,7 +427,6 @@ function Zipline.onActivate(
 
 		zipline.life:delay(zipline:Cooldown(), function(zipline: typeof(zipline), toucher: typeof(toucher))
 			zipline:Debounced(false)
-			mounts.dismountMechanic(toucher, zipline)
 		end, zipline, toucher)
 	end
 
