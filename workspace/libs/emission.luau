@@ -1,57 +1,45 @@
 const SoundService = game:GetService "SoundService"
 
-local Attribute = require "@libs/attributes/Attribute"
-local gt = require "@libs/vendor/gt"
-local threadpool = require "./threadpool"
+const Attribute = require "@libs/attributes/Attribute"
+const gt = require "@libs/vendor/gt"
+const threadpool = require "./threadpool"
 
-const Delay = Attribute.new("Delay", gt.positiveNumber, 0)
+const emission = {
+	Delay = Attribute.new("Delay", gt.positiveNumber, 0),
 
-const Volume = Attribute.new("Volume", gt.positiveNumber, 0.5)
-const PlaybackSpeed = Attribute.new("PlaybackSpeed", gt.positiveNumber, 1)
-const PlaybackRegionsEnabled = Attribute.new("PlaybackRegionsEnabled", gt.boolean(), false)
-const PlaybackRegion = Attribute.new("PlaybackRegion", gt.NumberRange, NumberRange.new(0, 60000))
-const RollOffMode = Attribute.new("RollOffMode", gt.enumOf(Enum.RollOffMode), Enum.RollOffMode.InverseTapered)
-const RollOffMinDistance = Attribute.new("RollOffMinDistance", gt.positiveNumber, 10000)
-const RollOffMaxDistance = Attribute.new("RollOffMinDistance", gt.positiveNumber, 10)
-const PlaybackSpatial = Attribute.new("PlaybackSpatial", gt.boolean(), true)
+	Volume = Attribute.new("Volume", gt.positiveNumber, 0.5),
+	PlaybackSpeed = Attribute.new("PlaybackSpeed", gt.positiveNumber, 1),
+	PlaybackRegionsEnabled = Attribute.new("PlaybackRegionsEnabled", gt.boolean(), false),
+	PlaybackRegion = Attribute.new("PlaybackRegion", gt.NumberRange, NumberRange.new(0, 60000)),
+	RollOffMode = Attribute.new("RollOffMode", gt.enumOf(Enum.RollOffMode), Enum.RollOffMode.InverseTapered),
+	RollOffMinDistance = Attribute.new("RollOffMinDistance", gt.positiveNumber, 10000),
+	RollOffMaxDistance = Attribute.new("RollOffMinDistance", gt.positiveNumber, 10),
+	PlaybackSpatial = Attribute.new("PlaybackSpatial", gt.boolean(), true),
+}
 
-const function emit(instance: Instance)
+function emission.emit(instance: Instance)
 	if instance:IsA "ParticleEmitter" then instance:Emit(instance.Rate) end
 
 	if instance:IsA "Sound" then
 		const sound = instance:Clone()
-		sound.Volume = Volume:peek(instance) or sound.Volume
-		sound.PlaybackSpeed = PlaybackSpeed:peek(instance) or sound.PlaybackSpeed
-		sound.PlaybackRegionsEnabled = PlaybackRegionsEnabled:peek(instance) or sound.PlaybackRegionsEnabled
-		sound.PlaybackRegion = PlaybackRegion:peek(instance) or sound.PlaybackRegion
-		sound.RollOffMode = RollOffMode:peek(instance) or sound.RollOffMode
-		sound.RollOffMinDistance = RollOffMinDistance:peek(instance) or sound.RollOffMinDistance
-		sound.RollOffMaxDistance = RollOffMaxDistance:peek(instance) or sound.RollOffMaxDistance
+		sound.Volume = emission.Volume:peek(instance) or sound.Volume
+		sound.PlaybackSpeed = emission.PlaybackSpeed:peek(instance) or sound.PlaybackSpeed
+		sound.PlaybackRegionsEnabled = emission.PlaybackRegionsEnabled:peek(instance) or sound.PlaybackRegionsEnabled
+		sound.PlaybackRegion = emission.PlaybackRegion:peek(instance) or sound.PlaybackRegion
+		sound.RollOffMode = emission.RollOffMode:peek(instance) or sound.RollOffMode
+		sound.RollOffMinDistance = emission.RollOffMinDistance:peek(instance) or sound.RollOffMinDistance
+		sound.RollOffMaxDistance = emission.RollOffMaxDistance:peek(instance) or sound.RollOffMaxDistance
 		sound.PlayOnRemove = true
-		sound.Parent = PlaybackSpatial:peek(instance) and instance.Parent or SoundService
+		sound.Parent = emission.PlaybackSpatial:peek(instance) and instance.Parent or SoundService
 
 		sound:Destroy()
 	end
 end
 
-const function emitTaggedDescendants(parent: Instance, tag: string)
+function emission.emitTaggedDescendants(parent: Instance, tag: string)
 	for _, descendant in parent:GetDescendants() do
-		if descendant:HasTag(tag) then threadpool.spawn(emit, descendant) end
+		if descendant:HasTag(tag) then threadpool.spawn(emission.emit, descendant) end
 	end
 end
 
-return table.freeze {
-	Delay = Delay,
-
-	Volume = Volume,
-	PlaybackSpeed = PlaybackSpeed,
-	PlaybackRegionsEnabled = PlaybackRegionsEnabled,
-	PlaybackRegion = PlaybackRegion,
-	RollOffMode = RollOffMode,
-	RollOffMinDistance = RollOffMinDistance,
-	RollOffMaxDistance = RollOffMaxDistance,
-	PlaybackSpatial = PlaybackSpatial,
-
-	emit = emit,
-	emitTaggedDescendants = emitTaggedDescendants,
-}
+return table.freeze(emission)

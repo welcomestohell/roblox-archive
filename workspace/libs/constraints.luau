@@ -1,6 +1,8 @@
-local Life = require "@libs/memory/Life"
+const Life = require "@libs/memory/Life"
 
-local function weld(life: Life.Life, from: BasePart, to: BasePart)
+const constraints = {}
+
+function constraints.weld(life: Life.Life, from: BasePart, to: BasePart)
 	local weldConstraint = Instance.new "WeldConstraint"
 	weldConstraint.Part0 = from
 	weldConstraint.Part1 = to
@@ -8,7 +10,7 @@ local function weld(life: Life.Life, from: BasePart, to: BasePart)
 	return life:add(weldConstraint)
 end
 
-local function populateAttachments(
+function constraints.populateAttachments(
 	life: Life.Life,
 	-- In reality, anything with Attachment0 and Attachment1
 	constraint: Constraint | Beam
@@ -25,7 +27,4 @@ local function populateAttachments(
 	return attachment0, attachment1
 end
 
-return table.freeze {
-	weld = weld,
-	populateAttachments = populateAttachments,
-}
+return table.freeze(constraints)

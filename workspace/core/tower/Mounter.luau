@@ -124,7 +124,7 @@ function Mounter.onActivate(
 	end
 
 	const activationLife = mounter.life:extend()
-	activationLife:add(mounts.mount(target, mounter.instance, mountName))
+	activationLife:destroyOn(mounts.mount(toucher, mounter.instance, mountName))
 
 	const mode = mounter:MountMode()
 	if mode == "Weld" then
@@ -163,6 +163,7 @@ function Mounter.onActivate(
 
 	activationLife:add(function()
 		mounter:Active(false)
+		mounter.life:delay(mounter:RemoveAfter(), mountLife:wrapDestroy())
 		mounter.life:delay(
 			mounter:Cooldown(),
 			function(mounter: typeof(mounter), wasActivatable: typeof(wasActivatable))
@@ -175,7 +176,6 @@ function Mounter.onActivate(
 
 		mounts.dismount(toucher, mounter.instance)
 		emission.emitTaggedDescendants(mount, mounter:EmitDismountedTag())
-		mounter.life:delay(mounter:RemoveAfter(), mountLife:wrapDestroy())
 	end)
 
 	activation.bindActivation {

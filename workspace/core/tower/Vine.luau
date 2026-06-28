@@ -64,6 +64,8 @@ function Vine.onStart(self: typeof(Vine), vine: VineMechanic)
 end
 
 function Vine.onActivate(self: typeof(Vine), vine: VineMechanic, level: std.Level, event: activation.ActivationEvent)
+	if vine:Active() then return end
+
 	const toucher = if event.kind == "Touch" and not character.isFromCharacter(event.toucher)
 		then event.toucher
 		else character.getCharacter().Head
@@ -77,7 +79,7 @@ function Vine.onActivate(self: typeof(Vine), vine: VineMechanic, level: std.Leve
 	vine:Debounced(true)
 
 	const activationLife = vine.life:extend()
-	activationLife:destroyOn(mounts.mountMechanic(mountInstance, vine))
+	activationLife:destroyOn(mounts.mountMechanic(toucher, vine))
 	activationLife:destroyOn(toucher.Destroying)
 
 	vine.instance.Activator.Transparency = 1

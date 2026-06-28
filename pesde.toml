@@ -27,9 +27,11 @@ pesde = "^0.7.0"
 lune = "^0.10.2"
 
 [dependencies]
+CatRom = { wally = "ecurtiss/catrom", version = "^1.0.0-rc1" }
 Charm = { wally = "littensy/charm", version = "^0.11.0-rc.3" }
 CharmSync = { wally = "littensy/charm-sync", version = "^0.4.0-rc.7" }
 CullThrottle = { repo = "welcomestohell/cull-throttle", rev = "08587e8cdda407c0979bfbcca45564c876802dd7" }
+Dash = { wally = "ukendio/dash", version = "0.1.9" }
 Fluid = { wally = "godmothersfire/fluid", version = "^0.6.41" }
 gt = { name = "corecii/greentea", version = "^0.4.11" }
 Iris = { wally = "sirmallard/iris", version = "^2.5.0" }
@@ -46,7 +48,6 @@ Sift = { wally = "csqrl/sift", version = "^0.0.11" }
 Signal = { wally = "data-oriented-house/lemonsignal", version = "^1.10.0" }
 typeforge = { wally = "cameronpcampbell/typeforge", version = "^3.0.4" }
 UILabs = { wally = "pepeeltoro41/ui-labs", version = "^2.4.2" }
-CatRom = { wally = "ecurtiss/catrom", version = "^1.0.0-rc1" }
 
 [overrides]
 "Liquid>Fluid" = { wally = "godmothersfire/fluid", version = "^0.6.41" }

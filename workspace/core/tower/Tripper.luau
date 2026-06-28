@@ -21,6 +21,8 @@ const Tripper = std.Mechanic {
 export type TripperMechanic = std.Mechanic<typeof(Tripper)>
 
 function Tripper.onActivate(self: typeof(Tripper), tripper: TripperMechanic)
+	if tripper:Active() then return end
+
 	const humanoid = character.getMaybeHumanoid()
 	if humanoid then
 		const stunDuration = tripper:StunDuration()
