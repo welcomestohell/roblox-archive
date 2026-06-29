@@ -19,6 +19,8 @@ export type Emitter = typeof(Emitter)
 export type EmitterMechanic = std.Mechanic<Emitter>
 
 function Emitter.onActivate(self: Emitter, emitter: EmitterMechanic)
+	if emitter:Debounced() then return end
+
 	const wasActivatable = self.Activation.Enabled(emitter)
 	self.Activation.Enabled(emitter, false)
 	emitter:Debounced(true)

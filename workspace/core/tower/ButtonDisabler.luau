@@ -19,9 +19,11 @@ export type ButtonDisablerMechanic = std.Mechanic<typeof(ButtonDisabler)>
 
 -- Investigate: Should we add disabling individual buttons?
 function ButtonDisabler.onActivate(self: typeof(ButtonDisabler), disabler: ButtonDisablerMechanic, level: std.Level)
+	if disabler:Debounced() then return end
+	disabler:Debounced(true)
+
 	const wasActivatable = self.Activation.Enabled(disabler)
 	self.Activation.Enabled(disabler, false)
-	disabler:Debounced(true)
 
 	const group = disabler:Group()
 	for _, button: Button.ButtonMechanic in level:getMechanics(Button) do

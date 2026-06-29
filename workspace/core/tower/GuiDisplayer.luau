@@ -36,10 +36,12 @@ function GuiDisplayer:getActivationInstances(displayer: GuiDisplayerMechanic)
 end
 
 function GuiDisplayer.onActivate(self: GuiDisplayerModule, displayer: GuiDisplayerMechanic, level: std.Level)
+	if displayer:Active() or displayer:Debounced() then return end
+	displayer:Debounced(true)
+
 	const wasActivatable = self.Activation.Enabled(displayer)
 	self.Activation.Enabled(displayer, false)
 	displayer:Active(true)
-	displayer:Debounced(true)
 
 	const activationLife = displayer.life:extend()
 	activationLife:addMany(
@@ -58,9 +60,9 @@ function GuiDisplayer.onActivate(self: GuiDisplayerModule, displayer: GuiDisplay
 		end)
 	)
 
-	if displayer.instance.Component then
-		const requireSuccess, componentOrError =
-			pcall(require, instances.resolveModulePointer(displayer.instance.Component))
+	const component = displayer.instance:FindFirstChild "Component"
+	if component then
+		const requireSuccess, componentOrError = pcall(require, instances.resolveModulePointer(component))
 
 		if not requireSuccess then
 			logger:Error("Failed to require component of", displayer.instance, "because:", componentOrError)
@@ -98,8 +100,11 @@ function GuiDisplayer.onActivate(self: GuiDisplayerModule, displayer: GuiDisplay
 			activationLife:destroy()
 			return
 		end
-	elseif displayer.instance.ScreenGui then
-		const screenGui = activationLife:add(displayer.instance.ScreenGui:Clone())
+	end
+
+	const templateScreenGui = displayer.instance:FindFirstChild "ScreenGui"
+	if templateScreenGui then
+		const screenGui = activationLife:add(templateScreenGui:Clone())
 		screenGui.Parent = Players.LocalPlayer.PlayerGui
 		level:loadDescendantInstancesAsync(screenGui)
 	end

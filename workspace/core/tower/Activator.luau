@@ -10,7 +10,7 @@ const Activator = std.Mechanic {
 
 	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 1),
 	Debounced = std.Attribute("Debounced", std.gt.boolean(), false),
-	Group = std.Attribute("Group", std.gt.group, ""),
+	Group = std.Attribute("Group", std.gt.optional(std.gt.group), nil),
 	Tag = std.Attribute("Tag", std.gt.tag, ""),
 
 	std.AttributeSection "Activation",
@@ -22,10 +22,10 @@ const Activator = std.Mechanic {
 export type ActivatorMechanic = std.Mechanic<typeof(Activator)>
 
 const function shouldActivate(context: activation.ActivationContext, activator: ActivatorMechanic)
-	const group = Activator.Group(context.instanceConfiguration)
+	const group = activator:Group()
 	const targetInstance = activator.instance:FindFirstChild "Target"
 
-	return activator:Group() == group
+	return group and group == Activator.Group(context.instanceConfiguration)
 		or context.instanceConfiguration:HasTag(activator:Tag())
 		or targetInstance
 			and targetInstance:IsA "ObjectValue"
@@ -45,9 +45,11 @@ activation
 	:expect "Failed to regiser activation mode for Activator"
 
 function Activator.onActivate(self: typeof(Activator), activator: ActivatorMechanic, level: std.Level)
+	if activator:Debounced() then return end
+	activator:Debounced(true)
+
 	const wasActivatable = self.Activation.Enabled(activator)
 	self.Activation.Enabled(activator, false)
-	activator:Debounced(true)
 
 	self.onActivatedSignal:Fire(activator)
 

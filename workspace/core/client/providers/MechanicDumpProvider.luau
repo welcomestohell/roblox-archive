@@ -22,6 +22,7 @@ function MechanicDumpProvider.onStart()
 	const dump = {}
 	for _, implementation in Level.baseScripts.mechanicImplementationByName do
 		const implementation = Mechanic.downcast(implementation)
+		print(implementation.name, implementation.description)
 		dump[implementation.name] = {
 			name = implementation.name,
 			emoji = implementation.emoji,
