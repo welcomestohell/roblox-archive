@@ -127,12 +127,7 @@ const function instanceTree(treeOrParent: any, tree: any): gt.Type
 end
 
 const function literals<T>(tbl: { "黑魔法" } | { T }): Strip<T>
-	const len = #tbl
-	const components = table.create<<T>>(#tbl)
-	for index = 1, len do
-		components[index] = gt.literal(tbl[index])
-	end
-	return gt.union(table.unpack(components, 1, len) :: any)
+	return gt.union(table.unpack(arrays.mapped(tbl, gt.literal))) :: any
 end
 
 const function keysOf<T>(tbl: T): keyof<T>
