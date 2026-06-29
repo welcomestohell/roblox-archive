@@ -1,8 +1,9 @@
 const logger = require "@core/shared/logger"
 const AttributeOrder = require "@libs/attributes/AttributeOrder"
 const observeAttributes = require "@libs/attributes/observeAttributes"
-const tables = require "@libs/collections/tables"
+const tables = require "@libs/primitives/tables"
 const instances = require "@libs/instances"
+const arrays = require "@libs/primitives/arrays"
 const gt = require "@libs/vendor/gt"
 const threadpool = require "@libs/threadpool"
 
@@ -101,7 +102,7 @@ local function observeListener<T>(
 
 	local instanceListeners = listenerMap[resolved]
 	if not instanceListeners then
-		instanceListeners = tables.weak "k"
+		instanceListeners = tables.createWeakened<<number, (value: T, attribute: Attribute<T>) -> ()>> "k"
 		listenerMap[resolved] = instanceListeners
 	end
 	table.insert(instanceListeners :: { (value: T, attribute: Attribute<T>) -> () }, listener)
@@ -117,7 +118,7 @@ local function observeListener<T>(
 		local listeners = listenerMap[resolved]
 		if not listeners then return end
 
-		tables.findAndRemove(listeners, listener)
+		arrays.findAndRemove(listeners, listener)
 
 		if next(listeners) == nil then listenerMap[resolved] = nil end
 	end
@@ -131,12 +132,12 @@ function Attribute.new<T>(attribute: string, check: T, defaultValue: T): Attribu
 		check = gt.build(check) :: T,
 		defaultValue = defaultValue,
 
-		_observerCallbacks = tables.weak "k",
-		_observerDisconnectors = tables.weak "k",
-		_cache = tables.weak "k",
-		_updated = tables.weak "k",
-		_changeListeners = tables.weak "k",
-		_fetchListeners = tables.weak "k",
+		_observerCallbacks = tables.createWeakened<<any, any>> "k",
+		_observerDisconnectors = tables.createWeakened<<any, any>> "k",
+		_cache = tables.createWeakened<<any, any>> "k",
+		_updated = tables.createWeakened<<any, any>> "k",
+		_changeListeners = tables.createWeakened<<any, any>> "k",
+		_fetchListeners = tables.createWeakened<<any, any>> "k",
 	}, Attribute))
 end
 

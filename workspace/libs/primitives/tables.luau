@@ -1,9 +1,16 @@
+const types = require "@libs/types"
 const typeforge = require "@libs/vendor/typeforge"
 export type Map<K = unknown, V = unknown> = { [K]: V }
 export type Array<T = unknown> = { T }
 export type Set<T = unknown> = { [T]: true }
 
-const tables = {}
+const tables = {
+	WEAK_METATABLES = table.freeze {
+		k = table.freeze { __mode = "k" },
+		v = table.freeze { __mode = "v" },
+		kv = table.freeze { __mode = "kv" },
+	},
+}
 
 const function passthrough(value)
 	return value
@@ -57,6 +64,10 @@ function tables.countPredicate<K, V>(input: { [K]: V }, predicate: (V, K) -> boo
 		end
 	end
 	return count
+end
+
+function tables.createWeakened<K, V>(mt: keyof<typeof(tables.WEAK_METATABLES)>): { [K]: V }
+	return setmetatable({} :: { [K]: V }, (tables.WEAK_METATABLES :: any)[mt])
 end
 
 function tables.deepCloned<T>(input: T & {}): typeforge.DeepReadWrite<T>
@@ -133,6 +144,18 @@ function tables.keysMapped<KI, KO, V>(input: { [KI]: V }, transform: (KI) -> KO)
 	return result
 end
 
+function tables.merged<T>(object: T & {}, source: types.Partial<T>?): T
+	if source == nil then return object end
+	local result = object
+	for key, value in source :: { [any]: any } do
+		if result[key] ~= value then
+			if result == object then result = table.clone(object) :: never end
+			result[key] = value
+		end
+	end
+	return result
+end
+
 function tables.pairsMapped<KI, VI, KO, VO>(input: { [KI]: VO }, transform: (KI, VI) -> (KO, VO)): { [KO]: VO }
 	const result = {}
 	for keyIn, valueIn in input do
@@ -171,6 +194,10 @@ function tables.valuesOf<V>(input: { [unknown]: V }): { V }
 		table.insert(result, value)
 	end
 	return result
+end
+
+function tables.weaken<T>(input: T & {}, mt: keyof<typeof(tables.WEAK_METATABLES)>): T
+	return setmetatable(input, (tables.WEAK_METATABLES :: any)[mt])
 end
 
 return table.freeze(tables)

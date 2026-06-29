@@ -1,15 +1,16 @@
-local Players = game:GetService "Players"
+const Players = game:GetService "Players"
 
 const logger = require "@core/shared/logger"
 const Attribute = require "@libs/attributes/Attribute"
-const tables = require "@libs/collections/tables"
+const tables = require "@libs/primitives/tables"
 const instances = require "@libs/instances"
-local CullThrottle = require "@pkgs/CullThrottle"
-local std = require "@libs/std"
+const arrays = require "@libs/primitives/arrays"
+const CullThrottle = require "@pkgs/CullThrottle"
+const std = require "@libs/std"
 const types = require "@libs/types"
 
 -- Investigate: Maybe `Group: DistanceCulled` and `Group: CameraCulled`??
-local Culled = std.Mechanic {
+const Culled = std.Mechanic {
 	emoji = "👻",
 	name = "Culled",
 	description = [[
@@ -62,7 +63,7 @@ function Culled.onInit(self: typeof(Culled), level: std.Level)
 	self.culler:set(level, level.life:add(CullThrottle.new()))
 	self.distanceMechanics:set(level, {} :: { CulledMechanic })
 	self.culledMechanics:set(level, {} :: { CulledMechanic })
-	self.instanceToCulled:set(level, tables.weak "k" :: { [Instance]: CulledMechanic })
+	self.instanceToCulled:set(level, tables.createWeakened<<Instance, CulledMechanic>> "k")
 end
 
 function Culled.onStart(self: typeof(Culled), culled: CulledMechanic, level: std.Level)
@@ -75,7 +76,7 @@ function Culled.onStart(self: typeof(Culled), culled: CulledMechanic, level: std
 	self.Mode:onBind(culled, function(mode)
 		if mode == "Distance" then
 			if culled.instance:IsA "PVInstance" then
-				tables.findAndRemove(culledMechanics, culled)
+				arrays.findAndRemove(culledMechanics, culled)
 				table.insert(distanceMechanics, culled)
 				if culler._objects[culled.instance] then
 					culler:RemoveObject(culled.instance)
@@ -92,7 +93,7 @@ function Culled.onStart(self: typeof(Culled), culled: CulledMechanic, level: std
 			)
 		end
 
-		tables.findAndRemove(distanceMechanics, culled)
+		arrays.findAndRemove(distanceMechanics, culled)
 		table.insert(culledMechanics, culled)
 		culler:AddObject(culled.instance)
 		instanceToCulled[culled.instance] = culled

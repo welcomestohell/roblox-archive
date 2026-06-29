@@ -1,7 +1,7 @@
-local AccountStore = require "./AccountStore"
-local PlayerStore = require "./PlayerStore"
-local objects = require "@libs/collections/objects"
-local prvd = require "@pkgs/prvd"
+const AccountStore = require "./AccountStore"
+const PlayerStore = require "./PlayerStore"
+const tables = require "@libs/primitives/tables"
+const prvd = require "@pkgs/prvd"
 
 type Account = AccountStore.Account
 
@@ -11,12 +11,12 @@ export type AccountProvider = typeof(AccountProvider)
 function AccountProvider.setGold(self: AccountProvider, player: Player, operator: "add" | "subtract", amount: number)
 	return PlayerStore:updateImmutable(player, function(account: Account)
 		if operator == "add" then
-			return objects.join(account, {
+			return tables.merged(account, {
 				gold = account.gold + amount,
 				completedTowers = account.completedTowers,
 			})
 		else
-			return objects.join(account, {
+			return tables.merged(account, {
 				gold = account.gold - amount,
 				completedTowers = account.completedTowers,
 			})
@@ -32,12 +32,12 @@ function AccountProvider.setCompletedTowers(
 )
 	return PlayerStore:updateImmutable(player, function(account: Account)
 		if operator == "add" then
-			return objects.join(account, {
+			return tables.merged(account, {
 				gold = account.gold,
 				completedTowers = account.completedTowers + amount,
 			})
 		else
-			return objects.join(account, {
+			return tables.merged(account, {
 				gold = account.gold,
 				completedTowers = account.completedTowers - amount,
 			})

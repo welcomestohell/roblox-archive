@@ -1,5 +1,4 @@
 local Charm = require "@pkgs/Charm"
-local objects = require "@libs/collections/objects"
 
 export type Account = {
 	read gold: number,
@@ -18,13 +17,17 @@ end
 
 local function setAccount(username: string, account: Account)
 	setAccounts(function(state: Accounts)
-		return objects.set(state, username, account)
+		table.clone(state)
+		state[username] = account
+		return state
 	end)
 end
 
 local function removeAccount(username: string)
 	setAccounts(function(state: Accounts)
-		return objects.delete(state, username)
+		table.clone(state)
+		state[username] = nil
+		return state
 	end)
 end
 

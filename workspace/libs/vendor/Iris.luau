@@ -1,10 +1,10 @@
-local Iris = require "@pkgs/Iris"
-local tables = require "@libs/collections/tables"
+const typeforge = require "@libs/vendor/typeforge"
+const Iris = require "@pkgs/Iris"
 
 type Cleanup = () -> ()
 
 export type Config = typeof(Iris._config)
-export type PartialConfig = tables.Partial<Config>
+export type PartialConfig = typeforge.Partial<Config>
 export type State<T> = typeof(Iris.State(... :: any))
 export type ID = string
 

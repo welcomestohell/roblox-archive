@@ -3,12 +3,9 @@ const ReplicatedStorage = game:GetService "ReplicatedStorage"
 
 local collectAssets = require "@core/shared/assets/collectAssets"
 local flattenAssetIds = require "@core/shared/assets/flattenAssetIds"
-local flattenAssetModules = require "@core/shared/assets/flattenAssetModules"
-local requireAssetModules = require "@core/shared/assets/requireAssetModules"
 const logger = require "@core/shared/logger"
 const character = require "@libs/character"
-local arrays = require "@libs/collections/arrays"
-const tables = require "@libs/collections/tables"
+local arrays = require "@libs/primitives/arrays"
 const Level = require "@libs/core/Level"
 const Life = require "@libs/memory/Life"
 local threadpool = require "@libs/threadpool"
@@ -31,7 +28,7 @@ function LevelProvider.tryLoadLevel(self: typeof(LevelProvider), instance: Insta
 		game.Loaded:Wait()
 	end
 
-	for _, ids in arrays.map(collectAssets(), flattenAssetIds) do
+	for _, ids in arrays.mapped(collectAssets(), flattenAssetIds) do
 		threadpool.spawn(ContentProvider.PreloadAsync, ContentProvider, ids)
 	end
 
@@ -49,7 +46,7 @@ function LevelProvider.tryLoadLevel(self: typeof(LevelProvider), instance: Insta
 
 		level.life:add(function()
 			self.activeLevels(function(activeLevels: { Level.Level })
-				tables.findAndRemove<<Level.Level>>(activeLevels, level)
+				arrays.findAndRemove<<Level.Level>>(activeLevels, level)
 				return activeLevels
 			end)
 		end)

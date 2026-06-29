@@ -1,7 +1,7 @@
 const Players = game:GetService "Players"
 
-const marrays = require "@libs/collections/marrays"
-const tables = require "@libs/collections/tables"
+const triplets = require "@libs/primitives/triplets"
+const tables = require "@libs/primitives/tables"
 const emission = require "@libs/emission"
 const destruction = require "@libs/memory/destruction"
 const std = require "@libs/std"
@@ -66,10 +66,10 @@ function BeatBlock.processChild(beatblock: BeatBlockMechanic, child: Instance)
 	end))
 
 	if index then
-		marrays.push(beatblock.blocks, index, child)
+		triplets.arrayPush(beatblock.blocks, index, child)
 		beatblock:calculateHighestIndex()
 		childLife:addMany(function()
-			marrays.remove(beatblock.blocks, index, child)
+			triplets.arrayFindAndRemove(beatblock.blocks, index, child)
 			beatblock:calculateHighestIndex()
 		end)
 	end
@@ -78,7 +78,7 @@ end
 function BeatBlock.onStart(self: typeof(BeatBlock), beatblock: BeatBlockMechanic, level: std.Level)
 	beatblock.highestIndex = 0
 	beatblock.blocks = {}
-	beatblock.emitters = tables.weak "k"
+	beatblock.emitters = tables.createWeakened<<Instance, true>> "k"
 
 	beatblock.life:addMany(
 		beatblock.instance.ChildAdded:Connect(function(child)

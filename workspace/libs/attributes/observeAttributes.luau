@@ -1,8 +1,9 @@
-const tables = require "@libs/collections/tables"
+const arrays = require "@libs/primitives/arrays"
+const tables = require "@libs/primitives/tables"
 const threadpool = require "@libs/threadpool"
 
-const CONNECTIONS: { [Instance]: RBXScriptConnection } = tables.weak "k"
-const LISTENERS: { [Instance]: { (attribute: string) -> () } } = tables.weak "k"
+const CONNECTIONS = tables.createWeakened<<Instance, RBXScriptConnection>> "k"
+const LISTENERS = tables.createWeakened<<Instance, { (attribute: string) -> () }>> "k"
 
 const function cleanupObserver(instance: Instance)
 	if LISTENERS[instance] then
@@ -33,7 +34,7 @@ const function observeAttributes(instance: Instance, listener: (attribute: strin
 
 	return function()
 		if LISTENERS[instance] then
-			tables.findAndRemove(LISTENERS[instance], listener)
+			arrays.findAndRemove(LISTENERS[instance], listener)
 			if next(LISTENERS[instance]) == nil then cleanupObserver(instance) end
 		end
 	end

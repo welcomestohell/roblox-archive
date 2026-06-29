@@ -1,5 +1,5 @@
 const Text = require "@core/ui/components/base/Text"
-const tables = require "@libs/collections/tables"
+const arrays = require "@libs/primitives/arrays"
 const Fluid = require "@pkgs/Fluid"
 const Liquid = require "@pkgs/Liquid"
 
@@ -77,25 +77,24 @@ const function NumberSpinner(props: {
 					Size = UDim2.fromScale(1, 1),
 					BackgroundTransparency = 1,
 
-					tables.map(DIGITS, function(index: number, digit: number)
-						return index,
-							Text {
-								name = `Digit{digit}`,
-								position = UDim2.fromScale(0, index - 1),
-								size = UDim2.fromScale(1, 1),
-								automaticSize = Enum.AutomaticSize.None,
+					arrays.mapped(DIGITS, function(digit: number): any
+						return Text {
+							name = `Digit{digit}`,
+							position = UDim2.fromScale(0, index - 1),
+							size = UDim2.fromScale(1, 1),
+							automaticSize = Enum.AutomaticSize.None,
 
-								text = tostring(digit),
-								textSize = props.textSize,
-								textScaled = props.textScaled,
-								textColor = props.textColor,
-								textRich = props.textRich,
-								textWraps = props.textWraps,
-								textTruncate = props.textTruncate,
-								font = props.font,
-								fontWeight = props.fontWeight,
-								fontStyle = props.fontStyle,
-							}
+							text = tostring(digit),
+							textSize = props.textSize,
+							textScaled = props.textScaled,
+							textColor = props.textColor,
+							textRich = props.textRich,
+							textWraps = props.textWraps,
+							textTruncate = props.textTruncate,
+							font = props.font,
+							fontWeight = props.fontWeight,
+							fontStyle = props.fontStyle,
+						}
 					end),
 				},
 			}

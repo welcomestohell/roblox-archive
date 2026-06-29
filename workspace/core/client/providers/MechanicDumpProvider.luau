@@ -1,7 +1,7 @@
 const HttpService = game:GetService "HttpService"
 const ReplicatedStorage = game:GetService "ReplicatedStorage"
 
-const tables = require "@libs/collections/tables"
+const tables = require "@libs/primitives/tables"
 const Level = require "@libs/core/Level"
 const Mechanic = require "@libs/core/Mechanic"
 const gt = require "@libs/vendor/gt"
@@ -26,7 +26,7 @@ function MechanicDumpProvider.onStart()
 			name = implementation.name,
 			emoji = implementation.emoji,
 
-			attributeSections = tables.map(
+			attributeSections = tables.pairsMapped(
 				implementation._metadata.attributeSections,
 				function(index, section: Mechanic.AttributeSection)
 					section.attributes = table.clone(section.attributes)

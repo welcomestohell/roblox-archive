@@ -1,14 +1,13 @@
-local Players = game:GetService "Players"
-local Workspace = game:GetService "Workspace"
+const Players = game:GetService "Players"
+const Workspace = game:GetService "Workspace"
 
-local character = require "@libs/character"
-local functions = require "@libs/functions"
-local std = require "@libs/std"
-local tables = require "@libs/collections/tables"
+const character = require "@libs/character"
+const functions = require "@libs/functions"
+const std = require "@libs/std"
 
-local mouse = Players.LocalPlayer:GetMouse()
+const mouse = Players.LocalPlayer:GetMouse()
 
-local Follower = std.Mechanic {
+const Follower = std.Mechanic {
 	emoji = "👀",
 	name = "Follower",
 	description = "Continously follows the target by looking at, rotating, positioning, or pivoting towards it.",
@@ -68,8 +67,8 @@ function Follower.onPreSimulation(self: typeof(Follower), deltaTime: number, lev
 	if countFollowers == 0 then return end
 
 	local shouldBulkMove = false
-	local bulkInstances: { BasePart } = tables.create(countFollowers)
-	local bulkCFrames: { CFrame } = tables.create(countFollowers)
+	local bulkInstances = table.create<<BasePart>>(countFollowers)
+	local bulkCFrames = table.create<<CFrame>>(countFollowers)
 
 	for _, follower: FollowerMechanic in followers do
 		if not follower:Enabled() then continue end

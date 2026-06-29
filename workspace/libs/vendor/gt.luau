@@ -2,8 +2,8 @@
 -- Note that Welcome To Hell plans to switch to the Boba library once runtime
 -- type inspection has been implemented.
 
-const arrays = require "@libs/collections/arrays"
-const tables = require "@libs/collections/tables"
+const arrays = require "@libs/primitives/arrays"
+const tables = require "@libs/primitives/tables"
 const typeforge = require "@libs/vendor/typeforge"
 const gt = require "@pkgs/gt"
 
@@ -145,7 +145,7 @@ const function serialize(ty: Type)
 		},
 		instanceIsA = ty.instanceIsA,
 		intersection = ty.intersection and {
-			contents = arrays.map(ty.intersection.contents, serialize),
+			contents = arrays.mapped(ty.intersection.contents, serialize),
 		},
 		kind = ty.kind,
 		literal = ty.literal and {
@@ -157,7 +157,7 @@ const function serialize(ty: Type)
 		string = ty.string,
 		table = ty.table and {
 			array = ty.table.array,
-			contents = tables.map<<any, any>>(ty.table.contents, function(key, value)
+			contents = tables.pairsMapped<<any, any, any, any>>(ty.table.contents, function(key, value)
 				return serialize(key), serialize(value)
 			end),
 			count = ty.table.count,
@@ -169,11 +169,11 @@ const function serialize(ty: Type)
 		},
 		thread = ty.thread,
 		tuple = ty.tuple and {
-			contents = arrays.map(ty.tuple.contents, serialize),
+			contents = arrays.mapped(ty.tuple.contents, serialize),
 			vararg = ty.tuple.vararg and serialize(ty.tuple.vararg),
 		},
 		union = ty.union and {
-			contents = arrays.map(ty.union.contents, serialize),
+			contents = arrays.mapped(ty.union.contents, serialize),
 			optional = ty.union.optional,
 		},
 		unknown = ty.unknown,

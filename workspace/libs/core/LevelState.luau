@@ -1,5 +1,5 @@
 local Level = require "./Level"
-local tables = require "@libs/collections/tables"
+local tables = require "@libs/primitives/tables"
 
 local LevelState = {}
 LevelState.__index = LevelState
@@ -23,8 +23,8 @@ end
 function LevelState.new<T>(default: T): LevelState<T>
 	return setmetatable({
 		_default = default,
-		_values = tables.weak "k",
-		_cleanup = tables.weak "k",
+		_values = tables.createWeakened<<Level.Level, any>> "k",
+		_cleanup = tables.createWeakened<<Level.Level, () -> ()>> "k",
 	}, LevelState)
 end
 

@@ -1,18 +1,18 @@
-local RunService = game:GetService "RunService"
+const RunService = game:GetService "RunService"
 
-local Life = require "@libs/memory/Life"
-local Mechanic = require "@libs/core/Mechanic"
-local Promise = require "@pkgs/Promise"
-local Result = require "@libs/Result"
-local ScriptCollector = require "@libs/core/ScriptCollector"
-local activation = require "@libs/activation"
-local gt = require "@libs/vendor/gt"
-local marrays = require "@libs/collections/marrays"
-local mechanize = require "@libs/core/mechanize"
-local mmaps = require "@libs/collections/mmaps"
-local prvd = require "@pkgs/prvd"
-local tables = require "@libs/collections/tables"
-local threadpool = require "@libs/threadpool"
+const Life = require "@libs/memory/Life"
+const Mechanic = require "@libs/core/Mechanic"
+const Promise = require "@pkgs/Promise"
+const Result = require "@libs/Result"
+const ScriptCollector = require "@libs/core/ScriptCollector"
+const activation = require "@libs/activation"
+const gt = require "@libs/vendor/gt"
+const mechanize = require "@libs/core/mechanize"
+const arrays = require "@libs/primitives/arrays"
+const prvd = require "@pkgs/prvd"
+const tables = require "@libs/primitives/tables"
+const triplets = require "@libs/primitives/triplets"
+const threadpool = require "@libs/threadpool"
 const toggle = require "@libs/toggle"
 
 type AnyImplementation = Mechanic.AnyMechanicImplementation
@@ -41,15 +41,15 @@ export type Level = setmetatable<{
 
 	scripts: ScriptCollector.ScriptCollector,
 
-	instanceByGroups: { [string]: { Instance } },
+	instanceByGroups: triplets.Triplet<string, number, Instance>,
 
 	mechanics: { Mechanic<any> },
-	mechanicsByImplementations: { [AnyImplementation]: { Mechanic } },
-	mechanicsByInstance: { [Instance]: { Mechanic } },
+	mechanicsByImplementations: triplets.Triplet<AnyImplementation, number, Mechanic>,
+	mechanicsByInstance: triplets.Triplet<Instance, number, Mechanic>,
 
-	implementationLifecycleListeners: { [prvd.Lifecycle<...any>]: { [AnyImplementation]: (...unknown) -> () } },
+	implementationLifecycleListeners: triplets.Triplet<prvd.Lifecycle<...any>, AnyImplementation, (...unknown) -> ()>,
 	implementationLifecycles: { [string]: prvd.Lifecycle<...any> },
-	mechanicLifecycleListeners: { [prvd.Lifecycle<...any>]: { [Mechanic]: (...unknown) -> () } },
+	mechanicLifecycleListeners: triplets.Triplet<prvd.Lifecycle<...any>, Mechanic, (...unknown) -> ()>,
 	mechanicLifecycles: { [string]: prvd.Lifecycle<...any> },
 }, typeof(Level)>
 
@@ -72,7 +72,7 @@ function Level.new(outerLife: Life.Life, name: string, instance: Instance)
 
 		mechanics = {},
 		mechanicsByImplementations = {},
-		mechanicsByInstance = tables.weak "k",
+		mechanicsByInstance = tables.createWeakened "k",
 
 		-- HEAR ME OUT
 
@@ -133,7 +133,7 @@ end
 
 -- TODO: onGroupedInstanceAdded, onGroupedInstanceRemoved
 function Level.getGroupedInstances<Args...>(self: Level, group: string): { Instance }
-	return marrays.get(self.instanceByGroups, group)
+	return triplets.get(self.instanceByGroups, group)
 end
 
 function Level.getListenerForMechanic<Args...>(
@@ -141,7 +141,7 @@ function Level.getListenerForMechanic<Args...>(
 	lifecycle: prvd.Lifecycle<Args...>,
 	mechanic: Mechanic
 ): ((Args...) -> ())?
-	return mmaps.get<<prvd.Lifecycle<...any>>>(self.mechanicLifecycleListeners, lifecycle)[mechanic]
+	return triplets.get<<prvd.Lifecycle<...any>>>(self.mechanicLifecycleListeners, lifecycle)[mechanic]
 end
 
 function Level.getListenerForImplementation<Args...>(
@@ -149,7 +149,7 @@ function Level.getListenerForImplementation<Args...>(
 	lifecycle: prvd.Lifecycle<Args...>,
 	implementation: AnyImplementation
 ): ((Args...) -> ())?
-	return mmaps.get<<prvd.Lifecycle<...any>>>(self.implementationLifecycleListeners, lifecycle)[implementation]
+	return triplets.get<<prvd.Lifecycle<...any>>>(self.implementationLifecycleListeners, lifecycle)[implementation]
 end
 
 function Level.registerLifecyclesForImplementation(self: Level, implementation: AnyImplementation)
@@ -159,7 +159,7 @@ function Level.registerLifecyclesForImplementation(self: Level, implementation: 
 			local function listener(...)
 				return method(implementation, ...)
 			end
-			mmaps.set(self.implementationLifecycleListeners, lifecycle, implementation, listener)
+			triplets.mapSet(self.implementationLifecycleListeners, lifecycle, implementation, listener)
 			lifecycle:register(listener)
 		end
 	end
@@ -173,7 +173,7 @@ function Level.registerLifecyclesForMechanic(self: Level, mechanic: Mechanic)
 			local function listener(...)
 				return method(implementation, mechanic, ...)
 			end
-			mmaps.set(self.mechanicLifecycleListeners, lifecycle, mechanic, listener)
+			triplets.mapSet(self.mechanicLifecycleListeners, lifecycle, mechanic, listener)
 			lifecycle:register(listener)
 		end
 	end
@@ -232,18 +232,18 @@ function Level.loadInstance(self: Level, instance: Instance): { Mechanic }
 			local mechanic: Mechanic = mechanizeResult:unwrap() :: any
 			table.insert(self.mechanics, mechanic)
 			table.insert(mechanics, mechanic)
-			marrays.push(self.mechanicsByImplementations, implementation, mechanic)
-			marrays.push(self.mechanicsByInstance, mechanic.instance :: Instance, mechanic)
-			marrays.push(self.mechanicsByInstance, mechanic.instanceConfiguration, mechanic)
+			triplets.arrayPush(self.mechanicsByImplementations, implementation, mechanic)
+			triplets.arrayPush(self.mechanicsByInstance, mechanic.instance :: Instance, mechanic)
+			triplets.arrayPush(self.mechanicsByInstance, mechanic.instanceConfiguration, mechanic)
 			self:registerLifecyclesForMechanic(mechanic)
 		end
 
 		local groupName = string.match(tag, "Group:%s?([%w_%-]+)")
 		if groupName then
 			shouldToggle = true
-			marrays.push(self.instanceByGroups, groupName, instance)
+			triplets.arrayPush(self.instanceByGroups, groupName, instance)
 			self.life:add(instance.Destroying:Once(function()
-				marrays.remove(self.instanceByGroups, groupName, instance)
+				triplets.arrayFindAndRemove(self.instanceByGroups, groupName, instance)
 			end))
 		end
 	end
@@ -329,7 +329,7 @@ function Level.start(self: Level)
 	-- LUAU FIXME: this should typecheck fine?
 	table.insert(Level.activeLevels :: { any }, self)
 	self.life:add(function()
-		tables.findAndRemove<<Level>>(Level.activeLevels, self)
+		arrays.findAndRemove<<Level>>(Level.activeLevels, self)
 	end)
 end
 

@@ -1,6 +1,7 @@
 const character = require "@libs/character"
-const tables = require "@libs/collections/tables"
+const tables = require "@libs/primitives/tables"
 const Mechanic = require "@libs/core/Mechanic"
+const triplets = require "@libs/primitives/triplets"
 const Signal = require "@pkgs/Signal"
 
 export type Mounter = {
@@ -9,12 +10,11 @@ export type Mounter = {
 }
 
 const mounts = {
-	instanceToMounts = tables.weak "k" :: { [BasePart]: { [Instance]: Mounter } },
+	instanceToMounts = tables.createWeakened<<BasePart, { [Instance]: Mounter }>> "k",
 }
 
 function mounts.getInstanceMounts(instance: BasePart): { [Instance]: Mounter }
-	mounts.instanceToMounts[instance] = mounts.instanceToMounts[instance] or tables.weak "k"
-	return mounts.instanceToMounts[instance]
+	return triplets.get(mounts.instanceToMounts, instance, "k")
 end
 
 function mounts.isMounted(instance: BasePart, mounterName: string): boolean

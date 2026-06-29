@@ -1,6 +1,6 @@
-local destruction = require "./destruction"
-local tables = require "@libs/collections/tables"
-local threadpool = require "@libs/threadpool"
+const arrays = require "@libs/primitives/arrays"
+const destruction = require "./destruction"
+const threadpool = require "@libs/threadpool"
 const Signal = require "@pkgs/Signal"
 
 --[=[
@@ -10,7 +10,7 @@ const Signal = require "@pkgs/Signal"
 	Represents a lifespan. Throughout a Life, destroyable objects can be added
 	to be later cleaned up in Last In, First Out order.
 ]=]
-local Life = {}
+const Life = {}
 Life.__index = Life
 
 export type Life = setmetatable<
@@ -70,14 +70,14 @@ end
 
 function Life.remove<T>(self: Life, bound: T): T
 	if self.destroyed then return bound end
-	tables.findAndRemove(self.objects, bound)
+	arrays.findAndRemove(self.objects, bound)
 	return bound
 end
 
 function Life.removeMany<T...>(self: Life, ...: T...): T...
 	if self.destroyed then return ... end
 	for index = 1, select("#", ...) do
-		tables.findAndRemove(self.objects, select(index, ...))
+		arrays.findAndRemove(self.objects, select(index, ...))
 	end
 	return ...
 end
