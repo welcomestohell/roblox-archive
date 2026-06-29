@@ -23,7 +23,7 @@ const Zipline = std.Mechanic {
 		Points = std.isA.Instance(),
 	},
 
-	Mode = std.Attribute("Mode", std.gt.literals("Zip", "Grind"), "Zip"),
+	Mode = std.Attribute("Mode", std.gt.literals { "Zip", "Grind" }, "Zip"),
 	Active = std.Attribute("Active", std.gt.boolean(), false),
 	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 1),
 	Debounced = std.Attribute("Debounced", std.gt.boolean(), false),
@@ -35,13 +35,13 @@ const Zipline = std.Mechanic {
 	CurveSlack = std.Attribute("CurveSlack", std.gt.constrainNumberExclusive(1), 1.05),
 
 	std.AttributeSection "Segments",
-	SegmentType = std.Attribute("SegmentType", std.gt.literals("Part", "Beam"), "Beam"),
+	SegmentType = std.Attribute("SegmentType", std.gt.literals { "Part", "Beam" }, "Beam"),
 	SegmentCount = std.Attribute("SegmentCount", std.gt.positiveNumber, 20),
 	SegmentThickness = std.Attribute("SegmentThickness", std.gt.NumberSequence, NumberSequence.new(0.25)),
 	SegmentTransparency = std.Attribute("SegmentTransparency", std.gt.NumberSequence, NumberSequence.new(0)),
 	SegmentColor = std.Attribute(
 		"SegmentColor",
-		std.gt.literals("Startpoint", "Endpoint", "BothEndpoints", "AllPoints"),
+		std.gt.literals { "Startpoint", "Endpoint", "BothEndpoints", "AllPoints" },
 		"AllPoints"
 	),
 

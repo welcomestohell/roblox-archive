@@ -20,12 +20,12 @@ const Follower = std.Mechanic {
 	Relative = std.Attribute("Relative", std.gt.boolean(), false),
 	Mode = std.Attribute(
 		"Mode",
-		std.gt.literals("LookAt", "RotationOf", "PositionOf", "PivotOf", "None"),
+		std.gt.literals { "LookAt", "RotationOf", "PositionOf", "PivotOf", "None" },
 		functions.literal "None"
 	),
 	Target = std.Attribute(
 		"Target",
-		std.gt.literals("Character", "Mouse", "Camera", "Pointer", "None"),
+		std.gt.literals { "Character", "Mouse", "Camera", "Pointer", "None" },
 		functions.literal "None"
 	),
 

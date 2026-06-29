@@ -1,7 +1,7 @@
 const Attribute = require "@libs/attributes/Attribute"
 local gt = require "@libs/vendor/gt"
 
-local SeamlessMeasurement = gt.build(gt.literals("Relative", "World"))
+local SeamlessMeasurement = gt.build(gt.literals { "Relative", "World" })
 export type SeamlessMeasurement = typeof(SeamlessMeasurement:type())
 
 local function useSeamlessAttributes(basename: string?)

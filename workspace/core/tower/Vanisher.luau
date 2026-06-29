@@ -49,7 +49,7 @@ const Vanisher = std.Mechanic {
 	ShrinkToZero = std.Attribute("ShrinkToZero", std.gt.boolean(), false),
 	ShrinkDirection = std.Attribute(
 		"ShrinkDirection",
-		std.gt.literals("Center", "Top", "Bottom", "Front", "Back", "Left", "Right"),
+		std.gt.literals { "Center", "Top", "Bottom", "Front", "Back", "Left", "Right" },
 		"Center"
 	),
 

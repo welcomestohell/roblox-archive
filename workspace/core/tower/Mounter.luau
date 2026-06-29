@@ -32,7 +32,7 @@ const Mounter = std.Mechanic {
 	EmitDismountedTag = std.Attribute("EmitMountedTag", std.gt.tag, "Mounter: On Dismounted"),
 
 	std.AttributeSection "Mount",
-	MountMode = std.Attribute("MountMode", std.gt.literals("Align", "Weld"), "Weld"),
+	MountMode = std.Attribute("MountMode", std.gt.literals { "Align", "Weld" }, "Weld"),
 	MountName = std.Attribute("MountName", std.gt.string(), "Mounter"),
 	MountOffset = std.Attribute("MountOffset", std.gt.CFrame(), CFrame.new(0, 0, -5)),
 	MountLimb = std.Attribute("MountLimb", std.gt.enumOf(Enum.Limb), Enum.Limb.Torso),

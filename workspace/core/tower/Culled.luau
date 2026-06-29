@@ -42,7 +42,7 @@ const Culled = std.Mechanic {
 	culledMechanics = std.LevelState<<{ CulledMechanic }>> {},
 	instanceToCulled = std.LevelState<<{ [Instance]: CulledMechanic }>> {},
 
-	Mode = std.Attribute("Mode", std.gt.literals("Distance", "Camera"), "Distance"),
+	Mode = std.Attribute("Mode", std.gt.literals { "Distance", "Camera" }, "Distance"),
 	Distance = std.Attribute("Distance", std.gt.NumberRange, NumberRange.new(0, math.huge)),
 
 	-- Investigate: FindFirstAncestorOfClass to replace all this?

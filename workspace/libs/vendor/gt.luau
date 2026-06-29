@@ -2,6 +2,9 @@
 -- Note that Welcome To Hell plans to switch to the Boba library once runtime
 -- type inspection has been implemented.
 
+-- Cooking up STRAIGHT BULLSHIT
+-- Todo(EVERYONE): make a competent type library or make boba v2
+
 const arrays = require "@libs/primitives/arrays"
 const tables = require "@libs/primitives/tables"
 const typeforge = require "@libs/vendor/typeforge"
@@ -40,19 +43,28 @@ type IntersectionConstructor =
 	& (<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11) -> T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8 & T9 & T10 & T11)
 	& (<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12) -> T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8 & T9 & T10 & T11 & T12)
 
--- stylua: ignore
-type LiteralsConstructor =
-	& (<T1, T2>(T1 | "", T2 | "") -> T1 | T2)
-	& (<T1, T2, T3>(T1 | "", T2 | "", T3 | "") -> T1 | T2 | T3)
-	& (<T1, T2, T3, T4>(T1 | "", T2 | "", T3 | "", T4 | "") -> T1 | T2 | T3 | T4)
-	& (<T1, T2, T3, T4, T5>(T1 | "", T2 | "", T3 | "", T4 | "", T5 | "") -> T1 | T2 | T3 | T4 | T5)
-	& (<T1, T2, T3, T4, T5, T6>(T1 | "", T2 | "", T3 | "", T4 | "", T5 | "", T6 | "") -> T1 | T2 | T3 | T4 | T5 | T6)
-	& (<T1, T2, T3, T4, T5, T6, T7>(T1 | "", T2 | "", T3 | "", T4 | "", T5 | "", T6 | "", T7 | "") -> T1 | T2 | T3 | T4 | T5 | T6 | T7)
-	& (<T1, T2, T3, T4, T5, T6, T7, T8>(T1 | "", T2 | "", T3 | "", T4 | "", T5 | "", T6 | "", T7 | "", T8 | "") -> T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8)
-	& (<T1, T2, T3, T4, T5, T6, T7, T8, T9>(T1 | "", T2 | "", T3 | "", T4 | "", T5 | "", T6 | "", T7 | "", T8 | "", T9 | "") -> T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9)
-	& (<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(T1 | "", T2 | "", T3 | "", T4 | "", T5 | "", T6 | "", T7 | "", T8 | "", T9 | "", T10 | "") -> T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9 | T10)
-	& (<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(T1 | "", T2 | "", T3 | "", T4 | "", T5 | "", T6 | "", T7 | "", T8 | "", T9 | "", T10 | "", T11 | "") -> T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9 | T10 | T11)
-	& (<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(T1 | "", T2 | "", T3 | "", T4 | "", T5 | "", T6 | "", T7 | "", T8 | "", T9 | "", T10 | "", T11 | "", T12 | "") -> T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9 | T10 | T11 | T12)
+type function Strip(stringletunion: type): type
+	if stringletunion.tag ~= "union" then return types.never end
+
+	local newunion: { type } = {}
+
+	for _, value in stringletunion:components() do
+		if value.tag ~= "singleton" then
+			continue
+		elseif value:value() == "黑魔法" then
+			continue
+		end
+		table.insert(newunion, value)
+	end
+
+	if not newunion[1] then
+		return types.never
+	elseif not newunion[2] then
+		return newunion[1]
+	end
+
+	return types.unionof(table.unpack(newunion))
+end
 
 -- Who is this gif
 type InstanceTreeConstructor = (<T>(tree: T) -> T & Instance) & (<P, T>(parent: P, tree: T) -> T & P)
@@ -60,18 +72,23 @@ type InstanceTreeConstructor = (<T>(tree: T) -> T & Instance) & (<P, T>(parent: 
 const function moreThan(min: number?)
 	return gt.number { options = { minExclusive = min } }
 end
+
 const function moreOrEqual(min: number?)
 	return gt.number { options = { min = min } }
 end
+
 const function lessThan(min: number?)
 	return gt.number { options = { maxExclusive = min } }
 end
+
 const function lessOrEqual(min: number?)
 	return gt.number { options = { max = min } }
 end
+
 const function constrainNumber(min: number?, max: number?)
 	return gt.number { options = { min = min, max = max } }
 end
+
 const function constrainNumberExclusive(min: number?, max: number?)
 	return gt.number { options = { minExclusive = min, maxExclusive = max } }
 end
@@ -109,13 +126,13 @@ const function instanceTree(treeOrParent: any, tree: any): gt.Type
 	end, parent:format())
 end
 
-const function literals(...: any): any
-	local len = select("#", ...)
-	local components = table.create(len)
+const function literals<T>(tbl: { "黑魔法" } | { T }): Strip<T>
+	const len = #tbl
+	const components = table.create<<T>>(#tbl)
 	for index = 1, len do
-		components[index] = gt.literal(select(index, ...))
+		components[index] = gt.literal(tbl[index])
 	end
-	return gt.union(table.unpack(components, 1, len))
+	return gt.union(table.unpack(components, 1, len) :: any)
 end
 
 const function keysOf<T>(tbl: T): keyof<T>
@@ -125,8 +142,6 @@ const function keysOf<T>(tbl: T): keyof<T>
 	end
 	return gt.union(table.unpack(components :: any)) :: any
 end
-
-const literals: LiteralsConstructor = literals
 
 -- Serializes the given `gt.Type` into a JSON-encodable object. Note that this assumes any literals are JSON-encodable (I hope so)
 const function serialize(ty: Type)
@@ -200,11 +215,19 @@ return table.freeze {
 	enumOf = enumOf,
 	keysOf = keysOf,
 	instanceTree = instanceTree :: InstanceTreeConstructor,
-	literals = literals :: LiteralsConstructor,
+	literals = literals,
 	serialize = serialize,
 
-	-- These types have additional metadata for the Epoch plugin
+	--[=[
+		String value, representing a CollectionService tag. This type has
+		additional metadata for development tools.
+	]=]
 	tag = gt.meta(gt.string(), { tag = true }),
+
+	--[=[
+		String value, representing a Level's Group tag. This type has
+		additional metadata for development tools.
+	]=]
 	group = gt.meta(gt.string(), { group = true }),
 
 	-- GreenTea

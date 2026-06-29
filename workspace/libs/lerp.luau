@@ -22,4 +22,8 @@ const lerp = {
 	evaluateNumberSequence = evaluateSequence :: (sequence: NumberSequence, time: number) -> number,
 }
 
+function lerp.inversed(v: number, min: number, max: number)
+	return (v - min) / (max - min)
+end
+
 return table.freeze(lerp)

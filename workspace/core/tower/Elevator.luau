@@ -15,7 +15,7 @@ const Elevator = std.Mechanic {
 	MaxForce = std.Attribute("MaxForce", std.gt.number(), math.huge),
 	Vector = std.Attribute(
 		"Vector",
-		std.gt.literals("UpVector", "RightVector", "LookVector", "ZVector", "WorldYVector"),
+		std.gt.literals { "UpVector", "RightVector", "LookVector", "ZVector", "WorldYVector" },
 		"WorldYVector"
 	),
 	ContinuousUpdates = std.Attribute("ContinuousUpdates", std.gt.boolean(), true),
