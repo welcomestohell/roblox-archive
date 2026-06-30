@@ -5,13 +5,6 @@ option ClientOutput = "./client/generated/net.luau"
 option PromiseLibrary = "ReplicatedStorage.Packages.Promise"
 option RemoteScope = "WTH_CORE"
 
-event damage {
-    From: Client,
-    Type: Reliable,
-    Call: SingleAsync,
-    Data: u8
-}
-
 event patch {
     from: Server,
     type: Reliable,
@@ -22,4 +15,25 @@ event patch {
 function fetchAssetIds {
     yield: Promise,
     return: string[]?,
+}
+
+scope mechanics {
+	enum DamageMode = { Value, Preset }
+	enum DamagePreset = { Base, Doubled, Quadrupled, Lethal }
+	enum DamageMeasurement = { Raw, Scaled }
+
+	struct DamageConfiguration {
+		mode: DamageMode,
+	    value: i16?,
+	    preset: DamagePreset?,
+	    measurement: DamageMeasurement,
+		asHeal: boolean?
+	}
+
+	event damage {
+	    from: Client,
+	    type: Unreliable,
+	    call: ManyAsync,
+	    data: DamageConfiguration
+	}
 }
