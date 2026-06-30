@@ -1,6 +1,8 @@
 const emission = require "@libs/emission"
 const logger = require "@core/shared/logger"
+const character = require "@libs/character"
 const Level = require "@libs/core/Level"
+const damage = require "@libs/damage"
 const std = require "@libs/std"
 const touch = require "@libs/touch"
 
@@ -27,6 +29,9 @@ const Turret = std.Mechanic {
 	Lifetime = std.Attribute("Lifetime", std.gt.positiveNumber, 2),
 	DestroyOnTouch = std.Attribute("DestroyOnTouch", std.gt.boolean(), true),
 
+	std.AttributeSection "Damage",
+	Damage = damage.useAttributes(),
+
 	std.AttributeSection "Tags",
 	IgnoreTag = std.Attribute("IgnoreTag", std.gt.tag, "Turret: Ignore"),
 	EmitFireTag = std.Attribute("EmitFireTag", std.gt.tag, "Turret: On Fire"),
@@ -51,13 +56,14 @@ function Turret.calculateSpreadAngle(turret: TurretMechanic, direction: Vector3)
 	return (directionCFrame * spreadDirection * spreadAngle).LookVector
 end
 
-function Turret.onActivate(self: typeof(Turret), turret: TurretMechanic)
+function Turret.onActivate(self: typeof(Turret), turret: TurretMechanic, level: std.Level)
 	emission.emitTaggedDescendants(turret.instance, turret:EmitFireTag())
 
 	const bulletLife = turret.life:extend()
 	const bulletInstance = bulletLife:add(turret.template:Clone())
 
-	const function cleanup(isTouch: boolean?)
+	const function cleanup(isTouch: boolean?, isPlayer: boolean?)
+		if isTouch and isPlayer then damage.fireFromAttributes(self.Damage, turret, level) end
 		emission.emitTaggedDescendants(
 			bulletInstance,
 			if isTouch then turret:EmitTouchTag() else turret:EmitExpireTag()
@@ -100,7 +106,7 @@ function Turret.onActivate(self: typeof(Turret), turret: TurretMechanic)
 				or touch.isToucherValid(turret.Touch, turret.instance, turret.instanceConfiguration, toucher)
 			)
 
-		if isTouched then cleanup(true) end
+		if isTouched then cleanup(true, character.isFromMaybeCharacter(toucher)) end
 	end))
 
 	bulletLife:delay(turret:Lifetime(), cleanup, nil)
@@ -127,7 +133,7 @@ function Turret.onStart(self: typeof(Turret), turret: TurretMechanic, level: std
 	turret.life:spawn(function()
 		while not turret.life.destroyed do
 			task.wait(1 / turret:Firerate())
-			if turret:Enabled() then self:onActivate(turret) end
+			if turret:Enabled() then self:onActivate(turret, level) end
 		end
 	end)
 end
