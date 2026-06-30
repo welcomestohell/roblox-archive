@@ -31,12 +31,13 @@ export type Seat = typeof(Seat)
 export type SeatMechanic = std.Mechanic<Seat>
 
 function Seat.onActivate(self: Seat, seat: SeatMechanic, level: std.Level)
-	if seat:Active() then return end
+	if seat:Active() or seat:Debounced() then return end
 
 	const rootPart = character.getMaybeHumanoidRootPart()
 	const humanoid = character.getMaybeHumanoid()
 
 	if not rootPart or not humanoid or mounts.isMechanicMounted(rootPart, seat) then return end
+
 	const activationLife = seat.life:extend()
 	activationLife:destroyOn(mounts.mountMechanic(rootPart, seat))
 

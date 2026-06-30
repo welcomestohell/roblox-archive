@@ -19,6 +19,7 @@ const modes: { [string]: ActivationMode } = {
 	Died = require "@self/modes/Died",
 	HumanoidStateChanged = require "@self/modes/HumanoidStateChanged",
 	Jump = require "@self/modes/Jump",
+	None = require "@self/modes/None",
 	Prompt = require "@self/modes/Prompt",
 	Touch = require "@self/modes/Touch",
 }

@@ -7,7 +7,7 @@ local function useAttributes(basename: string?): types.ActivationAttributes
 	basename = basename or "Activation"
 	return {
 		Enabled = Attribute.new(basename .. "Enabled", gt.boolean(), true),
-		Mode = Attribute.new(basename .. "Mode", gt.optional(gt.string()), nil),
+		Mode = Attribute.new(basename .. "Mode", gt.optional(gt.string()), "None"),
 		BaseName = Attribute.new(basename .. "BaseName", gt.string(), basename),
 		HumanoidStateType = Attribute.new(
 			basename .. "HumanoidStateType",
