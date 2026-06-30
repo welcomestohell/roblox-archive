@@ -3,6 +3,7 @@ const AttributeMap = require "@libs/attributes/AttributeMap"
 const AttributeSection = require "@libs/attributes/AttributeSection"
 local Level = require "@libs/core/Level"
 local LevelState = require "@libs/core/LevelState"
+const LevelTable = require "@libs/core/LevelTable"
 local Life = require "@libs/memory/Life"
 local Mechanic = require "@libs/core/Mechanic"
 local gt = require "@libs/vendor/gt"
@@ -32,10 +33,13 @@ export type Life = Life.Life
 	tower scripting.
 ]=]
 return table.freeze {
+	DO_NOT_LOAD_TAG = Level.DO_NOT_LOAD_TAG,
+
 	Mechanic = Mechanic.new,
 
 	Life = Life.new,
 	LevelState = LevelState.new,
+	LevelTable = LevelTable.new,
 
 	Attribute = Attribute.new,
 	AttributeMap = AttributeMap.new,

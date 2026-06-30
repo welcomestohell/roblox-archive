@@ -22,6 +22,11 @@ function LevelTable.index<K, V>(self: LevelTable<K, V>, level: Level.Level, key:
 	return self:get(level)[key]
 end
 
+function LevelTable.set<K, V>(self: LevelTable<K, V>, level: Level.Level, key: K, value: V): V
+	self:get(level)[key] = value
+	return value
+end
+
 function LevelTable.insert<V>(self: LevelTable<number, V>, level: Level.Level, position: number, value: V): V
 	table.insert(self:get(level), position, value)
 	return value
