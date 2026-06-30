@@ -2,7 +2,7 @@ const Players = game:GetService "Players"
 const Workspace = game:GetService "Workspace"
 
 const character = require "@libs/character"
-const functions = require "@libs/functions"
+const functions = require "@libs/primitives/functions"
 const std = require "@libs/std"
 
 const mouse = Players.LocalPlayer:GetMouse()

@@ -6,7 +6,7 @@ local types = require "@libs/activation/types"
 local function useAttributes(basename: string?): types.ActivationAttributes
 	basename = basename or "Activation"
 	return {
-		Enabled = Attribute.new(basename .. "Enabled", gt.boolean(), false),
+		Enabled = Attribute.new(basename .. "Enabled", gt.boolean(), true),
 		Mode = Attribute.new(basename .. "Mode", gt.optional(gt.string()), nil),
 		BaseName = Attribute.new(basename .. "BaseName", gt.string(), basename),
 		HumanoidStateType = Attribute.new(

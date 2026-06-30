@@ -1,6 +1,6 @@
 const Result = require "@libs/Result"
 const createChildOfClass = require "@self/createChildOfClass"
-const functions = require "@libs/functions"
+const functions = require "@libs/primitives/functions"
 const gt = require "@libs/vendor/gt"
 const logger = require "@core/shared/logger"
 const types = require "@self/types"

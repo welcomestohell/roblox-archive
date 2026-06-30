@@ -32,7 +32,7 @@ scope mechanics {
 
 	event damage {
 	    from: Client,
-	    type: Unreliable,
+	    type: Reliable,
 	    call: ManyAsync,
 	    data: DamageConfiguration
 	}

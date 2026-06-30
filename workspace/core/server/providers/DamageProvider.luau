@@ -2,6 +2,8 @@ const net = require "@core/server/generated/net"
 const damage = require "@libs/damage"
 const prvd = require "@pkgs/prvd"
 
+-- We cooldown faster to account for latency, client cools themself down anyway
+const DEBOUNCE_COOLDOWN = damage.DEBOUNCE_COOLDOWN / 2
 const PRESET_DAMAGES = damage.PRESET_DAMAGES :: { [damage.DamagePreset]: number }
 
 const DamageProvider = { EVENT = net.mechanics.damage, debounce = {} :: { [Player]: true } }
@@ -9,6 +11,7 @@ export type DamageProvider = typeof(DamageProvider)
 
 function DamageProvider.onInit(self: DamageProvider)
 	self.EVENT.on(function(player: Player, configuration)
+		print("damage event", player, configuration)
 		const humanoid = player.Character and player.Character:FindFirstChildOfClass "Humanoid"
 		if not humanoid then return end
 
@@ -25,7 +28,7 @@ function DamageProvider.onInit(self: DamageProvider)
 
 		humanoid:TakeDamage(configuration.asHeal and -health or health)
 
-		if health ~= 0 and not configuration.asHeal then task.wait(1 / 20) end
+		task.wait(DEBOUNCE_COOLDOWN)
 		self.debounce[player] = nil
 	end)
 end

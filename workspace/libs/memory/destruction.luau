@@ -1,4 +1,4 @@
-local functions = require "@libs/functions"
+local functions = require "@libs/primitives/functions"
 local logger = require "@core/shared/logger"
 
 -- LUAU: Destroyable is set to any so types using Destroyable are readable
