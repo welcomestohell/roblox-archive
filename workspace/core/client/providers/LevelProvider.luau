@@ -7,6 +7,7 @@ const logger = require "@core/shared/logger"
 const character = require "@libs/character"
 local arrays = require "@libs/primitives/arrays"
 const Level = require "@libs/core/Level"
+const startLevel = require "@libs/core/startLevel"
 const Life = require "@libs/memory/Life"
 local threadpool = require "@libs/threadpool"
 const prvd = require "@pkgs/prvd"
@@ -36,7 +37,7 @@ function LevelProvider.tryLoadLevel(self: typeof(LevelProvider), instance: Insta
 	if levelResult:isOk() then
 		local level = levelResult:unwrap<<Level.Level>>()
 		character.getCharacter():PivotTo(level.instance.Spawn.CFrame)
-		level:start()
+		startLevel(level)
 
 		self.activeLevels(function(activeLevels: { Level.Level })
 			-- LUAU FIXME: eugh

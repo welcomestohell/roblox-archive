@@ -1,5 +1,3 @@
-const RunService = game:GetService "RunService"
-
 const Life = require "@libs/memory/Life"
 const Mechanic = require "@libs/core/Mechanic"
 const Promise = require "@pkgs/Promise"
@@ -8,11 +6,9 @@ const ScriptCollector = require "@libs/core/ScriptCollector"
 const activation = require "@libs/activation"
 const gt = require "@libs/vendor/gt"
 const mechanize = require "@libs/core/mechanize"
-const arrays = require "@libs/primitives/arrays"
 const prvd = require "@pkgs/prvd"
 const tables = require "@libs/primitives/tables"
 const triplets = require "@libs/primitives/triplets"
-const threadpool = require "@libs/threadpool"
 const toggle = require "@libs/toggle"
 
 type AnyImplementation = Mechanic.AnyMechanicImplementation
@@ -266,71 +262,6 @@ function Level.loadDescendantInstancesAsync(self: Level, root: Instance, skipRoo
 		table.move(descendantPromises, 1, #descendantPromises, #instancePromises + 1, instancePromises)
 	end
 	return instancePromises, loadPromises
-end
-
-function Level.start(self: Level)
-	local self = self
-	assert(not self.started, `Level {self.name} has already started`)
-	self.started = true
-	self.startedTimestamp = os.clock()
-
-	local instancePromises, loadPromises = self:loadDescendantInstancesAsync(self.instance.Mechanics)
-	Promise.all(instancePromises):await()
-	Promise.all(loadPromises):await()
-
-	for _, implementation in self.scripts.mechanicImplementations do
-		self:registerLifecyclesForImplementation(implementation)
-	end
-
-	self.implementationLifecycles.onInit:fire(self)
-
-	self.life:add(self.instance)
-	self.life:destroyOn(self.instance.Destroying)
-
-	-- const toggled = {}
-	-- for group, instances in self.instanceByGroups do
-	-- 	for _, instance in instances do
-	-- 		if not toggled[instance] then
-	-- 			toggled[instance] = true
-	-- 			toggle.toggleInstance(false, instance)
-	-- 		end
-	-- 	end
-	-- end
-	-- table.clear(toggled)
-
-	for _, mechanic in self.mechanics do
-		self.life:add(threadpool.spawn(Level.bindActivation, self, mechanic))
-	end
-
-	self.mechanicLifecycles.onStart:fire(self)
-
-	self.life:addMany(
-		RunService.PreSimulation:Connect(function(dt)
-			self.implementationLifecycles.onPreSimulation:fire(dt, self)
-		end),
-		RunService.PostSimulation:Connect(function(dt)
-			self.implementationLifecycles.onPostSimulation:fire(dt, self)
-		end),
-		RunService.PreRender:Connect(function(dt)
-			self.implementationLifecycles.onPreRender:fire(dt, self)
-		end),
-		RunService.PreAnimation:Connect(function(dt)
-			self.implementationLifecycles.onPreAnimation:fire(dt, self)
-		end),
-		self.instance.DescendantAdded:Connect(function(instance)
-			for _, mechanic in self:loadInstance(instance) do
-				self.life:add(threadpool.spawn(Level.bindActivation, self, mechanic))
-				local onStart = self:getListenerForMechanic<<Level>>(self.mechanicLifecycles.onStart, mechanic)
-				if onStart then threadpool.spawn(onStart, self) end
-			end
-		end)
-	)
-
-	-- LUAU FIXME: this should typecheck fine?
-	table.insert(Level.activeLevels :: { any }, self)
-	self.life:add(function()
-		arrays.findAndRemove<<Level>>(Level.activeLevels, self)
-	end)
 end
 
 function Level.__tostring(self: Level)
