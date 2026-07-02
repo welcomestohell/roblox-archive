@@ -1,4 +1,29 @@
-const function evaluateSequence(sequence: { read Keypoints: { { read Time: number, read Value: any } } }, time: number)
+const lerp = {}
+
+function lerp.evaluateColorSequence(sequence: ColorSequence, time: number): Color3
+	if time == 0 then
+		return sequence.Keypoints[1].Value
+	elseif time == 1 then
+		return sequence.Keypoints[#sequence.Keypoints].Value
+	end
+
+	for i = 1, #sequence.Keypoints - 1 do
+		local thisKeypoint = sequence.Keypoints[i]
+		local nextKeypoint = sequence.Keypoints[i + 1]
+		if time >= thisKeypoint.Time and time < nextKeypoint.Time then
+			-- Calculate how far alpha lies between the points
+			local alpha = (time - thisKeypoint.Time) / (nextKeypoint.Time - thisKeypoint.Time)
+			-- Evaluate the real value between the points using alpha
+			return Color3.new(
+				(nextKeypoint.Value.R - thisKeypoint.Value.R) * alpha + thisKeypoint.Value.R,
+				(nextKeypoint.Value.G - thisKeypoint.Value.G) * alpha + thisKeypoint.Value.G,
+				(nextKeypoint.Value.B - thisKeypoint.Value.B) * alpha + thisKeypoint.Value.B
+			)
+		end
+	end
+end
+
+function lerp.evaluateNumberSequence(sequence: NumberSequence, time: number): number
 	if time == 0 then
 		return sequence.Keypoints[1].Value
 	elseif time == 1 then
@@ -16,11 +41,6 @@ const function evaluateSequence(sequence: { read Keypoints: { { read Time: numbe
 
 	error "unreachable"
 end
-
-const lerp = {
-	evaluateColorSequence = evaluateSequence :: (sequence: ColorSequence, time: number) -> Color3,
-	evaluateNumberSequence = evaluateSequence :: (sequence: NumberSequence, time: number) -> number,
-}
 
 function lerp.inversed(v: number, min: number, max: number)
 	return (v - min) / (max - min)
