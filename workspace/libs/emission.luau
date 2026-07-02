@@ -1,7 +1,9 @@
 const SoundService = game:GetService "SoundService"
 
+const activation = require "@libs/activation"
 const Attribute = require "@libs/attributes/Attribute"
 const gt = require "@libs/vendor/gt"
+const Signal = require "@pkgs/Signal"
 const threadpool = require "./threadpool"
 
 const emission = {
@@ -15,7 +17,21 @@ const emission = {
 	RollOffMinDistance = Attribute.new("RollOffMinDistance", gt.positiveNumber, 10000),
 	RollOffMaxDistance = Attribute.new("RollOffMinDistance", gt.positiveNumber, 10),
 	PlaybackSpatial = Attribute.new("PlaybackSpatial", gt.boolean(), true),
+
+	activateSignal = Signal.new<<(Instance)>>(),
 }
+
+activation
+	.registerMode("Emission", {
+		implement = function(context: activation.ActivationContext)
+			context.activationLife:add(emission.activateSignal:Connect(function(instance)
+				if context.instance == instance or context.instanceConfiguration == instance then
+					context:onActivate { kind = "Emission" }
+				end
+			end))
+		end,
+	})
+	:expect "Failed to bind Emission activation mode"
 
 function emission.emit(instance: Instance)
 	if instance:IsA "ParticleEmitter" then instance:Emit(instance.Rate) end
@@ -34,6 +50,8 @@ function emission.emit(instance: Instance)
 
 		sound:Destroy()
 	end
+
+	emission.activateSignal:Fire(instance)
 end
 
 function emission.emitTaggedDescendants(parent: Instance, tag: string)

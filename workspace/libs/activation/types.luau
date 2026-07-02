@@ -19,6 +19,7 @@ export type ActivationAttributes = {
 
 export type ActivationEvent =
 	| { kind: "Click", detector: ClickDetector }
+	| { kind: "Emission" }
 	| { kind: "Died" }
 	| { kind: "Jump" }
 	| { kind: "HumanoidStateChanged", old: Enum.HumanoidStateType, new: Enum.HumanoidStateType }

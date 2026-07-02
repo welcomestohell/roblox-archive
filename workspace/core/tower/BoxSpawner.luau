@@ -1,5 +1,6 @@
 const activation = require "@libs/activation"
 const Level = require "@libs/core/Level"
+const emission = require "@libs/emission"
 const std = require "@libs/std"
 const press = require "@libs/press"
 const Promise = require "@pkgs/Promise"
@@ -17,10 +18,13 @@ const BoxSpawner = std.Mechanic {
 	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 1),
 	Debounced = std.Attribute("Debounced", std.gt.boolean(), false),
 	SpawnOnStart = std.Attribute("SpawnOnStart", std.gt.boolean(), false),
-	AnchoredTag = std.Attribute("AnchoredTag", std.gt.tag, "Box: Anchored"),
 
 	std.AttributeSection "Activation",
 	Activation = activation.useAttributes(),
+
+	std.AttributeSection "Tags",
+	AnchoredTag = std.Attribute("AnchoredTag", std.gt.tag, "BoxSpawner: Anchored"),
+	EmitActivatedTag = std.Attribute("EmitActivatedTag", std.gt.tag, "BoxSpawner: On Activated"),
 
 	std.AttributeSection "Press",
 	Press = press.useAttributes(),
@@ -66,6 +70,8 @@ function BoxSpawner.onActivate(self: typeof(BoxSpawner), spawner: BoxSpawnerMech
 		spawner:Debounced(false)
 		spawner.Activation.Enabled(spawner, true)
 	end, spawner)
+
+	emission.emitTaggedDescendants(spawner.instance, spawner:EmitActivatedTag())
 
 	spawner.life:add(press.usePress(self.Press, spawner.instance.Button, spawner.instanceConfiguration, true))
 

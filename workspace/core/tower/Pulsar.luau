@@ -9,7 +9,6 @@ const std = require "@libs/std"
 const tweens = require "@libs/tweens"
 
 const isSequence = std.gt.union(std.gt.ColorSequence, std.gt.NumberSequence)
-
 const isSetAs = std.gt.literals {
 	"Color3",
 	"ColorSequence",
@@ -27,7 +26,7 @@ const Pulsar = std.Mechanic {
 	Active = std.Attribute("Active", std.gt.boolean(), false),
 	Cycle = tweens.useAttributes "Cycle",
 	Elapsed = std.Attribute("Elapsed", std.gt.positiveNumber, 0),
-	Synchronized = std.Attribute("Synchronized", std.gt.boolean(), true),
+	Synchronized = std.Attribute("Synchronized", std.gt.boolean(), false),
 
 	std.AttributeSection "Activation",
 	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 1),
@@ -104,6 +103,7 @@ function Pulsar.onActivate(self: PulsarSelf, pulsar: PulsarMechanic)
 
 	pulsar.life:delay(self.Cycle.Duration(pulsar), function(pulsar: PulsarMechanic)
 		pulsar:Active(false)
+		self:step(pulsar, 1)
 	end, pulsar)
 
 	pulsar.life:delay(pulsar:Cooldown(), function(pulsar: PulsarMechanic, wasActivatable)
