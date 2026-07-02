@@ -4,6 +4,7 @@ const activation = require "@libs/activation"
 const emission = require "@libs/emission"
 const std = require "@libs/std"
 const teleport = require "@libs/teleport"
+const touch = require "@libs/touch"
 const tweens = require "@libs/tweens"
 
 const Teleporter = std.Mechanic {
@@ -36,9 +37,14 @@ const Teleporter = std.Mechanic {
 
 export type TeleporterMechanic = std.Mechanic<typeof(Teleporter)>
 
-function Teleporter.onActivate(self: typeof(Teleporter), teleporter: TeleporterMechanic, level: std.Level, event)
-	const root = character.getMaybeHumanoidRootPart()
-	if not root then return end
+function Teleporter.onActivate(
+	self: typeof(Teleporter),
+	teleporter: TeleporterMechanic,
+	level: std.Level,
+	event: activation.ActivationEvent
+)
+	const target = event.kind == "Touch" and touch.castIntoTarget(event.toucher) or character.getMaybeHumanoidRootPart()
+	if not target then return end
 
 	const group = teleporter:Group()
 	const groupInstances = level:getGroupedInstances(group)
@@ -61,13 +67,12 @@ function Teleporter.onActivate(self: typeof(Teleporter), teleporter: TeleporterM
 	teleporter:Debounced(true)
 
 	emission.emitTaggedDescendants(teleporter.instance, teleporter:EmitActivatedTag())
-
 	teleport.teleport {
 		teleporter = teleporter.instance,
 		teleporterConfiguration = teleporter.instanceConfiguration or teleporter.instance,
 		teleporterLife = teleporter.life,
 
-		target = root,
+		target = target,
 		destination = targetDestination,
 
 		attributes = self.Teleport,
