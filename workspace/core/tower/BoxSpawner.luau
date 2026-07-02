@@ -71,11 +71,11 @@ function BoxSpawner.onActivate(self: typeof(BoxSpawner), spawner: BoxSpawnerMech
 		spawner.Activation.Enabled(spawner, true)
 	end, spawner)
 
-	emission.emitTaggedDescendants(spawner.instance, spawner:EmitActivatedTag())
-
 	spawner.life:add(press.usePress(self.Press, spawner.instance.Button, spawner.instanceConfiguration, true))
 
 	spawner:spawn(level)
+
+	task.defer(emission.emitTaggedDescendants, spawner.instance, spawner:EmitActivatedTag())
 end
 
 function BoxSpawner:onStart(spawner: BoxSpawnerMechanic, level: std.Level)

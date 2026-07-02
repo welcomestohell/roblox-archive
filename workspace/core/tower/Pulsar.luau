@@ -1,3 +1,6 @@
+-- FIXME: Applying on a spawned Box (from a BoxSpawner) somehow makes it pulse
+-- TWICE????????????? I have no fucking clue why
+
 const TweenService = game:GetService "TweenService"
 
 const logger = require "@core/shared/logger"
@@ -57,17 +60,6 @@ export type PulsarSelf = typeof(Pulsar)
 export type PulsarMechanic = std.Mechanic<PulsarSelf>
 
 function Pulsar.onStart(self: PulsarSelf, pulsar: PulsarMechanic)
-	self.Activation.Enabled:onBind(pulsar, function(activatable)
-		if activatable and pulsar:Synchronized() then
-			logger:Warn "Activation and Synchronized conflicts when both enabled, so Synchronized will be disabled."
-			pulsar:Synchronized(false)
-		end
-	end)
-
-	self.Synchronized:onBind(pulsar, function()
-		pulsar:Elapsed(0)
-	end)
-
 	self:step(pulsar, 0)
 end
 
@@ -97,13 +89,15 @@ function Pulsar.onActivate(self: PulsarSelf, pulsar: PulsarMechanic)
 	const wasActivatable = self.Activation.Enabled(pulsar)
 	pulsar.Activation.Enabled(pulsar, false)
 
+	pulsar:Active(false)
+	pulsar:Synchronized(false)
 	pulsar:Elapsed(0)
 	self:step(pulsar, 0)
 	pulsar:Active(true)
 
 	pulsar.life:delay(self.Cycle.Duration(pulsar), function(pulsar: PulsarMechanic)
 		pulsar:Active(false)
-		self:step(pulsar, 1)
+		self:step(pulsar, 0)
 	end, pulsar)
 
 	pulsar.life:delay(pulsar:Cooldown(), function(pulsar: PulsarMechanic, wasActivatable)
