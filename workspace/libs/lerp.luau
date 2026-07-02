@@ -21,6 +21,8 @@ function lerp.evaluateColorSequence(sequence: ColorSequence, time: number): Colo
 			)
 		end
 	end
+
+	error "unreachable"
 end
 
 function lerp.evaluateNumberSequence(sequence: NumberSequence, time: number): number
