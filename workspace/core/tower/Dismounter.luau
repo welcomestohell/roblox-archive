@@ -18,7 +18,7 @@ const Dismounter = std.Mechanic {
 
 	std.AttributeSection "Dismount",
 	DismountAll = std.Attribute("DismountAll", std.gt.boolean(), true),
-	Dismount = std.AttributeMap<<boolean>>("Dismount", std.gt.boolean()),
+	Dismount = std.AttributeMap("Dismount", std.gt.boolean(), true),
 
 	onDismount = Signal.new<<(string)>>(),
 }
