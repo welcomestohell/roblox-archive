@@ -1,5 +1,3 @@
-const Workspace = game:GetService "Workspace"
-
 const activation = require "@libs/activation"
 const character = require "@libs/character"
 const constraints = require "@libs/constraints"
@@ -12,7 +10,6 @@ const Orb = std.Mechanic {
 	description = "",
 	instanceType = std.isA.BasePart(),
 
-	Mode = std.Attribute("Mode", std.gt.literals { "Launch", "Pivot" }, "Launch" :: "Launch"),
 	Mount = std.Attribute("Mount", std.gt.boolean(), false),
 	Force = std.Attribute("Force", std.gt.positiveNumber, 0),
 	Timeout = std.Attribute("Timeout", std.gt.number(), 0),
@@ -40,17 +37,8 @@ const Orb = std.Mechanic {
 export type OrbSelf = typeof(Orb)
 export type OrbMechanic = std.Mechanic<OrbSelf>
 
-function Orb.getCameraVector(orb: OrbMechanic)
-	const x, y, z = Workspace.CurrentCamera.CFrame.Rotation:ToEulerAnglesXYZ()
-	return CFrame.fromEulerAnglesXYZ(
-		if orb:XRotationEnabled() then x else 0,
-		if orb:YRotationEnabled() then y else 0,
-		if orb:ZRotationEnabled() then z else 0
-	).LookVector
-end
-
 function Orb.launch(orb: OrbMechanic, toucher: BasePart)
-	const lookVector = if orb:Mode() == "Launch" then orb.instance.CFrame.LookVector else orb:getCameraVector()
+	const lookVector = orb.instance.CFrame.LookVector
 
 	const maxForce = if math.abs(lookVector.X) < 0.1 and math.abs(lookVector.Z) < 0.1
 		then Vector3.yAxis * 40000
@@ -84,50 +72,49 @@ function Orb.onActivate(self: OrbSelf, orb: OrbMechanic, level: std.Level, event
 	const toucher = mounts.castToucher(raw)
 	if not toucher then return end
 
-	if not orb:Mount() then
+	if orb:Mount() then
+		if mounts.isMechanicMounted(toucher, orb) then return end
+		orb.Activation.Enabled(orb, false)
+		orb:Active(true)
+		orb:Debounced(true)
+
+		const activationLife = orb.life:extend()
+		activationLife:destroyOn(mounts.mountMechanic(toucher, orb))
+		toucher:PivotTo(orb.instance.CFrame)
+		constraints.weld(activationLife, toucher, orb.instance)
+		emission.emitTaggedDescendants(orb.instance, orb:EmitMountedTag())
+
+		const function onDismount(launch: boolean)
+			if activationLife.alive then
+				if launch then orb:launch(toucher) end
+				emission.emitTaggedDescendants(orb.instance, launch and orb:EmitLaunchedTag() or orb:EmitTimedOutTag())
+			end
+
+			orb:Active(false)
+			orb.life:delay(orb:Cooldown(), self.reactivate, orb)
+			mounts.dismountMechanic(toucher, orb)
+			activationLife:destroy()
+		end
+
+		const timeout = orb:Timeout()
+		if timeout > 0 then activationLife:delay(timeout, onDismount, false) end
+
+		activation.bindActivation {
+			attributes = self.Dismount,
+			instanceLife = activationLife,
+			instance = orb.instance,
+			instanceConfiguration = orb.instanceConfiguration,
+			onActivate = function()
+				onDismount(true)
+			end,
+		}
+	else
 		orb.Activation.Enabled(orb, false)
 		orb:Debounced(true)
 		orb.life:delay(orb:Cooldown(), self.reactivate, orb)
 		orb:launch(toucher)
 		emission.emitTaggedDescendants(orb.instance, orb:EmitLaunchedTag())
-		return
 	end
-
-	if mounts.isMechanicMounted(toucher, orb) then return end
-	orb.Activation.Enabled(orb, false)
-	orb:Active(true)
-	orb:Debounced(true)
-
-	const activationLife = orb.life:extend()
-	activationLife:destroyOn(mounts.mountMechanic(toucher, orb))
-	toucher:PivotTo(orb.instance.CFrame)
-	constraints.weld(activationLife, toucher, orb.instance)
-	emission.emitTaggedDescendants(orb.instance, orb:EmitMountedTag())
-
-	const function onDismount(launch: boolean)
-		if activationLife.alive then
-			if launch then orb:launch(toucher) end
-			emission.emitTaggedDescendants(orb.instance, launch and orb:EmitLaunchedTag() or orb:EmitTimedOutTag())
-		end
-
-		orb:Active(false)
-		orb.life:delay(orb:Cooldown(), self.reactivate, orb)
-		mounts.dismountMechanic(toucher, orb)
-		activationLife:destroy()
-	end
-
-	const timeout = orb:Timeout()
-	if timeout > 0 then activationLife:delay(timeout, onDismount, false) end
-
-	activation.bindActivation {
-		attributes = self.Dismount,
-		instanceLife = activationLife,
-		instance = orb.instance,
-		instanceConfiguration = orb.instanceConfiguration,
-		onActivate = function()
-			onDismount(true)
-		end,
-	}
 end
 
 return Orb

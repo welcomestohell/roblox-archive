@@ -2,7 +2,6 @@ const Players = game:GetService "Players"
 const Workspace = game:GetService "Workspace"
 
 const character = require "@libs/character"
-const functions = require "@libs/primitives/functions"
 const std = require "@libs/std"
 
 const mouse = Players.LocalPlayer:GetMouse()
@@ -18,15 +17,11 @@ const Follower = std.Mechanic {
 
 	Enabled = std.Attribute("Enabled", std.gt.boolean(), true),
 	Relative = std.Attribute("Relative", std.gt.boolean(), false),
-	Mode = std.Attribute(
-		"Mode",
-		std.gt.literals { "LookAt", "RotationOf", "PositionOf", "PivotOf", "None" },
-		functions.literal "None"
-	),
+	Mode = std.Attribute("Mode", std.gt.literals { "LookAt", "PivotOf", "None" }, "None" :: "None"),
 	Target = std.Attribute(
 		"Target",
 		std.gt.literals { "Character", "Mouse", "Camera", "Pointer", "None" },
-		functions.literal "None"
+		"None" :: "None"
 	),
 
 	std.AttributeSection "Position Axes",
@@ -84,10 +79,6 @@ function Follower.onPreSimulation(self: typeof(Follower), deltaTime: number, lev
 			continue
 		elseif mode == "LookAt" then
 			targetCFrame = CFrame.lookAt(center:GetPivot().Position, targetCFrame.Position)
-		elseif mode == "PositionOf" then
-			targetCFrame = CFrame.new(targetCFrame.Position)
-		elseif mode == "RotationOf" then
-			targetCFrame = CFrame.new(center.Position) * targetCFrame.Rotation
 		end
 
 		if follower:Relative() then
