@@ -20,7 +20,7 @@ const Follower = std.Mechanic {
 	Mode = std.Attribute("Mode", std.gt.literals { "LookAt", "PivotOf", "None" }, "None" :: "None"),
 	Target = std.Attribute(
 		"Target",
-		std.gt.literals { "Character", "Mouse", "Camera", "Pointer", "None" },
+		std.gt.literals { "Character", "Camera", "Mouse", "Pointer", "None" },
 		"None" :: "None"
 	),
 
@@ -39,11 +39,12 @@ const Follower = std.Mechanic {
 	Responsiveness = std.Attribute("Responsiveness", std.gt.positiveNumber, 1),
 }
 
-export type FollowerMechanic = std.Mechanic<typeof(Follower)>
-export type Mode = typeof(Follower.Mode:type())
-export type Target = typeof(Follower.Target:type())
+export type FollowerSelf = typeof(Follower)
+export type FollowerMechanic = std.Mechanic<FollowerSelf>
+export type FollowerTarget = typeof(Follower.Target:type())
+export type FollowerMode = typeof(Follower.Mode:type())
 
-function Follower.getTargetCFrame(target: Target): CFrame?
+function Follower.getTargetCFrame(target: FollowerTarget): CFrame?
 	if target == "Camera" then
 		return Workspace.CurrentCamera.CFrame
 	elseif target == "Mouse" then
@@ -55,7 +56,7 @@ function Follower.getTargetCFrame(target: Target): CFrame?
 	return nil
 end
 
-function Follower.onPreSimulation(self: typeof(Follower), deltaTime: number, level: std.Level)
+function Follower.onPreSimulation(self: FollowerSelf, deltaTime: number, level: std.Level)
 	local followers = level:getMechanics(self)
 	local countFollowers = #followers
 
@@ -71,9 +72,7 @@ function Follower.onPreSimulation(self: typeof(Follower), deltaTime: number, lev
 		local targetCFrame = self.getTargetCFrame(follower:Target())
 		if not targetCFrame then continue end
 
-		-- Dear basketball
-
-		local mode: Mode = follower:Mode()
+		local mode: FollowerMode = follower:Mode()
 		local center = follower.instance.Center
 		if mode == "None" then
 			continue
@@ -86,6 +85,8 @@ function Follower.onPreSimulation(self: typeof(Follower), deltaTime: number, lev
 		end
 
 		local current = center:GetPivot()
+
+		-- Dear basketball
 
 		local cx, cy, cz = current.Position.X, current.Position.Y, current.Position.Z
 		local tx, ty, tz = targetCFrame.Position.X, targetCFrame.Position.Y, targetCFrame.Position.Z
@@ -105,8 +106,9 @@ function Follower.onPreSimulation(self: typeof(Follower), deltaTime: number, lev
 
 		if follower:Smooth() then
 			local responsiveness = follower:Responsiveness()
-			if responsiveness ~= 0 then
-				targetCFrame = center.CFrame:Lerp(targetCFrame, 1 - math.exp(-deltaTime / responsiveness))
+			if responsiveness > 0 then
+				targetCFrame =
+					follower.instance.Base.CFrame:Lerp(targetCFrame, 1 - math.exp(-responsiveness * deltaTime))
 			end
 		end
 
