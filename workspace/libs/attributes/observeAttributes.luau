@@ -1,9 +1,9 @@
-const arrays = require "@libs/primitives/arrays"
-const tables = require "@libs/primitives/tables"
-const threadpool = require "@libs/threadpool"
+local arrays = require "@libs/primitives/arrays"
+local tables = require "@libs/primitives/tables"
+local threadpool = require "@libs/threadpool"
 
-const CONNECTIONS = tables.createWeakened<<Instance, RBXScriptConnection>> "k"
-const LISTENERS = tables.createWeakened<<Instance, { (attribute: string) -> () }>> "k"
+local CONNECTIONS = tables.createWeakened<<Instance, RBXScriptConnection>> "k"
+local LISTENERS = tables.createWeakened<<Instance, { (attribute: string) -> () }>> "k"
 
 const function cleanupObserver(instance: Instance)
 	if LISTENERS[instance] then

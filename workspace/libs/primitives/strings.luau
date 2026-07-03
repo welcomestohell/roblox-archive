@@ -1,6 +1,6 @@
 -- Based on: https://github.com/luau-lang/lute/blob/52852e07d80f5a7f7974a9efcc3933d957154860/lute/std/libs/stringext.luau
 
-const strings = {}
+local strings = {}
 
 function strings.hasPrefix(str: string, prefix: string): boolean
 	return #prefix <= #str and string.sub(str, 1, #prefix) == prefix

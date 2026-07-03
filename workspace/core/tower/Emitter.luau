@@ -1,8 +1,8 @@
-const activation = require "@libs/activation"
-const emission = require "@libs/emission"
-const std = require "@libs/std"
+local activation = require "@libs/activation"
+local emission = require "@libs/emission"
+local std = require "@libs/std"
 
-const Emitter = std.Mechanic {
+local Emitter = std.Mechanic {
 	emoji = "✨",
 	name = "Emitter",
 	description = "When activated, emits all Sounds and ParticleEmitters under itself.",
@@ -21,7 +21,7 @@ export type EmitterMechanic = std.Mechanic<Emitter>
 function Emitter.onActivate(self: Emitter, emitter: EmitterMechanic)
 	if emitter:Debounced() then return end
 
-	const wasActivatable = self.Activation.Enabled(emitter)
+	local wasActivatable = self.Activation.Enabled(emitter)
 	self.Activation.Enabled(emitter, false)
 	emitter:Debounced(true)
 

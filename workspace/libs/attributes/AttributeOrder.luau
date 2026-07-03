@@ -1,8 +1,8 @@
-const tables = require "@libs/primitives/tables"
+local tables = require "@libs/primitives/tables"
 
 local currentOrder = 0
-const attributeToOrder = tables.createWeakened<<unknown, number>> "k"
-const orderToAttribute = tables.createWeakened<<number, unknown>> "v"
+local attributeToOrder = tables.createWeakened<<unknown, number>> "k"
+local orderToAttribute = tables.createWeakened<<number, unknown>> "v"
 
 const function nextOrder()
 	currentOrder += 1

@@ -4,9 +4,9 @@ local Life = require "@libs/memory/Life"
 local character = require "@libs/character"
 local prvd = require "@pkgs/prvd"
 
-const DEFAULT_FPS = 1 / 60
-const TRIGGER_FPS = 1 / 75
-const STATES = {
+local DEFAULT_FPS = 1 / 60
+local TRIGGER_FPS = 1 / 75
+local STATES = {
 	[Enum.HumanoidStateType.Jumping] = true,
 	[Enum.HumanoidStateType.Climbing] = true,
 	[Enum.HumanoidStateType.Freefall] = true,

@@ -1,6 +1,6 @@
-const Life = require "@libs/memory/Life"
+local Life = require "@libs/memory/Life"
 
-const constraints = {}
+local constraints = {}
 
 function constraints.weld(life: Life.Life, from: BasePart, to: BasePart)
 	local weldConstraint = Instance.new "WeldConstraint"

@@ -1,6 +1,6 @@
-const std = require "@libs/std"
+local std = require "@libs/std"
 
-const Conveyor = std.Mechanic {
+local Conveyor = std.Mechanic {
 	emoji = "🛣️",
 	name = "Conveyor",
 	description = "Moves objects in the direction it's facing.",
@@ -20,7 +20,7 @@ function Conveyor:onPreSimulation(deltaTime: number, level: std.Level)
 		conveyor.instance.AssemblyLinearVelocity = conveyor.instance.CFrame.LookVector * speed
 
 		if conveyor:SynchronizeBeams() then
-			const beamTag = conveyor:BeamTag()
+			local beamTag = conveyor:BeamTag()
 			for _, beam in conveyor.instance:GetDescendants() :: { Beam } do
 				if beam:HasTag(beamTag) and beam.ClassName == "Beam" then
 					beam.TextureSpeed = speed / beam.TextureLength

@@ -1,6 +1,6 @@
-const AttributeOrder = require "@libs/attributes/AttributeOrder"
+local AttributeOrder = require "@libs/attributes/AttributeOrder"
 
-const AttributeSection = {}
+local AttributeSection = {}
 AttributeSection.__index = AttributeSection
 AttributeSection.type = "AttributeSection"
 

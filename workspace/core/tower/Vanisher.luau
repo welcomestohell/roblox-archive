@@ -1,9 +1,9 @@
-const logger = require "@core/shared/logger"
-const std = require "@libs/std"
-const touch = require "@libs/touch"
-const tweens = require "@libs/tweens"
+local logger = require "@core/shared/logger"
+local std = require "@libs/std"
+local touch = require "@libs/touch"
+local tweens = require "@libs/tweens"
 
-const _SHRINK_DIRECTION_OFFSETS = {
+local _SHRINK_DIRECTION_OFFSETS = {
 	Center = Vector3.zero,
 	Top = Vector3.yAxis,
 	Bottom = -Vector3.yAxis,
@@ -26,7 +26,7 @@ function VANISH_HANDLERS.Fade(vanisher, child)
 	vanisher:vanish(child)
 end
 
-const Vanisher = std.Mechanic {
+local Vanisher = std.Mechanic {
 	emoji = "🫥",
 	name = "Vanisher",
 	description = "When activated, it gradually disappears to become uncollidable.",
@@ -124,8 +124,8 @@ function Vanisher.spawn(vanisher: VanisherMechanic, child: VanisherChild, touche
 	if vanisher.vanishLife and not vanisher.vanishLife.destroyed then vanisher.vanishLife:destroy() end
 	vanisher.vanishLife = vanisher.life:extend()
 
-	const mode = vanisher:Mode()
-	const handler = VANISH_HANDLERS[mode]
+	local mode = vanisher:Mode()
+	local handler = VANISH_HANDLERS[mode]
 	if not handler then
 		logger:Warn("Unsupported vanisher mode:", mode)
 		return

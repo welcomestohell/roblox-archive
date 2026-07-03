@@ -1,10 +1,10 @@
-const Text = require "@core/ui/components/base/Text"
-const arrays = require "@libs/primitives/arrays"
-const tables = require "@libs/primitives/tables"
-const Fluid = require "@pkgs/Fluid"
-const Liquid = require "@pkgs/Liquid"
+local Fluid = require "@pkgs/Fluid"
+local Liquid = require "@pkgs/Liquid"
+local Text = require "@core/ui/components/base/Text"
+local arrays = require "@libs/primitives/arrays"
+local tables = require "@libs/primitives/tables"
 
-const DIGITS = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 }
+local DIGITS = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 }
 
 const function NumberSpinner(props: {
 	name: Fluid.UsedAs<string>?,

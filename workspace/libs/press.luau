@@ -1,9 +1,9 @@
-const gt = require "@libs/vendor/gt"
-const Life = require "@libs/memory/Life"
-const tweens = require "@libs/tweens"
-const Attribute = require "@libs/attributes/Attribute"
+local Attribute = require "@libs/attributes/Attribute"
+local Life = require "@libs/memory/Life"
+local gt = require "@libs/vendor/gt"
+local tweens = require "@libs/tweens"
 
-const GLOW_PADDING = Vector3.new(0.05, 0.05, 0.05)
+local GLOW_PADDING = Vector3.new(0.05, 0.05, 0.05)
 
 const function useAttributes(basename: string?)
 	basename = basename or "Press"
@@ -25,12 +25,12 @@ const function usePress(
 	instanceConfiguration: Instance,
 	flash: boolean?
 )
-	const life = Life.new()
-	const instanceConfiguration = instanceConfiguration or instance
+	local life = Life.new()
+	local instanceConfiguration = instanceConfiguration or instance
 
 	if not attributes.Enabled(instanceConfiguration) then return life end
 
-	const tweenConfiguration = tweens.configurationFromAttributes(attributes.Tween, instanceConfiguration)
+	local tweenConfiguration = tweens.configurationFromAttributes(attributes.Tween, instanceConfiguration)
 	tweenConfiguration.duration = tweenConfiguration.duration or 0.5
 
 	if attributes.OffsetEnabled(instanceConfiguration) then
@@ -50,7 +50,7 @@ const function usePress(
 	end
 
 	if attributes.GlowEnabled(instanceConfiguration) then
-		const adornment = life:add(Instance.new "BoxHandleAdornment")
+		local adornment = life:add(Instance.new "BoxHandleAdornment")
 		adornment.Adornee = instance
 		adornment.Color3 = instance.Color:Lerp(Color3.new(1, 1, 1), 0.1)
 		adornment.Name = instance.Name .. "Glow"

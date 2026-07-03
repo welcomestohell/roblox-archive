@@ -1,4 +1,4 @@
-const Fluid = require "@pkgs/Fluid"
+local Fluid = require "@pkgs/Fluid"
 
 export type PropsWithChildren = { [number]: Fluid.UsedAs<Instance> | PropsWithChildren }
 

@@ -1,13 +1,13 @@
-const logger = require "@core/shared/logger"
-const activation = require "@libs/activation"
-const functions = require "@libs/primitives/functions"
-const std = require "@libs/std"
-const tweens = require "@libs/tweens"
-const Result = require "@libs/Result"
-const character = require "@libs/character"
-const instances = require "@libs/instances"
+local Result = require "@libs/Result"
+local activation = require "@libs/activation"
+local character = require "@libs/character"
+local functions = require "@libs/primitives/functions"
+local instances = require "@libs/instances"
+local logger = require "@core/shared/logger"
+local std = require "@libs/std"
+local tweens = require "@libs/tweens"
 
-const PropertyChanger = std.Mechanic {
+local PropertyChanger = std.Mechanic {
 	name = "PropertyChanger",
 	description = "When activated, tweens it's target properties to it's set attributes.",
 	instanceType = std.gt.instanceTree { Target = std.gt.optional(std.isA.ObjectValue()) },
@@ -47,7 +47,7 @@ export type PropertyChangerSelf = typeof(PropertyChanger)
 export type PropertyChangerMechanic = std.Mechanic<PropertyChangerSelf>
 
 function PropertyChanger.getPointer(changer: PropertyChangerMechanic): Result.Result<{ Instance }, string>
-	const target = changer.instance:FindFirstChild "Target" :: ObjectValue
+	local target = changer.instance:FindFirstChild "Target" :: ObjectValue
 	return target and target.Value and Result.Ok { target.Value } or Result.Err(`Missing "Target" ObjectValue`)
 end
 
@@ -65,7 +65,7 @@ function PropertyChanger.getTarget(
 	level: std.Level,
 	event: activation.ActivationEvent
 ): Result.Result<{ Instance }, string>
-	const target = changer:Target()
+	local target = changer:Target()
 	-- stylua: ignore
 	return
 		if target == "Activator" and event then changer:getActivationTarget(event)
@@ -92,7 +92,7 @@ function PropertyChanger.onActivate(
 		changer:Debounced(false)
 	end, changer)
 
-	const targetResult = changer:getTarget(level, event)
+	local targetResult = changer:getTarget(level, event)
 	if targetResult:isErr() then
 		logger:Error("Failed to get target instances:", targetResult:unwrapErr())
 		return

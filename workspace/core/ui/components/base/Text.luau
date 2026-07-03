@@ -1,5 +1,5 @@
 local Fluid = require "@pkgs/Fluid"
-const Liquid = require "@pkgs/Liquid"
+local Liquid = require "@pkgs/Liquid"
 
 local function Text(props: {
 	name: Fluid.UsedAs<string>?,

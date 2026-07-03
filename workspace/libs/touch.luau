@@ -1,4 +1,4 @@
-const Attribute = require "@libs/attributes/Attribute"
+local Attribute = require "@libs/attributes/Attribute"
 local character = require "./character"
 local gt = require "@libs/vendor/gt"
 

@@ -1,8 +1,8 @@
-const activation = require "@libs/activation"
-const std = require "@libs/std"
-const Signal = require "@pkgs/Signal"
+local Signal = require "@pkgs/Signal"
+local activation = require "@libs/activation"
+local std = require "@libs/std"
 
-const Activator = std.Mechanic {
+local Activator = std.Mechanic {
 	emoji = "👆",
 	name = "Activator",
 	description = "When activated, activates mechanics tagged with it's Group.",
@@ -22,8 +22,8 @@ const Activator = std.Mechanic {
 export type ActivatorMechanic = std.Mechanic<typeof(Activator)>
 
 const function shouldActivate(context: activation.ActivationContext, activator: ActivatorMechanic)
-	const group = activator:Group()
-	const targetInstance = activator.instance:FindFirstChild "Target"
+	local group = activator:Group()
+	local targetInstance = activator.instance:FindFirstChild "Target"
 
 	return group and group == Activator.Group(context.instanceConfiguration)
 		or context.instanceConfiguration:HasTag(activator:Tag())
@@ -48,7 +48,7 @@ function Activator.onActivate(self: typeof(Activator), activator: ActivatorMecha
 	if activator:Debounced() then return end
 	activator:Debounced(true)
 
-	const wasActivatable = self.Activation.Enabled(activator)
+	local wasActivatable = self.Activation.Enabled(activator)
 	self.Activation.Enabled(activator, false)
 
 	self.onActivatedSignal:Fire(activator)

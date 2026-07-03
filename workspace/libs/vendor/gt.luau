@@ -5,10 +5,10 @@
 -- Cooking up STRAIGHT BULLSHIT
 -- Todo(EVERYONE): make a competent type library or make boba v2
 
-const arrays = require "@libs/primitives/arrays"
-const tables = require "@libs/primitives/tables"
-const typeforge = require "@libs/vendor/typeforge"
-const gt = require "@pkgs/gt"
+local arrays = require "@libs/primitives/arrays"
+local gt = require "@pkgs/gt"
+local tables = require "@libs/primitives/tables"
+local typeforge = require "@libs/vendor/typeforge"
 
 export type Type = gt.Type
 export type Cause = gt.Cause
@@ -131,7 +131,7 @@ const function literals<T>(tbl: { "黑魔法" } | { T }): Strip<T>
 end
 
 const function keysOf<T>(tbl: T): keyof<T>
-	const components = {}
+	local components = {}
 	for key in tbl :: any do
 		table.insert(components, gt.literal(key))
 	end

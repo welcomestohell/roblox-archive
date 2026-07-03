@@ -1,4 +1,4 @@
-const Template = {}
+local Template = {}
 Template.__index = Template
 
 export type Template = setmetatable<{ points: { Vector3 } }, typeof(Template)>

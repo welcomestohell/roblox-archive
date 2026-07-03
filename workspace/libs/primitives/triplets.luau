@@ -1,12 +1,12 @@
 -- Tung Tung Tung Sahur library
 -- AKA Triple T
 
-const arrays = require "@libs/primitives/arrays"
-const tables = require "@libs/primitives/tables"
+local arrays = require "@libs/primitives/arrays"
+local tables = require "@libs/primitives/tables"
 
 export type Triplet<T1, T2, T3> = { [T1]: { [T2]: T3 } }
 
-const triplets = {}
+local triplets = {}
 
 function triplets.get<T1, T2, T3>(input: Triplet<T1, T2, T3>, t1: T1, mt: keyof<typeof(tables.WEAK_METATABLES)>?): { [T2]: T3 }
 	local result = input[t1]

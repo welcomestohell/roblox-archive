@@ -1,11 +1,11 @@
-const activation = require "@libs/activation"
-const Level = require "@libs/core/Level"
-const emission = require "@libs/emission"
-const std = require "@libs/std"
-const press = require "@libs/press"
-const Promise = require "@pkgs/Promise"
+local Level = require "@libs/core/Level"
+local Promise = require "@pkgs/Promise"
+local activation = require "@libs/activation"
+local emission = require "@libs/emission"
+local press = require "@libs/press"
+local std = require "@libs/std"
 
-const BoxSpawner = std.Mechanic {
+local BoxSpawner = std.Mechanic {
 	emoji = "📦",
 	name = "BoxSpawner",
 	description = "When activated, spawns it's Box instance.",

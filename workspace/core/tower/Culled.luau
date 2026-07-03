@@ -1,16 +1,16 @@
-const Players = game:GetService "Players"
+local Players = game:GetService "Players"
 
-const logger = require "@core/shared/logger"
-const Attribute = require "@libs/attributes/Attribute"
-const tables = require "@libs/primitives/tables"
-const instances = require "@libs/instances"
-const arrays = require "@libs/primitives/arrays"
-const CullThrottle = require "@pkgs/CullThrottle"
-const std = require "@libs/std"
-const types = require "@libs/types"
+local Attribute = require "@libs/attributes/Attribute"
+local CullThrottle = require "@pkgs/CullThrottle"
+local arrays = require "@libs/primitives/arrays"
+local instances = require "@libs/instances"
+local logger = require "@core/shared/logger"
+local std = require "@libs/std"
+local tables = require "@libs/primitives/tables"
+local types = require "@libs/types"
 
 -- Investigate: Maybe `Group: DistanceCulled` and `Group: CameraCulled`??
-const Culled = std.Mechanic {
+local Culled = std.Mechanic {
 	emoji = "👻",
 	name = "Culled",
 	description = [[

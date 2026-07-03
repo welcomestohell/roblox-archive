@@ -1,7 +1,7 @@
-const arrays = require "@libs/primitives/arrays"
-const destruction = require "./destruction"
-const threadpool = require "@libs/threadpool"
-const Signal = require "@pkgs/Signal"
+local Signal = require "@pkgs/Signal"
+local arrays = require "@libs/primitives/arrays"
+local destruction = require "./destruction"
+local threadpool = require "@libs/threadpool"
 
 --[=[
 	@class life
@@ -10,7 +10,7 @@ const Signal = require "@pkgs/Signal"
 	Represents a lifespan. Throughout a Life, destroyable objects can be added
 	to be later cleaned up in Last In, First Out order.
 ]=]
-const Life = {}
+local Life = {}
 Life.__index = Life
 
 export type Life = setmetatable<

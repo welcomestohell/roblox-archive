@@ -1,12 +1,12 @@
-const Result = require "@libs/Result"
-const createChildOfClass = require "@self/createChildOfClass"
-const functions = require "@libs/primitives/functions"
-const gt = require "@libs/vendor/gt"
-const logger = require "@core/shared/logger"
-const threadpool = require "@libs/threadpool"
-const types = require "@self/types"
-const useAttributes = require "@self/useAttributes"
-const useChildOfClass = require "@self/useChildOfClass"
+local Result = require "@libs/Result"
+local createChildOfClass = require "@self/createChildOfClass"
+local functions = require "@libs/primitives/functions"
+local gt = require "@libs/vendor/gt"
+local logger = require "@core/shared/logger"
+local threadpool = require "@libs/threadpool"
+local types = require "@self/types"
+local useAttributes = require "@self/useAttributes"
+local useChildOfClass = require "@self/useChildOfClass"
 
 export type ActivationAttributes = types.ActivationAttributes
 export type PredicateContext = types.PredicateContext

@@ -1,11 +1,11 @@
-const Lazy = require "@libs/Lazy"
-const Attribute = require "@libs/attributes/Attribute"
-const Level = require "@libs/core/Level"
-const LevelState = require "@libs/core/LevelState"
-const instances = require "@libs/instances"
-const gt = require "@libs/vendor/gt"
+local Attribute = require "@libs/attributes/Attribute"
+local Lazy = require "@libs/Lazy"
+local Level = require "@libs/core/Level"
+local LevelState = require "@libs/core/LevelState"
+local gt = require "@libs/vendor/gt"
+local instances = require "@libs/instances"
 
-const damage = {
+local damage = {
 	DEBOUNCE_COOLDOWN = 0.5,
 	PRESET_DAMAGES = table.freeze {
 		Base = 10,
@@ -16,7 +16,7 @@ const damage = {
 
 	isDebounced = LevelState.new(false),
 	fire = Lazy.new(function()
-		const net = require "@core/client/generated/net"
+		local net = require "@core/client/generated/net"
 		return net.mechanics.damage.fire
 	end),
 }

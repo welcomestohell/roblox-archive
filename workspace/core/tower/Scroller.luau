@@ -1,8 +1,8 @@
-const logger = require "@core/shared/logger"
-const std = require "@libs/std"
-const types = require "@libs/types"
+local logger = require "@core/shared/logger"
+local std = require "@libs/std"
+local types = require "@libs/types"
 
-const Scroller = std.Mechanic {
+local Scroller = std.Mechanic {
 	name = "Scroller",
 	description = "Continuously scrolls a image on an ImageLabel or Texture.",
 	instanceType = std.gt.union(std.isA.ImageLabel(), std.isA.Texture()),
@@ -20,7 +20,7 @@ export type ScrollerSelf = typeof(Scroller)
 export type ScrollerMechanic = std.Mechanic<ScrollerSelf>
 
 function Scroller.onStart(self: ScrollerSelf, scroller: ScrollerMechanic)
-	const offset = self.Offset:peek(scroller)
+	local offset = self.Offset:peek(scroller)
 	if scroller.instance:IsA "ImageLabel" then
 		if typeof(offset) == "UDim2" then
 			scroller.instance.Position = offset
@@ -66,21 +66,21 @@ function Scroller.onStart(self: ScrollerSelf, scroller: ScrollerMechanic)
 end
 
 function Scroller.stepImageLabel(scroller: ScrollerMechanic, deltaTime: number, lifetime: number)
-	const speed = scroller:Speed() :: UDim2
-	const offset = scroller:Offset() :: UDim2
+	local speed = scroller:Speed() :: UDim2
+	local offset = scroller:Offset() :: UDim2
 
-	const instance = scroller.instance :: ImageLabel
-	const absoluteSize = instance.AbsoluteSize
+	local instance = scroller.instance :: ImageLabel
+	local absoluteSize = instance.AbsoluteSize
 
-	const tileSize = instance.TileSize
-	const tileSizeScale = Vector2.new(tileSize.X.Scale, tileSize.Y.Scale)
-	const tileSizeOffset = Vector2.new(tileSize.X.Offset, tileSize.Y.Offset)
-	const absoluteTileSize = absoluteSize * tileSizeScale + tileSizeOffset
+	local tileSize = instance.TileSize
+	local tileSizeScale = Vector2.new(tileSize.X.Scale, tileSize.Y.Scale)
+	local tileSizeOffset = Vector2.new(tileSize.X.Offset, tileSize.Y.Offset)
+	local absoluteTileSize = absoluteSize * tileSizeScale + tileSizeOffset
 
-	const baseAbsolute = absoluteSize * Vector2.new(offset.X.Scale, offset.Y.Scale)
+	local baseAbsolute = absoluteSize * Vector2.new(offset.X.Scale, offset.Y.Scale)
 		+ Vector2.new(offset.X.Offset, offset.Y.Offset)
 
-	const delta = absoluteSize * Vector2.new(speed.X.Scale, speed.Y.Scale) + Vector2.new(speed.X.Offset, speed.Y.Offset)
+	local delta = absoluteSize * Vector2.new(speed.X.Scale, speed.Y.Scale) + Vector2.new(speed.X.Offset, speed.Y.Offset)
 
 	local absolutePosition = if scroller:Synchronized()
 		then baseAbsolute + delta * lifetime
@@ -103,11 +103,11 @@ function Scroller.step(scroller: ScrollerMechanic, deltaTime: number, lifetime: 
 end
 
 function Scroller.stepTexture(scroller: ScrollerMechanic, deltaTime: number, lifetime: number)
-	const speed = scroller:Speed() :: Vector2
-	const offset = scroller:Offset() :: Vector2
-	const instance = scroller.instance :: Texture
+	local speed = scroller:Speed() :: Vector2
+	local offset = scroller:Offset() :: Vector2
+	local instance = scroller.instance :: Texture
 
-	const newOffset = if scroller:Synchronized()
+	local newOffset = if scroller:Synchronized()
 		then offset + speed / Vector2.new(instance.StudsPerTileU, instance.StudsPerTileV) * lifetime
 		else Vector2.new(instance.OffsetStudsU, instance.OffsetStudsV) + speed * deltaTime
 

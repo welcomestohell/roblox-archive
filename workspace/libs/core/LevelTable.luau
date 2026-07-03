@@ -1,6 +1,6 @@
-const Level = require "@libs/core/Level"
+local Level = require "@libs/core/Level"
 
-const LevelTable = { type = "LevelTable" }
+local LevelTable = { type = "LevelTable" }
 LevelTable.__index = LevelTable
 
 export type LevelTable<K, V> = setmetatable<{ [Level.Level]: { [K]: V } }, typeof(LevelTable)>

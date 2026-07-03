@@ -1,6 +1,6 @@
-const Base = require "@pkgs/CatRom"
+local Base = require "@pkgs/CatRom"
 
-const CatmullRom = {}
+local CatmullRom = {}
 CatmullRom.__index = CatmullRom
 
 export type CatRom = setmetatable<{ points: { Vector3 }, solver: typeof(Base.new(...)) }, typeof(CatmullRom)>

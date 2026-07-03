@@ -1,10 +1,10 @@
-const types = require "@libs/types"
-const typeforge = require "@libs/vendor/typeforge"
+local typeforge = require "@libs/vendor/typeforge"
+local types = require "@libs/types"
 export type Map<K = unknown, V = unknown> = { [K]: V }
 export type Array<T = unknown> = { T }
 export type Set<T = unknown> = { [T]: true }
 
-const tables = {
+local tables = {
 	WEAK_METATABLES = table.freeze {
 		k = table.freeze { __mode = "k" },
 		v = table.freeze { __mode = "v" },
@@ -91,7 +91,7 @@ function tables.deepEqual(left: unknown, right: unknown): boolean
 	if type(left) ~= "table" or type(right) ~= "table" then return false end
 
 	for key, valueLeft in left do
-		const valueRight = (right :: Map)[key]
+		local valueRight = (right :: Map)[key]
 		if
 			(type(valueLeft) == "table" and type(valueRight) == "table" and not tables.deepEqual(valueLeft, valueRight))
 			or valueLeft ~= valueRight
@@ -101,7 +101,7 @@ function tables.deepEqual(left: unknown, right: unknown): boolean
 	end
 
 	for key, valueRight in right do
-		const valueLeft = (left :: Map)[key]
+		local valueLeft = (left :: Map)[key]
 		if
 			(type(valueLeft) == "table" and type(valueRight) == "table" and not tables.deepEqual(valueLeft, valueRight))
 			or valueLeft ~= valueLeft
@@ -128,7 +128,7 @@ function tables.isNotEmpty<K, V>(input: { [K]: V }): boolean
 end
 
 function tables.filtered<K, V>(input: { [K]: V }, predicate: (K, V) -> boolean): { [K]: V }
-	const result = {}
+	local result = {}
 	for key, value in input do
 		if predicate(key, value) then result[key] = value end
 	end
@@ -136,7 +136,7 @@ function tables.filtered<K, V>(input: { [K]: V }, predicate: (K, V) -> boolean):
 end
 
 function tables.keysOf<K>(input: { [K]: unknown }): { K }
-	const result = {}
+	local result = {}
 	for key in input do
 		table.insert(result, key)
 	end
@@ -144,7 +144,7 @@ function tables.keysOf<K>(input: { [K]: unknown }): { K }
 end
 
 function tables.keysMapped<KI, KO, V>(input: { [KI]: V }, transform: (KI) -> KO): { [KO]: V }
-	const result = {}
+	local result = {}
 	for key, value in input do
 		result[transform(key)] = value
 	end
@@ -164,7 +164,7 @@ function tables.merged<T>(object: T & {}, source: types.Partial<T>?): T
 end
 
 function tables.pairsMapped<KI, VI, KO, VO>(input: { [KI]: VO }, transform: (KI, VI) -> (KO, VO)): { [KO]: VO }
-	const result = {}
+	local result = {}
 	for keyIn, valueIn in input do
 		const keyOut, valueOut = transform(keyIn, valueIn)
 		result[keyOut] = valueOut
@@ -196,7 +196,7 @@ function tables.some<K, V>(input: { [K]: V }, predicate: (V, K) -> boolean?): bo
 end
 
 function tables.valuesOf<V>(input: { [unknown]: V }): { V }
-	const result = {}
+	local result = {}
 	for _, value in input do
 		table.insert(result, value)
 	end

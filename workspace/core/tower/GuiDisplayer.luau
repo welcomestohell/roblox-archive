@@ -1,12 +1,12 @@
-const Players = game:GetService "Players"
+local Players = game:GetService "Players"
 
-const logger = require "@core/shared/logger"
-const activation = require "@libs/activation"
-const instances = require "@libs/instances"
-const std = require "@libs/std"
-const Fluid = require "@pkgs/Fluid"
+local Fluid = require "@pkgs/Fluid"
+local activation = require "@libs/activation"
+local instances = require "@libs/instances"
+local logger = require "@core/shared/logger"
+local std = require "@libs/std"
 
-const GuiDisplayer = std.Mechanic {
+local GuiDisplayer = std.Mechanic {
 	emoji = "🖥️",
 	name = "GuiDisplayer",
 	description = "When activated, mounts itself onto the PlayerGui.",
@@ -39,11 +39,11 @@ function GuiDisplayer.onActivate(self: GuiDisplayerModule, displayer: GuiDisplay
 	if displayer:Active() or displayer:Debounced() then return end
 	displayer:Debounced(true)
 
-	const wasActivatable = self.Activation.Enabled(displayer)
+	local wasActivatable = self.Activation.Enabled(displayer)
 	self.Activation.Enabled(displayer, false)
 	displayer:Active(true)
 
-	const activationLife = displayer.life:extend()
+	local activationLife = displayer.life:extend()
 	activationLife:addMany(
 		function()
 			displayer:Active(false)
@@ -60,7 +60,7 @@ function GuiDisplayer.onActivate(self: GuiDisplayerModule, displayer: GuiDisplay
 		end)
 	)
 
-	const component = displayer.instance:FindFirstChild "Component"
+	local component = displayer.instance:FindFirstChild "Component"
 	if component then
 		const requireSuccess, componentOrError = pcall(require, instances.resolveModulePointer(component))
 
@@ -82,7 +82,7 @@ function GuiDisplayer.onActivate(self: GuiDisplayerModule, displayer: GuiDisplay
 		end
 
 		const mountSuccess, cleanupOrError = pcall(Fluid.root, function()
-			const result = (componentOrError :: () -> unknown)()
+			local result = (componentOrError :: () -> unknown)()
 			if typeof(result) == "Instance" then
 				if result:IsA "ScreenGui" then
 					activationLife:add(result).Parent = Players.LocalPlayer.PlayerGui
@@ -102,9 +102,9 @@ function GuiDisplayer.onActivate(self: GuiDisplayerModule, displayer: GuiDisplay
 		end
 	end
 
-	const templateScreenGui = displayer.instance:FindFirstChild "ScreenGui"
+	local templateScreenGui = displayer.instance:FindFirstChild "ScreenGui"
 	if templateScreenGui then
-		const screenGui = activationLife:add(templateScreenGui:Clone())
+		local screenGui = activationLife:add(templateScreenGui:Clone())
 		screenGui.Parent = Players.LocalPlayer.PlayerGui
 		level:loadDescendantInstancesAsync(screenGui)
 	end

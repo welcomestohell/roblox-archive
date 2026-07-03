@@ -1,10 +1,10 @@
-const assets = require "@core/assets"
-const Fluid = require "@pkgs/Fluid"
-const Liquid = require "@pkgs/Liquid"
-const NumberSpinner = require "@core/ui/components/base/NumberSpinner"
-const Oklab = require "@libs/vendor/Oklab"
-const Padding = require "@core/ui/components/base/Padding"
-const Text = require "@core/ui/components/base/Text"
+local Fluid = require "@pkgs/Fluid"
+local Liquid = require "@pkgs/Liquid"
+local NumberSpinner = require "@core/ui/components/base/NumberSpinner"
+local Oklab = require "@libs/vendor/Oklab"
+local Padding = require "@core/ui/components/base/Padding"
+local Text = require "@core/ui/components/base/Text"
+local assets = require "@core/assets"
 
 -- TODO: hoursHidden, secondsHidden, millisecondsHidden
 export type TimerProps = {
@@ -25,10 +25,10 @@ export type TimerProps = {
 }
 
 const function Timer(props: TimerProps)
-	const rem = Liquid.useRem()
-	const nextOrder = Liquid.useNextOrder()
+	local rem = Liquid.useRem()
+	local nextOrder = Liquid.useNextOrder()
 
-	const color = props.color or Color3.new(1, 1, 1)
+	local color = props.color or Color3.new(1, 1, 1)
 	const function colorLch()
 		return Oklab.color3ToOklch(Fluid.read(color))
 	end
@@ -66,12 +66,12 @@ const function Timer(props: TimerProps)
 		return Fluid.read(props.valueSeconds) * 100 % 100
 	end
 
-	const digitSize = rem:intoUdim2(4, 4)
-	const digitTextSize = rem:intoPx(5)
-	const millisecondsDigitSize = rem:intoPx(3)
+	local digitSize = rem:intoUdim2(4, 4)
+	local digitTextSize = rem:intoPx(5)
+	local millisecondsDigitSize = rem:intoPx(3)
 
-	const contentAbsoluteSize = Fluid.source(Vector2.zero)
-	const scale = Fluid.spring(Liquid.useToggled(props.visible, 1, 0), 15, 2 / 3)
+	local contentAbsoluteSize = Fluid.source(Vector2.zero)
+	local scale = Fluid.spring(Liquid.useToggled(props.visible, 1, 0), 15, 2 / 3)
 
 	return Fluid.create "CanvasGroup" {
 		Name = props.name or "Timer",
@@ -79,8 +79,8 @@ const function Timer(props: TimerProps)
 		Position = props.position,
 		AnchorPoint = props.anchorPoint,
 		Size = props.size or function()
-			const contentAbsoluteSize = contentAbsoluteSize()
-			const padding = rem:px(0.5)
+			local contentAbsoluteSize = contentAbsoluteSize()
+			local padding = rem:px(0.5)
 			return UDim2.fromOffset(contentAbsoluteSize.X + padding, contentAbsoluteSize.Y + padding)
 		end,
 		AutomaticSize = props.automaticSize or Enum.AutomaticSize.None,
@@ -98,7 +98,7 @@ const function Timer(props: TimerProps)
 		Fluid.create "UIScale" { Scale = scale },
 
 		Liquid.useShow(props.totalSeconds, Fluid.untrack :: any, function()
-			const totalSeconds = props.totalSeconds :: Fluid.UsedAs<number>
+			local totalSeconds = props.totalSeconds :: Fluid.UsedAs<number>
 
 			const function progress()
 				return (Fluid.read(totalSeconds) - Fluid.read(props.valueSeconds)) / Fluid.read(totalSeconds)
@@ -119,7 +119,7 @@ const function Timer(props: TimerProps)
 					Image = assets.ui.fillRight,
 					ImageColor3 = Liquid.useToggled<<Color3>>(isHalfway, progressColor, darkColor),
 					Rotation = function()
-						const p = progress()
+						local p = progress()
 						return if isHalfway() then 0 else p * 360
 					end,
 					ZIndex = 0,
@@ -134,7 +134,7 @@ const function Timer(props: TimerProps)
 					Image = assets.ui.fillLeft,
 					ImageColor3 = darkColor,
 					Rotation = function()
-						const p = progress()
+						local p = progress()
 						return if p <= 0.5 then 0 else (p - 0.5) * 360
 					end,
 					ZIndex = -1,

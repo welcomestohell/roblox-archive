@@ -1,10 +1,10 @@
-const RunService = game:GetService "RunService"
-const Workspace = game:GetService "Workspace"
+local RunService = game:GetService "RunService"
+local Workspace = game:GetService "Workspace"
 
-const std = require "@libs/std"
-const touch = require "@libs/touch"
+local std = require "@libs/std"
+local touch = require "@libs/touch"
 
-const Elevator = std.Mechanic {
+local Elevator = std.Mechanic {
 	emoji = "🛗",
 	name = "Elevator",
 	description = "Propel players and objects in the direction they are facing.",

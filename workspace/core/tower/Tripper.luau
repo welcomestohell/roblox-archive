@@ -1,9 +1,9 @@
-const activation = require "@libs/activation"
-const character = require "@libs/character"
-const instances = require "@libs/instances"
-const std = require "@libs/std"
+local activation = require "@libs/activation"
+local character = require "@libs/character"
+local instances = require "@libs/instances"
+local std = require "@libs/std"
 
-const Tripper = std.Mechanic {
+local Tripper = std.Mechanic {
 	emoji = "🧀",
 	name = "Tripper",
 	description = "When activated, trips the player by making them sit down.",
@@ -23,13 +23,13 @@ export type TripperMechanic = std.Mechanic<typeof(Tripper)>
 function Tripper.onActivate(self: typeof(Tripper), tripper: TripperMechanic)
 	if tripper:Active() then return end
 
-	const humanoid = character.getMaybeHumanoid()
+	local humanoid = character.getMaybeHumanoid()
 	if humanoid then
-		const stunDuration = tripper:StunDuration()
-		const property = if stunDuration > 0 then "PlatformStand" else "Sit"
+		local stunDuration = tripper:StunDuration()
+		local property = if stunDuration > 0 then "PlatformStand" else "Sit"
 		if instances.getUnsafe(humanoid, property) then return end
 
-		const wasActivatable = self.Activation.Enabled(tripper)
+		local wasActivatable = self.Activation.Enabled(tripper)
 		self.Activation.Enabled(tripper, false)
 		tripper:Active(true)
 		tripper:Debounced(true)

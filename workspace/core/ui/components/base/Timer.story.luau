@@ -1,9 +1,9 @@
-const Timer = require "@core/ui/components/base/Timer"
-const timers = require "@libs/timers"
-const Liquid = require "@pkgs/Liquid"
+local Liquid = require "@pkgs/Liquid"
+local Timer = require "@core/ui/components/base/Timer"
+local timers = require "@libs/timers"
 
-const DURATION_SECONDS = 120
-const SPEED_UP = 1
+local DURATION_SECONDS = 120
+local SPEED_UP = 1
 
 return Liquid.createFluidStory {
 	controls = {

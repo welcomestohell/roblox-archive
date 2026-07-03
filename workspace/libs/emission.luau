@@ -1,12 +1,12 @@
-const SoundService = game:GetService "SoundService"
+local SoundService = game:GetService "SoundService"
 
-const activation = require "@libs/activation"
-const Attribute = require "@libs/attributes/Attribute"
-const gt = require "@libs/vendor/gt"
-const Signal = require "@pkgs/Signal"
-const threadpool = require "./threadpool"
+local Attribute = require "@libs/attributes/Attribute"
+local Signal = require "@pkgs/Signal"
+local activation = require "@libs/activation"
+local gt = require "@libs/vendor/gt"
+local threadpool = require "./threadpool"
 
-const emission = {
+local emission = {
 	Delay = Attribute.new("Delay", gt.positiveNumber, 0),
 
 	Volume = Attribute.new("Volume", gt.positiveNumber, 0.5),
@@ -37,7 +37,7 @@ function emission.emit(instance: Instance)
 	if instance:IsA "ParticleEmitter" then instance:Emit(instance.Rate) end
 
 	if instance:IsA "Sound" then
-		const sound = instance:Clone()
+		local sound = instance:Clone()
 		sound.Volume = emission.Volume:peek(instance) or sound.Volume
 		sound.PlaybackSpeed = emission.PlaybackSpeed:peek(instance) or sound.PlaybackSpeed
 		sound.PlaybackRegionsEnabled = emission.PlaybackRegionsEnabled:peek(instance) or sound.PlaybackRegionsEnabled

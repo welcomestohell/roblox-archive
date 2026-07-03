@@ -1,7 +1,7 @@
-const Timer = require "@core/ui/components/base/Timer"
-const timers = require "@libs/timers"
-const Fluid = require "@pkgs/Fluid"
-const Liquid = require "@pkgs/Liquid"
+local Fluid = require "@pkgs/Fluid"
+local Liquid = require "@pkgs/Liquid"
+local Timer = require "@core/ui/components/base/Timer"
+local timers = require "@libs/timers"
 
 const function TimerStack(props: {
 	name: Fluid.UsedAs<string>?,
@@ -14,8 +14,8 @@ const function TimerStack(props: {
 
 	timers: Fluid.UsedAs<{ [string]: timers.Timer }>,
 })
-	const rem = Liquid.useRem()
-	const clock = Liquid.useOsClock()
+	local rem = Liquid.useRem()
+	local clock = Liquid.useOsClock()
 
 	return Fluid.create "Frame" {
 		Name = props.name or "TimerStack",
@@ -37,10 +37,10 @@ const function TimerStack(props: {
 		},
 
 		Liquid.forPairs(props.timers, function(key, timer: timers.Timer): any
-			const firstTimestamp = timer.timestamps[1]
-			const lastTimestamp = timer.timestamps[#timer.timestamps]
+			local firstTimestamp = timer.timestamps[1]
+			local lastTimestamp = timer.timestamps[#timer.timestamps]
 
-			const endTimestamp = lastTimestamp + timer.duration
+			local endTimestamp = lastTimestamp + timer.duration
 
 			const props: Timer.TimerProps = {
 				valueSeconds = function()

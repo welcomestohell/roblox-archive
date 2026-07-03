@@ -1,5 +1,5 @@
+local Liquid = require "@pkgs/Liquid"
 local WTHLogo = require "./WTHLogo"
-const Liquid = require "@pkgs/Liquid"
 
 return Liquid.createFluidStory {
 	controls = {
