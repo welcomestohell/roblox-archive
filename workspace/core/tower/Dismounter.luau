@@ -1,4 +1,3 @@
-local Signal = require "@pkgs/Signal"
 local activation = require "@libs/activation"
 local character = require "@libs/character"
 local mounts = require "@libs/mounts"

@@ -1,6 +1,6 @@
-local Attribute = require "@libs/attributes/Attribute"
-local activation = require "@libs/activation"
 local logger = require "@core/shared/logger"
+local activation = require "@libs/activation"
+local Attribute = require "@libs/attributes/Attribute"
 local press = require "@libs/press"
 local std = require "@libs/std"
 local timers = require "@libs/timers"

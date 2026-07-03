@@ -115,7 +115,7 @@ local function Timer(props: TimerProps)
 					Position = UDim2.fromScale(0.5, 0.5),
 					AnchorPoint = Vector2.new(0.5, 0.5),
 					Size = UDim2.fromScale(2, 2),
-					SizeConstraint = Enum.SizeConstraint.RelativeXX,
+					Sizelocalraint = Enum.Sizelocalraint.RelativeXX,
 					Image = assets.ui.fillRight,
 					ImageColor3 = Liquid.useToggled<<Color3>>(isHalfway, progressColor, darkColor),
 					Rotation = function()
@@ -130,7 +130,7 @@ local function Timer(props: TimerProps)
 					Position = UDim2.fromScale(0.5, 0.5),
 					AnchorPoint = Vector2.new(0.5, 0.5),
 					Size = UDim2.fromScale(2, 2),
-					SizeConstraint = Enum.SizeConstraint.RelativeXX,
+					Sizelocalraint = Enum.Sizelocalraint.RelativeXX,
 					Image = assets.ui.fillLeft,
 					ImageColor3 = darkColor,
 					Rotation = function()

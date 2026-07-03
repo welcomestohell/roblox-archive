@@ -23,7 +23,7 @@ local Workspace = game:GetService "Workspace"
 local UserGameSettings = UserSettings():GetService "UserGameSettings"
 local VRService = game:GetService "VRService"
 
--- Roblox User Input Control Modules - each returns a new() constructor function used to create controllers as needed
+-- Roblox User Input Control Modules - each returns a new() localructor function used to create controllers as needed
 local DynamicThumbstick = require(script:WaitForChild "DynamicThumbstick")
 local Gamepad = require(script:WaitForChild "Gamepad")
 local Keyboard = require(script:WaitForChild "Keyboard")
@@ -109,7 +109,7 @@ local computerInputTypeToModuleMap = {
 function ControlModule.new()
 	local self = setmetatable({}, ControlModule)
 
-	-- The Modules above are used to construct controller instances as-needed, and this
+	-- The Modules above are used to localruct controller instances as-needed, and this
 	-- table is a map from Module to the instance created from it
 	self.controllers = {}
 

@@ -12,7 +12,7 @@ local Descender = std.Mechanic {
 	instanceType = std.gt.instanceTree {
 		Base = std.gt.instanceTree(std.isA.BasePart(), {
 			AlignPosition = std.isA.AlignPosition(),
-			PrismaticConstraint = std.isA.PrismaticConstraint(),
+			Prismaticlocalraint = std.isA.Prismaticlocalraint(),
 		}),
 		End = std.isA.BasePart(),
 	},

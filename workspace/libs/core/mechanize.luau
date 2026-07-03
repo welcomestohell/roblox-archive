@@ -10,7 +10,7 @@ local gt = require "@libs/vendor/gt"
 	@tag Library
 	@since 0.1.0
 
-	Constructs a new Mechanic of an Instance from a MechanicImplementation.
+	localructs a new Mechanic of an Instance from a MechanicImplementation.
 
 	@param implementation Self -- The MechanicImplementation to use.
 	@param outerLife Life.Life -- The outermost Life to be extended for the Mechanic.

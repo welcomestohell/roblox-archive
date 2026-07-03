@@ -69,7 +69,7 @@ local function WTHLogo(props: {
 			return UDim2.fromOffset(rem(24), rem(24))
 		end,
 
-		Fluid.create "UIAspectRatioConstraint" {},
+		Fluid.create "UIAspectRatiolocalraint" {},
 
 		Letter {
 			name = "W",

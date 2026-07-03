@@ -68,7 +68,7 @@ local function NumberSpinner(props: {
 				-- Digits are written right to left
 				LayoutOrder = -index,
 				Size = UDim2.fromScale(0.5, 1),
-				SizeConstraint = Enum.SizeConstraint.RelativeYY,
+				Sizelocalraint = Enum.Sizelocalraint.RelativeYY,
 				BackgroundTransparency = 1,
 				ClipsDescendants = true,
 

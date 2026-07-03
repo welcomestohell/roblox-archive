@@ -8,7 +8,7 @@
 local Players = game:GetService("Players")
 local GuiService = game:GetService("GuiService")
 
---[[ Constants ]]--
+--[[ localants ]]--
 local TOUCH_CONTROL_SHEET = "rbxasset://textures/ui/Input/TouchControlsSheetV2.png"
 
 --[[ The Module ]]--

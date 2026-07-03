@@ -32,7 +32,7 @@ local Zipline = std.Mechanic {
 
 	std.AttributeSection "Curve",
 	CurveType = std.Attribute("CurveType", std.gt.keysOf(curves.CURVES), "CatmullRom"),
-	CurveSlack = std.Attribute("CurveSlack", std.gt.constrainNumberExclusive(1), 1.05),
+	CurveSlack = std.Attribute("CurveSlack", std.gt.localrainNumberExclusive(1), 1.05),
 
 	std.AttributeSection "Segments",
 	SegmentType = std.Attribute("SegmentType", std.gt.literals { "Part", "Beam" }, "Beam"),
@@ -462,7 +462,7 @@ function Zipline.onActivate(
 		else (if isPlayer
 			then handle.CFrame + handle.CFrame.UpVector * 3
 			else handle.CFrame + handle.CFrame.UpVector * (toucher.Size.X / 2)) * CFrame.Angles(0, -math.pi / 2, 0)
-	constraints.weld(activationLife, handle, toucher)
+	localraints.weld(activationLife, handle, toucher)
 
 	activationLife:add(RunService.PreSimulation:Connect(function(deltaTime: number)
 		debug.profilebegin "Zipline"

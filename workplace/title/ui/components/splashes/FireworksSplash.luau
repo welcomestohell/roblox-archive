@@ -43,7 +43,7 @@ local function FireworksSplash(props: {
 		-- 	ImageTransparency = outlineTransparency,
 		-- 	Size = outlineSize,
 
-		-- 	Fluid.create "UIAspectRatioConstraint" {
+		-- 	Fluid.create "UIAspectRatiolocalraint" {
 		-- 		AspectRatio = 74 / 24,
 		-- 	},
 		-- },

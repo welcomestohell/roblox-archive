@@ -1,6 +1,6 @@
-local Signal = require "@pkgs/Signal"
 local activation = require "@libs/activation"
 local std = require "@libs/std"
+local Signal = require "@pkgs/Signal"
 
 local Activator = std.Mechanic {
 	emoji = "👆",

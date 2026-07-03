@@ -36,14 +36,14 @@ local Vanisher = std.Mechanic {
 
 	Active = std.Attribute("Active", std.gt.boolean(), false),
 	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 1),
-	Mode = std.Attribute("Mode", std.gt.literals("Fade", "Blink", "Constant", "Shrink", "Fall"), "Fade"),
+	Mode = std.Attribute("Mode", std.gt.literals("Fade", "Blink", "localant", "Shrink", "Fall"), "Fade"),
 	Inverted = std.Attribute("Inverted", std.gt.boolean(), false),
 
 	std.AttributeSection "Blink",
 	BlinkCount = std.Attribute("BlinkCount", std.gt.number { range = { min = 0, max = math.huge }, integer = true }, 3),
 
-	std.AttributeSection "Constant",
-	ConstantNoRecovery = std.Attribute("ConstantNoRecovery", std.gt.boolean(), false),
+	std.AttributeSection "localant",
+	localantNoRecovery = std.Attribute("localantNoRecovery", std.gt.boolean(), false),
 
 	std.AttributeSection "Shrink",
 	ShrinkToZero = std.Attribute("ShrinkToZero", std.gt.boolean(), false),
@@ -131,7 +131,7 @@ function Vanisher.spawn(vanisher: VanisherMechanic, child: VanisherChild, touche
 		return
 	end
 
-	if mode == "Constant" then return end
+	if mode == "localant" then return end
 
 	vanisher:Active(true)
 	handler(vanisher, child, toucher)

@@ -26,14 +26,14 @@ local Workspace = game:GetService "Workspace"
 
 local _T = require(ReplicatedStorage.Framework.ClientTypes)
 
--- Constants
+-- localants
 type VanisherPart = {
 	part: BasePart,
 	selection: SelectionBox?,
 	defaults: { [string]: any },
 }
 
-local ALLOWED_VANISH_MODES = { "Fade", "Blink", "Constant", "Shrink" }
+local ALLOWED_VANISH_MODES = { "Fade", "Blink", "localant", "Shrink" }
 local ALLOWED_SHRINK_DIRECTIONS = {
 	"Center",
 	"Top",
@@ -66,7 +66,7 @@ function Vanisher.Init(utility: _T.Utility)
 	local Config = utility.Config
 	VANISHER_CONFIG_TEMPLATE = {
 		BlinkCount = 3,
-		ConstantNoRecovery = false,
+		localantNoRecovery = false,
 		Invert = false,
 		OutlineColor = Color3.fromRGB(255, 0, 0),
 		RespawnFade = false,
@@ -217,7 +217,7 @@ function Vanisher.Run(scope: _T.Scope, utility: _T.Utility)
 	params.FilterType = Enum.RaycastFilterType.Include
 	params.CollisionGroup = ""
 
-	local function handleConstantMode(vanisherPart: VanisherPart)
+	local function handlelocalantMode(vanisherPart: VanisherPart)
 		local vanisher = vanisherPart.part
 		local defaults = vanisherPart.defaults
 
@@ -244,7 +244,7 @@ function Vanisher.Run(scope: _T.Scope, utility: _T.Utility)
 			-- Update fade time
 			if next(currentParts) ~= nil then
 				touchTime = math.min(touchTime + deltaTime, totalFadeTime)
-			elseif not configuration.ConstantNoRecovery then
+			elseif not configuration.localantNoRecovery then
 				touchTime = math.max(touchTime - (deltaTime * totalFadeTime / configuration.RespawnTime), 0)
 			end
 
@@ -352,8 +352,8 @@ function Vanisher.Run(scope: _T.Scope, utility: _T.Utility)
 	end
 
 	local VANISH_HANDLERS = {
-		Constant = function()
-			return handleConstantMode
+		localant = function()
+			return handlelocalantMode
 		end,
 
 		Blink = function()
@@ -430,7 +430,7 @@ function Vanisher.Run(scope: _T.Scope, utility: _T.Utility)
 		cleanupScope:cleanup()
 		local modeHandler = VANISH_HANDLERS[configuration.VanishMode]
 		if modeHandler then
-			if configuration.VanishMode == "Constant" and hitPart then
+			if configuration.VanishMode == "localant" and hitPart then
 				touchingParts[hitPart] = true
 				params:AddToFilter(hitPart)
 				cleanupScope:spawn(modeHandler(), vanisherPart)

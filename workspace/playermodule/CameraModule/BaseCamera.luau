@@ -3,7 +3,7 @@
 	2018 Camera Update - AllYourBlox
 --]]
 
---[[ Local Constants ]]--
+--[[ Local localants ]]--
 local UNIT_Z = Vector3.new(0,0,1)
 local X1_Y0_Z1 = Vector3.new(1,0,1)	--Note: not a unit vector, used for projecting onto XZ plane
 
@@ -167,7 +167,7 @@ function BaseCamera.new()
 	self.lastVRRotationIntensityCheckTime = 0
 	self.lastVRRotationTime = 0
 	self.vrRotateKeyCooldown = {}
-	self.cameraTranslationConstraints = Vector3.new(1, 1, 1)
+	self.cameraTranslationlocalraints = Vector3.new(1, 1, 1)
 	self.humanoidJumpOrigin = nil
 	self.trackingHumanoid = nil
 	self.cameraFrozen = false
@@ -1156,7 +1156,7 @@ function BaseCamera:OnMouseWheel(input, processed)  -- remove with FFlagUserPoin
 			else
 				-- The 0.156 and 1.7 values are the slope and intercept of a line that is replacing the old
 				-- rk4Integrator function which was not being used as an integrator, only to get a delta as a function of distance,
-				-- which was linear as it was being used. These constants preserve the status quo behavior.
+				-- which was linear as it was being used. These localants preserve the status quo behavior.
 				newDistance = self.currentSubjectDistance + 0.156 * self.currentSubjectDistance * wheelInput + 1.7 * math.sign(wheelInput)
 			end
 
@@ -1295,9 +1295,9 @@ function BaseCamera:CalculateNewLookCFrame(suppliedLookVector)
 	local currLookVector = suppliedLookVector or self:GetCameraLookVector()
 	local currPitchAngle = math.asin(currLookVector.y)
 	local yTheta = Util.Clamp(-MAX_Y + currPitchAngle, -MIN_Y + currPitchAngle, self.rotateInput.y)
-	local constrainedRotateInput = Vector2.new(self.rotateInput.x, yTheta)
+	local localrainedRotateInput = Vector2.new(self.rotateInput.x, yTheta)
 	local startCFrame = CFrame.new(ZERO_VECTOR3, currLookVector)
-	local newLookCFrame = CFrame.Angles(0, -constrainedRotateInput.x, 0) * startCFrame * CFrame.Angles(-constrainedRotateInput.y,0,0)
+	local newLookCFrame = CFrame.Angles(0, -localrainedRotateInput.x, 0) * startCFrame * CFrame.Angles(-localrainedRotateInput.y,0,0)
 	return newLookCFrame
 end
 function BaseCamera:CalculateNewLookVector(suppliedLookVector)
@@ -1361,7 +1361,7 @@ function BaseCamera:UpdateGamepad()
 			end
 		end
 
-		local finalConstant = 0
+		local finallocalant = 0
 
 		if self.lastThumbstickRotate then
 			if VRService.VREnabled then
@@ -1370,13 +1370,13 @@ function BaseCamera:UpdateGamepad()
                 self.currentSpeed = self.maxSpeed
 			end
 
-			finalConstant = UserGameSettings.GamepadCameraSensitivity * self.currentSpeed
+			finallocalant = UserGameSettings.GamepadCameraSensitivity * self.currentSpeed
 		end
 
 		self.lastThumbstickPos = gamepadPan
 		self.lastThumbstickRotate = currentTime
 
-		return Vector2.new( gamepadPan.X * finalConstant, gamepadPan.Y * finalConstant * self.ySensitivity * UserGameSettings:GetCameraYInvertValue())
+		return Vector2.new( gamepadPan.X * finallocalant, gamepadPan.Y * finallocalant * self.ySensitivity * UserGameSettings:GetCameraYInvertValue())
 	end
 
 	return ZERO_VECTOR2
@@ -1476,9 +1476,9 @@ function BaseCamera:GetVRRotationInput()
 	return vrRotateSum
 end
 
-function BaseCamera:CancelCameraFreeze(keepConstraints)
-	if not keepConstraints then
-		self.cameraTranslationConstraints = Vector3.new(self.cameraTranslationConstraints.x, 1, self.cameraTranslationConstraints.z)
+function BaseCamera:CancelCameraFreeze(keeplocalraints)
+	if not keeplocalraints then
+		self.cameraTranslationlocalraints = Vector3.new(self.cameraTranslationlocalraints.x, 1, self.cameraTranslationlocalraints.z)
 	end
 	if self.cameraFrozen then
 		self.trackingHumanoid = nil
@@ -1490,7 +1490,7 @@ function BaseCamera:StartCameraFreeze(subjectPosition, humanoidToTrack)
 	if not self.cameraFrozen then
 		self.humanoidJumpOrigin = subjectPosition
 		self.trackingHumanoid = humanoidToTrack
-		self.cameraTranslationConstraints = Vector3.new(self.cameraTranslationConstraints.x, 0, self.cameraTranslationConstraints.z)
+		self.cameraTranslationlocalraints = Vector3.new(self.cameraTranslationlocalraints.x, 0, self.cameraTranslationlocalraints.z)
 		self.cameraFrozen = true
 	end
 end
@@ -1519,14 +1519,14 @@ end
 function BaseCamera:GetVRFocus(subjectPosition, timeDelta)
 	local lastFocus = self.LastCameraFocus or subjectPosition
 	if not self.cameraFrozen then
-		self.cameraTranslationConstraints = Vector3.new(self.cameraTranslationConstraints.x, math.min(1, self.cameraTranslationConstraints.y + 0.42 * timeDelta), self.cameraTranslationConstraints.z)
+		self.cameraTranslationlocalraints = Vector3.new(self.cameraTranslationlocalraints.x, math.min(1, self.cameraTranslationlocalraints.y + 0.42 * timeDelta), self.cameraTranslationlocalraints.z)
 	end
 
 	local newFocus
 	if self.cameraFrozen and self.humanoidJumpOrigin and self.humanoidJumpOrigin.y > lastFocus.y then
 		newFocus = CFrame.new(Vector3.new(subjectPosition.x, math.min(self.humanoidJumpOrigin.y, lastFocus.y + 5 * timeDelta), subjectPosition.z))
 	else
-		newFocus = CFrame.new(Vector3.new(subjectPosition.x, lastFocus.y, subjectPosition.z):lerp(subjectPosition, self.cameraTranslationConstraints.y))
+		newFocus = CFrame.new(Vector3.new(subjectPosition.x, lastFocus.y, subjectPosition.z):lerp(subjectPosition, self.cameraTranslationlocalraints.y))
 	end
 
 	if self.cameraFrozen then

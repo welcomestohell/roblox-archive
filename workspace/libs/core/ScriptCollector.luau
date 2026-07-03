@@ -47,7 +47,7 @@ export type ScriptCollector = setmetatable<{
     @within ScriptCollector
     @since 0.1.0
 
-    Constructs an empty ScriptCollector.
+    localructs an empty ScriptCollector.
 ]=]
 function ScriptCollector.new(): ScriptCollector
 	return setmetatable({
@@ -61,7 +61,7 @@ end
     @within ScriptCollector
     @since 0.1.0
 
-    Constructs a new ScriptCollector keeping it's collected scripts. Levels,
+    localructs a new ScriptCollector keeping it's collected scripts. Levels,
     for example, clones a base ScriptCollector with core scripts.
 
     @param self ScriptCollector -- The ScriptCollector to use.

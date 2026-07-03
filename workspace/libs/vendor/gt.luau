@@ -16,7 +16,7 @@ export type Cause = gt.Cause
 -- Worse Than Epstein?
 
 -- stylua: ignore
-type UnionConstructor =
+type Unionlocalructor =
 	& (<T1, T2>(T1, T2) -> T1 | T2)
 	& (<T1, T2, T3>(T1, T2, T3) -> T1 | T2 | T3)
 	& (<T1, T2, T3, T4>(T1, T2, T3, T4) -> T1 | T2 | T3 | T4)
@@ -30,7 +30,7 @@ type UnionConstructor =
 	& (<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11) -> T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9 | T10 | T11 | T12)
 
 -- stylua: ignore
-type IntersectionConstructor =
+type Intersectionlocalructor =
 	& (<T1, T2>(T1, T2) -> T1 & T2)
 	& (<T1, T2, T3>(T1, T2, T3) -> T1 & T2 & T3)
 	& (<T1, T2, T3, T4>(T1, T2, T3, T4) -> T1 & T2 & T3 & T4)
@@ -67,7 +67,7 @@ type function Strip(stringletunion: type): type
 end
 
 -- Who is this gif
-type InstanceTreeConstructor = (<T>(tree: T) -> T & Instance) & (<P, T>(parent: P, tree: T) -> T & P)
+type InstanceTreelocalructor = (<T>(tree: T) -> T & Instance) & (<P, T>(parent: P, tree: T) -> T & P)
 
 local function moreThan(min: number?)
 	return gt.number { options = { minExclusive = min } }
@@ -202,14 +202,14 @@ return table.freeze {
 	moreOrEqual = moreOrEqual,
 	lessThan = lessThan,
 	lessOrEqual = lessOrEqual,
-	constrainNumber = constrainNumber,
-	constrainNumberExclusive = constrainNumberExclusive,
+	localrainNumber = localrainNumber,
+	localrainNumberExclusive = localrainNumberExclusive,
 	positiveNumber = moreThan(0),
 	negativeNumber = lessThan(0),
 
 	enumOf = enumOf,
 	keysOf = keysOf,
-	instanceTree = instanceTree :: InstanceTreeConstructor,
+	instanceTree = instanceTree :: InstanceTreelocalructor,
 	literals = literals,
 	serialize = serialize,
 
@@ -239,11 +239,11 @@ return table.freeze {
 	typeof = gt.typeof,
 	withCustom = gt.withCustom,
 
-	intersection = gt.intersection :: IntersectionConstructor,
-	allOf = gt.allOf :: IntersectionConstructor,
+	intersection = gt.intersection :: Intersectionlocalructor,
+	allOf = gt.allOf :: Intersectionlocalructor,
 
-	union = gt.union :: UnionConstructor,
-	oneOf = gt.oneOf :: UnionConstructor,
+	union = gt.union :: Unionlocalructor,
+	oneOf = gt.oneOf :: Unionlocalructor,
 
 	optional = gt.optional,
 

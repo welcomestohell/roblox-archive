@@ -6,7 +6,7 @@ local tweens = require "@libs/tweens"
 
 local CLASSES_TO_TOGGLE_ENABLED: { [string]: true } = {
 	Beam = true,
-	Constraint = true,
+	localraint = true,
 	ParticleEmitter = true,
 	Fire = true,
 	Sparkles = true,

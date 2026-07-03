@@ -9,10 +9,10 @@ local tweens = require "@libs/tweens"
 local Vine = std.Mechanic {
 	emoji = "🪝",
 	name = "Vine",
-	description = "When activated, attaches the player or a Box to itself using a given Constraint.",
+	description = "When activated, attaches the player or a Box to itself using a given localraint.",
 	instanceType = std.gt.instanceTree {
 		Activator = std.isA.BasePart(),
-		Constraint = std.isA.Constraint(),
+		localraint = std.isA.localraint(),
 		Base = std.gt.instanceTree(std.isA.BasePart(), {
 			BaseAttachment = std.isA.Attachment(),
 		}),
@@ -44,7 +44,7 @@ local Vine = std.Mechanic {
 
 	std.AttributeSection "Activator",
 	ActivatorTween = tweens.useAttributes "ActivatorTween",
-	ActivatorTransparency = std.Attribute("ActivatorTransparency", std.gt.constrainNumber(0, 1), 0),
+	ActivatorTransparency = std.Attribute("ActivatorTransparency", std.gt.localrainNumber(0, 1), 0),
 	ActivatorPosition = std.Attribute("ActivatorCFrame", std.gt.Vector3(), Vector3.zero),
 	ActivatorSize = std.Attribute("ActivatorSize", std.gt.Vector3(), Vector3.zero),
 }
@@ -94,7 +94,7 @@ function Vine.onActivate(self: typeof(Vine), vine: VineMechanic, level: std.Leve
 	handle.CFrame = toucher.CFrame + toucher.CFrame.UpVector * (toucher.Size.Y / 2)
 	handle.Anchored = false
 	handle.Parent = vine.instance
-	constraints.weld(activationLife, handle, toucher)
+	localraints.weld(activationLife, handle, toucher)
 
 	local constraint = activationLife:add(vine.instance.Constraint:Clone())
 	constraint.Color = vine.instance.Activator.BrickColor
