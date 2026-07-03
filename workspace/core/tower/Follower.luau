@@ -87,7 +87,7 @@ function Follower.onPreSimulation(self: typeof(Follower), deltaTime: number, lev
 		elseif mode == "PositionOf" then
 			targetCFrame = CFrame.new(targetCFrame.Position)
 		elseif mode == "RotationOf" then
-			targetCFrame = CFrame.new(targetCFrame.Position) * center:GetPivot().Rotation
+			targetCFrame = CFrame.new(center.Position) * targetCFrame.Rotation
 		end
 
 		if follower:Relative() then
