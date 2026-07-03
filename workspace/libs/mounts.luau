@@ -69,13 +69,19 @@ function mounts.dismountMechanic(instance: BasePart, mechanic: Mechanic.AnyMecha
 end
 
 function mounts.castToucher(toucher: unknown): BasePart?
-	if typeof(toucher) ~= "Instance" or not toucher:IsA "BasePart" then
-		return nil
-	elseif character.isFromMaybeCharacter(toucher) then
-		return character.getHumanoidRootPart()
-	else
-		return toucher
+	if not toucher or typeof(toucher) ~= "Instance" then return nil end
+
+	-- LUAU FIXME: some straight bullshit going on here
+	const maybeCharacter: Instance = character.getMaybeCharacter() :: any
+	if maybeCharacter ~= nil and (toucher == maybeCharacter or toucher:IsDescendantOf(maybeCharacter)) then
+		return maybeCharacter:FindFirstChild "HumanoidRootPart" :: BasePart?
 	end
+
+	if toucher:IsA "Model" and toucher.PrimaryPart then return toucher.PrimaryPart end
+
+	if toucher:IsA "BasePart" then return toucher end
+
+	return nil
 end
 
 return table.freeze(mounts)

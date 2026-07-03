@@ -22,6 +22,7 @@ export type ActivationEvent =
 	| { kind: "Emission" }
 	| { kind: "Died" }
 	| { kind: "Jump" }
+	| { kind: "JumpInside", instance: BasePart }
 	| { kind: "HumanoidStateChanged", old: Enum.HumanoidStateType, new: Enum.HumanoidStateType }
 	| { kind: "Prompt", prompt: ProximityPrompt }
 	| { kind: "Touch", instance: BasePart, toucher: BasePart }

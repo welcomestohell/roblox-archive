@@ -113,11 +113,18 @@ function tables.deepEqual(left: unknown, right: unknown): boolean
 	return true
 end
 
-function tables.isEmpty(input: { [unknown]: unknown }): boolean
+function tables.isEmpty<K, V>(input: { [K]: V }): boolean
 	for _ in input do
 		return false
 	end
 	return true
+end
+
+function tables.isNotEmpty<K, V>(input: { [K]: V }): boolean
+	for _ in input do
+		return true
+	end
+	return false
 end
 
 function tables.filtered<K, V>(input: { [K]: V }, predicate: (K, V) -> boolean): { [K]: V }
