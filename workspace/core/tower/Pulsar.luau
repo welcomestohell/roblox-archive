@@ -1,18 +1,18 @@
 -- FIXME: Applying on a spawned Box (from a BoxSpawner) somehow makes it pulse
 -- TWICE????????????? I have no fucking clue why
 
-const TweenService = game:GetService "TweenService"
+local TweenService = game:GetService "TweenService"
 
-const logger = require "@core/shared/logger"
-const activation = require "@libs/activation"
-const instances = require "@libs/instances"
-const lerp = require "@libs/lerp"
-const functions = require "@libs/primitives/functions"
-const std = require "@libs/std"
-const tweens = require "@libs/tweens"
+local activation = require "@libs/activation"
+local functions = require "@libs/primitives/functions"
+local instances = require "@libs/instances"
+local lerp = require "@libs/lerp"
+local logger = require "@core/shared/logger"
+local std = require "@libs/std"
+local tweens = require "@libs/tweens"
 
-const isSequence = std.gt.union(std.gt.ColorSequence, std.gt.NumberSequence)
-const isSetAs = std.gt.literals {
+local isSequence = std.gt.union(std.gt.ColorSequence, std.gt.NumberSequence)
+local isSetAs = std.gt.literals {
 	"Color3",
 	"ColorSequence",
 	"BrickColor",
@@ -21,7 +21,7 @@ const isSetAs = std.gt.literals {
 	"NumberRange",
 }
 
-const Pulsar = std.Mechanic {
+local Pulsar = std.Mechanic {
 	name = "Pulsar",
 	description = "Tweens it's properties using sequence data types.",
 	instanceType = std.isA.Instance(),
@@ -65,14 +65,14 @@ end
 
 function Pulsar.step(self: PulsarSelf, pulsar: PulsarMechanic, alpha: number)
 	for property, sequence: typeof(isSequence) in self.Set:getAll(pulsar) do
-		const sequenceType = typeof(sequence) :: "ColorSequence" | "NumberSequence"
+		local sequenceType = typeof(sequence) :: "ColorSequence" | "NumberSequence"
 
-		const value = if sequenceType == "ColorSequence"
+		local value = if sequenceType == "ColorSequence"
 			then lerp.evaluateColorSequence(sequence :: ColorSequence, alpha)
 			else lerp.evaluateNumberSequence(sequence :: NumberSequence, alpha)
 
-		const setAs: typeof(isSetAs) = self.SetAs:get(pulsar, property) or typeof(value) :: "Color3" | "number"
-		const constructor = self.setAsConstructors[sequenceType][setAs]
+		local setAs: typeof(isSetAs) = self.SetAs:get(pulsar, property) or typeof(value) :: "Color3" | "number"
+		local constructor = self.setAsConstructors[sequenceType][setAs]
 		if not constructor then
 			logger:Error("Invalid SetAs value for", property, ":", setAs)
 			continue
@@ -86,7 +86,7 @@ function Pulsar.onActivate(self: PulsarSelf, pulsar: PulsarMechanic)
 	if pulsar:Active() or pulsar:Debounced() then return end
 	pulsar:Debounced(true)
 
-	const wasActivatable = self.Activation.Enabled(pulsar)
+	local wasActivatable = self.Activation.Enabled(pulsar)
 	pulsar.Activation.Enabled(pulsar, false)
 
 	pulsar:Active(false)
@@ -107,17 +107,17 @@ function Pulsar.onActivate(self: PulsarSelf, pulsar: PulsarMechanic)
 end
 
 function Pulsar.onPreRender(self: PulsarSelf, deltaTime: number, level: std.Level)
-	const lifetime = level:getLifetime()
+	local lifetime = level:getLifetime()
 	for _, pulsar: PulsarMechanic in level:getMechanics(self) do
 		if pulsar:Active() then
-			const elapsed = if pulsar:Synchronized()
+			local elapsed = if pulsar:Synchronized()
 				then lifetime
 				else pulsar:Elapsed(pulsar:Elapsed() :: number + deltaTime)
 
-			const cycleDuration = self.Cycle.Duration(pulsar)
-			const cycleProgress = elapsed % cycleDuration / cycleDuration
+			local cycleDuration = self.Cycle.Duration(pulsar)
+			local cycleProgress = elapsed % cycleDuration / cycleDuration
 
-			const alpha = TweenService:GetValue(cycleProgress, self.Cycle.Style(pulsar), self.Cycle.Direction(pulsar))
+			local alpha = TweenService:GetValue(cycleProgress, self.Cycle.Style(pulsar), self.Cycle.Direction(pulsar))
 
 			self:step(pulsar, alpha)
 		end

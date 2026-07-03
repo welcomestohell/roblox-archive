@@ -1,8 +1,8 @@
-const activation = require "@libs/activation"
-const character = require "@libs/character"
-const std = require "@libs/std"
+local activation = require "@libs/activation"
+local character = require "@libs/character"
+local std = require "@libs/std"
 
-const Destroyer = std.Mechanic {
+local Destroyer = std.Mechanic {
 	emoji = "🚫",
 	name = "Destroyer",
 	description = "When activated, destroys the activator.",
@@ -44,10 +44,10 @@ function Destroyer.onActivate(self: DestroyerModule, destroyer: DestroyerMechani
 			or target
 	end
 
-	const targetTag = destroyer:TargetTag()
+	local targetTag = destroyer:TargetTag()
 	if targetTag and not target:HasTag(targetTag) then return end
 
-	const wasActivatable = self.Activation.Enabled(destroyer)
+	local wasActivatable = self.Activation.Enabled(destroyer)
 	destroyer.Activation.Enabled(destroyer, false)
 	destroyer:Debounced(true)
 

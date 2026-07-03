@@ -1,6 +1,6 @@
-const types = require "../types"
+local types = require "../types"
 
-const None = {} :: types.ActivationMode
+local None = {} :: types.ActivationMode
 
 function None.implement(_: types.ActivationContext) end
 

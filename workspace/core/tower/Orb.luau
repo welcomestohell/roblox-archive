@@ -1,11 +1,11 @@
-const activation = require "@libs/activation"
-const character = require "@libs/character"
-const constraints = require "@libs/constraints"
-const emission = require "@libs/emission"
-const mounts = require "@libs/mounts"
-const std = require "@libs/std"
+local activation = require "@libs/activation"
+local character = require "@libs/character"
+local constraints = require "@libs/constraints"
+local emission = require "@libs/emission"
+local mounts = require "@libs/mounts"
+local std = require "@libs/std"
 
-const Orb = std.Mechanic {
+local Orb = std.Mechanic {
 	name = "Orb",
 	description = "",
 	instanceType = std.isA.BasePart(),
@@ -38,16 +38,16 @@ export type OrbSelf = typeof(Orb)
 export type OrbMechanic = std.Mechanic<OrbSelf>
 
 function Orb.launch(orb: OrbMechanic, toucher: BasePart)
-	const lookVector = orb.instance.CFrame.LookVector
+	local lookVector = orb.instance.CFrame.LookVector
 
-	const maxForce = if math.abs(lookVector.X) < 0.1 and math.abs(lookVector.Z) < 0.1
+	local maxForce = if math.abs(lookVector.X) < 0.1 and math.abs(lookVector.Z) < 0.1
 		then Vector3.yAxis * 40000
 		else Vector3.one * 40000
 
-	const launchLife = orb.life:extend()
+	local launchLife = orb.life:extend()
 
-	const velocityAttachment = launchLife:add(Instance.new "Attachment")
-	const linearVelocity = launchLife:add(Instance.new "LinearVelocity")
+	local velocityAttachment = launchLife:add(Instance.new "Attachment")
+	local linearVelocity = launchLife:add(Instance.new "LinearVelocity")
 	linearVelocity.ForceLimitMode = Enum.ForceLimitMode.PerAxis
 	linearVelocity.MaxAxesForce = maxForce
 	linearVelocity.VectorVelocity = lookVector * orb:Force()
@@ -67,9 +67,9 @@ end
 function Orb.onActivate(self: OrbSelf, orb: OrbMechanic, level: std.Level, event: activation.ActivationEvent)
 	if orb:Debounced() or orb:Active() then return end
 
-	const raw = event.kind == "Touch" and event.toucher or character.getMaybeCharacter()
+	local raw = event.kind == "Touch" and event.toucher or character.getMaybeCharacter()
 
-	const toucher = mounts.castToucher(raw)
+	local toucher = mounts.castToucher(raw)
 	if not toucher then return end
 
 	if orb:Mount() then
@@ -78,13 +78,13 @@ function Orb.onActivate(self: OrbSelf, orb: OrbMechanic, level: std.Level, event
 		orb:Active(true)
 		orb:Debounced(true)
 
-		const activationLife = orb.life:extend()
+		local activationLife = orb.life:extend()
 		activationLife:destroyOn(mounts.mountMechanic(toucher, orb))
 		toucher:PivotTo(orb.instance.CFrame)
 		constraints.weld(activationLife, toucher, orb.instance)
 		emission.emitTaggedDescendants(orb.instance, orb:EmitMountedTag())
 
-		const function onDismount(launch: boolean)
+		local function onDismount(launch: boolean)
 			if activationLife.alive then
 				if launch then orb:launch(toucher) end
 				emission.emitTaggedDescendants(orb.instance, launch and orb:EmitLaunchedTag() or orb:EmitTimedOutTag())
@@ -96,7 +96,7 @@ function Orb.onActivate(self: OrbSelf, orb: OrbMechanic, level: std.Level, event
 			activationLife:destroy()
 		end
 
-		const timeout = orb:Timeout()
+		local timeout = orb:Timeout()
 		if timeout > 0 then activationLife:delay(timeout, onDismount, false) end
 
 		activation.bindActivation {

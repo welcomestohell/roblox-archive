@@ -1,10 +1,10 @@
-const activation = require "@libs/activation"
-const character = require "@libs/character"
-const mounts = require "@libs/mounts"
-const std = require "@libs/std"
-const Signal = require "@pkgs/Signal"
+local Signal = require "@pkgs/Signal"
+local activation = require "@libs/activation"
+local character = require "@libs/character"
+local mounts = require "@libs/mounts"
+local std = require "@libs/std"
 
-const Dismounter = std.Mechanic {
+local Dismounter = std.Mechanic {
 	emoji = "⏏️",
 	name = "Dismounter",
 	description = "When activated, dismounts the activator from the given mounts.",
@@ -27,15 +27,15 @@ export type Dismounter = typeof(Dismounter)
 export type DismounterMechanic = std.Mechanic<Dismounter>
 
 function Dismounter.onActivate(self: Dismounter, dismounter: DismounterMechanic, _, event: activation.ActivationEvent)
-	const wasActivatable = self.Activation.Enabled(dismounter)
+	local wasActivatable = self.Activation.Enabled(dismounter)
 	self.Activation.Enabled(dismounter, false)
 	dismounter:Debounced(true)
 
 	-- stylua: ignore
-	const activator = mounts.castToucher(event.kind == "Touch" and event.toucher or character.getHumanoidRootPart()) :: BasePart
+	local activator = mounts.castToucher(event.kind == "Touch" and event.toucher or character.getHumanoidRootPart()) :: BasePart
 
-	const dismountMap = self.Dismount:getAll(dismounter)
-	const dismountAll = dismounter:DismountAll()
+	local dismountMap = self.Dismount:getAll(dismounter)
+	local dismountAll = dismounter:DismountAll()
 	for _, mounter in mounts.getInstanceMounts(activator) do
 		if dismountAll or dismountMap[mounter.name] then mounter.onDismount:Fire() end
 	end

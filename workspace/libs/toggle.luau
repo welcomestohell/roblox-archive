@@ -1,10 +1,10 @@
-const Attribute = require "@libs/attributes/Attribute"
-const instances = require "@libs/instances"
-const threadpool = require "@libs/threadpool"
-const tweens = require "@libs/tweens"
-const gt = require "@libs/vendor/gt"
+local Attribute = require "@libs/attributes/Attribute"
+local gt = require "@libs/vendor/gt"
+local instances = require "@libs/instances"
+local threadpool = require "@libs/threadpool"
+local tweens = require "@libs/tweens"
 
-const CLASSES_TO_TOGGLE_ENABLED: { [string]: true } = {
+local CLASSES_TO_TOGGLE_ENABLED: { [string]: true } = {
 	Beam = true,
 	Constraint = true,
 	ParticleEmitter = true,
@@ -18,7 +18,7 @@ const CLASSES_TO_TOGGLE_ENABLED: { [string]: true } = {
 	Highlight = true,
 }
 
-const CLASSES_TO_TWEEN: { [string]: string } = {
+local CLASSES_TO_TWEEN: { [string]: string } = {
 	BasePart = "Transparency",
 	Decal = "Transparency",
 	Texture = "Transparency",
@@ -30,26 +30,26 @@ const CLASSES_TO_TWEEN: { [string]: string } = {
 	ImageLabel = "ImageTransparency",
 }
 
-const Enabled = Attribute.new("Enabled", gt.boolean(), false)
-const Inverted = Attribute.new("Inverted", gt.boolean(), false)
+local Enabled = Attribute.new("Enabled", gt.boolean(), false)
+local Inverted = Attribute.new("Inverted", gt.boolean(), false)
 
-const ToggleDescendants = Attribute.new("ToggleDescendants", gt.boolean(), true)
-const ToggleDescendantsInheritAttributes = Attribute.new("ToggleDescendantsInheritAttributes", gt.boolean(), false)
+local ToggleDescendants = Attribute.new("ToggleDescendants", gt.boolean(), true)
+local ToggleDescendantsInheritAttributes = Attribute.new("ToggleDescendantsInheritAttributes", gt.boolean(), false)
 
-const SetCollision = Attribute.new("SetCollision", gt.boolean(), true)
-const SetTransparency = Attribute.new("SetTransparency", gt.boolean(), true)
-const SetEnabled = Attribute.new("SetEnabled", gt.boolean(), true)
+local SetCollision = Attribute.new("SetCollision", gt.boolean(), true)
+local SetTransparency = Attribute.new("SetTransparency", gt.boolean(), true)
+local SetEnabled = Attribute.new("SetEnabled", gt.boolean(), true)
 
-const TransparencyEnabled = Attribute.new("TransparencyEnabled", gt.constrainNumber(0, 1), 0)
-const TransparencyDisabled = Attribute.new("TransparencyDisabled", gt.constrainNumber(0, 1), 1)
+local TransparencyEnabled = Attribute.new("TransparencyEnabled", gt.constrainNumber(0, 1), 0)
+local TransparencyDisabled = Attribute.new("TransparencyDisabled", gt.constrainNumber(0, 1), 1)
 
-const Tween: tweens.TweenAttributes = {
+local Tween: tweens.TweenAttributes = {
 	Duration = Attribute.new("ToggleDuration", gt.positiveNumber, 0.2),
 	Style = Attribute.new("ToggleStyle", gt.enumOf(Enum.EasingStyle), Enum.EasingStyle.Quart),
 	Direction = Attribute.new("ToggleDirection", gt.enumOf(Enum.EasingDirection), Enum.EasingDirection.Out),
 }
 
-const function toggleInstance(enabled: boolean, instance: Instance, instanceConfiguration: Instance?)
+local function toggleInstance(enabled: boolean, instance: Instance, instanceConfiguration: Instance?)
 	instanceConfiguration = instanceConfiguration or instance
 
 	if Inverted(instanceConfiguration) then enabled = not enabled end
@@ -67,16 +67,16 @@ const function toggleInstance(enabled: boolean, instance: Instance, instanceConf
 	end
 
 	if SetTransparency(instanceConfiguration) then
-		const goalTransparency = if enabled
+		local goalTransparency = if enabled
 			then TransparencyEnabled(instanceConfiguration)
 			else TransparencyDisabled(instanceConfiguration)
 
-		const goalProperties: { [string]: unknown } = {}
+		local goalProperties: { [string]: unknown } = {}
 		for className, propertyToTween in CLASSES_TO_TWEEN do
 			if instance:IsA(className) then goalProperties[propertyToTween] = goalTransparency end
 		end
 
-		const tweenConfiguration = tweens.configurationFromAttributes(Tween, instanceConfiguration)
+		local tweenConfiguration = tweens.configurationFromAttributes(Tween, instanceConfiguration)
 		tweens.play(instance, goalProperties, tweenConfiguration)
 	end
 

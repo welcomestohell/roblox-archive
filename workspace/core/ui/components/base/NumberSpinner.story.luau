@@ -1,6 +1,6 @@
-const NumberSpinner = require "@core/ui/components/base/NumberSpinner"
-const Liquid = require "@pkgs/Liquid"
-const UILabs = require "@pkgs/UILabs"
+local Liquid = require "@pkgs/Liquid"
+local NumberSpinner = require "@core/ui/components/base/NumberSpinner"
+local UILabs = require "@pkgs/UILabs"
 
 return Liquid.createFluidStory {
 	controls = {

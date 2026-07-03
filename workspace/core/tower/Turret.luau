@@ -1,12 +1,12 @@
-const emission = require "@libs/emission"
-const logger = require "@core/shared/logger"
-const character = require "@libs/character"
-const Level = require "@libs/core/Level"
-const damage = require "@libs/damage"
-const std = require "@libs/std"
-const touch = require "@libs/touch"
+local Level = require "@libs/core/Level"
+local character = require "@libs/character"
+local damage = require "@libs/damage"
+local emission = require "@libs/emission"
+local logger = require "@core/shared/logger"
+local std = require "@libs/std"
+local touch = require "@libs/touch"
 
-const Turret = std.Mechanic {
+local Turret = std.Mechanic {
 	emoji = "🔫",
 	name = "Turret",
 	description = "Continously shoot bullets based on its current orientation.",
@@ -46,12 +46,12 @@ export type TurretMechanic = std.Mechanic<typeof(Turret), { template: Bullet }>
 export type Bullet = typeof(Turret.instanceType.Bullet)
 
 function Turret.calculateSpreadAngle(turret: TurretMechanic, direction: Vector3): Vector3
-	const spreadAngleRange: NumberRange = turret:SpreadAngle()
+	local spreadAngleRange: NumberRange = turret:SpreadAngle()
 
-	const directionCFrame = CFrame.new(Vector3.zero, direction)
-	const spreadDirection = CFrame.fromOrientation(0, 0, math.random() * math.tau)
+	local directionCFrame = CFrame.new(Vector3.zero, direction)
+	local spreadDirection = CFrame.fromOrientation(0, 0, math.random() * math.tau)
 	-- stylua: ignore
-	const spreadAngle = CFrame.fromOrientation(math.rad(spreadAngleRange.Min + math.random() * (spreadAngleRange.Max - spreadAngleRange.Min)), 0, 0)
+	local spreadAngle = CFrame.fromOrientation(math.rad(spreadAngleRange.Min + math.random() * (spreadAngleRange.Max - spreadAngleRange.Min)), 0, 0)
 
 	return (directionCFrame * spreadDirection * spreadAngle).LookVector
 end
@@ -59,10 +59,10 @@ end
 function Turret.onActivate(self: typeof(Turret), turret: TurretMechanic, level: std.Level)
 	emission.emitTaggedDescendants(turret.instance, turret:EmitFireTag())
 
-	const bulletLife = turret.life:extend()
-	const bulletInstance = bulletLife:add(turret.template:Clone())
+	local bulletLife = turret.life:extend()
+	local bulletInstance = bulletLife:add(turret.template:Clone())
 
-	const function cleanup(isTouch: boolean?, isPlayer: boolean?)
+	local function cleanup(isTouch: boolean?, isPlayer: boolean?)
 		if isTouch and isPlayer then damage.fireFromAttributes(self.Damage, turret, level) end
 		emission.emitTaggedDescendants(
 			bulletInstance,
@@ -71,15 +71,15 @@ function Turret.onActivate(self: typeof(Turret), turret: TurretMechanic, level: 
 		bulletLife:destroy()
 	end
 
-	const spawnCFrame: CFrame = turret.instance.Base.CFrame
-	const spreadAngle = turret:calculateSpreadAngle(spawnCFrame.LookVector)
+	local spawnCFrame: CFrame = turret.instance.Base.CFrame
+	local spreadAngle = turret:calculateSpreadAngle(spawnCFrame.LookVector)
 
 	bulletInstance.Massless = true
 	bulletInstance:PivotTo(spawnCFrame)
 
-	const mainAttachment = bulletInstance:FindFirstChildOfClass "Attachment"
-	const linearVelocity = bulletInstance:FindFirstChildOfClass "LinearVelocity"
-	const alignOrientation = bulletInstance:FindFirstChildOfClass "AlignOrientation"
+	local mainAttachment = bulletInstance:FindFirstChildOfClass "Attachment"
+	local linearVelocity = bulletInstance:FindFirstChildOfClass "LinearVelocity"
+	local alignOrientation = bulletInstance:FindFirstChildOfClass "AlignOrientation"
 
 	if not mainAttachment or not linearVelocity or not alignOrientation then return cleanup() end
 
@@ -97,8 +97,8 @@ function Turret.onActivate(self: typeof(Turret), turret: TurretMechanic, level: 
 	bulletInstance.Parent = turret.instance
 
 	bulletLife:add(bulletInstance.Touched:Connect(function(toucher)
-		const destroyOnTouch = turret:DestroyOnTouch()
-		const isTouched = destroyOnTouch
+		local destroyOnTouch = turret:DestroyOnTouch()
+		local isTouched = destroyOnTouch
 			and not toucher:IsDescendantOf(turret.instance)
 			and not toucher:HasTag(turret:IgnoreTag())
 			and (
@@ -113,8 +113,8 @@ function Turret.onActivate(self: typeof(Turret), turret: TurretMechanic, level: 
 end
 
 function Turret.onStart(self: typeof(Turret), turret: TurretMechanic, level: std.Level)
-	const instance = turret.instance
-	const primaryPart = instance.PrimaryPart
+	local instance = turret.instance
+	local primaryPart = instance.PrimaryPart
 
 	if not primaryPart then
 		logger:Error("Turret", instance:GetFullName(), "is missing the PrimaryPart.")

@@ -1,15 +1,15 @@
-const Life = require "@libs/memory/Life"
-const Mechanic = require "@libs/core/Mechanic"
-const Promise = require "@pkgs/Promise"
-const Result = require "@libs/Result"
-const ScriptCollector = require "@libs/core/ScriptCollector"
-const activation = require "@libs/activation"
-const gt = require "@libs/vendor/gt"
-const mechanize = require "@libs/core/mechanize"
-const prvd = require "@pkgs/prvd"
-const tables = require "@libs/primitives/tables"
-const triplets = require "@libs/primitives/triplets"
-const toggle = require "@libs/toggle"
+local Life = require "@libs/memory/Life"
+local Mechanic = require "@libs/core/Mechanic"
+local Promise = require "@pkgs/Promise"
+local Result = require "@libs/Result"
+local ScriptCollector = require "@libs/core/ScriptCollector"
+local activation = require "@libs/activation"
+local gt = require "@libs/vendor/gt"
+local mechanize = require "@libs/core/mechanize"
+local prvd = require "@pkgs/prvd"
+local tables = require "@libs/primitives/tables"
+local toggle = require "@libs/toggle"
+local triplets = require "@libs/primitives/triplets"
 
 type AnyImplementation = Mechanic.AnyMechanicImplementation
 type MechanicImplementation = Mechanic.MechanicImplementation
@@ -196,7 +196,7 @@ function Level.bindActivation(self: Level, mechanic: Mechanic)
 	-- stylua: ignore
 	local getActivationInstances = self:getListenerForMechanic<<(Level)>>(self.mechanicLifecycles.getActivationInstances, mechanic)
 	local instance = getActivationInstances and getActivationInstances(self) or mechanic.instance
-	const instances: { Instance } = type(instance) == "table" and instance or { instance }
+	local instances: { Instance } = type(instance) == "table" and instance or { instance }
 
 	for _, instance in instances do
 		activation.bindActivation {

@@ -7,8 +7,8 @@
 --]]
 
 -- Forked for use in Welcome To Hell
-const CameraModule = require "@self/CameraModule"
-const ControlModule = require "@self/ControlModule"
+local CameraModule = require "@self/CameraModule"
+local ControlModule = require "@self/ControlModule"
 
 local PlayerModule = {}
 PlayerModule.__index = PlayerModule

@@ -1,9 +1,9 @@
-const activation = require "@libs/activation"
-const character = require "@libs/character"
-const emission = require "@libs/emission"
-const std = require "@libs/std"
+local activation = require "@libs/activation"
+local character = require "@libs/character"
+local emission = require "@libs/emission"
+local std = require "@libs/std"
 
-const Launcher = std.Mechanic {
+local Launcher = std.Mechanic {
 	emoji = "🦘",
 	name = "Launcher",
 	description = "When activated, launches the activator upwards.",
@@ -28,14 +28,14 @@ function Launcher.onActivate(
 	level: std.Level,
 	event: activation.ActivationEvent
 )
-	const wasActivatable = self.Activation.Enabled(launcher)
+	local wasActivatable = self.Activation.Enabled(launcher)
 	self.Activation.Enabled(launcher, false)
 	launcher:Debounced(true)
 
 	local target = event.kind == "Touch" and event.toucher or character:getMaybeHumanoidRootPart()
 	if not target then return end
 	if character.isFromMaybeCharacter(target) and launcher:ForceFreefall() then
-		const humanoid = character.getMaybeHumanoid()
+		local humanoid = character.getMaybeHumanoid()
 		if humanoid then humanoid:ChangeState(Enum.HumanoidStateType.Freefall) end
 	end
 

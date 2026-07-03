@@ -1,9 +1,9 @@
-const TweenService = game:GetService "TweenService"
+local TweenService = game:GetService "TweenService"
 
-const std = require "@libs/std"
-const tweens = require "@libs/tweens"
+local std = require "@libs/std"
+local tweens = require "@libs/tweens"
 
-const Spinner = std.Mechanic {
+local Spinner = std.Mechanic {
 	emoji = "🌀",
 	name = "Spinner",
 	description = "Continously spins within it's axes.",
@@ -40,7 +40,7 @@ function Spinner.onStart(self: typeof(Spinner), spinner: SpinnerMechanic)
 end
 
 function Spinner.onPreSimulation(self: typeof(Spinner), deltaTime: number, level: std.Level)
-	const lifetime = level:getLifetime()
+	local lifetime = level:getLifetime()
 	for _, spinner: SpinnerMechanic in level:getMechanics(self) do
 		if not spinner:Enabled() then continue end
 
@@ -49,12 +49,12 @@ function Spinner.onPreSimulation(self: typeof(Spinner), deltaTime: number, level
 			else spinner:Elapsed(spinner:Elapsed() :: number + deltaTime)
 		elapsed += spinner:TimeOffset()
 
-		const duration = self.Tween.Duration(spinner)
+		local duration = self.Tween.Duration(spinner)
 		local cycleProgress = (elapsed % duration) / duration
 		if spinner:Inverted() then cycleProgress = math.map(cycleProgress, 0, 1, 1, 0) end
-		const angle = spinner:Angle() :: NumberRange
-		const alpha = TweenService:GetValue(cycleProgress, self.Tween.Style(spinner), self.Tween.Direction(spinner))
-		const axisRotation = math.rad(math.map(alpha, 0, 1, angle.Min, angle.Max))
+		local angle = spinner:Angle() :: NumberRange
+		local alpha = TweenService:GetValue(cycleProgress, self.Tween.Style(spinner), self.Tween.Direction(spinner))
+		local axisRotation = math.rad(math.map(alpha, 0, 1, angle.Min, angle.Max))
 		spinner.instance.Base.CFrame = spinner.instance.Center.CFrame
 			* CFrame.Angles(
 				spinner:XEnabled() and axisRotation or 0,

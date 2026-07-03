@@ -1,6 +1,6 @@
-const functions = require "@libs/primitives/functions"
+local functions = require "@libs/primitives/functions"
 
-const arrays = {}
+local arrays = {}
 
 function arrays.all<V>(input: { V }, predicate: ((V, number) -> boolean)?): boolean
 	predicate = predicate or functions.passthrough
@@ -11,18 +11,18 @@ function arrays.all<V>(input: { V }, predicate: ((V, number) -> boolean)?): bool
 end
 
 function arrays.concatenated<V>(...: { V }?)
-	const concatenated = {}
+	local concatenated = {}
 	for index = 1, select("#", ...) do
-		const value = select(index, concatenated)
+		local value = select(index, concatenated)
 		if value then table.move(value, 1, #value, #concatenated + 1, concatenated) end
 	end
 	return concatenated
 end
 
 function arrays.differenced<T>(left: { T }, right: { T }): ({ T }, { T }, { T })
-	const onlyInLeft, onlyInRight, both = {}, {}, {}
+	local onlyInLeft, onlyInRight, both = {}, {}, {}
 
-	const mappedLeft: { number } = {}
+	local mappedLeft: { number } = {}
 	for _, itemLeft in left do
 		mappedLeft[itemLeft] = (mappedLeft[itemLeft] or 0) + 1
 	end
@@ -47,18 +47,18 @@ function arrays.differenced<T>(left: { T }, right: { T }): ({ T }, { T }, { T })
 end
 
 function arrays.filtered<V>(input: { V }, predicate: (V, number) -> boolean): { V }
-	const result = {}
+	local result = {}
 	for index = 1, #input do
-		const value = input[index]
+		local value = input[index]
 		if predicate(value, index) then table.insert(result, value) end
 	end
 	return result
 end
 
 function arrays.filterMapped<VI, VO>(input: { VI }, transform: (VI, number) -> VO?): { VO }
-	const result = {}
+	local result = {}
 	for index = 1, #input do
-		const transformed = transform(input[index], index)
+		local transformed = transform(input[index], index)
 		if transformed ~= nil then table.insert(result, transformed) end
 	end
 	return result
@@ -70,9 +70,9 @@ function arrays.filteredThenMapped<VI, VO>(
 	transform: (VI, number) -> VO
 ): { VO }
 	predicate = predicate or functions.passthrough
-	const result = {}
+	local result = {}
 	for index = 1, #input do
-		const value = input[index]
+		local value = input[index]
 		if predicate(value, index) then table.insert(result, transform(value, index)) end
 	end
 	return result
@@ -86,7 +86,7 @@ end
 function arrays.first<V>(input: { V }, predicate: ((V, number) -> boolean)?): V?
 	predicate = predicate or functions.passthrough
 	for index = 1, #input do
-		const value = input[index]
+		local value = input[index]
 		if predicate(value, index) then return value end
 	end
 	return nil
@@ -95,16 +95,16 @@ end
 function arrays.flattened<T>(input: { { T } }): { T }
 	local result: { T } = {}
 	for index = 1, #input do
-		const array = input[index]
+		local array = input[index]
 		table.move(array, 1, #array, #result + 1, result)
 	end
 	return result
 end
 
 function arrays.frequenced<V>(input: { V }): { [V]: number }
-	const result = {}
+	local result = {}
 	for index = 1, #input do
-		const value = input[index]
+		local value = input[index]
 		result[value] = result[value] or 0
 		result[value] += 1
 	end
@@ -114,14 +114,14 @@ end
 function arrays.last<V>(input: { V }, predicate: ((V, number) -> boolean)?): V?
 	predicate = predicate or functions.passthrough
 	for index = #input, 1, -1 do
-		const value = input[index]
+		local value = input[index]
 		if predicate(value, index) then return value end
 	end
 	return nil
 end
 
 function arrays.mapped<VI, VO>(input: { VI }, transform: (VI) -> VO): { VO }
-	const result = table.create<<VO>>(#input)
+	local result = table.create<<VO>>(#input)
 	for index = 1, #input do
 		result[index] = transform(input[index])
 	end
@@ -169,8 +169,8 @@ function arrays.reduceRight<T, U>(
 end
 
 function arrays.reversed<T>(input: { T }): { T }
-	const result: { T } = table.create<<T>>(#input)
-	const len = #input
+	local result: { T } = table.create<<T>>(#input)
+	local len = #input
 	for index = #input, 1, -1 do
 		result[len - index + 1] = input[index]
 	end

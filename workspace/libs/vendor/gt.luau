@@ -5,10 +5,10 @@
 -- Cooking up STRAIGHT BULLSHIT
 -- Todo(EVERYONE): make a competent type library or make boba v2
 
-const arrays = require "@libs/primitives/arrays"
-const tables = require "@libs/primitives/tables"
-const typeforge = require "@libs/vendor/typeforge"
-const gt = require "@pkgs/gt"
+local arrays = require "@libs/primitives/arrays"
+local gt = require "@pkgs/gt"
+local tables = require "@libs/primitives/tables"
+local typeforge = require "@libs/vendor/typeforge"
 
 export type Type = gt.Type
 export type Cause = gt.Cause
@@ -69,31 +69,31 @@ end
 -- Who is this gif
 type InstanceTreeConstructor = (<T>(tree: T) -> T & Instance) & (<P, T>(parent: P, tree: T) -> T & P)
 
-const function moreThan(min: number?)
+local function moreThan(min: number?)
 	return gt.number { options = { minExclusive = min } }
 end
 
-const function moreOrEqual(min: number?)
+local function moreOrEqual(min: number?)
 	return gt.number { options = { min = min } }
 end
 
-const function lessThan(min: number?)
+local function lessThan(min: number?)
 	return gt.number { options = { maxExclusive = min } }
 end
 
-const function lessOrEqual(min: number?)
+local function lessOrEqual(min: number?)
 	return gt.number { options = { max = min } }
 end
 
-const function constrainNumber(min: number?, max: number?)
+local function constrainNumber(min: number?, max: number?)
 	return gt.number { options = { min = min, max = max } }
 end
 
-const function constrainNumberExclusive(min: number?, max: number?)
+local function constrainNumberExclusive(min: number?, max: number?)
 	return gt.number { options = { minExclusive = min, maxExclusive = max } }
 end
 
-const function enumOf<T>(
+local function enumOf<T>(
 	enum: T & Enum
 ): index<T, typeforge.OmitUnion<keyof<T>, "FromName" | "FromValue" | "GetEnumItems">>
 	return gt.meta(
@@ -106,7 +106,7 @@ const function enumOf<T>(
 	)
 end
 
-const function instanceTree(treeOrParent: any, tree: any): gt.Type
+local function instanceTree(treeOrParent: any, tree: any): gt.Type
 	local parent: gt.Type = gt.build(tree and treeOrParent or gt.Instance())
 	local tree: { [string]: gt.Type } = tree or treeOrParent
 
@@ -126,12 +126,12 @@ const function instanceTree(treeOrParent: any, tree: any): gt.Type
 	end, parent:format())
 end
 
-const function literals<T>(tbl: { "黑魔法" } | { T }): Strip<T>
+local function literals<T>(tbl: { "黑魔法" } | { T }): Strip<T>
 	return gt.union(table.unpack(arrays.mapped(tbl, gt.literal))) :: any
 end
 
-const function keysOf<T>(tbl: T): keyof<T>
-	const components = {}
+local function keysOf<T>(tbl: T): keyof<T>
+	local components = {}
 	for key in tbl :: any do
 		table.insert(components, gt.literal(key))
 	end
@@ -139,7 +139,7 @@ const function keysOf<T>(tbl: T): keyof<T>
 end
 
 -- Serializes the given `gt.Type` into a JSON-encodable object. Note that this assumes any literals are JSON-encodable (I hope so)
-const function serialize(ty: Type)
+local function serialize(ty: Type)
 	return {
 		formatted = ty:format(),
 

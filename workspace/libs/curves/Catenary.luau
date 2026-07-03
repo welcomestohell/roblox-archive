@@ -5,9 +5,9 @@
 --   https://www.alanzucconi.com/2020/12/13/catenary-2/
 --   https://en.wikipedia.org/wiki/Catenary#Mathematical_description
 
-const PRECISION = 0.00001
+local PRECISION = 0.00001
 
-const Catenary = {}
+local Catenary = {}
 Catenary.__index = Catenary
 
 export type Catenary = setmetatable<{
@@ -15,7 +15,7 @@ export type Catenary = setmetatable<{
 	solvers: { (t: number) -> Vector3 },
 }, typeof(Catenary)>
 
-const function coth(x: number)
+local function coth(x: number)
 	return 1 / math.tanh(x)
 end
 
@@ -38,20 +38,20 @@ function Catenary.solve2D(h: number, v: number, l: number): (number, number, num
 
 	local n = (l + v) / (l - v)
 
-	const p = (h - a * math.log(n)) / 2
-	const q = (v - l * coth(h / (2 * a))) / 2
+	local p = (h - a * math.log(n)) / 2
+	local q = (v - l * coth(h / (2 * a))) / 2
 
 	return a, p, q
 end
 
 function Catenary.create3DSolver(p1: Vector3, p2: Vector3, l: number): (t: number) -> Vector3
-	const horizontalDirection = Vector3.new(p2.X - p1.X, 0, p2.Z - p1.Z)
-	const h = horizontalDirection.Magnitude
-	const v = p2.Y - p1.Y
+	local horizontalDirection = Vector3.new(p2.X - p1.X, 0, p2.Z - p1.Z)
+	local h = horizontalDirection.Magnitude
+	local v = p2.Y - p1.Y
 
-	const a, p, q = Catenary.solve2D(h, v, l)
+	local a, p, q = Catenary.solve2D(h, v, l)
 
-	const horizontalUnit = horizontalDirection.Unit
+	local horizontalUnit = horizontalDirection.Unit
 
 	return function(t)
 		local x = h * t
@@ -61,14 +61,14 @@ function Catenary.create3DSolver(p1: Vector3, p2: Vector3, l: number): (t: numbe
 end
 
 function Catenary.new(props: { points: { Vector3 }, slack: number }): Catenary
-	const points = props.points
+	local points = props.points
 
-	const solverCount = #points - 1
+	local solverCount = #points - 1
 	local solvers = table.create(solverCount) :: index<Catenary, "solvers">
 	for index = 1, solverCount do
-		const p1 = points[index]
-		const p2 = points[index + 1]
-		const l = (p2 - p1).Magnitude * props.slack
+		local p1 = points[index]
+		local p2 = points[index + 1]
+		local l = (p2 - p1).Magnitude * props.slack
 		solvers[index] = Catenary.create3DSolver(p1, p2, l)
 	end
 

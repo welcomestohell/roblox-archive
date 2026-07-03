@@ -1,10 +1,10 @@
-const Result = require "@libs/Result"
-const jump = require "@libs/jump"
-const tables = require "@libs/primitives/tables"
-const touch = require "@libs/touch"
-const types = require "../types"
+local Result = require "@libs/Result"
+local jump = require "@libs/jump"
+local tables = require "@libs/primitives/tables"
+local touch = require "@libs/touch"
+local types = require "../types"
 
-const JumpInside = {} :: types.ActivationMode
+local JumpInside = {} :: types.ActivationMode
 
 function JumpInside.predicate(context: types.PredicateContext): Result.Result<nil, string>
 	if context.instance:IsA "BasePart" then return Result.Ok(nil) end
@@ -12,8 +12,8 @@ function JumpInside.predicate(context: types.PredicateContext): Result.Result<ni
 end
 
 function JumpInside.implement(context: types.ActivationContext)
-	const part = context.instance :: BasePart
-	const touchingParts: { [BasePart]: true } = {}
+	local part = context.instance :: BasePart
+	local touchingParts: { [BasePart]: true } = {}
 	context.activationLife:addMany(
 		part.Touched:Connect(function(toucher: BasePart)
 			if touch.isToucherValid(context.attributes.Touch, part, context.instanceConfiguration, toucher) then

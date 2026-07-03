@@ -1,4 +1,4 @@
-const Players = game:GetService "Players"
+local Players = game:GetService "Players"
 
 export type Character = {
 	Humanoid: {

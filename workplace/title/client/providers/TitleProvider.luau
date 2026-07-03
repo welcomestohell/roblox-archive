@@ -1,20 +1,20 @@
-const ContentProvider = game:GetService "ContentProvider"
-const Players = game:GetService "Players"
-const SoundService = game:GetService "SoundService"
-const StarterGui = game:GetService "StarterGui"
+local ContentProvider = game:GetService "ContentProvider"
+local Players = game:GetService "Players"
+local SoundService = game:GetService "SoundService"
+local StarterGui = game:GetService "StarterGui"
 
-const FireworksSplash = require "@title/ui/components/splashes/FireworksSplash"
-const Fluid = require "@pkgs/Fluid"
-const LoadingScreen = require "@core/ui/components/screens/LoadingScreen"
-const TitleScreen = require "@title/ui/components/title/TitleScreen"
-const collectAssets = require "@core/shared/assets/collectAssets"
-const coreAssets = require "@core/assets"
-const flattenAssetIds = require "@core/shared/assets/flattenAssetIds"
-const Liquid = require "@pkgs/Liquid"
-const prvd = require "@pkgs/prvd"
-const universeAssets = require "@universe/assets"
+local FireworksSplash = require "@title/ui/components/splashes/FireworksSplash"
+local Fluid = require "@pkgs/Fluid"
+local Liquid = require "@pkgs/Liquid"
+local LoadingScreen = require "@core/ui/components/screens/LoadingScreen"
+local TitleScreen = require "@title/ui/components/title/TitleScreen"
+local collectAssets = require "@core/shared/assets/collectAssets"
+local coreAssets = require "@core/assets"
+local flattenAssetIds = require "@core/shared/assets/flattenAssetIds"
+local prvd = require "@pkgs/prvd"
+local universeAssets = require "@universe/assets"
 
-const DISABLED_CORE_GUIS = {
+local DISABLED_CORE_GUIS = {
 	Enum.CoreGuiType.All,
 	-- Enum.CoreGuiType.AvatarSwitcher,
 	-- Enum.CoreGuiType.Backpack,
@@ -26,9 +26,9 @@ const DISABLED_CORE_GUIS = {
 	-- Enum.CoreGuiType.SelfView,
 }
 
-const FIREWORKS_SPLASH_DURATION = 3
+local FIREWORKS_SPLASH_DURATION = 3
 
-const TitleProvider = {}
+local TitleProvider = {}
 export type TitleProvider = typeof(TitleProvider)
 
 function TitleProvider.onStart(self: TitleProvider)

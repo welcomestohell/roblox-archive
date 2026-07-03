@@ -2,11 +2,11 @@ local ContentProvider = game:GetService "ContentProvider"
 local Players = game:GetService "Players"
 
 local Fluid = require "@pkgs/Fluid"
+local Liquid = require "@pkgs/Liquid"
 local LoadingScreen = require "@core/ui/components/screens/LoadingScreen"
 local assets = require "@core/assets"
 local flattenAssetModules = require "@core/shared/assets/flattenAssetModules"
 local net = require "@core/client/generated/net"
-const Liquid = require "@pkgs/Liquid"
 local prvd = require "@pkgs/prvd"
 
 local PreloadProvider = {}

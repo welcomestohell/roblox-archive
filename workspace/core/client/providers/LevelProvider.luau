@@ -1,17 +1,17 @@
 local ContentProvider = game:GetService "ContentProvider"
-const ReplicatedStorage = game:GetService "ReplicatedStorage"
+local ReplicatedStorage = game:GetService "ReplicatedStorage"
 
+local Charm = require "@pkgs/Charm"
+local Level = require "@libs/core/Level"
+local Life = require "@libs/memory/Life"
+local arrays = require "@libs/primitives/arrays"
+local character = require "@libs/character"
 local collectAssets = require "@core/shared/assets/collectAssets"
 local flattenAssetIds = require "@core/shared/assets/flattenAssetIds"
-const logger = require "@core/shared/logger"
-const character = require "@libs/character"
-local arrays = require "@libs/primitives/arrays"
-const Level = require "@libs/core/Level"
-const startLevel = require "@libs/core/startLevel"
-const Life = require "@libs/memory/Life"
+local logger = require "@core/shared/logger"
+local prvd = require "@pkgs/prvd"
+local startLevel = require "@libs/core/startLevel"
 local threadpool = require "@libs/threadpool"
-const prvd = require "@pkgs/prvd"
-const Charm = require "@pkgs/Charm"
 
 local LevelProvider = { activeLevels = Charm.atom<<{ Level.Level }>> {}, priority = -1 }
 export type LevelProvider = typeof(LevelProvider)

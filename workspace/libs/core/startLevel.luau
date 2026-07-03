@@ -1,11 +1,11 @@
-const RunService = game:GetService "RunService"
+local RunService = game:GetService "RunService"
 
-const Level = require "@libs/core/Level"
-const arrays = require "@libs/primitives/arrays"
-const threadpool = require "@libs/threadpool"
-const Promise = require "@pkgs/Promise"
+local Level = require "@libs/core/Level"
+local Promise = require "@pkgs/Promise"
+local arrays = require "@libs/primitives/arrays"
+local threadpool = require "@libs/threadpool"
 
-const function startLevel(self: Level.Level)
+local function startLevel(self: Level.Level)
 	local self = self
 	assert(not self.started, `Level {self.name} has already started`)
 	self.started = true
@@ -24,7 +24,7 @@ const function startLevel(self: Level.Level)
 	self.life:add(self.instance)
 	self.life:destroyOn(self.instance.Destroying)
 
-	-- const toggled = {}
+	-- local toggled = {}
 	-- for group, instances in self.instanceByGroups do
 	-- 	for _, instance in instances do
 	-- 		if not toggled[instance] then

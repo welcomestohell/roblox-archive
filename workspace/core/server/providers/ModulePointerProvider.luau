@@ -1,9 +1,9 @@
-const ReplicatedStorage = game:GetService "ReplicatedStorage"
+local ReplicatedStorage = game:GetService "ReplicatedStorage"
 
-const Lazy = require "@libs/Lazy"
-const prvd = require "@pkgs/prvd"
+local Lazy = require "@libs/Lazy"
+local prvd = require "@pkgs/prvd"
 
-const CONTAINER_NAME = "ModulePointers"
+local CONTAINER_NAME = "ModulePointers"
 
 --[[
 	Provides ModuleScript pointers intended for reusing smaller configurations
@@ -13,28 +13,28 @@ const CONTAINER_NAME = "ModulePointers"
 	Consumers should use `ModulePointerProvider:tryCacheInstance(instance)` to
 	cache a ModuleScript.
 ]]
-const ModulePointerProvider = {}
+local ModulePointerProvider = {}
 export type ModulePointerProvider = typeof(ModulePointerProvider)
 
 ModulePointerProvider.container = Lazy.new(function()
-	const defaultContainer = ReplicatedStorage:FindFirstChild(CONTAINER_NAME)
+	local defaultContainer = ReplicatedStorage:FindFirstChild(CONTAINER_NAME)
 	if defaultContainer and defaultContainer:IsA "Folder" then return defaultContainer end
 
-	const container = Instance.new "Folder"
+	local container = Instance.new "Folder"
 	container.Name = CONTAINER_NAME
 	container.Parent = ReplicatedStorage
 	return container
 end)
 
 ModulePointerProvider.templatePointer = Lazy.new(function()
-	const templatePointer = Instance.new "ObjectValue"
+	local templatePointer = Instance.new "ObjectValue"
 	templatePointer:AddTag "Welcome To Hell: Module Pointer"
 	return templatePointer
 end)
 
 function ModulePointerProvider.tryCacheInstance(self: ModulePointerProvider, instance: Instance)
 	if instance:IsA "ModuleScript" then
-		const pointer = self.templatePointer:get():Clone()
+		local pointer = self.templatePointer:get():Clone()
 		pointer.Name = instance.Name
 		pointer.Value = instance
 

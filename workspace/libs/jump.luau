@@ -1,11 +1,11 @@
-const RunService = game:GetService "RunService"
+local RunService = game:GetService "RunService"
 
-const character = require "@libs/character"
-const threadpool = require "@libs/threadpool"
-const Charm = require "@pkgs/Charm"
-const Signal = require "@pkgs/Signal"
+local Charm = require "@pkgs/Charm"
+local Signal = require "@pkgs/Signal"
+local character = require "@libs/character"
+local threadpool = require "@libs/threadpool"
 
-const jump = {
+local jump = {
 	isJumping = Charm.atom(false),
 	onJumpStart = Signal.new<<()>>(),
 	onJumpEnd = Signal.new<<()>>(),
@@ -13,7 +13,7 @@ const jump = {
 
 if RunService:IsClient() then
 	RunService:BindToRenderStep("JumpDetection", Enum.RenderPriority.Character.Value, function()
-		const humanoid = character.getMaybeHumanoid()
+		local humanoid = character.getMaybeHumanoid()
 		if not humanoid then return end
 
 		local newIsJumping = humanoid.Jump
@@ -30,7 +30,7 @@ end
 
 function jump.onBind(callback: () -> ())
 	if jump.isJumping() then threadpool.spawn(callback) end
-	const connection = jump.onJumpStart:Connect(callback)
+	local connection = jump.onJumpStart:Connect(callback)
 	return connection
 end
 

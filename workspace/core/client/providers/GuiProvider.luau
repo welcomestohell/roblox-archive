@@ -1,18 +1,18 @@
-const Players = game:GetService "Players"
+local Players = game:GetService "Players"
 
-const Padding = require "@core/ui/components/base/Padding"
-const TimerStack = require "@core/ui/components/hud/TimerStack"
-const timers = require "@libs/timers"
-const Fluid = require "@pkgs/Fluid"
-const Liquid = require "@pkgs/Liquid"
-const prvd = require "@pkgs/prvd"
+local Fluid = require "@pkgs/Fluid"
+local Liquid = require "@pkgs/Liquid"
+local Padding = require "@core/ui/components/base/Padding"
+local TimerStack = require "@core/ui/components/hud/TimerStack"
+local prvd = require "@pkgs/prvd"
+local timers = require "@libs/timers"
 
 local GuiProvider = {}
 export type GuiProvider = typeof(GuiProvider)
 
 function GuiProvider.onStart(self: GuiProvider)
 	self.unmount = Fluid.root(function()
-		const rem = Liquid.useRem()
+		local rem = Liquid.useRem()
 
 		Fluid.create "ScreenGui" {
 			Name = "HeadsUpGui",

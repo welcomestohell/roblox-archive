@@ -1,5 +1,5 @@
-const Attribute = require "@libs/attributes/Attribute"
-const instances = require "@libs/instances"
+local Attribute = require "@libs/attributes/Attribute"
+local instances = require "@libs/instances"
 
 local AttributeMap = {}
 AttributeMap.__index = AttributeMap

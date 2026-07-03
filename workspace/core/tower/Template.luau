@@ -1,6 +1,6 @@
-const std = require "@libs/std"
+local std = require "@libs/std"
 
-const Template = std.Mechanic {
+local Template = std.Mechanic {
 	emoji = "❔",
 	name = "Template",
 	description = "Hello, Welcome To Hell!",

@@ -1,10 +1,10 @@
-const RunService = game:GetService "RunService"
+local RunService = game:GetService "RunService"
 
-const activation = require "@libs/activation"
-const arrays = require "@libs/primitives/arrays"
-const std = require "@libs/std"
+local activation = require "@libs/activation"
+local arrays = require "@libs/primitives/arrays"
+local std = require "@libs/std"
 
-const Contraption = std.Mechanic {
+local Contraption = std.Mechanic {
 	name = "Contraption",
 	description = "When activated, activate the grouped mechanics sequentially across it's front.",
 	instanceType = std.isA.BasePart(),
@@ -39,7 +39,7 @@ function Contraption.onStart(self: ContraptionModule, contraption: ContraptionMe
 	contraption.mechanics = {}
 
 	for _, instance in level:getGroupedInstances(contraption:Group()) do
-		const mechanics = level.mechanicsByInstance[instance]
+		local mechanics = level.mechanicsByInstance[instance]
 		if not mechanics then continue end
 		contraption.mechanics = arrays.concatenated<<std.Mechanic>>(contraption.mechanics, mechanics)
 	end

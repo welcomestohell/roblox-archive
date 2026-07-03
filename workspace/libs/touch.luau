@@ -1,8 +1,8 @@
-const Attribute = require "@libs/attributes/Attribute"
+local Attribute = require "@libs/attributes/Attribute"
 local character = require "./character"
 local gt = require "@libs/vendor/gt"
 
-const function useAttributes(basename: string?)
+local function useAttributes(basename: string?)
 	basename = basename or "Touch"
 	return {
 		CollisionGroup = Attribute.new(basename .. "CollisionGroup", gt.optional(gt.string()), nil),
@@ -14,7 +14,7 @@ end
 
 export type TouchAttributes = typeof(useAttributes(nil :: any))
 
-const function isToucherValid(
+local function isToucherValid(
 	attributes: TouchAttributes,
 	instance: Instance,
 	instanceConfiguration: Instance,
@@ -38,7 +38,7 @@ const function isToucherValid(
 		or (attributes.SupportsBoxes(instanceConfiguration) and (toucher:HasTag("Box") or toucher:FindFirstAncestor("Box") ~= nil))
 end
 
-const function castIntoTarget(toucher: BasePart)
+local function castIntoTarget(toucher: BasePart)
 	if character.isFromMaybeCharacter(toucher) then
 		return character.getHumanoidRootPart()
 	else

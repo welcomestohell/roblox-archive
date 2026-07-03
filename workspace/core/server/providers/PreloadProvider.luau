@@ -20,7 +20,7 @@ function PreloadProvider.castMeshId(self: PreloadProvider, instance: Instance)
 end
 
 function PreloadProvider.onInit(self: PreloadProvider)
-	const assetPaths = flattenAssetPaths(requireAssetModules())
+	local assetPaths = flattenAssetPaths(requireAssetModules())
 
 	local assetIds = {}
 	for _, descendant in Workspace:GetDescendants() do
@@ -31,13 +31,13 @@ function PreloadProvider.onInit(self: PreloadProvider)
 		end
 
 		if descendant:HasTag "Preload: Sound From Assets" and descendant:IsA "StringValue" then
-			const soundId = assetPaths[descendant.Value]
+			local soundId = assetPaths[descendant.Value]
 			if not soundId then
 				logger:Warn("Unknown asset", descendant.Value, "from", descendant:GetFullName())
 				continue
 			end
 
-			const sound = Instance.new "Sound"
+			local sound = Instance.new "Sound"
 			sound.Name = descendant.Name
 			sound.SoundId = soundId
 			instances.copyCAT(descendant, sound)

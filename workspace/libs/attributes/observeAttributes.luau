@@ -1,11 +1,11 @@
-const arrays = require "@libs/primitives/arrays"
-const tables = require "@libs/primitives/tables"
-const threadpool = require "@libs/threadpool"
+local arrays = require "@libs/primitives/arrays"
+local tables = require "@libs/primitives/tables"
+local threadpool = require "@libs/threadpool"
 
-const CONNECTIONS = tables.createWeakened<<Instance, RBXScriptConnection>> "k"
-const LISTENERS = tables.createWeakened<<Instance, { (attribute: string) -> () }>> "k"
+local CONNECTIONS = tables.createWeakened<<Instance, RBXScriptConnection>> "k"
+local LISTENERS = tables.createWeakened<<Instance, { (attribute: string) -> () }>> "k"
 
-const function cleanupObserver(instance: Instance)
+local function cleanupObserver(instance: Instance)
 	if LISTENERS[instance] then
 		table.clear(LISTENERS[instance])
 		LISTENERS[instance] = nil
@@ -18,7 +18,7 @@ const function cleanupObserver(instance: Instance)
 end
 
 -- Investigate: Dedicated AttributeObserver class that would handle change/fetch
-const function observeAttributes(instance: Instance, listener: (attribute: string) -> ())
+local function observeAttributes(instance: Instance, listener: (attribute: string) -> ())
 	if not LISTENERS[instance] then
 		LISTENERS[instance] = {}
 		CONNECTIONS[instance] = instance.AttributeChanged:Connect(function(attribute)

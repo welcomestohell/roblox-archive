@@ -5,7 +5,7 @@ local repr = require "@libs/vendor/repr"
 
 export type LogEvent = typeof(Log.LogEvent.new(...))
 
-const LOG_LEVEL_TO_MESSAGE_TYPES = {
+local LOG_LEVEL_TO_MESSAGE_TYPES = {
 	[Log.LogLevel.Verbose] = Enum.MessageType.MessageOutput,
 	[Log.LogLevel.Trace] = Enum.MessageType.MessageOutput,
 	[Log.LogLevel.Debugging] = Enum.MessageType.MessageOutput,

@@ -1,14 +1,14 @@
-const Players = game:GetService "Players"
+local Players = game:GetService "Players"
 
-const triplets = require "@libs/primitives/triplets"
-const tables = require "@libs/primitives/tables"
-const emission = require "@libs/emission"
-const destruction = require "@libs/memory/destruction"
-const std = require "@libs/std"
-const toggle = require "@libs/toggle"
-const tweens = require "@libs/tweens"
+local destruction = require "@libs/memory/destruction"
+local emission = require "@libs/emission"
+local std = require "@libs/std"
+local tables = require "@libs/primitives/tables"
+local toggle = require "@libs/toggle"
+local triplets = require "@libs/primitives/triplets"
+local tweens = require "@libs/tweens"
 
-const BeatBlock = std.Mechanic {
+local BeatBlock = std.Mechanic {
 	emoji = "🎶",
 	name = "BeatBlock",
 	description = "Periodically toggles sequential descendants with beat synchronization.",
@@ -55,9 +55,9 @@ end
 
 function BeatBlock.processChild(beatblock: BeatBlockMechanic, child: Instance)
 	if not child:IsA "BasePart" then return end
-	const index = tonumber(child.Name)
+	local index = tonumber(child.Name)
 
-	const childLife = beatblock.life:extend()
+	local childLife = beatblock.life:extend()
 	childLife:destroyOn(child.Destroying)
 	childLife:destroyOn(child:GetPropertyChangedSignal "Parent")
 	childLife:add(child:GetPropertyChangedSignal("Name"):Once(function()
@@ -100,19 +100,19 @@ function BeatBlock.onStart(self: typeof(BeatBlock), beatblock: BeatBlockMechanic
 		if descendant:HasTag(beatblock:EmitSwitchedTag()) then beatblock.emitters[descendant] = true end
 	end
 
-	const indicators = {}
+	local indicators = {}
 	while true do
-		const indexNow = beatblock:Index(beatblock:calculateNextIndex()) :: number
+		local indexNow = beatblock:Index(beatblock:calculateNextIndex()) :: number
 
-		const parentEmittersToClosest = beatblock:ParentEmittersToClosest()
+		local parentEmittersToClosest = beatblock:ParentEmittersToClosest()
 		local closestDistance, closestBlock = math.huge, nil
 		for index, blocks in beatblock.blocks do
-			const enabled = index == indexNow
+			local enabled = index == indexNow
 			for _, block in blocks do
 				toggle.toggleInstance(enabled, block)
 
 				if enabled and parentEmittersToClosest then
-					const distance = Players.LocalPlayer:DistanceFromCharacter(block.Position)
+					local distance = Players.LocalPlayer:DistanceFromCharacter(block.Position)
 					if distance < closestDistance then
 						closestDistance, closestBlock = distance, block
 					end
@@ -128,26 +128,26 @@ function BeatBlock.onStart(self: typeof(BeatBlock), beatblock: BeatBlockMechanic
 
 		emission.emitTaggedDescendants(beatblock.instance, beatblock:EmitSwitchedTag())
 
-		const indicatorEnabled = beatblock:IndicatorEnabled()
-		const indicatorTime = if indicatorEnabled then beatblock:IndicatorInterval() else 0
+		local indicatorEnabled = beatblock:IndicatorEnabled()
+		local indicatorTime = if indicatorEnabled then beatblock:IndicatorInterval() else 0
 		task.wait(beatblock:Interval() - indicatorTime)
 		if indicatorEnabled then
 			destruction.destroy(indicators)
 
-			const sizeMultiplier = beatblock:IndicatorSizeMultiplier()
-			const startingSizeMultiplier = Vector3.one * sizeMultiplier.Min
-			const endingSizeMultiplier = Vector3.one * sizeMultiplier.Max
+			local sizeMultiplier = beatblock:IndicatorSizeMultiplier()
+			local startingSizeMultiplier = Vector3.one * sizeMultiplier.Min
+			local endingSizeMultiplier = Vector3.one * sizeMultiplier.Max
 
-			const tweenConfiguration: tweens.TweenConfiguration = {
+			local tweenConfiguration: tweens.TweenConfiguration = {
 				duration = indicatorTime,
 				style = beatblock:IndicatorStyle(),
 				direction = beatblock:IndicatorDirection(),
 			}
 
-			const nextBlocks = beatblock.blocks[beatblock:calculateNextIndex()] or {} :: never
+			local nextBlocks = beatblock.blocks[beatblock:calculateNextIndex()] or {} :: never
 
 			for index, block in nextBlocks do
-				const indicator = Instance.fromExisting(block)
+				local indicator = Instance.fromExisting(block)
 				indicator.Name ..= "Indicator"
 				indicator.Material = Enum.Material.SmoothPlastic
 				indicator.Transparency = 1
