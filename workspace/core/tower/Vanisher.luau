@@ -1,9 +1,9 @@
-const logger = require "@core/shared/logger"
-const std = require "@libs/std"
-const touch = require "@libs/touch"
-const tweens = require "@libs/tweens"
+local logger = require "@core/shared/logger"
+local std = require "@libs/std"
+local touch = require "@libs/touch"
+local tweens = require "@libs/tweens"
 
-const _SHRINK_DIRECTION_OFFSETS = {
+local _SHRINK_DIRECTION_OFFSETS = {
 	Center = Vector3.zero,
 	Top = Vector3.yAxis,
 	Bottom = -Vector3.yAxis,
@@ -13,7 +13,7 @@ const _SHRINK_DIRECTION_OFFSETS = {
 	Right = Vector3.xAxis,
 }
 
-const VANISH_HANDLERS: { [VanisherMode]: (vanisher: VanisherMechanic, child: VanisherChild, toucher: BasePart) -> () } =
+local VANISH_HANDLERS: { [VanisherMode]: (vanisher: VanisherMechanic, child: VanisherChild, toucher: BasePart) -> () } =
 	{}
 
 function VANISH_HANDLERS.Fade(vanisher, child)
@@ -26,7 +26,7 @@ function VANISH_HANDLERS.Fade(vanisher, child)
 	vanisher:vanish(child)
 end
 
-const Vanisher = std.Mechanic {
+local Vanisher = std.Mechanic {
 	emoji = "🫥",
 	name = "Vanisher",
 	description = "When activated, it gradually disappears to become uncollidable.",
@@ -36,14 +36,14 @@ const Vanisher = std.Mechanic {
 
 	Active = std.Attribute("Active", std.gt.boolean(), false),
 	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 1),
-	Mode = std.Attribute("Mode", std.gt.literals("Fade", "Blink", "Constant", "Shrink", "Fall"), "Fade"),
+	Mode = std.Attribute("Mode", std.gt.literals("Fade", "Blink", "localant", "Shrink", "Fall"), "Fade"),
 	Inverted = std.Attribute("Inverted", std.gt.boolean(), false),
 
 	std.AttributeSection "Blink",
 	BlinkCount = std.Attribute("BlinkCount", std.gt.number { range = { min = 0, max = math.huge }, integer = true }, 3),
 
-	std.AttributeSection "Constant",
-	ConstantNoRecovery = std.Attribute("ConstantNoRecovery", std.gt.boolean(), false),
+	std.AttributeSection "localant",
+	localantNoRecovery = std.Attribute("localantNoRecovery", std.gt.boolean(), false),
 
 	std.AttributeSection "Shrink",
 	ShrinkToZero = std.Attribute("ShrinkToZero", std.gt.boolean(), false),
@@ -124,14 +124,14 @@ function Vanisher.spawn(vanisher: VanisherMechanic, child: VanisherChild, touche
 	if vanisher.vanishLife and not vanisher.vanishLife.destroyed then vanisher.vanishLife:destroy() end
 	vanisher.vanishLife = vanisher.life:extend()
 
-	const mode = vanisher:Mode()
-	const handler = VANISH_HANDLERS[mode]
+	local mode = vanisher:Mode()
+	local handler = VANISH_HANDLERS[mode]
 	if not handler then
 		logger:Warn("Unsupported vanisher mode:", mode)
 		return
 	end
 
-	if mode == "Constant" then return end
+	if mode == "localant" then return end
 
 	vanisher:Active(true)
 	handler(vanisher, child, toucher)

@@ -1,7 +1,7 @@
-const AccountStore = require "./AccountStore"
-const PlayerStore = require "./PlayerStore"
-const tables = require "@libs/primitives/tables"
-const prvd = require "@pkgs/prvd"
+local AccountStore = require "./AccountStore"
+local PlayerStore = require "./PlayerStore"
+local tables = require "@libs/primitives/tables"
+local prvd = require "@pkgs/prvd"
 
 type Account = AccountStore.Account
 

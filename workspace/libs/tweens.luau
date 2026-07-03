@@ -1,8 +1,8 @@
-const TweenService = game:GetService "TweenService"
+local TweenService = game:GetService "TweenService"
 
-const Attribute = require "@libs/attributes/Attribute"
-const instances = require "@libs/instances"
-const gt = require "@libs/vendor/gt"
+local Attribute = require "@libs/attributes/Attribute"
+local gt = require "@libs/vendor/gt"
+local instances = require "@libs/instances"
 
 export type TweenConfiguration = {
 	duration: number?,
@@ -28,7 +28,7 @@ local function useAttributes(basename: string?): TweenAttributes
 	}
 end
 
-const function configurationFromAttributes(
+local function configurationFromAttributes(
 	attributes: TweenAttributes,
 	instance: instances.InstanceLike
 ): TweenConfiguration

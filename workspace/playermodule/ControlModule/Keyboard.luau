@@ -4,15 +4,18 @@
 	2018 PlayerScripts Update - AllYourBlox
 --]]
 
---[[ Roblox Services ]]--
-local UserInputService = game:GetService("UserInputService")
-local ContextActionService = game:GetService("ContextActionService")
+--[[ Roblox Services ]]
+--
+local ContextActionService = game:GetService "ContextActionService"
+local UserInputService = game:GetService "UserInputService"
 
---[[ Constants ]]--
-local ZERO_VECTOR3 = Vector3.new(0,0,0)
+--[[ localants ]]
+--
+local ZERO_VECTOR3 = Vector3.new(0, 0, 0)
 
---[[ The Module ]]--
-local BaseCharacterController = require(script.Parent:WaitForChild("BaseCharacterController"))
+--[[ The Module ]]
+--
+local BaseCharacterController = require(script.Parent:WaitForChild "BaseCharacterController")
 local Keyboard = setmetatable({}, BaseCharacterController)
 Keyboard.__index = Keyboard
 
@@ -25,7 +28,7 @@ function Keyboard.new(CONTROL_ACTION_PRIORITY)
 	self.textFocusGainedConn = nil
 	self.windowFocusReleasedConn = nil
 
-	self.forwardValue  = 0
+	self.forwardValue = 0
 	self.backwardValue = 0
 	self.leftValue = 0
 	self.rightValue = 0
@@ -36,9 +39,7 @@ function Keyboard.new(CONTROL_ACTION_PRIORITY)
 end
 
 function Keyboard:Enable(enable)
-	if not UserInputService.KeyboardEnabled then
-		return false
-	end
+	if not UserInputService.KeyboardEnabled then return false end
 
 	if enable == self.enabled then
 		-- Module is already in the state being requested. True is returned here since the module will be in the state
@@ -47,7 +48,7 @@ function Keyboard:Enable(enable)
 		return true
 	end
 
-	self.forwardValue  = 0
+	self.forwardValue = 0
 	self.backwardValue = 0
 	self.leftValue = 0
 	self.rightValue = 0
@@ -80,7 +81,6 @@ function Keyboard:UpdateJump()
 end
 
 function Keyboard:BindContextActions()
-
 	-- Note: In the previous version of this code, the movement values were not zeroed-out on UserInputState. Cancel, now they are,
 	-- which fixes them from getting stuck on.
 	-- We return ContextActionResult.Pass here for legacy reasons.
@@ -117,30 +117,55 @@ function Keyboard:BindContextActions()
 
 	-- TODO: Revert to KeyCode bindings so that in the future the abstraction layer from actual keys to
 	-- movement direction is done in Lua
-	ContextActionService:BindActionAtPriority("moveForwardAction", handleMoveForward, false,
-		self.CONTROL_ACTION_PRIORITY, Enum.PlayerActions.CharacterForward)
-	ContextActionService:BindActionAtPriority("moveBackwardAction", handleMoveBackward, false,
-		self.CONTROL_ACTION_PRIORITY, Enum.PlayerActions.CharacterBackward)
-	ContextActionService:BindActionAtPriority("moveLeftAction", handleMoveLeft, false,
-		self.CONTROL_ACTION_PRIORITY, Enum.PlayerActions.CharacterLeft)
-	ContextActionService:BindActionAtPriority("moveRightAction", handleMoveRight, false,
-		self.CONTROL_ACTION_PRIORITY, Enum.PlayerActions.CharacterRight)
-	ContextActionService:BindActionAtPriority("jumpAction", handleJumpAction, false,
-		self.CONTROL_ACTION_PRIORITY, Enum.PlayerActions.CharacterJump)
+	ContextActionService:BindActionAtPriority(
+		"moveForwardAction",
+		handleMoveForward,
+		false,
+		self.CONTROL_ACTION_PRIORITY,
+		Enum.PlayerActions.CharacterForward
+	)
+	ContextActionService:BindActionAtPriority(
+		"moveBackwardAction",
+		handleMoveBackward,
+		false,
+		self.CONTROL_ACTION_PRIORITY,
+		Enum.PlayerActions.CharacterBackward
+	)
+	ContextActionService:BindActionAtPriority(
+		"moveLeftAction",
+		handleMoveLeft,
+		false,
+		self.CONTROL_ACTION_PRIORITY,
+		Enum.PlayerActions.CharacterLeft
+	)
+	ContextActionService:BindActionAtPriority(
+		"moveRightAction",
+		handleMoveRight,
+		false,
+		self.CONTROL_ACTION_PRIORITY,
+		Enum.PlayerActions.CharacterRight
+	)
+	ContextActionService:BindActionAtPriority(
+		"jumpAction",
+		handleJumpAction,
+		false,
+		self.CONTROL_ACTION_PRIORITY,
+		Enum.PlayerActions.CharacterJump
+	)
 end
 
 function Keyboard:UnbindContextActions()
-	ContextActionService:UnbindAction("moveForwardAction")
-	ContextActionService:UnbindAction("moveBackwardAction")
-	ContextActionService:UnbindAction("moveLeftAction")
-	ContextActionService:UnbindAction("moveRightAction")
-	ContextActionService:UnbindAction("jumpAction")
+	ContextActionService:UnbindAction "moveForwardAction"
+	ContextActionService:UnbindAction "moveBackwardAction"
+	ContextActionService:UnbindAction "moveLeftAction"
+	ContextActionService:UnbindAction "moveRightAction"
+	ContextActionService:UnbindAction "jumpAction"
 end
 
 function Keyboard:ConnectFocusEventListeners()
 	local function onFocusReleased()
 		self.moveVector = ZERO_VECTOR3
-		self.forwardValue  = 0
+		self.forwardValue = 0
 		self.backwardValue = 0
 		self.leftValue = 0
 		self.rightValue = 0

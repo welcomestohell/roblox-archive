@@ -1,22 +1,22 @@
-const tables = require "@libs/primitives/tables"
+local tables = require "@libs/primitives/tables"
 
 local currentOrder = 0
-const attributeToOrder = tables.createWeakened<<unknown, number>> "k"
-const orderToAttribute = tables.createWeakened<<number, unknown>> "v"
+local attributeToOrder = tables.createWeakened<<unknown, number>> "k"
+local orderToAttribute = tables.createWeakened<<number, unknown>> "v"
 
-const function nextOrder()
+local function nextOrder()
 	currentOrder += 1
 	return currentOrder
 end
 
-const function track<T>(attribute: T): T
+local function track<T>(attribute: T): T
 	local order = nextOrder()
 	attributeToOrder[attribute] = order
 	orderToAttribute[order] = attribute
 	return attribute
 end
 
-const function orderOf<T>(attribute: T)
+local function orderOf<T>(attribute: T)
 	return attributeToOrder[attribute]
 end
 

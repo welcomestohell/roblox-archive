@@ -1,12 +1,12 @@
-const logger = require "@core/shared/logger"
-const activation = require "@libs/activation"
-const Attribute = require "@libs/attributes/Attribute"
-const press = require "@libs/press"
-const std = require "@libs/std"
-const timers = require "@libs/timers"
-const toggle = require "@libs/toggle"
+local logger = require "@core/shared/logger"
+local activation = require "@libs/activation"
+local Attribute = require "@libs/attributes/Attribute"
+local press = require "@libs/press"
+local std = require "@libs/std"
+local timers = require "@libs/timers"
+local toggle = require "@libs/toggle"
 
-const Button = std.Mechanic {
+local Button = std.Mechanic {
 	emoji = "🖲️",
 	name = "Button",
 	description = "When activated, toggles it's Group for the specified duration.",
@@ -80,7 +80,7 @@ function Button.onActivate(self: typeof(Button), button: ButtonMechanic, level: 
 	self.Activation.Enabled(button, false)
 	button:Active(true)
 
-	const group = button:Group()
+	local group = button:Group()
 	self:handleGroup(level, group)
 
 	local deactivationLife = button.life:extend()
@@ -99,7 +99,7 @@ function Button.onActivate(self: typeof(Button), button: ButtonMechanic, level: 
 
 	local duration = button:Duration()
 	if duration > 0 then
-		const key = `{level.name}_Button({group})`
+		local key = `{level.name}_Button({group})`
 
 		timers.increment(key, {
 			color = buttonPart.Color,

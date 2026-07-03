@@ -1,4 +1,4 @@
-const Attribute = require "@libs/attributes/Attribute"
+local Attribute = require "@libs/attributes/Attribute"
 local gt = require "@libs/vendor/gt"
 local touch = require "@libs/touch"
 local types = require "@libs/activation/types"

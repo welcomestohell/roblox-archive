@@ -7,7 +7,7 @@
 local Players = game:GetService("Players")
 local GuiService = game:GetService("GuiService")
 
---[[ Constants ]]--
+--[[ localants ]]--
 local DPAD_SHEET = "rbxasset://textures/ui/DPadSheet.png"
 local ZERO_VECTOR3 = Vector3.new(0,0,0)
 local COMPASS_DIR = {

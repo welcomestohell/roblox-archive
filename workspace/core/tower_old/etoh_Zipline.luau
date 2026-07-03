@@ -200,7 +200,7 @@ function Zipline.Run(scope: _T.Scope, utility: _T.Utility)
 		newSegment.Anchored = false
 		if baseSegmentIsDefault then newSegment.Color = mountPart.Color end
 
-		local segmentWeld = Instance.new "WeldConstraint"
+		local segmentWeld = Instance.new "Weldlocalraint"
 		segmentWeld.Part0 = newSegment
 		segmentWeld.Part1 = mountPart
 		segmentWeld.Parent = newSegment
@@ -251,26 +251,26 @@ function Zipline.Run(scope: _T.Scope, utility: _T.Utility)
 			return
 		end
 
-		local constraint = if configuration.UseWeld
-			then Instance.new "WeldConstraint"
-			else ropeBar:FindFirstChildOfClass "RopeConstraint"
+		local localraint = if configuration.UseWeld
+			then Instance.new "Weldlocalraint"
+			else ropeBar:FindFirstChildOfClass "Ropelocalraint"
 		local particleClone = particleEmitter:Clone()
 		local loopSoundClone = loopSound:Clone()
-		if not constraint then
+		if not localraint then
 			rideModel:Destroy()
 			scope:log { `The {script.Name} script does not have its rope bar correctly set up.`, type = "warn" }
 			return
 		end
 
-		if constraint:IsA "RopeConstraint" then
-			constraint.Length = configuration.RopeLength
-			constraint.Color = mountPart.BrickColor
-		elseif constraint:IsA "WeldConstraint" then
+		if localraint:IsA "Ropelocalraint" then
+			localraint.Length = configuration.RopeLength
+			localraint.Color = mountPart.BrickColor
+		elseif localraint:IsA "Weldlocalraint" then
 			ropeBar.CFrame = segmentStartCF * CFrame.new(0, -configuration.RopeLength, 0)
 
-			constraint.Part0 = ropeBar
-			constraint.Part1 = ropeGuide
-			constraint.Parent = ropeBar
+			localraint.Part0 = ropeBar
+			localraint.Part1 = ropeGuide
+			localraint.Parent = ropeBar
 		end
 		particleClone.Parent = ropeGuide
 		particleClone.Rate = configuration.Speed
@@ -286,7 +286,7 @@ function Zipline.Run(scope: _T.Scope, utility: _T.Utility)
 			utility.Character.carryPart(true, ropeBar, not configuration.HandleAnimation)
 			humanoid.PlatformStand = true
 		else
-			local barWeld = Instance.new "WeldConstraint"
+			local barWeld = Instance.new "Weldlocalraint"
 			barWeld.Part0 = ropeBar
 			barWeld.Part1 = attachTo
 			barWeld.Parent = ropeBar

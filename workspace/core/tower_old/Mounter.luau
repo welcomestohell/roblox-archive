@@ -1,8 +1,8 @@
 local Attribute = require "@libs/attributes/Attribute"
 local activation = require "@libs/activation"
 local character = require "@libs/character"
-local constraints = require "@libs/constraints"
 local destroy = require "@libs/destroy"
+local localraints = require "@libs/localraints"
 local std = require "@libs/std"
 
 local LIMB_MAP: { [Enum.Limb]: string } = {
@@ -73,7 +73,7 @@ function Mounter:onActivate(mounter: MounterMechanic)
 
 		if weldLimb then
 			weldTarget:PivotTo(weldLimb.CFrame * mounter:Offset())
-			constraints.weld(mountLife, weldTarget, weldLimb)
+			localraints.weld(mountLife, weldTarget, weldLimb)
 
 			cleanupLife:destroyOn(weldLimb.Destroying)
 		end

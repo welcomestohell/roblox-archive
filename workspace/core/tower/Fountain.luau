@@ -1,7 +1,7 @@
-const std = require "@libs/std"
-const Oklab = require "@libs/vendor/Oklab"
+local Oklab = require "@libs/vendor/Oklab"
+local std = require "@libs/std"
 
-const Fountain = std.Mechanic {
+local Fountain = std.Mechanic {
 	emoji = "☀️",
 	name = "Fountain",
 	description = "Hello, Welcome To Hell!",
@@ -15,7 +15,7 @@ export type FountainMechanic = std.Mechanic<typeof(Fountain), {
 	lights: { [Light]: true },
 }>
 
-const CYCLE_DURATION_SECONDS = 10
+local CYCLE_DURATION_SECONDS = 10
 
 function Fountain.onStart(self: typeof(Fountain), fountain: FountainMechanic, level: std.Level)
 	fountain.effects = {}
@@ -31,11 +31,11 @@ function Fountain.onStart(self: typeof(Fountain), fountain: FountainMechanic, le
 end
 
 function Fountain.onPreRender(self: typeof(Fountain), fountain: FountainMechanic, level: std.Level)
-	const lifetime = level:getLifetime()
-	const progress = lifetime % CYCLE_DURATION_SECONDS / CYCLE_DURATION_SECONDS
+	local lifetime = level:getLifetime()
+	local progress = lifetime % CYCLE_DURATION_SECONDS / CYCLE_DURATION_SECONDS
 
-	const effectColor = ColorSequence.new(Oklab.oklchToColor3(Vector3.new(0.25, 0.05, progress)))
-	const lightColor = Oklab.oklchToColor3(Vector3.new(0.5, 0.2, progress))
+	local effectColor = ColorSequence.new(Oklab.oklchToColor3(Vector3.new(0.25, 0.05, progress)))
+	local lightColor = Oklab.oklchToColor3(Vector3.new(0.5, 0.2, progress))
 
 	for _, fountain: FountainMechanic in level:getMechanics(self) do
 		for effect in fountain.effects do

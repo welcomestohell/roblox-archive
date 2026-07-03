@@ -1,13 +1,13 @@
-const logger = require "@core/shared/logger"
-const AttributeOrder = require "@libs/attributes/AttributeOrder"
-const observeAttributes = require "@libs/attributes/observeAttributes"
-const tables = require "@libs/primitives/tables"
-const instances = require "@libs/instances"
-const arrays = require "@libs/primitives/arrays"
-const gt = require "@libs/vendor/gt"
-const threadpool = require "@libs/threadpool"
+local AttributeOrder = require "@libs/attributes/AttributeOrder"
+local arrays = require "@libs/primitives/arrays"
+local gt = require "@libs/vendor/gt"
+local instances = require "@libs/instances"
+local logger = require "@core/shared/logger"
+local observeAttributes = require "@libs/attributes/observeAttributes"
+local tables = require "@libs/primitives/tables"
+local threadpool = require "@libs/threadpool"
 
-const Attribute = {}
+local Attribute = {}
 Attribute.__index = Attribute
 
 export type Attribute<T> = setmetatable<{

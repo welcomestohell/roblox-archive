@@ -1,4 +1,4 @@
-const Attribute = require "@libs/attributes/Attribute"
+local Attribute = require "@libs/attributes/Attribute"
 local gt = require "@libs/vendor/gt"
 
 local function useAttributes(basename: string?)

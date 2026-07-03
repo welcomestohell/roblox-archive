@@ -9,7 +9,7 @@
 --]]
 local ContextActionService = game:GetService("ContextActionService")
 
---[[ Constants ]]--
+--[[ localants ]]--
 -- Set this to true if you want to instead use the triggers for the throttle
 local useTriggersForThrottle = true
 -- Also set this to true if you want the thumbstick to not affect throttle, only triggers when a gamepad is conected

@@ -1,4 +1,4 @@
-const jump = require "@libs/jump"
+local jump = require "@libs/jump"
 local types = require "../types"
 
 local Jump = {} :: types.ActivationMode

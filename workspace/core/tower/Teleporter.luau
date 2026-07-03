@@ -1,13 +1,13 @@
-const character = require "@libs/character"
-const logger = require "@core/shared/logger"
-const activation = require "@libs/activation"
-const emission = require "@libs/emission"
-const std = require "@libs/std"
-const teleport = require "@libs/teleport"
-const touch = require "@libs/touch"
-const tweens = require "@libs/tweens"
+local activation = require "@libs/activation"
+local character = require "@libs/character"
+local emission = require "@libs/emission"
+local logger = require "@core/shared/logger"
+local std = require "@libs/std"
+local teleport = require "@libs/teleport"
+local touch = require "@libs/touch"
+local tweens = require "@libs/tweens"
 
-const Teleporter = std.Mechanic {
+local Teleporter = std.Mechanic {
 	emoji = "🌀",
 	name = "Teleporter",
 	description = "When activated, teleports the activator to a destination matching it's Group.",
@@ -43,16 +43,16 @@ function Teleporter.onActivate(
 	level: std.Level,
 	event: activation.ActivationEvent
 )
-	const target = event.kind == "Touch" and touch.castIntoTarget(event.toucher) or character.getMaybeHumanoidRootPart()
+	local target = event.kind == "Touch" and touch.castIntoTarget(event.toucher) or character.getMaybeHumanoidRootPart()
 	if not target then return end
 
-	const group = teleporter:Group()
-	const groupInstances = level:getGroupedInstances(group)
-	const len = #groupInstances
+	local group = teleporter:Group()
+	local groupInstances = level:getGroupedInstances(group)
+	local len = #groupInstances
 	if len == 0 then return end
 
 	math.randomseed(os.clock())
-	const targetDestination = groupInstances[if len == 1 then 1 else math.random(1, len)]
+	local targetDestination = groupInstances[if len == 1 then 1 else math.random(1, len)]
 	if not targetDestination:IsA "BasePart" then
 		logger:Warn("Expected teleporter destination", targetDestination:GetFullName(), "to be a BasePart")
 		return
@@ -61,7 +61,7 @@ function Teleporter.onActivate(
 	if self.debounce:get(level) then return end
 	self.debounce:set(level, true)
 
-	const wasActivatable = self.Activation.Enabled(teleporter)
+	local wasActivatable = self.Activation.Enabled(teleporter)
 	self.Activation.Enabled(teleporter, false)
 	teleporter:Active(true)
 	teleporter:Debounced(true)

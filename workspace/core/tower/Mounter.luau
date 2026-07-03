@@ -1,12 +1,12 @@
-const activation = require "@libs/activation"
-const character = require "@libs/character"
-const constraints = require "@libs/constraints"
-const Level = require "@libs/core/Level"
-const emission = require "@libs/emission"
-const mounts = require "@libs/mounts"
-const std = require "@libs/std"
+local Level = require "@libs/core/Level"
+local activation = require "@libs/activation"
+local character = require "@libs/character"
+local emission = require "@libs/emission"
+local localraints = require "@libs/localraints"
+local mounts = require "@libs/mounts"
+local std = require "@libs/std"
 
-const Mounter = std.Mechanic {
+local Mounter = std.Mechanic {
 	emoji = "🔌",
 	name = "Mounter",
 	description = "When activated, mounts itself onto the activator.",
@@ -57,7 +57,7 @@ function Mounter:onStart(mounter: MounterMechanic)
 	mounter.mount.Parent = nil
 
 	if not mounter.instance:FindFirstChild "AlignOrientation" then
-		const alignOrientation = Instance.new "AlignOrientation"
+		local alignOrientation = Instance.new "AlignOrientation"
 		alignOrientation.AlignType = Enum.AlignType.Parallel
 		alignOrientation.MaxAngularVelocity = math.huge
 		alignOrientation.Responsiveness = 200
@@ -65,7 +65,7 @@ function Mounter:onStart(mounter: MounterMechanic)
 	end
 
 	if not mounter.instance:FindFirstChild "AlignPosition" then
-		const alignPosition = Instance.new "AlignPosition"
+		local alignPosition = Instance.new "AlignPosition"
 		alignPosition.MaxForce = math.huge
 		alignPosition.Responsiveness = 200
 		alignPosition.Parent = mounter.instance
@@ -87,62 +87,62 @@ function Mounter.onActivate(
 	level: std.Level,
 	event: activation.ActivationEvent
 )
-	const toucher = if event.kind == "Touch" and not character.isFromCharacter(event.toucher)
+	local toucher = if event.kind == "Touch" and not character.isFromCharacter(event.toucher)
 		then event.toucher
 		else character.getMaybeHumanoidRootPart()
 
 	if not toucher then return end
 
-	const mountName = mounter:MountName()
+	local mountName = mounter:MountName()
 	if mounts.isMounted(toucher, mountName) then return end
 
-	const wasActivatable = self.Activation.Enabled(mounter)
+	local wasActivatable = self.Activation.Enabled(mounter)
 	self.Activation.Enabled(mounter, false)
 	mounter:Active(true)
 	mounter:Debounced(true)
 
 	local target = toucher
 	if character.isFromCharacter(toucher) then
-		const limbName = character.LIMB_MAP[mounter:MountLimb()]
+		local limbName = character.LIMB_MAP[mounter:MountLimb()]
 		if limbName then
-			const limb = character.getCharacter():FindFirstChild(limbName)
+			local limb = character.getCharacter():FindFirstChild(limbName)
 			if limb and limb:IsA "BasePart" then target = limb end
 		end
 	end
 
 	-- We extend level's life instead of mounter, so we can support
 	-- RemoveAfter like EToH.
-	const mountLife = level.life:extend()
-	const mount = mountLife:add(mounter.mount:Clone())
+	local mountLife = level.life:extend()
+	local mount = mountLife:add(mounter.mount:Clone())
 	mount.Name ..= " (Active)"
 	mountLife:destroyOn(mount.Destroying)
 
-	const primary = if mount:IsA "Model" then mount.PrimaryPart else mount
+	local primary = if mount:IsA "Model" then mount.PrimaryPart else mount
 	if not primary then
 		mount:Destroy()
 		return
 	end
 
-	const activationLife = mounter.life:extend()
+	local activationLife = mounter.life:extend()
 	activationLife:destroyOn(mounts.mount(toucher, mounter.instance, mountName))
 
-	const mode = mounter:MountMode()
+	local mode = mounter:MountMode()
 	if mode == "Weld" then
 		mount:PivotTo(target.CFrame * mounter:MountOffset())
-		constraints.weld(mountLife, primary, target)
+		localraints.weld(mountLife, primary, target)
 	elseif mode == "Align" then
-		const bodyAttachment = mountLife:add(Instance.new "Attachment")
+		local bodyAttachment = mountLife:add(Instance.new "Attachment")
 		bodyAttachment.CFrame = mounter:MountOffset()
 		bodyAttachment.Name = "MounterBody"
 		bodyAttachment.Parent = target
 
-		const primaryAttachment = mountLife:add(Instance.new "Attachment")
+		local primaryAttachment = mountLife:add(Instance.new "Attachment")
 		primaryAttachment.Name = "MounterPrimary"
 		primaryAttachment.Parent = primary
 
 		-- stylua: ignore
-		const alignOrientation = mountLife:add(Instance.fromExisting(mounter.instance.AlignOrientation :: AlignOrientation))
-		const alignPosition = mountLife:add(Instance.fromExisting(mounter.instance.AlignPosition :: AlignPosition))
+		local alignOrientation = mountLife:add(Instance.fromExisting(mounter.instance.AlignOrientation :: AlignOrientation))
+		local alignPosition = mountLife:add(Instance.fromExisting(mounter.instance.AlignPosition :: AlignPosition))
 
 		alignOrientation.Attachment0 = primaryAttachment
 		alignOrientation.Attachment1 = bodyAttachment

@@ -1,5 +1,5 @@
 local FireworksSpark = require "./FireworksSpark"
-const Liquid = require "@pkgs/Liquid"
+local Liquid = require "@pkgs/Liquid"
 
 return Liquid.createFluidStory {
 	controls = {

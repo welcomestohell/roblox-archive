@@ -1,6 +1,6 @@
+local Liquid = require "@pkgs/Liquid"
 local LoadingScreen = require "@core/ui/components/screens/LoadingScreen"
 local assets = require "@core/assets"
-const Liquid = require "@pkgs/Liquid"
 
 return Liquid.createFluidStory {
 	controls = {

@@ -1,6 +1,6 @@
-const std = require "@libs/std"
+local std = require "@libs/std"
 
-const ConsistentParticleEmitter = std.Mechanic {
+local ConsistentParticleEmitter = std.Mechanic {
 	emoji = "🫧",
 	name = "ConsistentParticleEmitter",
 	description = "Emits it's ParticleEmitter at it's rate regardless of graphics level.",
@@ -17,8 +17,8 @@ export type Implementation = typeof(ConsistentParticleEmitter)
 export type Mechanic = std.Mechanic<Implementation>
 
 function ConsistentParticleEmitter.onPreRender(self: Implementation, deltaTime: number, level: std.Level)
-	const graphicsLevel = UserSettings().GameSettings.SavedQualityLevel.Value
-	const isGraphicsLevelChanged = graphicsLevel == self.previousGraphicsLevel:get(level)
+	local graphicsLevel = UserSettings().GameSettings.SavedQualityLevel.Value
+	local isGraphicsLevelChanged = graphicsLevel == self.previousGraphicsLevel:get(level)
 	self.previousGraphicsLevel:set(level, graphicsLevel)
 
 	for _, emitter: Mechanic in level:getMechanics(self) do

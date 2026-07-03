@@ -1,12 +1,12 @@
-const Players = game:GetService "Players"
-const Workspace = game:GetService "Workspace"
+local Players = game:GetService "Players"
+local Workspace = game:GetService "Workspace"
 
-const character = require "@libs/character"
-const std = require "@libs/std"
+local character = require "@libs/character"
+local std = require "@libs/std"
 
-const mouse = Players.LocalPlayer:GetMouse()
+local mouse = Players.LocalPlayer:GetMouse()
 
-const Follower = std.Mechanic {
+local Follower = std.Mechanic {
 	emoji = "👀",
 	name = "Follower",
 	description = "Continously follows the target by looking at, rotating, positioning, or pivoting towards it.",

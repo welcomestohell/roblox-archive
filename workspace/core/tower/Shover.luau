@@ -4,7 +4,7 @@ local Shover = std.Mechanic {
 	emoji = "🤜",
 	name = "Shover",
 	description = "Periodically shoves in and out with knockback.",
-	instanceType = std.isA.PrismaticConstraint(),
+	instanceType = std.isA.Prismaticlocalraint(),
 
 	Enabled = std.Attribute("Enabled", std.gt.boolean(), true),
 	directions = {
@@ -36,10 +36,10 @@ function Shover.shove(shover: ShoverMechanic, direction: ShoverDirection)
 
 	if shover:Enabled() then
 		local power = attributes.power(shover)
-		local constraint = shover.instance
-		constraint.LinearResponsiveness = power
-		constraint.Speed = power
-		constraint.TargetPosition = if direction == "Out" then shover.instance.UpperLimit else 0
+		local localraint = shover.instance
+		localraint.LinearResponsiveness = power
+		localraint.Speed = power
+		localraint.TargetPosition = if direction == "Out" then shover.instance.UpperLimit else 0
 	end
 end
 

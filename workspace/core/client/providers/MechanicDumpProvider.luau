@@ -1,11 +1,11 @@
-const HttpService = game:GetService "HttpService"
-const ReplicatedStorage = game:GetService "ReplicatedStorage"
+local HttpService = game:GetService "HttpService"
+local ReplicatedStorage = game:GetService "ReplicatedStorage"
 
-const tables = require "@libs/primitives/tables"
-const Level = require "@libs/core/Level"
-const Mechanic = require "@libs/core/Mechanic"
-const gt = require "@libs/vendor/gt"
-const prvd = require "@pkgs/prvd"
+local Level = require "@libs/core/Level"
+local Mechanic = require "@libs/core/Mechanic"
+local gt = require "@libs/vendor/gt"
+local prvd = require "@pkgs/prvd"
+local tables = require "@libs/primitives/tables"
 
 --[=[
 	@class MechanicDumpProvider
@@ -15,13 +15,13 @@ const prvd = require "@pkgs/prvd"
 
 	TODO: this class is temporary so we can get the plugin up and running
 ]=]
-const MechanicDumpProvider = {}
+local MechanicDumpProvider = {}
 export type MechanicDumpProvider = typeof(MechanicDumpProvider)
 
 function MechanicDumpProvider.onStart()
-	const dump = {}
+	local dump = {}
 	for _, implementation in Level.baseScripts.mechanicImplementationByName do
-		const implementation = Mechanic.downcast(implementation)
+		local implementation = Mechanic.downcast(implementation)
 		print(implementation.name, implementation.description)
 		dump[implementation.name] = {
 			name = implementation.name,
@@ -43,9 +43,9 @@ function MechanicDumpProvider.onStart()
 		}
 	end
 
-	const encodedDump = HttpService:JSONEncode(dump)
+	local encodedDump = HttpService:JSONEncode(dump)
 
-	const bind = Instance.new "BindableFunction"
+	local bind = Instance.new "BindableFunction"
 	bind.Name = "GetMechanicDump"
 	function bind.OnInvoke()
 		return encodedDump

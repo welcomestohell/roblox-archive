@@ -1,11 +1,11 @@
-const activation = require "@libs/activation"
-const character = require "@libs/character"
-const constraints = require "@libs/constraints"
-const emission = require "@libs/emission"
-const mounts = require "@libs/mounts"
-const std = require "@libs/std"
+local activation = require "@libs/activation"
+local character = require "@libs/character"
+local emission = require "@libs/emission"
+local localraints = require "@libs/localraints"
+local mounts = require "@libs/mounts"
+local std = require "@libs/std"
 
-const Seat = std.Mechanic {
+local Seat = std.Mechanic {
 	emoji = "🪑",
 	name = "Seat",
 	description = "When activated, seats the player on top by welding.",
@@ -33,15 +33,15 @@ export type SeatMechanic = std.Mechanic<Seat>
 function Seat.onActivate(self: Seat, seat: SeatMechanic, level: std.Level)
 	if seat:Active() or seat:Debounced() then return end
 
-	const rootPart = character.getMaybeHumanoidRootPart()
-	const humanoid = character.getMaybeHumanoid()
+	local rootPart = character.getMaybeHumanoidRootPart()
+	local humanoid = character.getMaybeHumanoid()
 
 	if not rootPart or not humanoid or mounts.isMechanicMounted(rootPart, seat) then return end
 
-	const activationLife = seat.life:extend()
+	local activationLife = seat.life:extend()
 	activationLife:destroyOn(mounts.mountMechanic(rootPart, seat))
 
-	const wasActivatable = self.Activation.Enabled(seat)
+	local wasActivatable = self.Activation.Enabled(seat)
 	self.Activation.Enabled(seat, false)
 	seat:Active(true)
 	seat:Debounced(true)
@@ -49,7 +49,7 @@ function Seat.onActivate(self: Seat, seat: SeatMechanic, level: std.Level)
 	humanoid.Sit = true
 	rootPart.CFrame = (seat.instance.CFrame + seat.instance.CFrame.UpVector * (seat.instance.Size.Y / 2 + 1.5))
 		* seat:Offset()
-	constraints.weld(activationLife, seat.instance, rootPart)
+	localraints.weld(activationLife, seat.instance, rootPart)
 	emission.emitTaggedDescendants(seat.instance, seat:EmitMountedTag())
 
 	activationLife:add(function()

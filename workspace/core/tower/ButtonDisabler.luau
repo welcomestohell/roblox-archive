@@ -1,8 +1,8 @@
-const Button = require "@core/tower/Button"
-const activation = require "@libs/activation"
-const std = require "@libs/std"
+local Button = require "@core/tower/Button"
+local activation = require "@libs/activation"
+local std = require "@libs/std"
 
-const ButtonDisabler = std.Mechanic {
+local ButtonDisabler = std.Mechanic {
 	emoji = "🕹️",
 	name = "ButtonDisabler",
 	description = "When activated, deactivates all active Buttons matching it's Group.",
@@ -22,10 +22,10 @@ function ButtonDisabler.onActivate(self: typeof(ButtonDisabler), disabler: Butto
 	if disabler:Debounced() then return end
 	disabler:Debounced(true)
 
-	const wasActivatable = self.Activation.Enabled(disabler)
+	local wasActivatable = self.Activation.Enabled(disabler)
 	self.Activation.Enabled(disabler, false)
 
-	const group = disabler:Group()
+	local group = disabler:Group()
 	for _, button: Button.ButtonMechanic in level:getMechanics(Button) do
 		if button:Group() == group then button:Active(false) end
 	end

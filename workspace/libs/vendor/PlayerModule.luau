@@ -1,4 +1,4 @@
-const RunService = game:GetService "RunService"
+local RunService = game:GetService "RunService"
 
 -- gng cooking up straight POISON
 return (

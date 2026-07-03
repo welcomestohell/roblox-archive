@@ -1,10 +1,10 @@
-const assets = require "@core/assets"
-const Fluid = require "@pkgs/Fluid"
-const Liquid = require "@pkgs/Liquid"
-const NumberSpinner = require "@core/ui/components/base/NumberSpinner"
-const Oklab = require "@libs/vendor/Oklab"
-const Padding = require "@core/ui/components/base/Padding"
-const Text = require "@core/ui/components/base/Text"
+local assets = require "@core/assets"
+local Fluid = require "@pkgs/Fluid"
+local Liquid = require "@pkgs/Liquid"
+local NumberSpinner = require "@core/ui/components/base/NumberSpinner"
+local Oklab = require "@libs/vendor/Oklab"
+local Padding = require "@core/ui/components/base/Padding"
+local Text = require "@core/ui/components/base/Text"
 
 -- TODO: hoursHidden, secondsHidden, millisecondsHidden
 export type TimerProps = {
@@ -24,54 +24,54 @@ export type TimerProps = {
 	visible: Fluid.UsedAs<boolean>?,
 }
 
-const function Timer(props: TimerProps)
-	const rem = Liquid.useRem()
-	const nextOrder = Liquid.useNextOrder()
+local function Timer(props: TimerProps)
+	local rem = Liquid.useRem()
+	local nextOrder = Liquid.useNextOrder()
 
-	const color = props.color or Color3.new(1, 1, 1)
-	const function colorLch()
+	local color = props.color or Color3.new(1, 1, 1)
+	local function colorLch()
 		return Oklab.color3ToOklch(Fluid.read(color))
 	end
 
-	const function colorLightness()
+	local function colorLightness()
 		return math.clamp(colorLch().X, 2 / 3, 1)
 	end
-	const function colorChroma()
+	local function colorChroma()
 		return math.clamp(colorLch().Y * 1.5, 0, 0.2)
 	end
 
-	const function baseColor()
+	local function baseColor()
 		return Oklab.oklchToColor3(Vector3.new(colorLightness(), colorChroma(), colorLch().Z))
 	end
 
-	const function darkColor()
+	local function darkColor()
 		return Oklab.oklchToColor3(Vector3.new(colorLightness() * 0.7, colorChroma(), colorLch().Z))
 	end
 
-	const function progressColor()
+	local function progressColor()
 		return Oklab.oklchToColor3(Vector3.new(colorLightness() * 1.5, colorChroma(), colorLch().Z))
 	end
 
-	const function lightColor()
+	local function lightColor()
 		return Oklab.oklchToColor3(Vector3.new(colorLightness() * 1.25, colorChroma(), colorLch().Z))
 	end
 
-	const function minutes()
+	local function minutes()
 		return Fluid.read(props.valueSeconds) // 60
 	end
-	const function seconds()
+	local function seconds()
 		return Fluid.read(props.valueSeconds) % 60
 	end
-	const function milliseconds()
+	local function milliseconds()
 		return Fluid.read(props.valueSeconds) * 100 % 100
 	end
 
-	const digitSize = rem:intoUdim2(4, 4)
-	const digitTextSize = rem:intoPx(5)
-	const millisecondsDigitSize = rem:intoPx(3)
+	local digitSize = rem:intoUdim2(4, 4)
+	local digitTextSize = rem:intoPx(5)
+	local millisecondsDigitSize = rem:intoPx(3)
 
-	const contentAbsoluteSize = Fluid.source(Vector2.zero)
-	const scale = Fluid.spring(Liquid.useToggled(props.visible, 1, 0), 15, 2 / 3)
+	local contentAbsoluteSize = Fluid.source(Vector2.zero)
+	local scale = Fluid.spring(Liquid.useToggled(props.visible, 1, 0), 15, 2 / 3)
 
 	return Fluid.create "CanvasGroup" {
 		Name = props.name or "Timer",
@@ -79,8 +79,8 @@ const function Timer(props: TimerProps)
 		Position = props.position,
 		AnchorPoint = props.anchorPoint,
 		Size = props.size or function()
-			const contentAbsoluteSize = contentAbsoluteSize()
-			const padding = rem:px(0.5)
+			local contentAbsoluteSize = contentAbsoluteSize()
+			local padding = rem:px(0.5)
 			return UDim2.fromOffset(contentAbsoluteSize.X + padding, contentAbsoluteSize.Y + padding)
 		end,
 		AutomaticSize = props.automaticSize or Enum.AutomaticSize.None,
@@ -98,13 +98,13 @@ const function Timer(props: TimerProps)
 		Fluid.create "UIScale" { Scale = scale },
 
 		Liquid.useShow(props.totalSeconds, Fluid.untrack :: any, function()
-			const totalSeconds = props.totalSeconds :: Fluid.UsedAs<number>
+			local totalSeconds = props.totalSeconds :: Fluid.UsedAs<number>
 
-			const function progress()
+			local function progress()
 				return (Fluid.read(totalSeconds) - Fluid.read(props.valueSeconds)) / Fluid.read(totalSeconds)
 			end
 
-			const function isHalfway()
+			local function isHalfway()
 				return progress() >= 0.5
 			end
 
@@ -115,11 +115,11 @@ const function Timer(props: TimerProps)
 					Position = UDim2.fromScale(0.5, 0.5),
 					AnchorPoint = Vector2.new(0.5, 0.5),
 					Size = UDim2.fromScale(2, 2),
-					SizeConstraint = Enum.SizeConstraint.RelativeXX,
+					Sizelocalraint = Enum.Sizelocalraint.RelativeXX,
 					Image = assets.ui.fillRight,
 					ImageColor3 = Liquid.useToggled<<Color3>>(isHalfway, progressColor, darkColor),
 					Rotation = function()
-						const p = progress()
+						local p = progress()
 						return if isHalfway() then 0 else p * 360
 					end,
 					ZIndex = 0,
@@ -130,11 +130,11 @@ const function Timer(props: TimerProps)
 					Position = UDim2.fromScale(0.5, 0.5),
 					AnchorPoint = Vector2.new(0.5, 0.5),
 					Size = UDim2.fromScale(2, 2),
-					SizeConstraint = Enum.SizeConstraint.RelativeXX,
+					Sizelocalraint = Enum.Sizelocalraint.RelativeXX,
 					Image = assets.ui.fillLeft,
 					ImageColor3 = darkColor,
 					Rotation = function()
-						const p = progress()
+						local p = progress()
 						return if p <= 0.5 then 0 else (p - 0.5) * 360
 					end,
 					ZIndex = -1,

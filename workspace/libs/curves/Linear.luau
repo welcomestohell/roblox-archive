@@ -1,4 +1,4 @@
-const Linear = {}
+local Linear = {}
 Linear.__index = Linear
 
 export type Linear = setmetatable<{ points: { Vector3 } }, typeof(Linear)>

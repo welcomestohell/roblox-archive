@@ -1,10 +1,10 @@
-const Fluid = require "@pkgs/Fluid"
-const Padding = require "@core/ui/components/base/Padding"
-const Text = require "@core/ui/components/base/Text"
-const assets = require "@core/assets"
-const Liquid = require "@pkgs/Liquid"
+local Fluid = require "@pkgs/Fluid"
+local Liquid = require "@pkgs/Liquid"
+local Padding = require "@core/ui/components/base/Padding"
+local Text = require "@core/ui/components/base/Text"
+local assets = require "@core/assets"
 
-const function LoadingScreen(props: {
+local function LoadingScreen(props: {
 	label: Fluid.UsedAs<string>,
 	title: Fluid.UsedAs<string>,
 	imageId: Fluid.UsedAs<string>?,

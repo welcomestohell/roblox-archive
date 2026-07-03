@@ -1,6 +1,6 @@
-const assets = require "@core/assets"
-const logger = require "@core/shared/logger"
-const Charm = require "@pkgs/Charm"
+local Charm = require "@pkgs/Charm"
+local assets = require "@core/assets"
+local logger = require "@core/shared/logger"
 
 export type TimerProps = {
 	icon: string,
@@ -12,20 +12,20 @@ export type Timer = TimerProps & {
 	timestamps: { number },
 }
 
-const BUTTON_ICON = assets.phosphor.hourglassSimple
-const WALK_BOOST_ICON = assets.phosphor.caretLineDown
-const JUMP_BOOST_ICON = assets.phosphor.caretLineDown
-const GRAVITY_BOOST_ICON = assets.phosphor.caretLineDown
+local BUTTON_ICON = assets.phosphor.hourglassSimple
+local WALK_BOOST_ICON = assets.phosphor.caretLineDown
+local JUMP_BOOST_ICON = assets.phosphor.caretLineDown
+local GRAVITY_BOOST_ICON = assets.phosphor.caretLineDown
 
-const store = Charm.atom<<{ [string]: Timer }>> {}
+local store = Charm.atom<<{ [string]: Timer }>> {}
 Charm.subscribe(store, function(store)
 	logger:Debug("timers.store:", store)
 end)
 
 -- FIXME: this doesnt account for the longest durations
-const function increment(key: string, props: TimerProps)
+local function increment(key: string, props: TimerProps)
 	store(function(store: typeof(store()))
-		const timestamp = os.clock()
+		local timestamp = os.clock()
 		store = table.clone(store)
 
 		local timer = store[key]
@@ -50,7 +50,7 @@ const function increment(key: string, props: TimerProps)
 	end)
 end
 
-const function decrement(key: string)
+local function decrement(key: string)
 	store(function(store: typeof(store()))
 		store = table.clone(store)
 
@@ -72,7 +72,7 @@ const function decrement(key: string)
 	end)
 end
 
-const function remove(key: string)
+local function remove(key: string)
 	store(function(store: typeof(store()))
 		store = table.clone(store)
 		store[key] = nil

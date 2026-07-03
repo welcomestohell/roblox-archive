@@ -1,6 +1,6 @@
 local Fluid = require "@pkgs/Fluid"
+local Liquid = require "@pkgs/Liquid"
 local WTHLogo = require "@core/ui/components/branding/WTHLogo"
-const Liquid = require "@pkgs/Liquid"
 
 local function TitleScreen()
 	local nextOrder = Liquid.useNextOrder()

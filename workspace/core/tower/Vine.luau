@@ -1,18 +1,18 @@
-const activation = require "@libs/activation"
-const character = require "@libs/character"
-const constraints = require "@libs/constraints"
-const emission = require "@libs/emission"
-const mounts = require "@libs/mounts"
-const std = require "@libs/std"
-const tweens = require "@libs/tweens"
+local activation = require "@libs/activation"
+local character = require "@libs/character"
+local emission = require "@libs/emission"
+local localraints = require "@libs/localraints"
+local mounts = require "@libs/mounts"
+local std = require "@libs/std"
+local tweens = require "@libs/tweens"
 
-const Vine = std.Mechanic {
+local Vine = std.Mechanic {
 	emoji = "🪝",
 	name = "Vine",
-	description = "When activated, attaches the player or a Box to itself using a given Constraint.",
+	description = "When activated, attaches the player or a Box to itself using a given localraint.",
 	instanceType = std.gt.instanceTree {
 		Activator = std.isA.BasePart(),
-		Constraint = std.isA.Constraint(),
+		localraint = std.isA.localraint(),
 		Base = std.gt.instanceTree(std.isA.BasePart(), {
 			BaseAttachment = std.isA.Attachment(),
 		}),
@@ -44,7 +44,7 @@ const Vine = std.Mechanic {
 
 	std.AttributeSection "Activator",
 	ActivatorTween = tweens.useAttributes "ActivatorTween",
-	ActivatorTransparency = std.Attribute("ActivatorTransparency", std.gt.constrainNumber(0, 1), 0),
+	ActivatorTransparency = std.Attribute("ActivatorTransparency", std.gt.localrainNumber(0, 1), 0),
 	ActivatorPosition = std.Attribute("ActivatorCFrame", std.gt.Vector3(), Vector3.zero),
 	ActivatorSize = std.Attribute("ActivatorSize", std.gt.Vector3(), Vector3.zero),
 }
@@ -66,19 +66,19 @@ end
 function Vine.onActivate(self: typeof(Vine), vine: VineMechanic, level: std.Level, event: activation.ActivationEvent)
 	if vine:Active() then return end
 
-	const toucher = if event.kind == "Touch" and not character.isFromCharacter(event.toucher)
+	local toucher = if event.kind == "Touch" and not character.isFromCharacter(event.toucher)
 		then event.toucher
 		else character.getCharacter().Head
 
-	const mountInstance = mounts.castToucher(toucher) :: BasePart
+	local mountInstance = mounts.castToucher(toucher) :: BasePart
 	if mounts.isMechanicMounted(mountInstance, vine) then return end
 
-	const wasActivatable = self.Activation.Enabled(vine)
+	local wasActivatable = self.Activation.Enabled(vine)
 	self.Activation.Enabled(vine, false)
 	vine:Active(true)
 	vine:Debounced(true)
 
-	const activationLife = vine.life:extend()
+	local activationLife = vine.life:extend()
 	activationLife:destroyOn(mounts.mountMechanic(toucher, vine))
 	activationLife:destroyOn(toucher.Destroying)
 
@@ -86,7 +86,7 @@ function Vine.onActivate(self: typeof(Vine), vine: VineMechanic, level: std.Leve
 	vine.instance.Activator.Position = vine.instance.Base.Position
 	vine.instance.Activator.Size = Vector3.zero
 
-	const handle = activationLife:add(vine.handle:Clone())
+	local handle = activationLife:add(vine.handle:Clone())
 	if vine:HideHandle() then
 		handle.Size = Vector3.zero
 		handle.Transparency = 1
@@ -94,14 +94,14 @@ function Vine.onActivate(self: typeof(Vine), vine: VineMechanic, level: std.Leve
 	handle.CFrame = toucher.CFrame + toucher.CFrame.UpVector * (toucher.Size.Y / 2)
 	handle.Anchored = false
 	handle.Parent = vine.instance
-	constraints.weld(activationLife, handle, toucher)
+	localraints.weld(activationLife, handle, toucher)
 
-	const constraint = activationLife:add(vine.instance.Constraint:Clone())
-	constraint.Color = vine.instance.Activator.BrickColor
-	constraint.Attachment0 = handle:FindFirstChild "HandleAttachment" :: Attachment
-	constraint.Attachment1 = vine.instance.Base:FindFirstChild "BaseAttachment" :: Attachment
-	constraint.Enabled = true
-	constraint.Parent = handle
+	local localraint = activationLife:add(vine.instance.localraint:Clone())
+	localraint.Color = vine.instance.Activator.BrickColor
+	localraint.Attachment0 = handle:FindFirstChild "HandleAttachment" :: Attachment
+	localraint.Attachment1 = vine.instance.Base:FindFirstChild "BaseAttachment" :: Attachment
+	localraint.Enabled = true
+	localraint.Parent = handle
 
 	emission.emitTaggedDescendants(vine.instance, vine:EmitActivatedTag())
 
@@ -112,7 +112,7 @@ function Vine.onActivate(self: typeof(Vine), vine: VineMechanic, level: std.Leve
 
 		if toucher and vine:KeepMomentum() == false then toucher.AssemblyLinearVelocity = Vector3.zero end
 		if character.isFromCharacter(toucher) then
-			const humanoid = character.getMaybeHumanoid()
+			local humanoid = character.getMaybeHumanoid()
 			if humanoid then
 				humanoid.PlatformStand = false
 				if vine:JumpOnDismount() then humanoid:ChangeState(Enum.HumanoidStateType.Jumping) end

@@ -1,8 +1,8 @@
-const types = require "@self/types"
+local types = require "@self/types"
 
 export type Curve = types.Curve
 
-const curves = {
+local curves = {
 	Bezier = require "@self/Bezier",
 	BSpline = require "@self/BSpline",
 	Catenary = require "@self/Catenary",

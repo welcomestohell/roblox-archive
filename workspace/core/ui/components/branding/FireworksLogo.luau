@@ -1,8 +1,8 @@
-const Fluid = require "@pkgs/Fluid"
-const assets = require "@core/assets"
-const Liquid = require "@pkgs/Liquid"
+local Fluid = require "@pkgs/Fluid"
+local Liquid = require "@pkgs/Liquid"
+local assets = require "@core/assets"
 
-const function FireworksLogo(props: {
+local function FireworksLogo(props: {
 	visible: Fluid.UsedAs<boolean>,
 	transparency: Fluid.UsedAs<number>?,
 
@@ -51,7 +51,7 @@ const function FireworksLogo(props: {
 			return UDim2.fromOffset(rem(24), rem(24))
 		end,
 
-		Fluid.create "UIAspectRatioConstraint" {
+		Fluid.create "UIAspectRatiolocalraint" {
 			AspectRatio = 74 / 24,
 		},
 

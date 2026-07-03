@@ -1,9 +1,9 @@
-const activation = require "@libs/activation"
-const damage = require "@libs/damage"
-const emission = require "@libs/emission"
-const std = require "@libs/std"
+local activation = require "@libs/activation"
+local damage = require "@libs/damage"
+local emission = require "@libs/emission"
+local std = require "@libs/std"
 
-const Damager = std.Mechanic {
+local Damager = std.Mechanic {
 	name = "Damager",
 	description = "When activated, damages the player.",
 	instanceType = std.isA.Instance(),
@@ -27,7 +27,7 @@ function Damager.onActivate(self: DamagerSelf, damager: DamagerMechanic, level: 
 	damager:Debounced(true)
 	damage.debounce(level)
 
-	const wasActivatable = self.Activation.Enabled(damager)
+	local wasActivatable = self.Activation.Enabled(damager)
 	self.Activation.Enabled(damager, false)
 
 	damager.life:delay(damager:Cooldown(), function(damager: DamagerMechanic, wasActivatable)

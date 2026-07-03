@@ -1,12 +1,12 @@
-const ReplicatedStorage = game:GetService "ReplicatedStorage"
+local ReplicatedStorage = game:GetService "ReplicatedStorage"
 
-const LevelProvider = require "@core/client/providers/LevelProvider"
-const Level = require "@libs/core/Level"
-const logger = require "@core/shared/logger"
-const net = require "@kit/client/generated/net"
-const prvd = require "@pkgs/prvd"
+local LevelProvider = require "@core/client/providers/LevelProvider"
+local Level = require "@libs/core/Level"
+local logger = require "@core/shared/logger"
+local net = require "@kit/client/generated/net"
+local prvd = require "@pkgs/prvd"
 
-const KitClientProvider = {}
+local KitClientProvider = {}
 export type KitClientProvider = typeof(KitClientProvider)
 
 function KitClientProvider.onInit(self: KitClientProvider)
@@ -16,14 +16,14 @@ function KitClientProvider.onInit(self: KitClientProvider)
 end
 
 function KitClientProvider.onStart(self: KitClientProvider)
-	const tower = net.getTower.invoke():expect()
-	const existingMechanics = tower:FindFirstChild "Mechanics"
+	local tower = net.getTower.invoke():expect()
+	local existingMechanics = tower:FindFirstChild "Mechanics"
 	if existingMechanics then
 		logger:Debug "Removing existing mechanics"
 		existingMechanics:Destroy()
 	end
 
-	const mechanics = net.loadMechanics.invoke():expect()
+	local mechanics = net.loadMechanics.invoke():expect()
 	mechanics:Clone().Parent = tower
 	mechanics:Destroy()
 

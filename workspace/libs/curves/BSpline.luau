@@ -1,6 +1,6 @@
 -- Source: https://pomax.github.io/bezierinfo/#bsplines
 
-const BSpline = {}
+local BSpline = {}
 BSpline.__index = BSpline
 
 export type BSpline = setmetatable<{
@@ -13,11 +13,11 @@ export type BSpline = setmetatable<{
 }, typeof(BSpline)>
 
 function BSpline.new(props: { points: { Vector3 } }): BSpline
-	const n = #props.points
-	const degree = n < 4 and math.max(1, n - 1) or 3
+	local n = #props.points
+	local degree = n < 4 and math.max(1, n - 1) or 3
 
-	const knotCount = n + degree + 1
-	const knots = table.create(knotCount) :: { number }
+	local knotCount = n + degree + 1
+	local knots = table.create(knotCount) :: { number }
 	for index = 1, knotCount do
 		knots[index] = if index <= degree + 1
 			then 0
@@ -36,13 +36,13 @@ function BSpline.new(props: { points: { Vector3 } }): BSpline
 end
 
 function BSpline.solvePosition(self: BSpline, alpha: number): Vector3
-	const points = self.points
-	const knots = self.knots
-	const degree = self.degree
+	local points = self.points
+	local knots = self.knots
+	local degree = self.degree
 
-	const tMin = knots[self.minimum]
-	const tMax = knots[self.maximum]
-	const t = math.map(math.clamp(alpha, 0, 1), 0, 1, tMin, tMax)
+	local tMin = knots[self.minimum]
+	local tMax = knots[self.maximum]
+	local t = math.map(math.clamp(alpha, 0, 1), 0, 1, tMin, tMax)
 
 	local k = self.minimum
 	for index = self.minimum, self.maximum - 1 do
@@ -59,11 +59,11 @@ function BSpline.solvePosition(self: BSpline, alpha: number): Vector3
 
 	for j = 1, degree do
 		for i = degree, j, -1 do
-			const knotIndex = k - degree + i
-			const knotStart = knots[knotIndex]
-			const knotEnd = knots[knotIndex + degree + 1 - j]
+			local knotIndex = k - degree + i
+			local knotStart = knots[knotIndex]
+			local knotEnd = knots[knotIndex + degree + 1 - j]
 
-			const a = if knotEnd == knotStart then 0 else (t - knotStart) / (knotEnd - knotStart)
+			local a = if knotEnd == knotStart then 0 else (t - knotStart) / (knotEnd - knotStart)
 
 			v[i + 1] = v[i]:Lerp(v[i + 1], a)
 		end

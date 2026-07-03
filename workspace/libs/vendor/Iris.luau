@@ -1,5 +1,5 @@
-const typeforge = require "@libs/vendor/typeforge"
-const Iris = require "@pkgs/Iris"
+local typeforge = require "@libs/vendor/typeforge"
+local Iris = require "@pkgs/Iris"
 
 type Cleanup = () -> ()
 

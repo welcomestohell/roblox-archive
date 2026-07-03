@@ -3,23 +3,24 @@
 	2018 Camera Update - AllYourBlox
 --]]
 
--- Local private variables and constants
-local UNIT_X = Vector3.new(1,0,0)
-local UNIT_Y = Vector3.new(0,1,0)
-local UNIT_Z = Vector3.new(0,0,1)
-local X1_Y0_Z1 = Vector3.new(1,0,1)	--Note: not a unit vector, used for projecting onto XZ plane
-local ZERO_VECTOR3 = Vector3.new(0,0,0)
-local ZERO_VECTOR2 = Vector2.new(0,0)
+-- Local private variables and localants
+local UNIT_X = Vector3.new(1, 0, 0)
+local UNIT_Y = Vector3.new(0, 1, 0)
+local UNIT_Z = Vector3.new(0, 0, 1)
+local X1_Y0_Z1 = Vector3.new(1, 0, 1) --Note: not a unit vector, used for projecting onto XZ plane
+local ZERO_VECTOR3 = Vector3.new(0, 0, 0)
+local ZERO_VECTOR2 = Vector2.new(0, 0)
 local TAU = 2 * math.pi
 
 local VR_PITCH_FRACTION = 0.25
-local tweenAcceleration = math.rad(220)		--Radians/Second^2
-local tweenSpeed = math.rad(0)				--Radians/Second
-local tweenMaxSpeed = math.rad(250)			--Radians/Second
-local TIME_BEFORE_AUTO_ROTATE = 2.0 		--Seconds, used when auto-aligning camera with vehicles
-local PORTRAIT_OFFSET = Vector3.new(0,-3,0)
+local tweenAcceleration = math.rad(220) --Radians/Second^2
+local tweenSpeed = math.rad(0) --Radians/Second
+local tweenMaxSpeed = math.rad(250) --Radians/Second
+local TIME_BEFORE_AUTO_ROTATE = 2.0 --Seconds, used when auto-aligning camera with vehicles
+local PORTRAIT_OFFSET = Vector3.new(0, -3, 0)
 
---[[ Gamepad Support ]]--
+--[[ Gamepad Support ]]
+--
 local THUMBSTICK_DEADZONE = 0.2
 
 -- Do not edit these values, they are not the developer-set limits, they are limits
@@ -28,37 +29,37 @@ local MIN_ALLOWED_ELEVATION_DEG = -80
 local MAX_ALLOWED_ELEVATION_DEG = 80
 
 local externalProperties = {}
-externalProperties["InitialDistance"] 	= 25
-externalProperties["MinDistance"] 		= 10
-externalProperties["MaxDistance"] 		= 100
-externalProperties["InitialElevation"] 	= 35
-externalProperties["MinElevation"] 		= 35
-externalProperties["MaxElevation"] 		= 35
-externalProperties["ReferenceAzimuth"] 	= -45	-- Angle around the Y axis where the camera starts. -45 offsets the camera in the -X and +Z directions equally
-externalProperties["CWAzimuthTravel"] 	= 90	-- How many degrees the camera is allowed to rotate from the reference position, CW as seen from above
-externalProperties["CCWAzimuthTravel"] 	= 90	-- How many degrees the camera is allowed to rotate from the reference position, CCW as seen from above
-externalProperties["UseAzimuthLimits"] 	= false -- Full rotation around Y axis available by default
+externalProperties["InitialDistance"] = 25
+externalProperties["MinDistance"] = 10
+externalProperties["MaxDistance"] = 100
+externalProperties["InitialElevation"] = 35
+externalProperties["MinElevation"] = 35
+externalProperties["MaxElevation"] = 35
+externalProperties["ReferenceAzimuth"] = -45 -- Angle around the Y axis where the camera starts. -45 offsets the camera in the -X and +Z directions equally
+externalProperties["CWAzimuthTravel"] = 90 -- How many degrees the camera is allowed to rotate from the reference position, CW as seen from above
+externalProperties["CCWAzimuthTravel"] = 90 -- How many degrees the camera is allowed to rotate from the reference position, CCW as seen from above
+externalProperties["UseAzimuthLimits"] = false -- Full rotation around Y axis available by default
 
-local Util = require(script.Parent:WaitForChild("CameraUtils"))
+local Util = require(script.Parent:WaitForChild "CameraUtils")
 
---[[ Services ]]--
-local PlayersService = game:GetService('Players')
-local VRService = game:GetService("VRService")
+--[[ Services ]]
+--
+local PlayersService = game:GetService "Players"
+local VRService = game:GetService "VRService"
 
---[[ Utility functions specific to OrbitalCamera ]]--
+--[[ Utility functions specific to OrbitalCamera ]]
+--
 local function GetValueObject(name, defaultValue)
 	local valueObj = script:FindFirstChild(name)
-	if valueObj then
-		return valueObj.Value
-	end
+	if valueObj then return valueObj.Value end
 	return defaultValue
 end
 
---[[ The Module ]]--
-local BaseCamera = require(script.Parent:WaitForChild("BaseCamera"))
+--[[ The Module ]]
+--
+local BaseCamera = require(script.Parent:WaitForChild "BaseCamera")
 local OrbitalCamera = setmetatable({}, BaseCamera)
 OrbitalCamera.__index = OrbitalCamera
-
 
 function OrbitalCamera.new()
 	local self = setmetatable(BaseCamera.new(), OrbitalCamera)
@@ -87,16 +88,16 @@ function OrbitalCamera.new()
 	self.lastUserPanCamera = tick()
 
 	self.externalProperties = {}
-	self.externalProperties["InitialDistance"] 	= 25
-	self.externalProperties["MinDistance"] 		= 10
-	self.externalProperties["MaxDistance"] 		= 100
-	self.externalProperties["InitialElevation"] 	= 35
-	self.externalProperties["MinElevation"] 		= 35
-	self.externalProperties["MaxElevation"] 		= 35
-	self.externalProperties["ReferenceAzimuth"] 	= -45	-- Angle around the Y axis where the camera starts. -45 offsets the camera in the -X and +Z directions equally
-	self.externalProperties["CWAzimuthTravel"] 	= 90	-- How many degrees the camera is allowed to rotate from the reference position, CW as seen from above
-	self.externalProperties["CCWAzimuthTravel"] 	= 90	-- How many degrees the camera is allowed to rotate from the reference position, CCW as seen from above
-	self.externalProperties["UseAzimuthLimits"] 	= false -- Full rotation around Y axis available by default
+	self.externalProperties["InitialDistance"] = 25
+	self.externalProperties["MinDistance"] = 10
+	self.externalProperties["MaxDistance"] = 100
+	self.externalProperties["InitialElevation"] = 35
+	self.externalProperties["MinElevation"] = 35
+	self.externalProperties["MaxElevation"] = 35
+	self.externalProperties["ReferenceAzimuth"] = -45 -- Angle around the Y axis where the camera starts. -45 offsets the camera in the -X and +Z directions equally
+	self.externalProperties["CWAzimuthTravel"] = 90 -- How many degrees the camera is allowed to rotate from the reference position, CW as seen from above
+	self.externalProperties["CCWAzimuthTravel"] = 90 -- How many degrees the camera is allowed to rotate from the reference position, CCW as seen from above
+	self.externalProperties["UseAzimuthLimits"] = false -- Full rotation around Y axis available by default
 	self:LoadNumberValueParameters()
 
 	return self
@@ -115,14 +116,12 @@ function OrbitalCamera:LoadOrCreateNumberValueParameter(name, valueType, updateF
 		valueObj.Parent = script
 		valueObj.Value = self.externalProperties[name]
 	else
-		print("externalProperties table has no entry for ",name)
+		print("externalProperties table has no entry for ", name)
 		return
 	end
 
 	if updateFunction then
-		if self.changedSignalConnections[name] then
-			self.changedSignalConnections[name]:Disconnect()
-		end
+		if self.changedSignalConnections[name] then self.changedSignalConnections[name]:Disconnect() end
 		self.changedSignalConnections[name] = valueObj.Changed:Connect(function(newValue)
 			self.externalProperties[name] = newValue
 			updateFunction(self)
@@ -131,8 +130,10 @@ function OrbitalCamera:LoadOrCreateNumberValueParameter(name, valueType, updateF
 end
 
 function OrbitalCamera:SetAndBoundsCheckAzimuthValues()
-	self.minAzimuthAbsoluteRad = math.rad(self.externalProperties["ReferenceAzimuth"]) - math.abs(math.rad(self.externalProperties["CWAzimuthTravel"]))
-	self.maxAzimuthAbsoluteRad = math.rad(self.externalProperties["ReferenceAzimuth"]) + math.abs(math.rad(self.externalProperties["CCWAzimuthTravel"]))
+	self.minAzimuthAbsoluteRad = math.rad(self.externalProperties["ReferenceAzimuth"])
+		- math.abs(math.rad(self.externalProperties["CWAzimuthTravel"]))
+	self.maxAzimuthAbsoluteRad = math.rad(self.externalProperties["ReferenceAzimuth"])
+		+ math.abs(math.rad(self.externalProperties["CCWAzimuthTravel"]))
 	self.useAzimuthLimits = self.externalProperties["UseAzimuthLimits"]
 	if self.useAzimuthLimits then
 		self.curAzimuthRad = math.max(self.curAzimuthRad, self.minAzimuthAbsoluteRad)
@@ -195,28 +196,25 @@ end
 
 function OrbitalCamera:SetInitialOrientation(humanoid)
 	if not humanoid or not humanoid.RootPart then
-		warn("OrbitalCamera could not set initial orientation due to missing humanoid")
+		warn "OrbitalCamera could not set initial orientation due to missing humanoid"
 		return
 	end
-	local newDesiredLook = (humanoid.RootPart.CFrame.lookVector - Vector3.new(0,0.23,0)).unit
+	local newDesiredLook = (humanoid.RootPart.CFrame.lookVector - Vector3.new(0, 0.23, 0)).unit
 	local horizontalShift = Util.GetAngleBetweenXZVectors(newDesiredLook, self:GetCameraLookVector())
 	local vertShift = math.asin(self:GetCameraLookVector().y) - math.asin(newDesiredLook.y)
-	if not Util.IsFinite(horizontalShift) then
-		horizontalShift = 0
-	end
-	if not Util.IsFinite(vertShift) then
-		vertShift = 0
-	end
+	if not Util.IsFinite(horizontalShift) then horizontalShift = 0 end
+	if not Util.IsFinite(vertShift) then vertShift = 0 end
 	self.rotateInput = Vector2.new(horizontalShift, vertShift)
 end
 
---[[ Functions of BaseCamera that are overridden by OrbitalCamera ]]--
+--[[ Functions of BaseCamera that are overridden by OrbitalCamera ]]
+--
 function OrbitalCamera:GetCameraToSubjectDistance()
 	return self.curDistance
 end
 
 function OrbitalCamera:SetCameraToSubjectDistance(desiredSubjectDistance)
-	print("OrbitalCamera SetCameraToSubjectDistance ",desiredSubjectDistance)
+	print("OrbitalCamera SetCameraToSubjectDistance ", desiredSubjectDistance)
 	local player = PlayersService.LocalPlayer
 	if player then
 		self.currentSubjectDistance = Util.Clamp(self.minDistance, self.maxDistance, desiredSubjectDistance)
@@ -232,20 +230,28 @@ end
 function OrbitalCamera:CalculateNewLookVector(suppliedLookVector, xyRotateVector)
 	local currLookVector = suppliedLookVector or self:GetCameraLookVector()
 	local currPitchAngle = math.asin(currLookVector.y)
-	local yTheta = Util.Clamp(currPitchAngle - math.rad(MAX_ALLOWED_ELEVATION_DEG), currPitchAngle - math.rad(MIN_ALLOWED_ELEVATION_DEG), xyRotateVector.y)
-	local constrainedRotateInput = Vector2.new(xyRotateVector.x, yTheta)
+	local yTheta = Util.Clamp(
+		currPitchAngle - math.rad(MAX_ALLOWED_ELEVATION_DEG),
+		currPitchAngle - math.rad(MIN_ALLOWED_ELEVATION_DEG),
+		xyRotateVector.y
+	)
+	local localrainedRotateInput = Vector2.new(xyRotateVector.x, yTheta)
 	local startCFrame = CFrame.new(ZERO_VECTOR3, currLookVector)
-	local newLookVector = (CFrame.Angles(0, -constrainedRotateInput.x, 0) * startCFrame * CFrame.Angles(-constrainedRotateInput.y,0,0)).lookVector
+	local newLookVector = (CFrame.Angles(0, -localrainedRotateInput.x, 0) * startCFrame * CFrame.Angles(
+		-localrainedRotateInput.y,
+		0,
+		0
+	)).lookVector
 	return newLookVector
 end
 
 function OrbitalCamera:GetGamepadPan(name, state, input)
 	if input.UserInputType == self.activeGamepad and input.KeyCode == Enum.KeyCode.Thumbstick2 then
 		if self.r3ButtonDown or self.l3ButtonDown then
-		-- R3 or L3 Thumbstick is depressed, right stick controls dolly in/out
-			if (input.Position.Y > THUMBSTICK_DEADZONE) then
+			-- R3 or L3 Thumbstick is depressed, right stick controls dolly in/out
+			if input.Position.Y > THUMBSTICK_DEADZONE then
 				self.gamepadDollySpeedMultiplier = 0.96
-			elseif (input.Position.Y < -THUMBSTICK_DEADZONE) then
+			elseif input.Position.Y < -THUMBSTICK_DEADZONE then
 				self.gamepadDollySpeedMultiplier = 1.04
 			else
 				self.gamepadDollySpeedMultiplier = 1.00
@@ -269,19 +275,20 @@ function OrbitalCamera:GetGamepadPan(name, state, input)
 end
 
 function OrbitalCamera:DoGamepadZoom(name, state, input)
-	if input.UserInputType == self.activeGamepad and (input.KeyCode == Enum.KeyCode.ButtonR3 or input.KeyCode == Enum.KeyCode.ButtonL3) then
-		if (state == Enum.UserInputState.Begin) then
+	if
+		input.UserInputType == self.activeGamepad
+		and (input.KeyCode == Enum.KeyCode.ButtonR3 or input.KeyCode == Enum.KeyCode.ButtonL3)
+	then
+		if state == Enum.UserInputState.Begin then
 			self.r3ButtonDown = input.KeyCode == Enum.KeyCode.ButtonR3
 			self.l3ButtonDown = input.KeyCode == Enum.KeyCode.ButtonL3
-		elseif (state == Enum.UserInputState.End) then
-			if (input.KeyCode == Enum.KeyCode.ButtonR3) then
+		elseif state == Enum.UserInputState.End then
+			if input.KeyCode == Enum.KeyCode.ButtonR3 then
 				self.r3ButtonDown = false
-			elseif (input.KeyCode == Enum.KeyCode.ButtonL3) then
+			elseif input.KeyCode == Enum.KeyCode.ButtonL3 then
 				self.l3ButtonDown = false
 			end
-			if (not self.r3ButtonDown) and (not self.l3ButtonDown) then
-				self.gamepadDollySpeedMultiplier = 1.00
-			end
+			if (not self.r3ButtonDown) and not self.l3ButtonDown then self.gamepadDollySpeedMultiplier = 1.00 end
 		end
 		return Enum.ContextActionResult.Sink
 	end
@@ -289,30 +296,29 @@ function OrbitalCamera:DoGamepadZoom(name, state, input)
 end
 
 function OrbitalCamera:BindGamepadInputActions()
-	self:BindAction("OrbitalCamGamepadPan", function(name, state, input) return self:GetGamepadPan(name, state, input) end,
-		false, Enum.KeyCode.Thumbstick2)
-	self:BindAction("OrbitalCamGamepadZoom", function(name, state, input) return self:DoGamepadZoom(name, state, input) end,
-		false, Enum.KeyCode.ButtonR3, Enum.KeyCode.ButtonL3)
+	self:BindAction("OrbitalCamGamepadPan", function(name, state, input)
+		return self:GetGamepadPan(name, state, input)
+	end, false, Enum.KeyCode.Thumbstick2)
+	self:BindAction("OrbitalCamGamepadZoom", function(name, state, input)
+		return self:DoGamepadZoom(name, state, input)
+	end, false, Enum.KeyCode.ButtonR3, Enum.KeyCode.ButtonL3)
 end
-
 
 -- [[ Update ]]--
 function OrbitalCamera:Update(dt)
 	local now = tick()
 	local timeDelta = (now - self.lastUpdate)
 	local userPanningTheCamera = (self.UserPanningTheCamera == true)
-	local camera = 	workspace.CurrentCamera
+	local camera = workspace.CurrentCamera
 	local newCameraCFrame = camera.CFrame
 	local newCameraFocus = camera.Focus
 	local player = PlayersService.LocalPlayer
 	local humanoid = self:GetHumanoid()
 	local cameraSubject = camera and camera.CameraSubject
-	local isInVehicle = cameraSubject and cameraSubject:IsA('VehicleSeat')
-	local isOnASkateboard = cameraSubject and cameraSubject:IsA('SkateboardPlatform')
+	local isInVehicle = cameraSubject and cameraSubject:IsA "VehicleSeat"
+	local isOnASkateboard = cameraSubject and cameraSubject:IsA "SkateboardPlatform"
 
-	if self.lastUpdate == nil or timeDelta > 1 then
-		self.lastCameraTransform = nil
-	end
+	if self.lastUpdate == nil or timeDelta > 1 then self.lastCameraTransform = nil end
 
 	if self.lastUpdate then
 		local gamepadRotation = self:UpdateGamepad()
@@ -335,7 +341,7 @@ function OrbitalCamera:Update(dt)
 			end
 
 			if angle ~= 0 then
-				self.rotateInput = self.rotateInput +  Vector2.new(math.rad(angle * delta), 0)
+				self.rotateInput = self.rotateInput + Vector2.new(math.rad(angle * delta), 0)
 				userPanningTheCamera = true
 			end
 		end
@@ -351,7 +357,6 @@ function OrbitalCamera:Update(dt)
 	local subjectPosition = self:GetSubjectPosition()
 
 	if subjectPosition and player and camera then
-
 		-- Process any dollying being done by gamepad
 		-- TODO: Move this
 		if self.gamepadDollySpeedMultiplier ~= 1 then
@@ -372,13 +377,14 @@ function OrbitalCamera:Update(dt)
 				local desiredDist = math.min(distToSubject, self.currentSubjectDistance)
 
 				-- Note that CalculateNewLookVector is overridden from BaseCamera
-				vecToSubject = self:CalculateNewLookVector(vecToSubject.unit * X1_Y0_Z1, Vector2.new(self.rotateInput.x, 0)) * desiredDist
+				vecToSubject = self:CalculateNewLookVector(
+					vecToSubject.unit * X1_Y0_Z1,
+					Vector2.new(self.rotateInput.x, 0)
+				) * desiredDist
 
 				local newPos = cameraFocusP - vecToSubject
 				local desiredLookDir = camera.CFrame.lookVector
-				if self.rotateInput.x ~= 0 then
-					desiredLookDir = vecToSubject
-				end
+				if self.rotateInput.x ~= 0 then desiredLookDir = vecToSubject end
 				local lookAt = Vector3.new(newPos.x + desiredLookDir.x, newPos.y, newPos.z + desiredLookDir.z)
 				self.RotateInput = ZERO_VECTOR2
 
@@ -389,14 +395,19 @@ function OrbitalCamera:Update(dt)
 			self.curAzimuthRad = self.curAzimuthRad - self.rotateInput.x
 
 			if self.useAzimuthLimits then
-				self.curAzimuthRad = Util.Clamp(self.minAzimuthAbsoluteRad, self.maxAzimuthAbsoluteRad, self.curAzimuthRad)
+				self.curAzimuthRad =
+					Util.Clamp(self.minAzimuthAbsoluteRad, self.maxAzimuthAbsoluteRad, self.curAzimuthRad)
 			else
-				self.curAzimuthRad = (self.curAzimuthRad ~= 0) and (math.sign(self.curAzimuthRad) * (math.abs(self.curAzimuthRad) % TAU)) or 0
+				self.curAzimuthRad = (self.curAzimuthRad ~= 0)
+						and (math.sign(self.curAzimuthRad) * (math.abs(self.curAzimuthRad) % TAU))
+					or 0
 			end
 
-			self.curElevationRad = Util.Clamp(self.minElevationRad, self.maxElevationRad, self.curElevationRad + self.rotateInput.y)
+			self.curElevationRad =
+				Util.Clamp(self.minElevationRad, self.maxElevationRad, self.curElevationRad + self.rotateInput.y)
 
-			local cameraPosVector = self.currentSubjectDistance * ( CFrame.fromEulerAnglesYXZ( -self.curElevationRad, self.curAzimuthRad, 0 ) * UNIT_Z )
+			local cameraPosVector = self.currentSubjectDistance
+				* (CFrame.fromEulerAnglesYXZ(-self.curElevationRad, self.curAzimuthRad, 0) * UNIT_Z)
 			local camPos = subjectPosition + cameraPosVector
 
 			newCameraCFrame = CFrame.new(camPos, subjectPosition)
@@ -406,7 +417,7 @@ function OrbitalCamera:Update(dt)
 
 		self.lastCameraTransform = newCameraCFrame
 		self.lastCameraFocus = newCameraFocus
-		if (isInVehicle or isOnASkateboard) and cameraSubject:IsA('BasePart') then
+		if (isInVehicle or isOnASkateboard) and cameraSubject:IsA "BasePart" then
 			self.lastSubjectCFrame = cameraSubject.CFrame
 		else
 			self.lastSubjectCFrame = nil

@@ -1,12 +1,12 @@
-const Text = require "@core/ui/components/base/Text"
-const arrays = require "@libs/primitives/arrays"
-const tables = require "@libs/primitives/tables"
-const Fluid = require "@pkgs/Fluid"
-const Liquid = require "@pkgs/Liquid"
+local Fluid = require "@pkgs/Fluid"
+local Liquid = require "@pkgs/Liquid"
+local Text = require "@core/ui/components/base/Text"
+local arrays = require "@libs/primitives/arrays"
+local tables = require "@libs/primitives/tables"
 
-const DIGITS = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 }
+local DIGITS = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 }
 
-const function NumberSpinner(props: {
+local function NumberSpinner(props: {
 	name: Fluid.UsedAs<string>?,
 	position: Fluid.UsedAs<UDim2>?,
 	anchorPoint: Fluid.UsedAs<Vector2>?,
@@ -55,10 +55,10 @@ const function NumberSpinner(props: {
 
 		-- LUAU FIXME: having to set forRange as any
 		Liquid.forRange<<any>>(function(index: number)
-			const function fauxRotation()
+			local function fauxRotation()
 				return math.floor(Fluid.read(props.value) / 10 ^ (index - 1))
 			end
-			const function moverPosition()
+			local function moverPosition()
 				return UDim2.fromScale(0, -(fauxRotation() % 10))
 			end
 
@@ -68,7 +68,7 @@ const function NumberSpinner(props: {
 				-- Digits are written right to left
 				LayoutOrder = -index,
 				Size = UDim2.fromScale(0.5, 1),
-				SizeConstraint = Enum.SizeConstraint.RelativeYY,
+				Sizelocalraint = Enum.Sizelocalraint.RelativeYY,
 				BackgroundTransparency = 1,
 				ClipsDescendants = true,
 
