@@ -3,6 +3,7 @@ const createChildOfClass = require "@self/createChildOfClass"
 const functions = require "@libs/primitives/functions"
 const gt = require "@libs/vendor/gt"
 const logger = require "@core/shared/logger"
+const threadpool = require "@libs/threadpool"
 const types = require "@self/types"
 const useAttributes = require "@self/useAttributes"
 const useChildOfClass = require "@self/useChildOfClass"
@@ -99,8 +100,9 @@ const function bindActivation(bindContext: BindContext)
 		end
 	end
 
-	life:add(context.attributes.Enabled:onBind(context.instanceConfiguration, update))
-	life:add(context.attributes.Mode:onBind(context.instanceConfiguration, update))
+	life:add(context.attributes.Enabled:onChange(context.instanceConfiguration, update))
+	life:add(context.attributes.Mode:onChange(context.instanceConfiguration, update))
+	threadpool.spawn(update)
 end
 
 const function castEvent(eventLike: { kind: string }): ActivationEvent

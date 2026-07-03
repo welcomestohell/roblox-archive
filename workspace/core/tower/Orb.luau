@@ -1,6 +1,9 @@
+const Workspace = game:GetService "Workspace"
+
 const activation = require "@libs/activation"
 const character = require "@libs/character"
 const constraints = require "@libs/constraints"
+const emission = require "@libs/emission"
 const mounts = require "@libs/mounts"
 const std = require "@libs/std"
 
@@ -9,7 +12,8 @@ const Orb = std.Mechanic {
 	description = "",
 	instanceType = std.isA.BasePart(),
 
-	Mode = std.Attribute("Mode", std.gt.literals { "Launch", "MountLaunch", "MountPivot" }, "Launch" :: "Launch"),
+	Mode = std.Attribute("Mode", std.gt.literals { "Launch", "Pivot" }, "Launch" :: "Launch"),
+	Mount = std.Attribute("Mount", std.gt.boolean(), false),
 	Force = std.Attribute("Force", std.gt.positiveNumber, 0),
 	Timeout = std.Attribute("Timeout", std.gt.number(), 0),
 
@@ -19,12 +23,13 @@ const Orb = std.Mechanic {
 	ZRotationEnabled = std.Attribute("ZRotationEnabled", std.gt.boolean(), true),
 
 	std.AttributeSection "Tags",
-	EmitActivatedTag = std.Attribute("EmitActivatedTag", std.gt.tag, "Orb: On Activated"),
-	EmitDismountedTag = std.Attribute("EmitDismountedTag", std.gt.tag, "Orb: On Dismounted"),
+	EmitMountedTag = std.Attribute("EmitMountedTag", std.gt.tag, "Orb: On Mounted"),
 	EmitLaunchedTag = std.Attribute("EmitLaunchedTag", std.gt.tag, "Orb: On Launched"),
+	EmitTimedOutTag = std.Attribute("EmitTimedOutTag", std.gt.tag, "Orb: On Timed Out"),
 
 	std.AttributeSection "Activation",
 	Cooldown = std.Attribute("Cooldown", std.gt.positiveNumber, 1),
+	Active = std.Attribute("Active", std.gt.boolean(), false),
 	Debounced = std.Attribute("Debounced", std.gt.boolean(), false),
 	Activation = activation.useAttributes(),
 
@@ -35,8 +40,18 @@ const Orb = std.Mechanic {
 export type OrbSelf = typeof(Orb)
 export type OrbMechanic = std.Mechanic<OrbSelf>
 
+function Orb.getCameraVector(orb: OrbMechanic)
+	const x, y, z = Workspace.CurrentCamera.CFrame.Rotation:ToEulerAnglesXYZ()
+	return CFrame.fromEulerAnglesXYZ(
+		if orb:XRotationEnabled() then x else 0,
+		if orb:YRotationEnabled() then y else 0,
+		if orb:ZRotationEnabled() then z else 0
+	).LookVector
+end
+
 function Orb.launch(orb: OrbMechanic, toucher: BasePart)
-	const lookVector = orb.instance.CFrame.LookVector
+	const lookVector = if orb:Mode() == "Launch" then orb.instance.CFrame.LookVector else orb:getCameraVector()
+
 	const maxForce = if math.abs(lookVector.X) < 0.1 and math.abs(lookVector.Z) < 0.1
 		then Vector3.yAxis * 40000
 		else Vector3.one * 40000
@@ -62,41 +77,43 @@ function Orb.reactivate(orb: OrbMechanic)
 end
 
 function Orb.onActivate(self: OrbSelf, orb: OrbMechanic, level: std.Level, event: activation.ActivationEvent)
-	if orb:Debounced() then return end
-
-	print "not debounced"
+	if orb:Debounced() or orb:Active() then return end
 
 	const raw = event.kind == "Touch" and event.toucher or character.getMaybeCharacter()
-	print("raw", raw)
 
 	const toucher = mounts.castToucher(raw)
 	if not toucher then return end
 
-	print("got toucher", toucher)
-
-	orb.Activation.Enabled(orb, false)
-	orb:Debounced(true)
-
-	const mode = orb:Mode()
-	if mode == "Launch" then
-		orb:launch(toucher)
+	if not orb:Mount() then
+		orb.Activation.Enabled(orb, false)
+		orb:Debounced(true)
 		orb.life:delay(orb:Cooldown(), self.reactivate, orb)
+		orb:launch(toucher)
+		emission.emitTaggedDescendants(orb.instance, orb:EmitLaunchedTag())
 		return
 	end
 
 	if mounts.isMechanicMounted(toucher, orb) then return end
+	orb.Activation.Enabled(orb, false)
+	orb:Active(true)
+	orb:Debounced(true)
 
 	const activationLife = orb.life:extend()
 	activationLife:destroyOn(mounts.mountMechanic(toucher, orb))
 	toucher:PivotTo(orb.instance.CFrame)
 	constraints.weld(activationLife, toucher, orb.instance)
+	emission.emitTaggedDescendants(orb.instance, orb:EmitMountedTag())
 
 	const function onDismount(launch: boolean)
-		activationLife:destroy()
-		mounts.dismountMechanic(toucher, orb)
-		orb.life:delay(orb:Cooldown(), self.reactivate, orb)
+		if activationLife.alive then
+			if launch then orb:launch(toucher) end
+			emission.emitTaggedDescendants(orb.instance, launch and orb:EmitLaunchedTag() or orb:EmitTimedOutTag())
+		end
 
-		if launch then orb:launch(toucher) end
+		orb:Active(false)
+		orb.life:delay(orb:Cooldown(), self.reactivate, orb)
+		mounts.dismountMechanic(toucher, orb)
+		activationLife:destroy()
 	end
 
 	const timeout = orb:Timeout()

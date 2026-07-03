@@ -31,6 +31,10 @@ local core = {
 		button = "rbxasset://.asphalt-game/2b293bd53d26f21474598971951bfe07bef5a80ac8afddae50e8c0baaee90498.mp3",
 		dash = "rbxasset://.asphalt-game/1c46e955eb4c971c45b01b584c55dabb84294ac41e474e44e190c7740ed5e56c.mp3",
 		doubleJump = "rbxasset://.asphalt-game/d2ade26b73bd27c64e8fcbf3952369761e35e4ba6d06c7fb012e386633df42bf.mp3",
+		flowery = {
+			jarona = "rbxasset://.asphalt-game/cc0c63fcf82d43d8648e2a4c495cd5a3675d6202c8399e521439712fc6cb4d7a.mp3",
+			sanfrandisco = "rbxasset://.asphalt-game/a20b3f4fb057190c6dd4a8278d5298f0c20146ed32542b81e074c413e27dcb54.mp3",
+		},
 		heartbeat = "rbxasset://.asphalt-game/b388e54faa176d6e995b5c3caf341b77da1619c6f9d9aa27497175015bc88544.mp3",
 		jump = "rbxasset://.asphalt-game/ff4c951d7d73294924bc3ad0da2a5972158db909dced4c197665749885985754.wav",
 		speed = "rbxasset://.asphalt-game/f6c32dca11867db8466e1f75d2d68c839a7cc7877fe4e4ecd918126149b97a71.mp3",

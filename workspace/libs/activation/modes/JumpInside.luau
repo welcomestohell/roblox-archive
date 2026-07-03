@@ -1,6 +1,5 @@
-const UserInputService = game:GetService "UserInputService"
-
 const Result = require "@libs/Result"
+const jump = require "@libs/jump"
 const tables = require "@libs/primitives/tables"
 const touch = require "@libs/touch"
 const types = require "../types"
@@ -19,12 +18,13 @@ function JumpInside.implement(context: types.ActivationContext)
 		part.Touched:Connect(function(toucher: BasePart)
 			if touch.isToucherValid(context.attributes.Touch, part, context.instanceConfiguration, toucher) then
 				touchingParts[toucher] = true
+				if jump.isJumping() then context:onActivate { kind = "JumpInside", instance = part } end
 			end
 		end),
 		part.TouchEnded:Connect(function(toucher: BasePart)
 			touchingParts[toucher] = nil
 		end),
-		UserInputService.JumpRequest:Connect(function()
+		jump.onBind(function()
 			if tables.isNotEmpty(touchingParts) then context:onActivate { kind = "JumpInside", instance = part } end
 		end),
 		function()
