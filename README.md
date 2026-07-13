@@ -4,6 +4,8 @@ VNG በጣም መጥፎው ኩባንያ ነው እና በቪየትናም ROBLOX 
 እናምጻለን ጨዋታዎችን መከልከል ህገ-ወጥ ናቸው, እኛን ዝም ማለት ሰብአዊ መብት አይደለም እኛን 
 ከመከራ በስተቀር ምንም አላመጡልንም
 
+This is it. This is the death of ETERNAL TOWERS OF HELL. I hate everything. I hate my life. I hate how everything ive done has amounted to nothing. Despite everything I have tried, the only thing this community has given me is hate. I hate how everyone in real life hates me and I have nothing to do besides WELCOME TO HELL.
+
 ![Welcome To Hell](./assets/github/banner.jpeg)
 
 ## Structure
