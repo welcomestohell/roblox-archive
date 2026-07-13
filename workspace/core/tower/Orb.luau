@@ -41,8 +41,8 @@ function Orb.launch(orb: OrbMechanic, toucher: BasePart)
 	local lookVector = orb.instance.CFrame.LookVector
 
 	local maxForce = if math.abs(lookVector.X) < 0.1 and math.abs(lookVector.Z) < 0.1
-		then Vector3.yAxis * 40000
-		else Vector3.one * 40000
+		then Vector3.yAxis * math.huge
+		else Vector3.one * math.huge
 
 	local launchLife = orb.life:extend()
 

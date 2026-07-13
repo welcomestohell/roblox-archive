@@ -78,7 +78,7 @@
 								"enabled": true,
 							},
 							"ignoreGlobs": ["**/.pesde/**", "**/.rose/**"],
-							"useConst": true,
+							"useConst": false,
 						},
 					},
 					"index": {
